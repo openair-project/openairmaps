@@ -14,7 +14,7 @@ status](https://www.r-pkg.org/badges/version/openairmaps)](https://CRAN.R-projec
 <br>
 [![github](https://img.shields.io/badge/CODE-github-black?logo=github)](https://github.com/openair-project/openairmaps)
 [![website](https://img.shields.io/badge/DOCS-website-black)](https://openair-project.github.io/openairmaps/)
-[![book](https://img.shields.io/badge/DOCS-book-black)](https://bookdown.org/david_carslaw/openair/)
+[![book](https://img.shields.io/badge/DOCS-book-black)](https://openair-project.github.io/book/)
 <!-- badges: end -->
 
 </div>

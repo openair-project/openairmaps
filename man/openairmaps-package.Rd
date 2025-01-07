@@ -47,7 +47,7 @@ The \code{openair} package, from which \code{openairmaps} is based.
 The \code{worldmet} package, which simplifies the access of
 meteorological data in R.
 
-The \href{https://bookdown.org/david_carslaw/openair/}{openair book} for
+The \href{https://openair-project.github.io/book/}{openair book} for
 more in-depth documentation of \code{openair} and \code{openairmaps}.
 }
 \author{

@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette outlines some core functionality in `{openairmaps}`. For further examples, please see the [online book](https://bookdown.org/david_carslaw/openair/).
+This vignette outlines some core functionality in `{openairmaps}`. For further examples, please see the [online book](https://openair-project.github.io/book/).
 
 ```{r setup}
 library(openairmaps)
