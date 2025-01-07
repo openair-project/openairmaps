@@ -46,6 +46,7 @@ Suggests:
     shiny,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Config/Needs/website: openair-project/openairpkgdown
 Encoding: UTF-8
 Language: en-GB
 LazyData: true
