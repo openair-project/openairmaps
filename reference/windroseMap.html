@@ -29,7 +29,7 @@ produced instead."><meta property="og:image" content="https://davidcarslaw.githu
 <li class="nav-item"><a class="external-link nav-link" href="https://bookdown.org/david_carslaw/openair/sections/maps/maps-overview.html">Book (External)</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/davidcarslaw/openairmaps/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/openair-project/openairmaps/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -38,7 +38,7 @@ produced instead."><meta property="og:image" content="https://davidcarslaw.githu
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Wind roses on dynamic and static maps</h1>
-      <small class="dont-index">Source: <a href="https://github.com/davidcarslaw/openairmaps/blob/master/R/polar_windroseMap.R" class="external-link"><code>R/polar_windroseMap.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openair-project/openairmaps/blob/master/R/polar_windroseMap.R" class="external-link"><code>R/polar_windroseMap.R</code></a></small>
       <div class="d-none name"><code>windroseMap.Rd</code></div>
     </div>
 
@@ -108,7 +108,7 @@ mean wind speeds a value of 1 or 0.5 m/s may be better.</p></dd>
 <dd><p><em>Specifier for the number of breaks of the colour axis.</em></p>
 <p><em>default:</em> <code>4</code> | <em>scope:</em> dynamic &amp; static</p>
 <p>Most commonly, the number of break points for wind speed in
-<code><a href="https://davidcarslaw.github.io/openair/reference/windRose.html" class="external-link">openair::windRose()</a></code>. For the <code>ws.int</code> default of <code>2</code>, the default
+<code><a href="https://rdrr.io/pkg/openair/man/windRose.html" class="external-link">openair::windRose()</a></code>. For the <code>ws.int</code> default of <code>2</code>, the default
 <code>breaks</code>, <code>4</code>, generates the break points 2, 4, 6, and 8. Breaks can also
 be used to set specific break points. For example, the argument `breaks =
 c(0, 1, 10, 100)“ breaks the data into segments &lt;1, 1-10, 10-100, &gt;100.</p></dd>
@@ -138,7 +138,7 @@ plotting on the map.</p></dd>
 <dd><p><em>A method to condition the <code>data</code> for separate plotting.</em></p>
 <p><em>default:</em> <code>NULL</code> | <em>scope:</em> dynamic &amp; static</p>
 <p>Used for splitting the input data into different groups, passed to the
-<code>type</code> argument of <code><a href="https://davidcarslaw.github.io/openair/reference/cutData.html" class="external-link">openair::cutData()</a></code>. When <code>type</code> is specified:</p><ul><li><p><em>Dynamic</em>: The different data splits can be toggled between using a "layer control" menu.</p></li>
+<code>type</code> argument of <code><a href="https://rdrr.io/pkg/openair/man/cutData.html" class="external-link">openair::cutData()</a></code>. When <code>type</code> is specified:</p><ul><li><p><em>Dynamic</em>: The different data splits can be toggled between using a "layer control" menu.</p></li>
 <li><p><em>Static:</em>: The data splits will each appear in a different panel.</p></li>
 </ul><p><code>type</code> cannot be used if multiple <code>pollutant</code> columns have been provided.</p></dd>
 
@@ -179,7 +179,7 @@ substitute the correct provider string.</p></dd>
 <dt id="arg-cols">cols<a class="anchor" aria-label="anchor" href="#arg-cols"></a></dt>
 <dd><p><em>Colours to use for plotting.</em></p>
 <p><em>default:</em> <code>"turbo"</code> | <em>scope:</em> dynamic &amp; static</p>
-<p>The colours used for plotting, passed to <code><a href="https://davidcarslaw.github.io/openair/reference/openColours.html" class="external-link">openair::openColours()</a></code>. The
+<p>The colours used for plotting, passed to <code><a href="https://rdrr.io/pkg/openair/man/openColours.html" class="external-link">openair::openColours()</a></code>. The
 default, <code>"turbo"</code>, is a rainbow palette with relatively perceptually
 uniform colours.</p></dd>
 
@@ -224,7 +224,7 @@ this - for example, to include units or other contextual information. For
 <dd><p><em>Automatically format the title of the legend?</em></p>
 <p><em>default:</em> <code>TRUE</code> | <em>scope:</em> dynamic &amp; static</p>
 <p>When <code>legend.title.autotext = TRUE</code>, <code>legend.title</code> will be first run
-through <code><a href="quickTextHTML.html">quickTextHTML()</a></code> (<em>dynamic</em>) or <code><a href="https://davidcarslaw.github.io/openair/reference/quickText.html" class="external-link">openair::quickText()</a></code> (<em>static</em>).</p></dd>
+through <code><a href="quickTextHTML.html">quickTextHTML()</a></code> (<em>dynamic</em>) or <code><a href="https://rdrr.io/pkg/openair/man/quickText.html" class="external-link">openair::quickText()</a></code> (<em>static</em>).</p></dd>
 
 
 <dt id="arg-control-collapsed">control.collapsed<a class="anchor" aria-label="anchor" href="#arg-control-collapsed"></a></dt>
@@ -303,7 +303,7 @@ in parallel.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Arguments passed on to <code><a href="https://davidcarslaw.github.io/openair/reference/windRose.html" class="external-link">openair::windRose</a></code></p><dl><dt><code>ws</code></dt>
+<dd><p>Arguments passed on to <code><a href="https://rdrr.io/pkg/openair/man/windRose.html" class="external-link">openair::windRose</a></code></p><dl><dt><code>ws</code></dt>
 <dd><p>Name of the column representing wind speed.</p></dd>
 
     <dt><code>wd</code></dt>
@@ -312,7 +312,7 @@ in parallel.</p></dd>
     <dt><code>ws2,wd2</code></dt>
 <dd><p>The user can supply a second set of wind speed and wind
 direction values with which the first can be compared. See
-<code><a href="https://davidcarslaw.github.io/openair/reference/pollutionRose.html" class="external-link">pollutionRose()</a></code> for more details.</p></dd>
+<code><a href="https://rdrr.io/pkg/openair/man/pollutionRose.html" class="external-link">pollutionRose()</a></code> for more details.</p></dd>
 
     <dt><code>angle</code></dt>
 <dd><p>Default angle of “spokes” is 30. Other potentially useful
@@ -381,7 +381,7 @@ spokes.</p></dd>
 <dd><p>Adds additional text/labels above the scale key. For
 example, passing <code>windRose(mydata, key.header = "ws")</code> adds the
 addition text as a scale header. Note: This argument is passed to
-<code><a href="https://davidcarslaw.github.io/openair/reference/drawOpenKey.html" class="external-link">drawOpenKey()</a></code> via <code><a href="https://davidcarslaw.github.io/openair/reference/quickText.html" class="external-link">quickText()</a></code>, applying the auto.text argument, to
+<code><a href="https://rdrr.io/pkg/openair/man/drawOpenKey.html" class="external-link">drawOpenKey()</a></code> via <code><a href="https://rdrr.io/pkg/openair/man/quickText.html" class="external-link">quickText()</a></code>, applying the auto.text argument, to
 handle formatting.</p></dd>
 
     <dt><code>key.footer</code></dt>
@@ -414,8 +414,8 @@ each bin.</p></dd>
 
     <dt><code>pollutant</code></dt>
 <dd><p>Alternative data series to be sampled instead of wind speed.
-The <code><a href="https://davidcarslaw.github.io/openair/reference/windRose.html" class="external-link">windRose()</a></code> default NULL is equivalent to <code>pollutant = "ws"</code>. Use
-in <code><a href="https://davidcarslaw.github.io/openair/reference/pollutionRose.html" class="external-link">pollutionRose()</a></code>.</p></dd>
+The <code><a href="https://rdrr.io/pkg/openair/man/windRose.html" class="external-link">windRose()</a></code> default NULL is equivalent to <code>pollutant = "ws"</code>. Use
+in <code><a href="https://rdrr.io/pkg/openair/man/pollutionRose.html" class="external-link">pollutionRose()</a></code>.</p></dd>
 
     <dt><code>angle.scale</code></dt>
 <dd><p>The scale is by default shown at a 315 degree angle.
@@ -462,7 +462,7 @@ legends.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="https://davidcarslaw.github.io/openair/reference/windRose.html" class="external-link">openair::windRose()</a></code></p>
+    <div class="dont-index"><p><code><a href="https://rdrr.io/pkg/openair/man/windRose.html" class="external-link">openair::windRose()</a></code></p>
 <p>Other directional analysis maps:
 <code><a href="annulusMap.html">annulusMap</a>()</code>,
 <code><a href="diffMap.html">diffMap</a>()</code>,

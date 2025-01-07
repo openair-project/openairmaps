@@ -31,7 +31,7 @@ produced instead."><meta property="og:image" content="https://davidcarslaw.githu
 <li class="nav-item"><a class="external-link nav-link" href="https://bookdown.org/david_carslaw/openair/sections/maps/maps-overview.html">Book (External)</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/davidcarslaw/openairmaps/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/openair-project/openairmaps/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -40,7 +40,7 @@ produced instead."><meta property="og:image" content="https://davidcarslaw.githu
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Bivariate polar plots on dynamic and static maps</h1>
-      <small class="dont-index">Source: <a href="https://github.com/davidcarslaw/openairmaps/blob/master/R/polar_polarMap.R" class="external-link"><code>R/polar_polarMap.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openair-project/openairmaps/blob/master/R/polar_polarMap.R" class="external-link"><code>R/polar_polarMap.R</code></a></small>
       <div class="d-none name"><code>polarMap.Rd</code></div>
     </div>
 
@@ -119,7 +119,7 @@ non-pairwise statistics.</p></dd>
 <dd><p><em>The radial axis variable.</em></p>
 <p><em>default:</em> <code>"ws"</code> | <em>scope:</em> dynamic &amp; static</p>
 <p>The column name for the radial axis variable to use in
-<code><a href="https://davidcarslaw.github.io/openair/reference/polarPlot.html" class="external-link">openair::polarPlot()</a></code>. Defaults to using wind speed, <code>"ws"</code>, but other
+<code><a href="https://rdrr.io/pkg/openair/man/polarPlot.html" class="external-link">openair::polarPlot()</a></code>. Defaults to using wind speed, <code>"ws"</code>, but other
 meteorological variables such as ambient temperature or atmospheric
 stability may be useful.</p></dd>
 
@@ -169,7 +169,7 @@ plotting on the map.</p></dd>
 <dd><p><em>A method to condition the <code>data</code> for separate plotting.</em></p>
 <p><em>default:</em> <code>NULL</code> | <em>scope:</em> dynamic &amp; static</p>
 <p>Used for splitting the input data into different groups, passed to the
-<code>type</code> argument of <code><a href="https://davidcarslaw.github.io/openair/reference/cutData.html" class="external-link">openair::cutData()</a></code>. When <code>type</code> is specified:</p><ul><li><p><em>Dynamic</em>: The different data splits can be toggled between using a "layer control" menu.</p></li>
+<code>type</code> argument of <code><a href="https://rdrr.io/pkg/openair/man/cutData.html" class="external-link">openair::cutData()</a></code>. When <code>type</code> is specified:</p><ul><li><p><em>Dynamic</em>: The different data splits can be toggled between using a "layer control" menu.</p></li>
 <li><p><em>Static:</em>: The data splits will each appear in a different panel.</p></li>
 </ul><p><code>type</code> cannot be used if multiple <code>pollutant</code> columns have been provided.</p></dd>
 
@@ -210,7 +210,7 @@ substitute the correct provider string.</p></dd>
 <dt id="arg-cols">cols<a class="anchor" aria-label="anchor" href="#arg-cols"></a></dt>
 <dd><p><em>Colours to use for plotting.</em></p>
 <p><em>default:</em> <code>"turbo"</code> | <em>scope:</em> dynamic &amp; static</p>
-<p>The colours used for plotting, passed to <code><a href="https://davidcarslaw.github.io/openair/reference/openColours.html" class="external-link">openair::openColours()</a></code>. The
+<p>The colours used for plotting, passed to <code><a href="https://rdrr.io/pkg/openair/man/openColours.html" class="external-link">openair::openColours()</a></code>. The
 default, <code>"turbo"</code>, is a rainbow palette with relatively perceptually
 uniform colours.</p></dd>
 
@@ -255,7 +255,7 @@ this - for example, to include units or other contextual information. For
 <dd><p><em>Automatically format the title of the legend?</em></p>
 <p><em>default:</em> <code>TRUE</code> | <em>scope:</em> dynamic &amp; static</p>
 <p>When <code>legend.title.autotext = TRUE</code>, <code>legend.title</code> will be first run
-through <code><a href="quickTextHTML.html">quickTextHTML()</a></code> (<em>dynamic</em>) or <code><a href="https://davidcarslaw.github.io/openair/reference/quickText.html" class="external-link">openair::quickText()</a></code> (<em>static</em>).</p></dd>
+through <code><a href="quickTextHTML.html">quickTextHTML()</a></code> (<em>dynamic</em>) or <code><a href="https://rdrr.io/pkg/openair/man/quickText.html" class="external-link">openair::quickText()</a></code> (<em>static</em>).</p></dd>
 
 
 <dt id="arg-control-collapsed">control.collapsed<a class="anchor" aria-label="anchor" href="#arg-control-collapsed"></a></dt>
@@ -334,7 +334,7 @@ in parallel.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Arguments passed on to <code><a href="https://davidcarslaw.github.io/openair/reference/polarPlot.html" class="external-link">openair::polarPlot</a></code></p><dl><dt><code>wd</code></dt>
+<dd><p>Arguments passed on to <code><a href="https://rdrr.io/pkg/openair/man/polarPlot.html" class="external-link">openair::polarPlot</a></code></p><dl><dt><code>wd</code></dt>
 <dd><p>Name of wind direction field.</p></dd>
 
     <dt><code>statistic</code></dt>
@@ -590,7 +590,7 @@ legends.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="https://davidcarslaw.github.io/openair/reference/polarPlot.html" class="external-link">openair::polarPlot()</a></code></p>
+    <div class="dont-index"><p><code><a href="https://rdrr.io/pkg/openair/man/polarPlot.html" class="external-link">openair::polarPlot()</a></code></p>
 <p>Other directional analysis maps:
 <code><a href="annulusMap.html">annulusMap</a>()</code>,
 <code><a href="diffMap.html">diffMap</a>()</code>,

@@ -47,7 +47,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/davidcarslaw/openairmaps/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/openair-project/openairmaps/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -81,8 +81,8 @@
 <p><strong>openairmaps</strong> has developed at pace to align <strong>openair</strong> with R’s modern geospatial ecosystem.</p>
 <ul>
 <li><p><strong>Network visualisation</strong> of many UK-based monitoring networks through <code><a href="reference/networkMap.html">networkMap()</a></code>, all of which can also be searched using <code><a href="reference/searchNetwork.html">searchNetwork()</a></code>.</p></li>
-<li><p><strong>Directional analysis maps</strong> to place <code><a href="https://davidcarslaw.github.io/openair/reference/polarPlot.html" class="external-link">openair::polarPlot()</a></code> and other “polar coordinate” plots on maps.</p></li>
-<li><p><strong>Trajectory analysis maps</strong> (such as <code><a href="reference/trajMap.html">trajMap()</a></code> and <code><a href="reference/trajLevelMap.html">trajLevelMap()</a></code>) for interactive implementations of the <code><a href="https://davidcarslaw.github.io/openair/reference/trajPlot.html" class="external-link">openair::trajPlot()</a></code> family.</p></li>
+<li><p><strong>Directional analysis maps</strong> to place <code><a href="https://rdrr.io/pkg/openair/man/polarPlot.html" class="external-link">openair::polarPlot()</a></code> and other “polar coordinate” plots on maps.</p></li>
+<li><p><strong>Trajectory analysis maps</strong> (such as <code><a href="reference/trajMap.html">trajMap()</a></code> and <code><a href="reference/trajLevelMap.html">trajLevelMap()</a></code>) for interactive implementations of the <code><a href="https://rdrr.io/pkg/openair/man/trajPlot.html" class="external-link">openair::trajPlot()</a></code> family.</p></li>
 <li><p><strong>Flexible map conditioning</strong> aligned with the <strong>openair</strong> <code>type</code> option to easily condition maps by season, day of the week, and so on.</p></li>
 <li><p><strong>Map building utilities</strong> such as building popups for interactive maps, formatting common pollutant names and units, and converting UK postcodes to lat/lng coordinates.</p></li>
 </ul>
@@ -112,7 +112,7 @@
 <p>You can also install the development version of <strong>openairmaps</strong> from GitHub using <a href="https://pak.r-lib.org/" class="external-link">pak</a>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"davidcarslaw/openairmaps"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"openair-project/openairmaps"</span><span class="op">)</span></span></code></pre></div>
 <hr>
 <p>🏛️ <strong>openairmaps</strong> is primarily maintained by <a href="https://github.com/jack-davison" class="external-link">Jack Davison</a>.</p>
 <p>📃 <strong>openairmaps</strong> is licensed under the <a href="https://davidcarslaw.github.io/openairmaps/LICENSE.html">GNU General Public License</a>.</p>
@@ -123,8 +123,8 @@
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li><a href="https://cloud.r-project.org/package=openairmaps" class="external-link">View on CRAN</a></li>
-<li><a href="https://github.com/davidcarslaw/openairmaps/" class="external-link">Browse source code</a></li>
-<li><a href="https://github.com/davidcarslaw/openairmaps/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://github.com/openair-project/openairmaps/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/openair-project/openairmaps/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
@@ -162,11 +162,11 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/davidcarslaw/openairmaps/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/davidcarslaw/openairmaps/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://github.com/davidcarslaw/openairmaps/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/openair-project/openairmaps/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://CRAN.R-project.org/package=openairmaps" class="external-link"><img src="https://www.r-pkg.org/badges/version/openairmaps" alt="CRAN status"></a></li>
 <li><a href="https://cran.r-project.org/package=openairmaps" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/openairmaps" alt="metacran downloads"></a></li>
-<li><a href="https://github.com/davidcarslaw/openairmaps" class="external-link"><img src="https://img.shields.io/badge/CODE-github-black?logo=github" alt="github"></a></li>
-<li><a href="https://davidcarslaw.github.io/openairmaps/"><img src="https://img.shields.io/badge/DOCS-website-black" alt="website"></a></li>
+<li><a href="https://github.com/openair-project/openairmaps" class="external-link"><img src="https://img.shields.io/badge/CODE-github-black?logo=github" alt="github"></a></li>
+<li><a href="https://openair-project.github.io/openairmaps/" class="external-link"><img src="https://img.shields.io/badge/DOCS-website-black" alt="website"></a></li>
 <li><a href="https://bookdown.org/david_carslaw/openair/" class="external-link"><img src="https://img.shields.io/badge/DOCS-book-black" alt="book"></a></li>
 </ul>
 </div>

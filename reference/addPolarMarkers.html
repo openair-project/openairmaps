@@ -29,7 +29,7 @@ polarMap().'><meta property="og:image" content="https://davidcarslaw.github.io/o
 <li class="nav-item"><a class="external-link nav-link" href="https://bookdown.org/david_carslaw/openair/sections/maps/maps-overview.html">Book (External)</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/davidcarslaw/openairmaps/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/openair-project/openairmaps/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -38,7 +38,7 @@ polarMap().'><meta property="og:image" content="https://davidcarslaw.github.io/o
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Add polar markers to leaflet map</h1>
-      <small class="dont-index">Source: <a href="https://github.com/davidcarslaw/openairmaps/blob/master/R/addPolarMarkers.R" class="external-link"><code>R/addPolarMarkers.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openair-project/openairmaps/blob/master/R/addPolarMarkers.R" class="external-link"><code>R/addPolarMarkers.R</code></a></small>
       <div class="d-none name"><code>addPolarMarkers.Rd</code></div>
     </div>
 
@@ -55,7 +55,7 @@ control over groups and layerIds than in "all-in-one" functions like
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">addPolarMarkers</span><span class="op">(</span></span>
 <span>  <span class="va">map</span>,</span>
 <span>  <span class="va">pollutant</span>,</span>
-<span>  fun <span class="op">=</span> <span class="fu">openair</span><span class="fu">::</span><span class="va"><a href="https://davidcarslaw.github.io/openair/reference/polarPlot.html" class="external-link">polarPlot</a></span>,</span>
+<span>  fun <span class="op">=</span> <span class="fu">openair</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/openair/man/polarPlot.html" class="external-link">polarPlot</a></span>,</span>
 <span>  lng <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  lat <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  layerId <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -111,10 +111,10 @@ control over groups and layerIds than in "all-in-one" functions like
 
 <dt id="arg-fun">fun<a class="anchor" aria-label="anchor" href="#arg-fun"></a></dt>
 <dd><p>An <code>openair</code> directional analysis plotting function. Supported
-functions include <code><a href="https://davidcarslaw.github.io/openair/reference/polarPlot.html" class="external-link">openair::polarPlot()</a></code> (the default),
-<code><a href="https://davidcarslaw.github.io/openair/reference/polarAnnulus.html" class="external-link">openair::polarAnnulus()</a></code>, <code><a href="https://davidcarslaw.github.io/openair/reference/polarFreq.html" class="external-link">openair::polarFreq()</a></code>,
-<code><a href="https://davidcarslaw.github.io/openair/reference/percentileRose.html" class="external-link">openair::percentileRose()</a></code>, <code><a href="https://davidcarslaw.github.io/openair/reference/pollutionRose.html" class="external-link">openair::pollutionRose()</a></code> and
-<code><a href="https://davidcarslaw.github.io/openair/reference/windRose.html" class="external-link">openair::windRose()</a></code>. For <code><a href="https://davidcarslaw.github.io/openair/reference/polarDiff.html" class="external-link">openair::polarDiff()</a></code>, use
+functions include <code><a href="https://rdrr.io/pkg/openair/man/polarPlot.html" class="external-link">openair::polarPlot()</a></code> (the default),
+<code><a href="https://rdrr.io/pkg/openair/man/polarAnnulus.html" class="external-link">openair::polarAnnulus()</a></code>, <code><a href="https://rdrr.io/pkg/openair/man/polarFreq.html" class="external-link">openair::polarFreq()</a></code>,
+<code><a href="https://rdrr.io/pkg/openair/man/percentileRose.html" class="external-link">openair::percentileRose()</a></code>, <code><a href="https://rdrr.io/pkg/openair/man/pollutionRose.html" class="external-link">openair::pollutionRose()</a></code> and
+<code><a href="https://rdrr.io/pkg/openair/man/windRose.html" class="external-link">openair::windRose()</a></code>. For <code><a href="https://rdrr.io/pkg/openair/man/polarDiff.html" class="external-link">openair::polarDiff()</a></code>, use
 <code>addPolarDiffMarkers()</code>.</p></dd>
 
 
@@ -200,12 +200,12 @@ latitude and longitude. By default, it is the data object provided to
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Other arguments for the plotting function (e.g. <code>period</code> for
-<code><a href="https://davidcarslaw.github.io/openair/reference/polarAnnulus.html" class="external-link">openair::polarAnnulus()</a></code>).</p></dd>
+<code><a href="https://rdrr.io/pkg/openair/man/polarAnnulus.html" class="external-link">openair::polarAnnulus()</a></code>).</p></dd>
 
 
 <dt id="arg-before-after">before, after<a class="anchor" aria-label="anchor" href="#arg-before-after"></a></dt>
 <dd><p>A data frame that represents the before/after case. See
-<code><a href="https://davidcarslaw.github.io/openair/reference/polarPlot.html" class="external-link">openair::polarPlot()</a></code> for details of different input requirements. By
+<code><a href="https://rdrr.io/pkg/openair/man/polarPlot.html" class="external-link">openair::polarPlot()</a></code> for details of different input requirements. By
 default, both <code>before</code> and <code>after</code> are the data object provided to
 <code><a href="https://rstudio.github.io/leaflet/reference/leaflet.html" class="external-link">leaflet::leaflet()</a></code> initially, but at least one should be overridden.</p></dd>
 
@@ -218,8 +218,8 @@ default, both <code>before</code> and <code>after</code> are the data object pro
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
 
 <ul><li><p><code>addPolarMarkers()</code>: Add any one-table polar marker (e.g.,
-<code><a href="https://davidcarslaw.github.io/openair/reference/polarPlot.html" class="external-link">openair::polarPlot()</a></code>)</p></li>
-<li><p><code>addPolarDiffMarkers()</code>: Add the two-table <code><a href="https://davidcarslaw.github.io/openair/reference/polarDiff.html" class="external-link">openair::polarDiff()</a></code> marker.</p></li>
+<code><a href="https://rdrr.io/pkg/openair/man/polarPlot.html" class="external-link">openair::polarPlot()</a></code>)</p></li>
+<li><p><code>addPolarDiffMarkers()</code>: Add the two-table <code><a href="https://rdrr.io/pkg/openair/man/polarDiff.html" class="external-link">openair::polarDiff()</a></code> marker.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -237,11 +237,11 @@ function used in a <code><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" c
 <span class="r-in"><span><span class="fu"><a href="https://rstudio.github.io/leaflet/reference/leaflet.html" class="external-link">leaflet</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">polar_data</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rstudio.github.io/leaflet/reference/map-layers.html" class="external-link">addTiles</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">addPolarMarkers</span><span class="op">(</span><span class="st">"ws"</span>,</span></span>
-<span class="r-in"><span>    fun <span class="op">=</span> <span class="fu">openair</span><span class="fu">::</span><span class="va"><a href="https://davidcarslaw.github.io/openair/reference/windRose.html" class="external-link">windRose</a></span>,</span></span>
+<span class="r-in"><span>    fun <span class="op">=</span> <span class="fu">openair</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/openair/man/windRose.html" class="external-link">windRose</a></span>,</span></span>
 <span class="r-in"><span>    group <span class="op">=</span> <span class="st">"Wind Rose"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu">addPolarMarkers</span><span class="op">(</span><span class="st">"nox"</span>,</span></span>
-<span class="r-in"><span>    fun <span class="op">=</span> <span class="fu">openair</span><span class="fu">::</span><span class="va"><a href="https://davidcarslaw.github.io/openair/reference/polarPlot.html" class="external-link">polarPlot</a></span>,</span></span>
+<span class="r-in"><span>    fun <span class="op">=</span> <span class="fu">openair</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/openair/man/polarPlot.html" class="external-link">polarPlot</a></span>,</span></span>
 <span class="r-in"><span>    group <span class="op">=</span> <span class="st">"Polar Plot"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rstudio.github.io/leaflet/reference/addLayersControl.html" class="external-link">addLayersControl</a></span><span class="op">(</span></span></span>

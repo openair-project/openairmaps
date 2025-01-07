@@ -29,7 +29,7 @@ formats."><meta property="og:image" content="https://davidcarslaw.github.io/open
 <li class="nav-item"><a class="external-link nav-link" href="https://bookdown.org/david_carslaw/openair/sections/maps/maps-overview.html">Book (External)</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/davidcarslaw/openairmaps/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/openair-project/openairmaps/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -38,7 +38,7 @@ formats."><meta property="og:image" content="https://davidcarslaw.github.io/open
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Deprecated static directional analysis functions</h1>
-      <small class="dont-index">Source: <a href="https://github.com/davidcarslaw/openairmaps/blob/master/R/zDeprecated.R" class="external-link"><code>R/zDeprecated.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openair-project/openairmaps/blob/master/R/zDeprecated.R" class="external-link"><code>R/zDeprecated.R</code></a></small>
       <div class="d-none name"><code>deprecated-static-polar-maps.Rd</code></div>
     </div>
 
@@ -218,7 +218,7 @@ non-pairwise statistics.</p></dd>
 <dd><p><em>The radial axis variable.</em></p>
 <p><em>default:</em> <code>"ws"</code> | <em>scope:</em> dynamic &amp; static</p>
 <p>The column name for the radial axis variable to use in
-<code><a href="https://davidcarslaw.github.io/openair/reference/polarPlot.html" class="external-link">openair::polarPlot()</a></code>. Defaults to using wind speed, <code>"ws"</code>, but other
+<code><a href="https://rdrr.io/pkg/openair/man/polarPlot.html" class="external-link">openair::polarPlot()</a></code>. Defaults to using wind speed, <code>"ws"</code>, but other
 meteorological variables such as ambient temperature or atmospheric
 stability may be useful.</p></dd>
 
@@ -289,7 +289,7 @@ family function.</p></dd>
 <dt id="arg-cols">cols<a class="anchor" aria-label="anchor" href="#arg-cols"></a></dt>
 <dd><p><em>Colours to use for plotting.</em></p>
 <p><em>default:</em> <code>"turbo"</code> | <em>scope:</em> dynamic &amp; static</p>
-<p>The colours used for plotting, passed to <code><a href="https://davidcarslaw.github.io/openair/reference/openColours.html" class="external-link">openair::openColours()</a></code>. The
+<p>The colours used for plotting, passed to <code><a href="https://rdrr.io/pkg/openair/man/openColours.html" class="external-link">openair::openColours()</a></code>. The
 default, <code>"turbo"</code>, is a rainbow palette with relatively perceptually
 uniform colours.</p></dd>
 
@@ -334,11 +334,11 @@ marker is desired.</p></dd>
 
 <dt id="arg-before">before<a class="anchor" aria-label="anchor" href="#arg-before"></a></dt>
 <dd><p>A data frame that represents the "before" case. See
-<code><a href="https://davidcarslaw.github.io/openair/reference/polarPlot.html" class="external-link">polarPlot()</a></code> for details of different input requirements.</p></dd>
+<code><a href="https://rdrr.io/pkg/openair/man/polarPlot.html" class="external-link">polarPlot()</a></code> for details of different input requirements.</p></dd>
 
 
 <dt id="arg-after">after<a class="anchor" aria-label="anchor" href="#arg-after"></a></dt>
-<dd><p>A data frame that represents the "after" case. See <code><a href="https://davidcarslaw.github.io/openair/reference/polarPlot.html" class="external-link">polarPlot()</a></code>
+<dd><p>A data frame that represents the "after" case. See <code><a href="https://rdrr.io/pkg/openair/man/polarPlot.html" class="external-link">polarPlot()</a></code>
 for details of different input requirements.</p></dd>
 
 
@@ -361,7 +361,7 @@ mean wind speeds a value of 1 or 0.5 m/s may be better.</p></dd>
 <dd><p><em>Specifier for the number of breaks of the colour axis.</em></p>
 <p><em>default:</em> <code>4</code> | <em>scope:</em> dynamic &amp; static</p>
 <p>Most commonly, the number of break points for wind speed in
-<code><a href="https://davidcarslaw.github.io/openair/reference/windRose.html" class="external-link">openair::windRose()</a></code>. For the <code>ws.int</code> default of <code>2</code>, the default
+<code><a href="https://rdrr.io/pkg/openair/man/windRose.html" class="external-link">openair::windRose()</a></code>. For the <code>ws.int</code> default of <code>2</code>, the default
 <code>breaks</code>, <code>4</code>, generates the break points 2, 4, 6, and 8. Breaks can also
 be used to set specific break points. For example, the argument `breaks =
 c(0, 1, 10, 100)“ breaks the data into segments &lt;1, 1-10, 10-100, &gt;100.</p></dd>
@@ -380,7 +380,7 @@ count of measurements in each bin.</p></dd>
 <dt id="arg-percentile">percentile<a class="anchor" aria-label="anchor" href="#arg-percentile"></a></dt>
 <dd><p><em>The percentile values for the colour scale bin.</em></p>
 <p><em>default:</em> <code>c(25, 50, 75, 90, 95)</code> | <em>scope:</em> dynamic &amp; static</p>
-<p>The percentile value(s) to plot using <code><a href="https://davidcarslaw.github.io/openair/reference/percentileRose.html" class="external-link">openair::percentileRose()</a></code>. Must be
+<p>The percentile value(s) to plot using <code><a href="https://rdrr.io/pkg/openair/man/percentileRose.html" class="external-link">openair::percentileRose()</a></code>. Must be
 a vector of values between <code>0</code> and <code>100</code>. If <code>percentile = NA</code> then only a
 mean line will be shown.</p></dd>
 

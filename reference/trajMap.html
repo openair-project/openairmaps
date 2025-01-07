@@ -29,7 +29,7 @@ different layers.'><meta property="og:image" content="https://davidcarslaw.githu
 <li class="nav-item"><a class="external-link nav-link" href="https://bookdown.org/david_carslaw/openair/sections/maps/maps-overview.html">Book (External)</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/davidcarslaw/openairmaps/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/openair-project/openairmaps/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -38,13 +38,13 @@ different layers.'><meta property="og:image" content="https://davidcarslaw.githu
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Trajectory line plots in <code>leaflet</code></h1>
-      <small class="dont-index">Source: <a href="https://github.com/davidcarslaw/openairmaps/blob/master/R/traj_trajMap.R" class="external-link"><code>R/traj_trajMap.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openair-project/openairmaps/blob/master/R/traj_trajMap.R" class="external-link"><code>R/traj_trajMap.R</code></a></small>
       <div class="d-none name"><code>trajMap.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
     <p>This function plots back trajectories on a <code>leaflet</code> map. This function
-requires that data are imported using the <code><a href="https://davidcarslaw.github.io/openair/reference/importTraj.html" class="external-link">openair::importTraj()</a></code> function.
+requires that data are imported using the <code><a href="https://rdrr.io/pkg/openair/man/importTraj.html" class="external-link">openair::importTraj()</a></code> function.
 Options are provided to colour the individual trajectories (e.g., by
 pollutant concentrations) or create "layer control" menus to show/hide
 different layers.</p>
@@ -78,10 +78,10 @@ different layers.</p>
 
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p><em>A data frame containing a HYSPLIT trajectory, perhaps accessed
-with <code><a href="https://davidcarslaw.github.io/openair/reference/importTraj.html" class="external-link">openair::importTraj()</a></code>.</em></p>
+with <code><a href="https://rdrr.io/pkg/openair/man/importTraj.html" class="external-link">openair::importTraj()</a></code>.</em></p>
 <p><strong>required</strong></p>
 <p>A data frame containing HYSPLIT model outputs. If this data were not
-obtained using <code><a href="https://davidcarslaw.github.io/openair/reference/importTraj.html" class="external-link">openair::importTraj()</a></code>.</p></dd>
+obtained using <code><a href="https://rdrr.io/pkg/openair/man/importTraj.html" class="external-link">openair::importTraj()</a></code>.</p></dd>
 
 
 <dt id="arg-latitude-longitude">latitude, longitude<a class="anchor" aria-label="anchor" href="#arg-latitude-longitude"></a></dt>
@@ -103,13 +103,13 @@ commonly be a pollutant concentration which has been joined (e.g., by
 <p><em>default:</em> <code>NULL</code></p>
 <p>Used for splitting the trajectories into different groups which can be
 selected between using a "layer control" menu. Passed to
-<code><a href="https://davidcarslaw.github.io/openair/reference/cutData.html" class="external-link">openair::cutData()</a></code>.</p></dd>
+<code><a href="https://rdrr.io/pkg/openair/man/cutData.html" class="external-link">openair::cutData()</a></code>.</p></dd>
 
 
 <dt id="arg-cols">cols<a class="anchor" aria-label="anchor" href="#arg-cols"></a></dt>
 <dd><p><em>Colours to use for plotting.</em></p>
 <p><em>default:</em> <code>"default"</code></p>
-<p>The colours used for plotting, passed to <code><a href="https://davidcarslaw.github.io/openair/reference/openColours.html" class="external-link">openair::openColours()</a></code>.</p></dd>
+<p>The colours used for plotting, passed to <code><a href="https://rdrr.io/pkg/openair/man/openColours.html" class="external-link">openair::openColours()</a></code>.</p></dd>
 
 
 <dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
@@ -181,7 +181,7 @@ argument of <code><a href="https://rstudio.github.io/leaflet/reference/addLayers
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Arguments passed on to <code><a href="https://davidcarslaw.github.io/openair/reference/cutData.html" class="external-link">openair::cutData</a></code></p><dl><dt><code>hemisphere</code></dt>
+<dd><p>Arguments passed on to <code><a href="https://rdrr.io/pkg/openair/man/cutData.html" class="external-link">openair::cutData</a></code></p><dl><dt><code>hemisphere</code></dt>
 <dd><p>Can be <code>"northern"</code> or <code>"southern"</code>, used to
 split data into seasons.</p></dd>
 
@@ -218,7 +218,7 @@ and ensure no DST is applied.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="https://davidcarslaw.github.io/openair/reference/trajPlot.html" class="external-link">openair::trajPlot()</a></code></p>
+    <div class="dont-index"><p><code><a href="https://rdrr.io/pkg/openair/man/trajPlot.html" class="external-link">openair::trajPlot()</a></code></p>
 <p><code><a href="trajMapStatic.html">trajMapStatic()</a></code> for the static <code>ggplot2</code> equivalent of <code>trajMap()</code></p>
 <p>Other interactive trajectory maps:
 <code><a href="trajLevelMap.html">trajLevelMap</a>()</code></p></div>

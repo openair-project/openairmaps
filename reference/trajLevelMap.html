@@ -23,7 +23,7 @@ requires that data are imported using the openair::importTraj() function."><meta
 <li class="nav-item"><a class="external-link nav-link" href="https://bookdown.org/david_carslaw/openair/sections/maps/maps-overview.html">Book (External)</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/davidcarslaw/openairmaps/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/openair-project/openairmaps/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -32,13 +32,13 @@ requires that data are imported using the openair::importTraj() function."><meta
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Trajectory level plots in <code>leaflet</code></h1>
-      <small class="dont-index">Source: <a href="https://github.com/davidcarslaw/openairmaps/blob/master/R/traj_trajLevelMap.R" class="external-link"><code>R/traj_trajLevelMap.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/openair-project/openairmaps/blob/master/R/traj_trajLevelMap.R" class="external-link"><code>R/traj_trajLevelMap.R</code></a></small>
       <div class="d-none name"><code>trajLevelMap.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
     <p>This function plots back trajectories on a <code>leaflet</code> map. This function
-requires that data are imported using the <code><a href="https://davidcarslaw.github.io/openair/reference/importTraj.html" class="external-link">openair::importTraj()</a></code> function.</p>
+requires that data are imported using the <code><a href="https://rdrr.io/pkg/openair/man/importTraj.html" class="external-link">openair::importTraj()</a></code> function.</p>
     </div>
 
     <div class="section level2">
@@ -75,10 +75,10 @@ requires that data are imported using the <code><a href="https://davidcarslaw.gi
 
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p><em>A data frame containing a HYSPLIT trajectory, perhaps accessed
-with <code><a href="https://davidcarslaw.github.io/openair/reference/importTraj.html" class="external-link">openair::importTraj()</a></code>.</em></p>
+with <code><a href="https://rdrr.io/pkg/openair/man/importTraj.html" class="external-link">openair::importTraj()</a></code>.</em></p>
 <p><strong>required</strong></p>
 <p>A data frame containing HYSPLIT model outputs. If this data were not
-obtained using <code><a href="https://davidcarslaw.github.io/openair/reference/importTraj.html" class="external-link">openair::importTraj()</a></code>.</p></dd>
+obtained using <code><a href="https://rdrr.io/pkg/openair/man/importTraj.html" class="external-link">openair::importTraj()</a></code>.</p></dd>
 
 
 <dt id="arg-latitude-longitude">latitude, longitude<a class="anchor" aria-label="anchor" href="#arg-latitude-longitude"></a></dt>
@@ -97,7 +97,7 @@ used.</p></dd>
 <p><em>default:</em> <code>NULL</code></p>
 <p>Used for splitting the trajectories into different groups which can be
 selected between using a "layer control" menu. Passed to
-<code><a href="https://davidcarslaw.github.io/openair/reference/cutData.html" class="external-link">openair::cutData()</a></code>.</p></dd>
+<code><a href="https://rdrr.io/pkg/openair/man/cutData.html" class="external-link">openair::cutData()</a></code>.</p></dd>
 
 
 <dt id="arg-smooth">smooth<a class="anchor" aria-label="anchor" href="#arg-smooth"></a></dt>
@@ -106,7 +106,7 @@ Note that, when <code>smooth = TRUE</code>, no popup information will be availab
 
 
 <dt id="arg-statistic">statistic<a class="anchor" aria-label="anchor" href="#arg-statistic"></a></dt>
-<dd><p>Statistic to use for <code><a href="https://davidcarslaw.github.io/openair/reference/trajLevel.html" class="external-link">trajLevel()</a></code>. By default, the function
+<dd><p>Statistic to use for <code><a href="https://rdrr.io/pkg/openair/man/trajLevel.html" class="external-link">trajLevel()</a></code>. By default, the function
 will plot the trajectory frequencies (<code>statistic = "frequency"</code>). As an
 alternative way of viewing trajectory frequencies, the argument <code>method = "hexbin"</code> can be used. In this case hexagonal binning of the trajectory
 <em>points</em> (i.e., a point every three hours along each back trajectory).
@@ -161,7 +161,7 @@ much noise.</p></dd>
 
 <dt id="arg-cols">cols<a class="anchor" aria-label="anchor" href="#arg-cols"></a></dt>
 <dd><p>The colours used for plotting, passed to
-<code><a href="https://davidcarslaw.github.io/openair/reference/openColours.html" class="external-link">openair::openColours()</a></code>. The default, <code>"turbo"</code>, is a rainbow palette with
+<code><a href="https://rdrr.io/pkg/openair/man/openColours.html" class="external-link">openair::openColours()</a></code>. The default, <code>"turbo"</code>, is a rainbow palette with
 relatively perceptually uniform colours.</p></dd>
 
 
@@ -227,7 +227,7 @@ argument of <code><a href="https://rstudio.github.io/leaflet/reference/addLayers
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="https://davidcarslaw.github.io/openair/reference/trajLevel.html" class="external-link">openair::trajLevel()</a></code></p>
+    <div class="dont-index"><p><code><a href="https://rdrr.io/pkg/openair/man/trajLevel.html" class="external-link">openair::trajLevel()</a></code></p>
 <p><code><a href="trajLevelMapStatic.html">trajLevelMapStatic()</a></code> for the static <code>ggplot2</code> equivalent of
 <code>trajLevelMap()</code></p>
 <p>Other interactive trajectory maps:
