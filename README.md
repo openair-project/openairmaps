@@ -91,6 +91,6 @@ pak::pak("openair-project/openairmaps")
 
 🏛️ **openairmaps** is primarily maintained by [Jack Davison](https://github.com/jack-davison).
 
-📃 **openairmaps** is licensed under the [GNU General Public License](https://openair-project.github.io/openairmaps/LICENSE.html).
+📃 **openairmaps** is licensed under the [MIT License](https://openair-project.github.io/openairmaps/LICENSE.html).
 
 🧑‍💻 Contributions are welcome from the wider community. See the [contributing guide](https://openair-project.github.io/openairmaps/CONTRIBUTING.html) and [code of conduct](https://openair-project.github.io/openairmaps/CODE_OF_CONDUCT.html) for more information.
