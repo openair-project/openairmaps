@@ -166,7 +166,7 @@ windroseMap <- function(data,
       annotate = FALSE,
       ...,
       par.settings = list(axis.line = list(col = "transparent"))
-    )
+    )$plot
   }
 
   # plot and save static markers
