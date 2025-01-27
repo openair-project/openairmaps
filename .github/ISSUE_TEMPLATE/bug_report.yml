@@ -41,7 +41,7 @@ body:
       placeholder: |
         Provide the output of:
         ```r
-	packageVersion("openair")
+        packageVersion("openair")
         packageVersion("openairmaps")
         ```
   
