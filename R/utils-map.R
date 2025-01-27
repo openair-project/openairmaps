@@ -531,7 +531,7 @@ create_polar_markers <-
                mirai::mirai_map(
                  .x = dplyr::select(plots_df, "data", "url"),
                  .f = save_plot
-               )[mirai::.progress_cli, mirai::.stop])
+               )[mirai::.progress, mirai::.stop])
 
       } else {
         plots_df$plot <-
