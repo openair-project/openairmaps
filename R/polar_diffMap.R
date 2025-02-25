@@ -55,36 +55,38 @@
 #'   pollutant = "nox"
 #' )
 #' }
-diffMap <- function(before,
-                    after,
-                    pollutant = NULL,
-                    x = "ws",
-                    limits = "free",
-                    latitude = NULL,
-                    longitude = NULL,
-                    crs = 4326,
-                    type = NULL,
-                    popup = NULL,
-                    label = NULL,
-                    provider = "OpenStreetMap",
-                    cols = rev(openair::openColours("RdBu", 10)),
-                    alpha = 1,
-                    key = FALSE,
-                    legend = TRUE,
-                    legend.position = NULL,
-                    legend.title = NULL,
-                    legend.title.autotext = TRUE,
-                    control.collapsed = FALSE,
-                    control.position = "topright",
-                    control.autotext = TRUE,
-                    d.icon = 200,
-                    d.fig = 3.5,
-                    static = FALSE,
-                    static.nrow = NULL,
-                    progress = TRUE,
-                    n.core = 1L,
-                    ...,
-                    control = NULL) {
+diffMap <- function(
+  before,
+  after,
+  pollutant = NULL,
+  x = "ws",
+  limits = "free",
+  latitude = NULL,
+  longitude = NULL,
+  crs = 4326,
+  type = NULL,
+  popup = NULL,
+  label = NULL,
+  provider = "OpenStreetMap",
+  cols = rev(openair::openColours("RdBu", 10)),
+  alpha = 1,
+  key = FALSE,
+  legend = TRUE,
+  legend.position = NULL,
+  legend.title = NULL,
+  legend.title.autotext = TRUE,
+  control.collapsed = FALSE,
+  control.position = "topright",
+  control.autotext = TRUE,
+  d.icon = 200,
+  d.fig = 3.5,
+  static = FALSE,
+  static.nrow = NULL,
+  progress = TRUE,
+  n.core = 1L,
+  ...,
+  control = NULL
+) {
   if (static) {
     rlang::check_installed(c("ggplot2", "ggspatial", "prettymapr", "ggtext"))
   }
@@ -107,7 +109,9 @@ diffMap <- function(before,
 
   # auto limits
   if ("fixed" %in% limits) {
-    cli::cli_abort("{.code limits = 'fixed'} is currently not supported for {.fun diffMap}.")
+    cli::cli_abort(
+      "{.code limits = 'fixed'} is currently not supported for {.fun diffMap}."
+    )
     # if (length(pollutant) == 1) {
     #   before <-
     #     dplyr::mutate(before, latlng = paste(.data[[latitude]], .data[[longitude]]))
@@ -322,17 +326,19 @@ diffMap <- function(before,
 #' create diff markers
 #' @noRd
 create_polar_diffmarkers <-
-  function(fun,
-           before = before,
-           after = after,
-           latitude = latitude,
-           longitude = longitude,
-           split_col = split_col,
-           popup = NULL,
-           label = NULL,
-           d.fig,
-           dropcol = "conc",
-           progress = TRUE) {
+  function(
+    fun,
+    before = before,
+    after = after,
+    latitude = latitude,
+    longitude = longitude,
+    split_col = split_col,
+    popup = NULL,
+    label = NULL,
+    d.fig,
+    dropcol = "conc",
+    progress = TRUE
+  ) {
     # make temp directory
     dir <- tempdir()
 
@@ -355,13 +361,24 @@ create_polar_diffmarkers <-
 
     # get number of rows
     valid_rows <-
-      nrow(dplyr::distinct(before, .data[[latitude]], .data[[longitude]], .data[[split_col]]))
+      nrow(dplyr::distinct(
+        before,
+        .data[[latitude]],
+        .data[[longitude]],
+        .data[[split_col]]
+      ))
 
     # nest data
     nested_before <- before %>%
-      tidyr::nest(before = -dplyr::all_of(c(
-        latitude, longitude, split_col, popup, label
-      )))
+      tidyr::nest(
+        before = -dplyr::all_of(c(
+          latitude,
+          longitude,
+          split_col,
+          popup,
+          label
+        ))
+      )
     nested_after <- after %>%
       tidyr::nest(after = -dplyr::all_of(c(latitude, longitude, split_col)))
 
@@ -380,7 +397,11 @@ create_polar_diffmarkers <-
             by = c(latitude, longitude, split_col)
           )
         ) %>%
-        tidyr::unite("warning", dplyr::any_of(c(latitude, longitude, split_col)), sep = "/") %>%
+        tidyr::unite(
+          "warning",
+          dplyr::any_of(c(latitude, longitude, split_col)),
+          sep = "/"
+        ) %>%
         dplyr::distinct(.data$warning)
 
       cli::cli_warn(
@@ -404,13 +425,30 @@ create_polar_diffmarkers <-
 
     # create plots
     plots_df <-
-      dplyr::inner_join(nested_before,
+      dplyr::inner_join(
+        nested_before,
         nested_after,
         by = c(latitude, longitude, split_col)
       ) %>%
       dplyr::mutate(
-        plot = purrr::map2(before, after, fun, .progress = ifelse(progress, "Creating Polar Markers", FALSE)),
-        url = paste0(dir, "/", .data[[latitude]], "_", .data[[longitude]], "_", .data[[split_col]], "_", id, ".png")
+        plot = purrr::map2(
+          before,
+          after,
+          fun,
+          .progress = ifelse(progress, "Creating Polar Markers", FALSE)
+        ),
+        url = paste0(
+          dir,
+          "/",
+          .data[[latitude]],
+          "_",
+          .data[[longitude]],
+          "_",
+          .data[[split_col]],
+          "_",
+          id,
+          ".png"
+        )
       )
 
     # work out w/h
@@ -422,7 +460,13 @@ create_polar_diffmarkers <-
       height <- d.fig[[2]]
     }
 
-    purrr::pwalk(list(plots_df[[latitude]], plots_df[[longitude]], plots_df[[split_col]], plots_df$plot),
+    purrr::pwalk(
+      list(
+        plots_df[[latitude]],
+        plots_df[[longitude]],
+        plots_df[[split_col]],
+        plots_df$plot
+      ),
       .f = ~ {
         ragg::agg_png(
           filename = paste0(dir, "/", ..1, "_", ..2, "_", ..3, "_", id, ".png"),

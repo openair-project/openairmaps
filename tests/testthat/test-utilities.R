@@ -55,7 +55,6 @@ test_that("popup creation works", {
       "<b>Site</b>: London N. Kensington<br><b>NO<sub>x</sub></b>: 31<br><b>Date</b>: 2009-01-01 to 2009-01-01"
     )
   )
-
 })
 
 test_that("postcode conversion works", {
@@ -64,51 +63,52 @@ test_that("postcode conversion works", {
     "api.postcodes.io/postcodes/sw1a1aaa"
   )
 
-  testthat::expect_equal(raw_to_json(as.raw(
-    c(
-      0x7b,
-      0x22,
-      0x73,
-      0x74,
-      0x61,
-      0x74,
-      0x75,
-      0x73,
-      0x22,
-      0x3a,
-      0x34,
-      0x30,
-      0x34,
-      0x2c,
-      0x22,
-      0x65,
-      0x72,
-      0x72,
-      0x6f,
-      0x72,
-      0x22,
-      0x3a,
-      0x22,
-      0x49,
-      0x6e,
-      0x76,
-      0x61,
-      0x6c,
-      0x69,
-      0x64,
-      0x20,
-      0x70,
-      0x6f,
-      0x73,
-      0x74,
-      0x63,
-      0x6f,
-      0x64,
-      0x65,
-      0x22,
-      0x7d
-    )
-  )),
-  list(status = 404L, error = "Invalid postcode"))
-
+  testthat::expect_equal(
+    raw_to_json(as.raw(
+      c(
+        0x7b,
+        0x22,
+        0x73,
+        0x74,
+        0x61,
+        0x74,
+        0x75,
+        0x73,
+        0x22,
+        0x3a,
+        0x34,
+        0x30,
+        0x34,
+        0x2c,
+        0x22,
+        0x65,
+        0x72,
+        0x72,
+        0x6f,
+        0x72,
+        0x22,
+        0x3a,
+        0x22,
+        0x49,
+        0x6e,
+        0x76,
+        0x61,
+        0x6c,
+        0x69,
+        0x64,
+        0x20,
+        0x70,
+        0x6f,
+        0x73,
+        0x74,
+        0x63,
+        0x6f,
+        0x64,
+        0x65,
+        0x22,
+        0x7d
+      )
+    )),
+    list(status = 404L, error = "Invalid postcode")
+  )
 })

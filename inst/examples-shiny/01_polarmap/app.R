@@ -1,4 +1,3 @@
-
 polar_data <- openairmaps::polar_data
 `%>%` <- openairmaps::`%>%`
 
@@ -8,9 +7,7 @@ sites <- unique(polar_data$site)
 # create initial map
 map <- leaflet::leaflet() %>%
   leaflet::addTiles() %>%
-  leaflet::setView(lng = -0.213492,
-                   lat = 51.49548,
-                   zoom = 13)
+  leaflet::setView(lng = -0.213492, lat = 51.49548, zoom = 13)
 
 # create user interface
 ui <-
@@ -19,7 +16,12 @@ ui <-
       shiny::selectInput(
         "pollutant",
         "Select Pollutant of Interest",
-        choices = c("NOx" = "nox", "NO2" = "no2", "PM2.5" = "pm2.5", "PM10" = "pm10")
+        choices = c(
+          "NOx" = "nox",
+          "NO2" = "no2",
+          "PM2.5" = "pm2.5",
+          "PM10" = "pm10"
+        )
       ),
       shiny::selectInput(
         "sites",
@@ -56,7 +58,6 @@ server <- function(input, output, session) {
         )
     }
   })
-
 }
 
 # run app

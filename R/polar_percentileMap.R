@@ -45,35 +45,37 @@
 #'   provider = "CartoDB.Voyager"
 #' )
 #' }
-percentileMap <- function(data,
-                          pollutant = NULL,
-                          percentile = c(25, 50, 75, 90, 95),
-                          intervals = "fixed",
-                          latitude = NULL,
-                          longitude = NULL,
-                          crs = 4326,
-                          type = NULL,
-                          popup = NULL,
-                          label = NULL,
-                          provider = "OpenStreetMap",
-                          cols = "turbo",
-                          alpha = 1,
-                          key = FALSE,
-                          legend = TRUE,
-                          legend.position = NULL,
-                          legend.title = NULL,
-                          legend.title.autotext = TRUE,
-                          control.collapsed = FALSE,
-                          control.position = "topright",
-                          control.autotext = TRUE,
-                          d.icon = 200,
-                          d.fig = 3.5,
-                          static = FALSE,
-                          static.nrow = NULL,
-                          progress = TRUE,
-                          n.core = 1L,
-                          ...,
-                          control = NULL) {
+percentileMap <- function(
+  data,
+  pollutant = NULL,
+  percentile = c(25, 50, 75, 90, 95),
+  intervals = "fixed",
+  latitude = NULL,
+  longitude = NULL,
+  crs = 4326,
+  type = NULL,
+  popup = NULL,
+  label = NULL,
+  provider = "OpenStreetMap",
+  cols = "turbo",
+  alpha = 1,
+  key = FALSE,
+  legend = TRUE,
+  legend.position = NULL,
+  legend.title = NULL,
+  legend.title.autotext = TRUE,
+  control.collapsed = FALSE,
+  control.position = "topright",
+  control.autotext = TRUE,
+  d.icon = 200,
+  d.fig = 3.5,
+  static = FALSE,
+  static.nrow = NULL,
+  progress = TRUE,
+  n.core = 1L,
+  ...,
+  control = NULL
+) {
   if (static) {
     rlang::check_installed(c("ggplot2", "ggspatial", "prettymapr", "ggtext"))
   }
@@ -242,7 +244,9 @@ percentileMap <- function(data,
         map +
         ggplot2::geom_point(
           data = dummy,
-          ggplot2::aes(.data[[longitude]], .data[[latitude]],
+          ggplot2::aes(
+            .data[[longitude]],
+            .data[[latitude]],
             fill = .data[["intervals"]]
           ),
           size = 0,

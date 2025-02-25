@@ -126,22 +126,26 @@
 #' }
 #'
 networkMap <-
-  function(source = "aurn",
-           control = NULL,
-           year = NULL,
-           cluster = TRUE,
-           provider = c(
-             "Default" = "OpenStreetMap",
-             "Satellite" = "Esri.WorldImagery"
-           ),
-           legend = TRUE,
-           legend.position = "topright",
-           control.collapsed = FALSE,
-           control.position = "topright") {
+  function(
+    source = "aurn",
+    control = NULL,
+    year = NULL,
+    cluster = TRUE,
+    provider = c(
+      "Default" = "OpenStreetMap",
+      "Satellite" = "Esri.WorldImagery"
+    ),
+    legend = TRUE,
+    legend.position = "topright",
+    control.collapsed = FALSE,
+    control.position = "topright"
+  ) {
     # if year isn't provided, use current year
     if (is.null(year)) {
       year <- lubridate::year(Sys.Date())
-      cli::cli_inform(c("i" = "{.code year} not specified. Showing sites open in {.field {year}}."))
+      cli::cli_inform(c(
+        "i" = "{.code year} not specified. Showing sites open in {.field {year}}."
+      ))
     }
     source <- unique(source)
 
@@ -178,7 +182,9 @@ networkMap <-
           "#ff8ee9"
         )
       ) %>%
-      dplyr::mutate(colour2 = ifelse(.data$colour == "#FFFFFF", "#303030", "#FFFFFF"))
+      dplyr::mutate(
+        colour2 = ifelse(.data$colour == "#FFFFFF", "#303030", "#FFFFFF")
+      )
 
     # read in data
     meta <-
@@ -233,7 +239,11 @@ networkMap <-
     }
     for (i in seq_along(provider)) {
       map <-
-        leaflet::addProviderTiles(map, provider = provider[[i]], group = names(provider)[[i]])
+        leaflet::addProviderTiles(
+          map,
+          provider = provider[[i]],
+          group = names(provider)[[i]]
+        )
     }
 
     # cluster options
@@ -247,32 +257,34 @@ networkMap <-
     if (!is.null(control)) {
       control.position <- check_legendposition(control.position, static = FALSE)
       if (!control %in% names(meta)) {
-        trycols <- names(meta)[!names(meta) %in%
-          c(
-            "code",
-            "site",
-            "latitude",
-            "longitude",
-            "country_iso_code",
-            "elevation",
-            "ratified_to",
-            "Address",
-            "la_id",
-            "eu_code",
-            "eoi_code",
-            "data_source",
-            "os_grid_x",
-            "os_grid_y",
-            "start_date",
-            "end_date",
-            "observation_count",
-            "start_date2",
-            "end_date2",
-            "lab",
-            "pcode",
-            "colour",
-            "colour2"
-          )]
+        trycols <- names(meta)[
+          !names(meta) %in%
+            c(
+              "code",
+              "site",
+              "latitude",
+              "longitude",
+              "country_iso_code",
+              "elevation",
+              "ratified_to",
+              "Address",
+              "la_id",
+              "eu_code",
+              "eoi_code",
+              "data_source",
+              "os_grid_x",
+              "os_grid_y",
+              "start_date",
+              "end_date",
+              "observation_count",
+              "start_date2",
+              "end_date2",
+              "lab",
+              "pcode",
+              "colour",
+              "colour2"
+            )
+        ]
 
         cli::cli_abort(
           c(
@@ -293,7 +305,10 @@ networkMap <-
         meta[[control]] <- factor(meta[[control]])
         if ("Other" %in% levels(meta[[control]])) {
           cur_levels <- levels(meta[[control]])
-          levels(meta[[control]]) <- c(cur_levels[cur_levels != "Other"], "Other")
+          levels(meta[[control]]) <- c(
+            cur_levels[cur_levels != "Other"],
+            "Other"
+          )
         }
       }
 
@@ -329,7 +344,10 @@ networkMap <-
             leaflet::addLayersControl(
               map,
               position = control.position,
-              options = leaflet::layersControlOptions(collapsed = control.collapsed, autoZIndex = FALSE),
+              options = leaflet::layersControlOptions(
+                collapsed = control.collapsed,
+                autoZIndex = FALSE
+              ),
               baseGroups = sort(quickTextHTML(control_vars)),
               overlayGroups = names(provider)
             ) %>%
@@ -339,7 +357,10 @@ networkMap <-
             leaflet::addLayersControl(
               map,
               position = control.position,
-              options = leaflet::layersControlOptions(collapsed = control.collapsed, autoZIndex = FALSE),
+              options = leaflet::layersControlOptions(
+                collapsed = control.collapsed,
+                autoZIndex = FALSE
+              ),
               baseGroups = quickTextHTML(sort(control_vars))
             )
         }
@@ -349,7 +370,10 @@ networkMap <-
             leaflet::addLayersControl(
               map,
               position = control.position,
-              options = leaflet::layersControlOptions(collapsed = control.collapsed, autoZIndex = FALSE),
+              options = leaflet::layersControlOptions(
+                collapsed = control.collapsed,
+                autoZIndex = FALSE
+              ),
               overlayGroups = quickTextHTML(sort(control_vars)),
               baseGroups = names(provider)
             ) %>%
@@ -359,7 +383,10 @@ networkMap <-
             leaflet::addLayersControl(
               map,
               position = control.position,
-              options = leaflet::layersControlOptions(collapsed = control.collapsed, autoZIndex = FALSE),
+              options = leaflet::layersControlOptions(
+                collapsed = control.collapsed,
+                autoZIndex = FALSE
+              ),
               overlayGroups = quickTextHTML(sort(control_vars))
             )
         }
@@ -391,7 +418,10 @@ networkMap <-
           leaflet::addLayersControl(
             map,
             position = control.position,
-            options = leaflet::layersControlOptions(collapsed = control.collapsed, autoZIndex = FALSE),
+            options = leaflet::layersControlOptions(
+              collapsed = control.collapsed,
+              autoZIndex = FALSE
+            ),
             baseGroups = names(provider)
           ) %>%
           leaflet::hideGroup(group = names(provider)[[-1]])
@@ -407,7 +437,11 @@ networkMap <-
           position = check_legendposition(legend.position, static = FALSE),
           title = "Network",
           colors = cols$realcolour,
-          labels = paste0("<span style='line-height:1.6'>", cols$network, "</span>")
+          labels = paste0(
+            "<span style='line-height:1.6'>",
+            cols$network,
+            "</span>"
+          )
         )
     }
 
@@ -482,17 +516,20 @@ prepNetworkData <- function(source, year) {
     )
 
     meta <- dplyr::filter(
-      meta, !.data$variable %in% hc_vars, !.data$variable %in% c(
-        "ws",
-        "wd",
-        "temp",
-        "NV10",
-        "V10",
-        "NV2.5",
-        "V2.5",
-        "PM1",
-        "BC"
-      )
+      meta,
+      !.data$variable %in% hc_vars,
+      !.data$variable %in%
+        c(
+          "ws",
+          "wd",
+          "temp",
+          "NV10",
+          "V10",
+          "NV2.5",
+          "V2.5",
+          "PM1",
+          "BC"
+        )
     )
   }
 
@@ -522,7 +559,9 @@ prepNetworkData <- function(source, year) {
             .data$provider == "Wolverhampton Air Quality" ~ "wolverhampton",
             .data$provider == "Liverpool Air Quality" ~ "liverpool",
             .data$provider == "Heathrow Airwatch" ~ "heathrow",
-            .data$provider == "Hertfordshire and Bedfordshire Air Quality Network" ~ "hertsbeds",
+            .data$provider ==
+              "Hertfordshire and Bedfordshire Air Quality Network" ~
+              "hertsbeds",
             .data$provider == "Wiltshire Air Quality" ~ "wiltshire",
             .default = .data$pcode
           ),
@@ -538,11 +577,18 @@ prepNetworkData <- function(source, year) {
           )
         ) %>%
         dplyr::mutate(
-          lab = stringr::str_remove_all(.data$lab, "<b>Agglomeration:</b> NA<br>"),
-          lab = stringr::str_remove_all(.data$lab, "<b>Site Type:</b> unknown unknown<br>")
+          lab = stringr::str_remove_all(
+            .data$lab,
+            "<b>Agglomeration:</b> NA<br>"
+          ),
+          lab = stringr::str_remove_all(
+            .data$lab,
+            "<b>Site Type:</b> unknown unknown<br>"
+          )
         )
     } else {
-      domain <- switch(source,
+      domain <- switch(
+        source,
         "aurn" = "https://uk-air.defra.gov.uk/networks/site-info?site_id=",
         "saqn" = "https://www.scottishairquality.scot/latest/site-info/",
         "saqd" = "https://www.scottishairquality.scot/latest/site-info/",
@@ -579,8 +625,14 @@ prepNetworkData <- function(source, year) {
           )
         ) %>%
         dplyr::mutate(
-          lab = stringr::str_remove_all(.data$lab, "<b>Agglomeration:</b> NA<br>"),
-          lab = stringr::str_remove_all(.data$lab, "<b>Local Authority:</b> NA<br>")
+          lab = stringr::str_remove_all(
+            .data$lab,
+            "<b>Agglomeration:</b> NA<br>"
+          ),
+          lab = stringr::str_remove_all(
+            .data$lab,
+            "<b>Local Authority:</b> NA<br>"
+          )
         )
     }
   }
@@ -590,7 +642,10 @@ prepNetworkData <- function(source, year) {
     meta <-
       dplyr::mutate(
         meta,
-        url = paste0("https://www.londonair.org.uk/london/asp/publicdetails.asp?site=", .data$code),
+        url = paste0(
+          "https://www.londonair.org.uk/london/asp/publicdetails.asp?site=",
+          .data$code
+        ),
         start_date = lubridate::as_date(.data$start_date),
         end_date = lubridate::as_date(.data$end_date),
         end_date = dplyr::if_else(
@@ -667,9 +722,7 @@ prepManagedNetwork <- function(data, vec) {
       lab = paste(.data$lab, collapse = "<br>"),
       .groups = "drop"
     ) %>%
-    dplyr::right_join(data,
-      by = vec
-    )
+    dplyr::right_join(data, by = vec)
 
   return(data)
 }

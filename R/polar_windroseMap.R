@@ -53,34 +53,36 @@
 #'   provider = "CartoDB.Voyager"
 #' )
 #' }
-windroseMap <- function(data,
-                        ws.int = 2,
-                        breaks = 4,
-                        latitude = NULL,
-                        longitude = NULL,
-                        crs = 4326,
-                        type = NULL,
-                        popup = NULL,
-                        label = NULL,
-                        provider = "OpenStreetMap",
-                        cols = "turbo",
-                        alpha = 1,
-                        key = FALSE,
-                        legend = TRUE,
-                        legend.position = NULL,
-                        legend.title = NULL,
-                        legend.title.autotext = TRUE,
-                        control.collapsed = FALSE,
-                        control.position = "topright",
-                        control.autotext = TRUE,
-                        d.icon = 200,
-                        d.fig = 3.5,
-                        static = FALSE,
-                        static.nrow = NULL,
-                        progress = TRUE,
-                        n.core = 1L,
-                        ...,
-                        control = NULL) {
+windroseMap <- function(
+  data,
+  ws.int = 2,
+  breaks = 4,
+  latitude = NULL,
+  longitude = NULL,
+  crs = 4326,
+  type = NULL,
+  popup = NULL,
+  label = NULL,
+  provider = "OpenStreetMap",
+  cols = "turbo",
+  alpha = 1,
+  key = FALSE,
+  legend = TRUE,
+  legend.position = NULL,
+  legend.title = NULL,
+  legend.title.autotext = TRUE,
+  control.collapsed = FALSE,
+  control.position = "topright",
+  control.autotext = TRUE,
+  d.icon = 200,
+  d.fig = 3.5,
+  static = FALSE,
+  static.nrow = NULL,
+  progress = TRUE,
+  n.core = 1L,
+  ...,
+  control = NULL
+) {
   if (static) {
     rlang::check_installed(c("ggplot2", "ggspatial", "prettymapr", "ggtext"))
   }
@@ -225,7 +227,9 @@ windroseMap <- function(data,
         map +
         ggplot2::geom_point(
           data = dummy,
-          ggplot2::aes(.data[[longitude]], .data[[latitude]],
+          ggplot2::aes(
+            .data[[longitude]],
+            .data[[latitude]],
             fill = .data[["intervals"]]
           ),
           size = 0,

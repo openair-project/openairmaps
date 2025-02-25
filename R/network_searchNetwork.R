@@ -74,16 +74,18 @@
 #' searchNetwork(lat = palace$lat, lng = palace$lng, max_dist = 20, year = 2020)
 #' }
 searchNetwork <-
-  function(lat,
-           lng,
-           source = "aurn",
-           year = NULL,
-           site_type = NULL,
-           variable = NULL,
-           max_dist = NULL,
-           n = NULL,
-           crs = 4326,
-           map = TRUE) {
+  function(
+    lat,
+    lng,
+    source = "aurn",
+    year = NULL,
+    site_type = NULL,
+    variable = NULL,
+    max_dist = NULL,
+    n = NULL,
+    crs = 4326,
+    map = TRUE
+  ) {
     # swap NULL to NA - to pass to openair
     if (is.null(year)) {
       year <- NA
@@ -97,7 +99,8 @@ searchNetwork <-
       ) %>%
       sf::st_as_sf(
         coords = c("longitude", "latitude"),
-        crs = 4326, remove = FALSE
+        crs = 4326,
+        remove = FALSE
       )
 
     # get target SF object
@@ -156,10 +159,7 @@ searchNetwork <-
     }
 
     pal <-
-      leaflet::colorNumeric("viridis",
-        reverse = TRUE,
-        c(0, meta$dist)
-      )
+      leaflet::colorNumeric("viridis", reverse = TRUE, c(0, meta$dist))
 
     leafmap <-
       leaflet::leaflet() %>%
@@ -177,7 +177,9 @@ searchNetwork <-
     }
 
     # construct html tooltip
-    html <- stringr::str_glue("Showing <b>{nrow(meta)}</b> sites.<details><summary>View Constraints</summary><ul>")
+    html <- stringr::str_glue(
+      "Showing <b>{nrow(meta)}</b> sites.<details><summary>View Constraints</summary><ul>"
+    )
     vars <- stringr::str_c(source, collapse = ", ")
     html <- stringr::str_glue("{html}<li><b>Source(s):</b> {vars}</li>")
 
@@ -197,7 +199,9 @@ searchNetwork <-
     }
 
     if (!is.null(max_dist)) {
-      html <- stringr::str_glue("{html}<li><b>Maximum Dist:</b> {as.character(max_dist)} km</li>")
+      html <- stringr::str_glue(
+        "{html}<li><b>Maximum Dist:</b> {as.character(max_dist)} km</li>"
+      )
     }
 
     if (!is.null(n)) {
@@ -229,7 +233,9 @@ searchNetwork <-
       leaflet::addMarkers(
         data = target,
         label = "Target",
-        popup = stringr::str_glue("<b><u>TARGET</u></b><br> <b>Latitude:</b> {sf::st_coordinates(target$geometry)[1,'Y']}<br> <b>Longitude:</b> {sf::st_coordinates(target$geometry)[1,'X']}")
+        popup = stringr::str_glue(
+          "<b><u>TARGET</u></b><br> <b>Latitude:</b> {sf::st_coordinates(target$geometry)[1,'Y']}<br> <b>Longitude:</b> {sf::st_coordinates(target$geometry)[1,'X']}"
+        )
       ) %>%
       leaflet::addControl(
         position = "bottomright",

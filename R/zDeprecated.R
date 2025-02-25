@@ -58,23 +58,25 @@ check_facet_control <- function(control, ...) {
 #' @returns a `ggplot2` object using [ggplot2::coord_sf()] coordinates with a
 #'   `ggspatial` basemap
 #' @export
-polarMapStatic <- function(data,
-                           pollutant = NULL,
-                           x = "ws",
-                           limits = "free",
-                           upper = "fixed",
-                           latitude = NULL,
-                           longitude = NULL,
-                           crs = 4326,
-                           provider = "osm",
-                           facet = NULL,
-                           cols = "turbo",
-                           alpha = 1,
-                           key = FALSE,
-                           facet.nrow = NULL,
-                           d.icon = 150,
-                           d.fig = 3,
-                           ...) {
+polarMapStatic <- function(
+  data,
+  pollutant = NULL,
+  x = "ws",
+  limits = "free",
+  upper = "fixed",
+  latitude = NULL,
+  longitude = NULL,
+  crs = 4326,
+  provider = "osm",
+  facet = NULL,
+  cols = "turbo",
+  alpha = 1,
+  key = FALSE,
+  facet.nrow = NULL,
+  d.icon = 150,
+  d.fig = 3,
+  ...
+) {
   lifecycle::deprecate_soft(
     when = "0.9.0",
     what = "polarMapStatic()",
@@ -108,22 +110,24 @@ polarMapStatic <- function(data,
 #' @rdname deprecated-static-polar-maps
 #' @inheritParams annulusMap
 #' @export
-annulusMapStatic <- function(data,
-                             pollutant = NULL,
-                             period = "hour",
-                             facet = NULL,
-                             limits = "free",
-                             latitude = NULL,
-                             longitude = NULL,
-                             crs = 4326,
-                             provider = "osm",
-                             cols = "turbo",
-                             alpha = 1,
-                             key = FALSE,
-                             facet.nrow = NULL,
-                             d.icon = 150,
-                             d.fig = 3,
-                             ...) {
+annulusMapStatic <- function(
+  data,
+  pollutant = NULL,
+  period = "hour",
+  facet = NULL,
+  limits = "free",
+  latitude = NULL,
+  longitude = NULL,
+  crs = 4326,
+  provider = "osm",
+  cols = "turbo",
+  alpha = 1,
+  key = FALSE,
+  facet.nrow = NULL,
+  d.icon = 150,
+  d.fig = 3,
+  ...
+) {
   lifecycle::deprecate_soft(
     when = "0.9.0",
     what = "annulusMapStatic()",
@@ -156,21 +160,23 @@ annulusMapStatic <- function(data,
 #' @rdname deprecated-static-polar-maps
 #' @inheritParams windroseMap
 #' @export
-windroseMapStatic <- function(data,
-                              ws.int = 2,
-                              breaks = 4,
-                              facet = NULL,
-                              latitude = NULL,
-                              longitude = NULL,
-                              crs = 4326,
-                              provider = "osm",
-                              cols = "turbo",
-                              alpha = 1,
-                              key = FALSE,
-                              facet.nrow = NULL,
-                              d.icon = 150,
-                              d.fig = 3,
-                              ...) {
+windroseMapStatic <- function(
+  data,
+  ws.int = 2,
+  breaks = 4,
+  facet = NULL,
+  latitude = NULL,
+  longitude = NULL,
+  crs = 4326,
+  provider = "osm",
+  cols = "turbo",
+  alpha = 1,
+  key = FALSE,
+  facet.nrow = NULL,
+  d.icon = 150,
+  d.fig = 3,
+  ...
+) {
   lifecycle::deprecate_soft(
     when = "0.9.0",
     what = "windroseMapStatic()",
@@ -202,22 +208,24 @@ windroseMapStatic <- function(data,
 #' @rdname deprecated-static-polar-maps
 #' @inheritParams pollroseMap
 #' @export
-pollroseMapStatic <- function(data,
-                              pollutant = NULL,
-                              statistic = "prop.count",
-                              breaks = NULL,
-                              facet = NULL,
-                              latitude = NULL,
-                              longitude = NULL,
-                              crs = 4326,
-                              provider = "osm",
-                              cols = "turbo",
-                              alpha = 1,
-                              key = FALSE,
-                              facet.nrow = NULL,
-                              d.icon = 150,
-                              d.fig = 3,
-                              ...) {
+pollroseMapStatic <- function(
+  data,
+  pollutant = NULL,
+  statistic = "prop.count",
+  breaks = NULL,
+  facet = NULL,
+  latitude = NULL,
+  longitude = NULL,
+  crs = 4326,
+  provider = "osm",
+  cols = "turbo",
+  alpha = 1,
+  key = FALSE,
+  facet.nrow = NULL,
+  d.icon = 150,
+  d.fig = 3,
+  ...
+) {
   lifecycle::deprecate_soft(
     when = "0.9.0",
     what = "pollroseMapStatic()",
@@ -250,22 +258,24 @@ pollroseMapStatic <- function(data,
 #' @rdname deprecated-static-polar-maps
 #' @inheritParams percentileMap
 #' @export
-percentileMapStatic <- function(data,
-                                pollutant = NULL,
-                                percentile = c(25, 50, 75, 90, 95),
-                                intervals = "fixed",
-                                latitude = NULL,
-                                longitude = NULL,
-                                crs = 4326,
-                                provider = "osm",
-                                facet = NULL,
-                                cols = "turbo",
-                                alpha = 1,
-                                key = FALSE,
-                                facet.nrow = NULL,
-                                d.icon = 150,
-                                d.fig = 3,
-                                ...) {
+percentileMapStatic <- function(
+  data,
+  pollutant = NULL,
+  percentile = c(25, 50, 75, 90, 95),
+  intervals = "fixed",
+  latitude = NULL,
+  longitude = NULL,
+  crs = 4326,
+  provider = "osm",
+  facet = NULL,
+  cols = "turbo",
+  alpha = 1,
+  key = FALSE,
+  facet.nrow = NULL,
+  d.icon = 150,
+  d.fig = 3,
+  ...
+) {
   lifecycle::deprecate_soft(
     when = "0.9.0",
     what = "percentileMapStatic()",
@@ -298,22 +308,24 @@ percentileMapStatic <- function(data,
 #' @rdname deprecated-static-polar-maps
 #' @inheritParams freqMap
 #' @export
-freqMapStatic <- function(data,
-                          pollutant = NULL,
-                          statistic = "mean",
-                          breaks = "free",
-                          latitude = NULL,
-                          longitude = NULL,
-                          crs = 4326,
-                          provider = "osm",
-                          facet = NULL,
-                          cols = "turbo",
-                          alpha = 1,
-                          key = FALSE,
-                          facet.nrow = NULL,
-                          d.icon = 150,
-                          d.fig = 3,
-                          ...) {
+freqMapStatic <- function(
+  data,
+  pollutant = NULL,
+  statistic = "mean",
+  breaks = "free",
+  latitude = NULL,
+  longitude = NULL,
+  crs = 4326,
+  provider = "osm",
+  facet = NULL,
+  cols = "turbo",
+  alpha = 1,
+  key = FALSE,
+  facet.nrow = NULL,
+  d.icon = 150,
+  d.fig = 3,
+  ...
+) {
   lifecycle::deprecate_soft(
     when = "0.9.0",
     what = "freqMapStatic()",
@@ -347,33 +359,35 @@ freqMapStatic <- function(data,
 #' @inheritParams diffMap
 #' @order 7
 #' @export
-diffMapStatic <- function(before,
-                          after,
-                          pollutant = NULL,
-                          limits = "free",
-                          x = "ws",
-                          latitude = NULL,
-                          longitude = NULL,
-                          crs = 4326,
-                          provider = "osm",
-                          facet = NULL,
-                          cols = c(
-                            "#002F70",
-                            "#3167BB",
-                            "#879FDB",
-                            "#C8D2F1",
-                            "#F6F6F6",
-                            "#F4C8C8",
-                            "#DA8A8B",
-                            "#AE4647",
-                            "#5F1415"
-                          ),
-                          alpha = 1,
-                          key = FALSE,
-                          facet.nrow = NULL,
-                          d.icon = 150,
-                          d.fig = 3,
-                          ...) {
+diffMapStatic <- function(
+  before,
+  after,
+  pollutant = NULL,
+  limits = "free",
+  x = "ws",
+  latitude = NULL,
+  longitude = NULL,
+  crs = 4326,
+  provider = "osm",
+  facet = NULL,
+  cols = c(
+    "#002F70",
+    "#3167BB",
+    "#879FDB",
+    "#C8D2F1",
+    "#F6F6F6",
+    "#F4C8C8",
+    "#DA8A8B",
+    "#AE4647",
+    "#5F1415"
+  ),
+  alpha = 1,
+  key = FALSE,
+  facet.nrow = NULL,
+  d.icon = 150,
+  d.fig = 3,
+  ...
+) {
   diffMap(
     before = before,
     after = after,

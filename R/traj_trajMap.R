@@ -124,22 +124,24 @@
 #' }
 #'
 trajMap <-
-  function(data,
-           longitude = "lon",
-           latitude = "lat",
-           colour = NULL,
-           type = NULL,
-           cols = "default",
-           alpha = .5,
-           npoints = 12,
-           provider = "OpenStreetMap",
-           legend.position = "topright",
-           legend.title = NULL,
-           legend.title.autotext = TRUE,
-           control.collapsed = FALSE,
-           control.position = "topright",
-           control = NULL,
-           ...) {
+  function(
+    data,
+    longitude = "lon",
+    latitude = "lat",
+    colour = NULL,
+    type = NULL,
+    cols = "default",
+    alpha = .5,
+    npoints = 12,
+    provider = "OpenStreetMap",
+    legend.position = "topright",
+    legend.title = NULL,
+    legend.title.autotext = TRUE,
+    control.collapsed = FALSE,
+    control.position = "topright",
+    control = NULL,
+    ...
+  ) {
     # handle deprecated argument
     if (!is.null(control)) {
       lifecycle::deprecate_soft(
@@ -173,10 +175,16 @@ trajMap <-
       if (colour %in% names(data)) {
         data <- dplyr::arrange(data, .data$datef)
 
-        if ("factor" %in% class(data[[colour]]) |
-          "character" %in% class(data[[colour]])) {
+        if (
+          "factor" %in%
+            class(data[[colour]]) |
+            "character" %in% class(data[[colour]])
+        ) {
           pal <- leaflet::colorFactor(
-            palette = openair::openColours(scheme = cols, n = length(unique(data[[colour]]))),
+            palette = openair::openColours(
+              scheme = cols,
+              n = length(unique(data[[colour]]))
+            ),
             domain = data[[colour]]
           )
         } else if ("POSIXct" %in% class(data[[colour]])) {
@@ -207,9 +215,13 @@ trajMap <-
     )
 
     if (!is.null(colour)) {
-      if (colour %in% names(data) &
-        !colour %in% c("date", "date2", "lat", "lon", "height", "pressure")) {
-        data$lab <- paste(data$lab,
+      if (
+        colour %in%
+          names(data) &
+          !colour %in% c("date", "date2", "lat", "lon", "height", "pressure")
+      ) {
+        data$lab <- paste(
+          data$lab,
           paste0("<b>", quickTextHTML(colour), ":</b> ", data[[colour]]),
           sep = "<br>"
         )
@@ -307,7 +319,10 @@ trajMap <-
         leaflet::addLayersControl(
           map,
           position = control.position,
-          options = leaflet::layersControlOptions(collapsed = control.collapsed, autoZIndex = FALSE),
+          options = leaflet::layersControlOptions(
+            collapsed = control.collapsed,
+            autoZIndex = FALSE
+          ),
           overlayGroups = as.character(unique(data[[type]]))
         )
     }
@@ -456,27 +471,29 @@ trajMap <-
 #'   ggplot2::labs(color = openair::quickText("PM2.5"))
 #' }
 trajMapStatic <-
-  function(data,
-           colour = "height",
-           type = NULL,
-           group = NULL,
-           size = NULL,
-           linewidth = size,
-           longitude = "lon",
-           latitude = "lat",
-           npoints = 12,
-           xlim = NULL,
-           ylim = NULL,
-           crs = sf::st_crs(3812),
-           origin = TRUE,
-           map = TRUE,
-           map.fill = "grey85",
-           map.colour = "grey75",
-           map.alpha = 0.8,
-           map.lwd = 0.5,
-           map.lty = 1,
-           facet = NULL,
-           ...) {
+  function(
+    data,
+    colour = "height",
+    type = NULL,
+    group = NULL,
+    size = NULL,
+    linewidth = size,
+    longitude = "lon",
+    latitude = "lat",
+    npoints = 12,
+    xlim = NULL,
+    ylim = NULL,
+    crs = sf::st_crs(3812),
+    origin = TRUE,
+    map = TRUE,
+    map.fill = "grey85",
+    map.colour = "grey75",
+    map.alpha = 0.8,
+    map.lwd = 0.5,
+    map.lty = 1,
+    facet = NULL,
+    ...
+  ) {
     rlang::check_installed("ggplot2")
 
     # handle deprecated argument
@@ -501,7 +518,10 @@ trajMapStatic <-
 
     # make plot
     plt <-
-      ggplot2::ggplot(data, ggplot2::aes(x = .data[[longitude]], y = .data[[latitude]]))
+      ggplot2::ggplot(
+        data,
+        ggplot2::aes(x = .data[[longitude]], y = .data[[latitude]])
+      )
 
     if (map) {
       world <- ggplot2::map_data("world")
@@ -534,24 +554,27 @@ trajMapStatic <-
     points_df <- dplyr::filter(data, .data$hour.inc %% npoints == 0)
 
     plt_aes <-
-      ggplot2::aes(group = interaction(.data$date, .data[[group]]),
-                   color = .data[[colour]])
+      ggplot2::aes(
+        group = interaction(.data$date, .data[[group]]),
+        color = .data[[colour]]
+      )
     plt_aes_point <- plt_aes
     plt_aes_path <- plt_aes
 
     if (!is.null(linewidth)) {
       if (is.character(linewidth)) {
         plt_aes_path <-
-          utils::modifyList(plt_aes_path,
-                            ggplot2::aes(linewidth = .data[[linewidth]]))
+          utils::modifyList(
+            plt_aes_path,
+            ggplot2::aes(linewidth = .data[[linewidth]])
+          )
       }
     }
 
     if (!is.null(size)) {
       if (is.character(size)) {
         plt_aes_point <-
-          utils::modifyList(plt_aes_point,
-                            ggplot2::aes(size = .data[[size]]))
+          utils::modifyList(plt_aes_point, ggplot2::aes(size = .data[[size]]))
       }
     }
 
@@ -593,8 +616,14 @@ trajMapStatic <-
     for (i in unique(data$date)) {
       plt <-
         plt +
-        ourGeomPath(data = dplyr::filter(data, date == i), mapping = plt_aes_path) +
-        ourGeomPoint(data = dplyr::filter(points_df, date == i), mapping = plt_aes_point)
+        ourGeomPath(
+          data = dplyr::filter(data, date == i),
+          mapping = plt_aes_path
+        ) +
+        ourGeomPoint(
+          data = dplyr::filter(points_df, date == i),
+          mapping = plt_aes_point
+        )
     }
 
     plt <- plt + coords
@@ -606,7 +635,8 @@ trajMapStatic <-
 
     if (origin) {
       plt <-
-        plt + ggplot2::geom_point(
+        plt +
+        ggplot2::geom_point(
           data = dplyr::filter(data, .data$hour.inc == 0) %>%
             dplyr::distinct(.data[[latitude]], .data[[longitude]]),
           size = 5,

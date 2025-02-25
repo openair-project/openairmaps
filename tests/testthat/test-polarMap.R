@@ -34,7 +34,7 @@ test_that("polarMap works", {
   testthat::expect_no_error(
     polarMap(
       input,
-      c("no2","pm10"),
+      c("no2", "pm10"),
       progress = FALSE,
       latitude = "lat",
       longitude = "lon",

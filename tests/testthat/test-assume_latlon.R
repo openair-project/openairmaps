@@ -24,8 +24,7 @@ test_that("lat/lng can be assumed", {
       latitude = "lat",
       NULL
     ),
-    list(latitude = "lat",
-         longitude = "longitude")
+    list(latitude = "lat", longitude = "longitude")
   )
 
   # specified lat/lng are honoured
@@ -41,8 +40,7 @@ test_that("lat/lng can be assumed", {
       latitude = "some_weird_column",
       longitude = "another_weird_column"
     ),
-    list(latitude = "some_weird_column",
-         longitude = "another_weird_column")
+    list(latitude = "some_weird_column", longitude = "another_weird_column")
   )
 
   # fail if no matches

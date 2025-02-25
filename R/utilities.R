@@ -80,7 +80,6 @@ quickTextHTML <- function(text) {
 }
 
 
-
 #' Build a Complex Popup for a Leaflet Map
 #'
 #' Group a dataframe together by latitude/longitude columns and create a HTML
@@ -157,26 +156,31 @@ quickTextHTML <- function(text) {
 #'   polarMap("nox", popup = "popup")
 #' }
 buildPopup <-
-  function(data,
-           columns,
-           latitude = NULL,
-           longitude = NULL,
-           type = NULL,
-           fun.character = function(x)
-             paste(unique(x), collapse = ", "),
-           fun.numeric = function(x)
-             signif(mean(x, na.rm = TRUE), 3),
-           fun.dttm = function(x)
-             paste(lubridate::floor_date(range(x, na.rm = TRUE), "day"), collapse = " to "),
-           ...) {
+  function(
+    data,
+    columns,
+    latitude = NULL,
+    longitude = NULL,
+    type = NULL,
+    fun.character = function(x) paste(unique(x), collapse = ", "),
+    fun.numeric = function(x) signif(mean(x, na.rm = TRUE), 3),
+    fun.dttm = function(x)
+      paste(
+        lubridate::floor_date(range(x, na.rm = TRUE), "day"),
+        collapse = " to "
+      ),
+    ...
+  ) {
     # check for old facet/control opts
     dots <- rlang::list2(...)
     type <- type %||% check_facet_control(control = dots$control)
 
     # assume latitude/longitude
-    latlon <- assume_latlon(data = data,
-                            latitude = latitude,
-                            longitude = longitude)
+    latlon <- assume_latlon(
+      data = data,
+      latitude = latitude,
+      longitude = longitude
+    )
     latitude <- latlon$latitude
     longitude <- latlon$longitude
 
@@ -185,7 +189,9 @@ buildPopup <-
       summary <-
         data %>%
         dplyr::select(dplyr::all_of(c(
-          latitude, longitude, as.vector(columns)
+          latitude,
+          longitude,
+          as.vector(columns)
         ))) %>%
         dplyr::group_by(.data[[latitude]], .data[[longitude]]) %>%
         dplyr::summarise(
@@ -216,10 +222,18 @@ buildPopup <-
 
       out <-
         out %>%
-        dplyr::mutate(dplyr::across(.cols = dplyr::everything(), .fns = quickTextHTML)) %>%
+        dplyr::mutate(dplyr::across(
+          .cols = dplyr::everything(),
+          .fns = quickTextHTML
+        )) %>%
         dplyr::rowwise() %>%
-        dplyr::mutate(popup = paste(dplyr::c_across(cols = dplyr::everything()), collapse = "<br>"),
-                      .keep = "unused")
+        dplyr::mutate(
+          popup = paste(
+            dplyr::c_across(cols = dplyr::everything()),
+            collapse = "<br>"
+          ),
+          .keep = "unused"
+        )
 
       out[[latitude]] <- summary[[latitude]]
       out[[longitude]] <- summary[[longitude]]

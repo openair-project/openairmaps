@@ -28,28 +28,30 @@
 #' }
 #'
 trajLevelMap <-
-  function(data,
-           longitude = "lon",
-           latitude = "lat",
-           pollutant,
-           type = NULL,
-           smooth = FALSE,
-           statistic = "frequency",
-           percentile = 90,
-           lon.inc = 1,
-           lat.inc = 1,
-           min.bin = 1,
-           .combine = NA,
-           sigma = 1.5,
-           cols = "turbo",
-           alpha = .5,
-           tile.border = NA,
-           provider = "OpenStreetMap",
-           legend.position = "topright",
-           legend.title = NULL,
-           legend.title.autotext = TRUE,
-           control.collapsed = FALSE,
-           control.position = "topright") {
+  function(
+    data,
+    longitude = "lon",
+    latitude = "lat",
+    pollutant,
+    type = NULL,
+    smooth = FALSE,
+    statistic = "frequency",
+    percentile = 90,
+    lon.inc = 1,
+    lat.inc = 1,
+    min.bin = 1,
+    .combine = NA,
+    sigma = 1.5,
+    cols = "turbo",
+    alpha = .5,
+    tile.border = NA,
+    provider = "OpenStreetMap",
+    legend.position = "topright",
+    legend.title = NULL,
+    legend.title.autotext = TRUE,
+    control.collapsed = FALSE,
+    control.position = "topright"
+  ) {
     # get titles/legend styles
 
     style <- leaflet::labelFormat()
@@ -72,7 +74,9 @@ trajLevelMap <-
         suff <- "rd"
       }
       title <-
-        stringr::str_glue("gridded<br>differences<br>({percentile}{suff} percentile)")
+        stringr::str_glue(
+          "gridded<br>differences<br>({percentile}{suff} percentile)"
+        )
       style <- leaflet::labelFormat(between = " to ", suffix = "%")
     }
 
@@ -96,7 +100,8 @@ trajLevelMap <-
 
     # set provider tiles
     for (i in seq(length(unique(provider)))) {
-      map <- leaflet::addProviderTiles(map,
+      map <- leaflet::addProviderTiles(
+        map,
         provider = unique(provider)[[i]],
         group = unique(provider)[[i]]
       )
@@ -147,7 +152,13 @@ trajLevelMap <-
         palette = openair::openColours(scheme = cols),
         domain = data[[pollutant]],
         bins = c(
-          floor(min(data[[pollutant]])), -10, -5, -1, 1, 5, 10,
+          floor(min(data[[pollutant]])),
+          -10,
+          -5,
+          -1,
+          1,
+          5,
+          10,
           ceiling(max(data[[pollutant]]))
         )
       )
@@ -228,14 +239,19 @@ trajLevelMap <-
     # control menu
     if (length(unique(provider)) > 1 & is.null(type)) {
       map <- leaflet::addLayersControl(map, baseGroups = unique(provider))
-    } else if (length(unique(provider)) == 1 &
-      !is.null(type)) {
+    } else if (
+      length(unique(provider)) == 1 &
+        !is.null(type)
+    ) {
       map <-
         leaflet::addLayersControl(map, baseGroups = sort(unique(data[[type]])))
-    } else if (length(unique(provider)) > 1 &
-      !is.null(type)) {
+    } else if (
+      length(unique(provider)) > 1 &
+        !is.null(type)
+    ) {
       map <-
-        leaflet::addLayersControl(map,
+        leaflet::addLayersControl(
+          map,
           overlayGroups = unique(provider),
           baseGroups = sort(unique(data[[type]]))
         )
@@ -272,32 +288,34 @@ trajLevelMap <-
 #' @seealso [trajLevelMap()] for the interactive `leaflet` equivalent of
 #'   [trajLevelMapStatic()]
 trajLevelMapStatic <-
-  function(data,
-           longitude = "lon",
-           latitude = "lat",
-           pollutant,
-           type = NULL,
-           smooth = FALSE,
-           statistic = "frequency",
-           percentile = 90,
-           lon.inc = 1,
-           lat.inc = 1,
-           min.bin = 1,
-           .combine = NA,
-           sigma = 1.5,
-           alpha = .5,
-           tile.border = NA,
-           xlim = NULL,
-           ylim = NULL,
-           crs = sf::st_crs(4326),
-           map = TRUE,
-           map.fill = "grey85",
-           map.colour = "grey75",
-           map.alpha = 0.8,
-           map.lwd = 0.5,
-           map.lty = 1,
-           facet = NULL,
-           ...) {
+  function(
+    data,
+    longitude = "lon",
+    latitude = "lat",
+    pollutant,
+    type = NULL,
+    smooth = FALSE,
+    statistic = "frequency",
+    percentile = 90,
+    lon.inc = 1,
+    lat.inc = 1,
+    min.bin = 1,
+    .combine = NA,
+    sigma = 1.5,
+    alpha = .5,
+    tile.border = NA,
+    xlim = NULL,
+    ylim = NULL,
+    crs = sf::st_crs(4326),
+    map = TRUE,
+    map.fill = "grey85",
+    map.colour = "grey75",
+    map.alpha = 0.8,
+    map.lwd = 0.5,
+    map.lty = 1,
+    facet = NULL,
+    ...
+  ) {
     rlang::check_installed("ggplot2")
 
     # handle deprecated argument
@@ -330,7 +348,9 @@ trajLevelMapStatic <-
         suff <- "rd"
       }
       title <-
-        stringr::str_glue("gridded\ndifferences\n({percentile}{suff} percentile)")
+        stringr::str_glue(
+          "gridded\ndifferences\n({percentile}{suff} percentile)"
+        )
     }
 
     if (statistic == "pscf") {
@@ -371,11 +391,14 @@ trajLevelMapStatic <-
 
     # start plot
     plt <-
-      ggplot2::ggplot(data, ggplot2::aes(
-        x = .data$xgrid,
-        y = .data$ygrid,
-        fill = .data[[pollutant]]
-      ))
+      ggplot2::ggplot(
+        data,
+        ggplot2::aes(
+          x = .data$xgrid,
+          y = .data$ygrid,
+          fill = .data[[pollutant]]
+        )
+      )
 
     if (map) {
       world <- ggplot2::map_data("world")
@@ -454,14 +477,8 @@ smooth_trajgrid <- function(mydata, z, k = 50, dist = 0.05) {
   Mgam <- mgcv::gam(myform, data = mydata)
 
   new.data <- expand.grid(
-    xgrid = seq(min(mydata$xgrid),
-      max(mydata$xgrid),
-      length = res
-    ),
-    ygrid = seq(min(mydata$ygrid),
-      max(mydata$ygrid),
-      length = res
-    )
+    xgrid = seq(min(mydata$xgrid), max(mydata$xgrid), length = res),
+    ygrid = seq(min(mydata$ygrid), max(mydata$ygrid), length = res)
   )
 
   pred <- mgcv::predict.gam(Mgam, newdata = new.data)
@@ -483,10 +500,7 @@ smooth_trajgrid <- function(mydata, z, k = 50, dist = 0.05) {
 
   ind <- with(
     all.data,
-    mgcv::exclude.too.far(wsp, wdp, mydata$xgrid,
-      mydata$ygrid,
-      dist = dist
-    )
+    mgcv::exclude.too.far(wsp, wdp, mydata$xgrid, mydata$ygrid, dist = dist)
   )
 
   new.data[ind, z] <- NA

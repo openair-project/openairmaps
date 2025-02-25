@@ -307,46 +307,50 @@
 #'   provider = "CartoDB.Voyager"
 #' )
 #' }
-polarMap <- function(data,
-                     pollutant = NULL,
-                     x = "ws",
-                     limits = "free",
-                     upper = "fixed",
-                     latitude = NULL,
-                     longitude = NULL,
-                     crs = 4326,
-                     type = NULL,
-                     popup = NULL,
-                     label = NULL,
-                     provider = "OpenStreetMap",
-                     cols = "turbo",
-                     alpha = 1,
-                     key = FALSE,
-                     legend = TRUE,
-                     legend.position = NULL,
-                     legend.title = NULL,
-                     legend.title.autotext = TRUE,
-                     control.collapsed = FALSE,
-                     control.position = "topright",
-                     control.autotext = TRUE,
-                     d.icon = 200,
-                     d.fig = 3.5,
-                     static = FALSE,
-                     static.nrow = NULL,
-                     progress = TRUE,
-                     n.core = 1L,
-                     ...,
-                     control = NULL) {
+polarMap <- function(
+  data,
+  pollutant = NULL,
+  x = "ws",
+  limits = "free",
+  upper = "fixed",
+  latitude = NULL,
+  longitude = NULL,
+  crs = 4326,
+  type = NULL,
+  popup = NULL,
+  label = NULL,
+  provider = "OpenStreetMap",
+  cols = "turbo",
+  alpha = 1,
+  key = FALSE,
+  legend = TRUE,
+  legend.position = NULL,
+  legend.title = NULL,
+  legend.title.autotext = TRUE,
+  control.collapsed = FALSE,
+  control.position = "topright",
+  control.autotext = TRUE,
+  d.icon = 200,
+  d.fig = 3.5,
+  static = FALSE,
+  static.nrow = NULL,
+  progress = TRUE,
+  n.core = 1L,
+  ...,
+  control = NULL
+) {
   if (static) {
     rlang::check_installed(c("ggplot2", "ggspatial", "prettymapr", "ggtext"))
   }
   # list pairwise statistics
-  pairwise_stats <- c("r",
-                      "Pearson",
-                      "Spearman",
-                      "robust_slope",
-                      "quantile.slope",
-                      "york_slope")
+  pairwise_stats <- c(
+    "r",
+    "Pearson",
+    "Spearman",
+    "robust_slope",
+    "quantile.slope",
+    "york_slope"
+  )
   dots <- rlang::list2(...)
   pairwise_flag <- FALSE
   if ("statistic" %in% names(dots)) {

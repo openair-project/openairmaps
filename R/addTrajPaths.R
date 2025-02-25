@@ -75,14 +75,16 @@
 #' map
 #' }
 addTrajPaths <-
-  function(map,
-           lng = "lon",
-           lat = "lat",
-           layerId = NULL,
-           group = NULL,
-           data = leaflet::getMapData(map),
-           npoints = 12,
-           ...) {
+  function(
+    map,
+    lng = "lon",
+    lat = "lat",
+    layerId = NULL,
+    group = NULL,
+    data = leaflet::getMapData(map),
+    npoints = 12,
+    ...
+  ) {
     # check opts
     opts <- list(...)
     if ("color" %in% names(opts)) {
@@ -102,10 +104,12 @@ addTrajPaths <-
     # labels
     data <- dplyr::mutate(
       data,
-      lab = stringr::str_glue("<b>Arrival Date:</b> {date}<br>
+      lab = stringr::str_glue(
+        "<b>Arrival Date:</b> {date}<br>
                              <b>Trajectory Date:</b> {date2}<br>
                              <b>Lat:</b> {lat} | <b>Lon:</b> {lon}<br>
-                             <b>Height:</b> {height} m | <b>Pressure:</b> {pressure} Pa")
+                             <b>Height:</b> {height} m | <b>Pressure:</b> {pressure} Pa"
+      )
     )
 
     for (i in seq(length(unique(data$datef)))) {

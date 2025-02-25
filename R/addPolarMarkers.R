@@ -73,25 +73,27 @@
 #'   )
 #' }
 addPolarMarkers <-
-  function(map,
-           pollutant,
-           fun = openair::polarPlot,
-           lng = NULL,
-           lat = NULL,
-           layerId = NULL,
-           group = NULL,
-           popup = NULL,
-           popupOptions = NULL,
-           label = NULL,
-           labelOptions = NULL,
-           options = leaflet::markerOptions(),
-           clusterOptions = NULL,
-           clusterId = NULL,
-           key = FALSE,
-           d.icon = 200,
-           d.fig = 3.5,
-           data = leaflet::getMapData(map),
-           ...) {
+  function(
+    map,
+    pollutant,
+    fun = openair::polarPlot,
+    lng = NULL,
+    lat = NULL,
+    layerId = NULL,
+    group = NULL,
+    popup = NULL,
+    popupOptions = NULL,
+    label = NULL,
+    labelOptions = NULL,
+    options = leaflet::markerOptions(),
+    clusterOptions = NULL,
+    clusterId = NULL,
+    key = FALSE,
+    d.icon = 200,
+    d.fig = 3.5,
+    data = leaflet::getMapData(map),
+    ...
+  ) {
     # guess lat/lon
     latlon <- assume_latlon(
       data = data,
@@ -190,25 +192,27 @@ addPolarMarkers <-
 #' @order 2
 #' @export
 addPolarDiffMarkers <-
-  function(map,
-           pollutant,
-           before = leaflet::getMapData(map),
-           after = leaflet::getMapData(map),
-           lng = NULL,
-           lat = NULL,
-           layerId = NULL,
-           group = NULL,
-           popup = NULL,
-           popupOptions = NULL,
-           label = NULL,
-           labelOptions = NULL,
-           options = leaflet::markerOptions(),
-           clusterOptions = NULL,
-           clusterId = NULL,
-           key = FALSE,
-           d.icon = 200,
-           d.fig = 3.5,
-           ...) {
+  function(
+    map,
+    pollutant,
+    before = leaflet::getMapData(map),
+    after = leaflet::getMapData(map),
+    lng = NULL,
+    lat = NULL,
+    layerId = NULL,
+    group = NULL,
+    popup = NULL,
+    popupOptions = NULL,
+    label = NULL,
+    labelOptions = NULL,
+    options = leaflet::markerOptions(),
+    clusterOptions = NULL,
+    clusterId = NULL,
+    key = FALSE,
+    d.icon = 200,
+    d.fig = 3.5,
+    ...
+  ) {
     # guess lat/lon
     latlon <- assume_latlon(
       data = before,

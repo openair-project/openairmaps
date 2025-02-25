@@ -1,4 +1,3 @@
-
 traj_data <- openairmaps::traj_data
 `%>%` <- openairmaps::`%>%`
 dates <- unique(traj_data$date)
@@ -43,9 +42,11 @@ server <- function(input, output, session) {
 
     thedata <- traj_data[traj_data$date %in% thedates, ]
     leaflet::leafletProxy("map") %>%
-      openairmaps::addTrajPaths(layerId = "traj",
-                                data = thedata,
-                                group = "trajpaths")
+      openairmaps::addTrajPaths(
+        layerId = "traj",
+        data = thedata,
+        group = "trajpaths"
+      )
   })
 }
 
