@@ -534,6 +534,7 @@ polarMap <- function(
       map <-
         leaflet::addLegend(
           map,
+          opacity = alpha,
           title = legend.title,
           pal = leaflet::colorNumeric(
             palette = openair::openColours(scheme = cols),
