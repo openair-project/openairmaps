@@ -71,7 +71,18 @@ background monitoring site.</p>
 
     <div class="section level2">
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
-    <p>A data frame with 53940 rows and 10 variables:</p><dl><dt>date</dt>
+    <p>An object of class <code>tbl_df</code> (inherits from <code>tbl</code>, <code>data.frame</code>) with 5432 rows and 17 columns.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="source">Source<a class="anchor" aria-label="anchor" href="#source"></a></h2>
+    <p><code>traj_data</code> was compiled from data using the <code><a href="https://rdrr.io/pkg/openair/man/importTraj.html" class="external-link">openair::importTraj()</a></code>
+function from the <code>openair</code> package with air quality data from
+<code><a href="https://rdrr.io/pkg/openair/man/importUKAQ-wrapper.html" class="external-link">openair::importAURN()</a></code> function.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+
+<dl><dt>date</dt>
 <dd><p>The arrival time of the air-mass</p></dd>
 
 <dt>receptor</dt>
@@ -124,32 +135,24 @@ background monitoring site.</p>
 
 
 </dl></div>
-    <div class="section level2">
-    <h2 id="source">Source<a class="anchor" aria-label="anchor" href="#source"></a></h2>
-    <p><code>traj_data</code> was compiled from data using the <code><a href="https://rdrr.io/pkg/openair/man/importTraj.html" class="external-link">openair::importTraj()</a></code>
-function from the <code>openair</code> package with air quality data from
-<code><a href="https://rdrr.io/pkg/openair/man/importUKAQ-wrapper.html" class="external-link">openair::importAURN()</a></code> function.</p>
-    </div>
-    <div class="section level2">
-    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code>traj_data</code> is supplied with the <code>openairmaps</code> package as an example dataset
-for use with documented examples.</p>
-    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># basic structure</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">traj_data</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 17</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   date                receptor  year month   day  hour hour.inc   lat    lon</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 2010-04-15 <span style="color: #949494;">00:00:00</span>        1  <span style="text-decoration: underline;">2</span>010     4    15     0        0  51.5 -<span style="color: #BB0000;">0.1</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> 2010-04-15 <span style="color: #949494;">00:00:00</span>        1  <span style="text-decoration: underline;">2</span>010     4    14    23       -<span style="color: #BB0000;">1</span>  51.7  0.139</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> 2010-04-15 <span style="color: #949494;">00:00:00</span>        1  <span style="text-decoration: underline;">2</span>010     4    14    22       -<span style="color: #BB0000;">2</span>  51.9  0.378</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> 2010-04-15 <span style="color: #949494;">00:00:00</span>        1  <span style="text-decoration: underline;">2</span>010     4    14    21       -<span style="color: #BB0000;">3</span>  52.1  0.618</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> 2010-04-15 <span style="color: #949494;">00:00:00</span>        1  <span style="text-decoration: underline;">2</span>010     4    14    20       -<span style="color: #BB0000;">4</span>  52.2  0.859</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> 2010-04-15 <span style="color: #949494;">00:00:00</span>        1  <span style="text-decoration: underline;">2</span>010     4    14    19       -<span style="color: #BB0000;">5</span>  52.4  1.10 </span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">traj_data</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5,432 × 17</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    date                receptor  year month   day  hour hour.inc   lat    lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 2010-04-15 <span style="color: #949494;">00:00:00</span>        1  <span style="text-decoration: underline;">2</span>010     4    15     0        0  51.5 -<span style="color: #BB0000;">0.1</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 2010-04-15 <span style="color: #949494;">00:00:00</span>        1  <span style="text-decoration: underline;">2</span>010     4    14    23       -<span style="color: #BB0000;">1</span>  51.7  0.139</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 2010-04-15 <span style="color: #949494;">00:00:00</span>        1  <span style="text-decoration: underline;">2</span>010     4    14    22       -<span style="color: #BB0000;">2</span>  51.9  0.378</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 2010-04-15 <span style="color: #949494;">00:00:00</span>        1  <span style="text-decoration: underline;">2</span>010     4    14    21       -<span style="color: #BB0000;">3</span>  52.1  0.618</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 2010-04-15 <span style="color: #949494;">00:00:00</span>        1  <span style="text-decoration: underline;">2</span>010     4    14    20       -<span style="color: #BB0000;">4</span>  52.2  0.859</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 2010-04-15 <span style="color: #949494;">00:00:00</span>        1  <span style="text-decoration: underline;">2</span>010     4    14    19       -<span style="color: #BB0000;">5</span>  52.4  1.10 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 2010-04-15 <span style="color: #949494;">00:00:00</span>        1  <span style="text-decoration: underline;">2</span>010     4    14    18       -<span style="color: #BB0000;">6</span>  52.6  1.34 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 2010-04-15 <span style="color: #949494;">00:00:00</span>        1  <span style="text-decoration: underline;">2</span>010     4    14    17       -<span style="color: #BB0000;">7</span>  52.8  1.58 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 2010-04-15 <span style="color: #949494;">00:00:00</span>        1  <span style="text-decoration: underline;">2</span>010     4    14    16       -<span style="color: #BB0000;">8</span>  53.0  1.82 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 2010-04-15 <span style="color: #949494;">00:00:00</span>        1  <span style="text-decoration: underline;">2</span>010     4    14    15       -<span style="color: #BB0000;">9</span>  53.1  2.05 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 5,422 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 8 more variables: height &lt;dbl&gt;, pressure &lt;dbl&gt;, date2 &lt;dttm&gt;, nox &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   no2 &lt;dbl&gt;, o3 &lt;dbl&gt;, pm2.5 &lt;dbl&gt;, pm10 &lt;dbl&gt;</span></span>
 </code></pre></div>
