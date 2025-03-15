@@ -5,7 +5,24 @@
 \alias{traj_data}
 \title{Example data for trajectory mapping functions}
 \format{
-A data frame with 53940 rows and 10 variables:
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 5432 rows and 17 columns.
+}
+\source{
+\code{traj_data} was compiled from data using the \code{\link[openair:importTraj]{openair::importTraj()}}
+function from the \code{openair} package with air quality data from
+\code{\link[openair:importUKAQ-wrapper]{openair::importAURN()}} function.
+}
+\usage{
+traj_data
+}
+\description{
+The \code{traj_data} dataset is provided as an example dataset as part of the
+\code{openairmaps} package. The dataset contains HYSPLIT back trajectory data for
+air mass parcels arriving in London in 2009. It has been joined with air
+quality pollutant concentrations from the "London N. Kensington" AURN urban
+background monitoring site.
+}
+\details{
 \describe{
 \item{date}{The arrival time of the air-mass}
 \item{receptor}{The receptor number}
@@ -26,28 +43,7 @@ A data frame with 53940 rows and 10 variables:
 \item{pm2.5}{Concentration of fine particulates (PM2.5)}
 }
 }
-\source{
-\code{traj_data} was compiled from data using the \code{\link[openair:importTraj]{openair::importTraj()}}
-function from the \code{openair} package with air quality data from
-\code{\link[openair:importUKAQ-wrapper]{openair::importAURN()}} function.
-}
-\usage{
-traj_data
-}
-\description{
-The \code{traj_data} dataset is provided as an example dataset as part of the
-\code{openairmaps} package. The dataset contains HYSPLIT back trajectory data for
-air mass parcels arriving in London in 2009. It has been joined with air
-quality pollutant concentrations from the "London N. Kensington" AURN urban
-background monitoring site.
-}
-\details{
-\code{traj_data} is supplied with the \code{openairmaps} package as an example dataset
-for use with documented examples.
-}
 \examples{
-
-# basic structure
-head(traj_data)
+traj_data
 }
 \keyword{datasets}

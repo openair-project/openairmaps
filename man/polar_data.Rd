@@ -5,7 +5,22 @@
 \alias{polar_data}
 \title{Example data for polar mapping functions}
 \format{
-Data frame with example data from four sites in London in 2009.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 35040 rows and 13 columns.
+}
+\source{
+\code{polar_data} was compiled from data using the
+\code{\link[openair:importUKAQ-wrapper]{openair::importAURN()}} function from the \code{openair} package with
+meteorological data from the \code{worldmet} package.
+}
+\usage{
+polar_data
+}
+\description{
+The \code{polar_data} dataset is provided as an example dataset as part of
+the \code{openairmaps} package. The dataset contains hourly measurements of
+air pollutant concentrations, location and meteorological data.
+}
+\details{
 \describe{
 \item{date}{The date and time of the measurement}
 \item{nox, no2, pm2.5, pm10}{Pollutant concentrations}
@@ -18,24 +33,7 @@ Data frame with example data from four sites in London in 2009.
 \item{air_temp}{Air temperature in degrees Celcius.}
 }
 }
-\source{
-\code{polar_data} was compiled from data using the
-\code{\link[openair:importUKAQ-wrapper]{openair::importAURN()}} function from the \code{openair} package with
-meteorological data from the \code{worldmet} package.
-}
-\description{
-The \code{polar_data} dataset is provided as an example dataset as part of
-the \code{openairmaps} package. The dataset contains hourly measurements of
-air pollutant concentrations, location and meteorological data.
-}
-\details{
-\code{polar_data} is supplied with the \code{openairmaps} package as an
-example dataset for use with documented examples.
-}
 \examples{
-
-# basic structure
-head(polar_data)
-
+polar_data
 }
 \keyword{datasets}

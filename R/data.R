@@ -4,12 +4,6 @@
 #' the `openairmaps` package. The dataset contains hourly measurements of
 #' air pollutant concentrations, location and meteorological data.
 #'
-#' `polar_data` is supplied with the `openairmaps` package as an
-#' example dataset for use with documented examples.
-#'
-#' @name polar_data
-#' @docType data
-#' @format Data frame with example data from four sites in London in 2009.
 #' \describe{
 #'   \item{date}{The date and time of the measurement}
 #'   \item{nox, no2, pm2.5, pm10}{Pollutant concentrations}
@@ -21,17 +15,14 @@
 #'   \item{visibility}{The visibility in metres.}
 #'   \item{air_temp}{Air temperature in degrees Celcius.}
 #' }
+#'
 #' @source `polar_data` was compiled from data using the
 #'   [openair::importAURN()] function from the `openair` package with
 #'   meteorological data from the `worldmet` package.
 #'
-#' @keywords datasets
 #' @examples
-#'
-#' # basic structure
-#' head(polar_data)
-#'
-NULL
+#' polar_data
+"polar_data"
 
 #' Example data for trajectory mapping functions
 #'
@@ -41,10 +32,6 @@ NULL
 #' quality pollutant concentrations from the "London N. Kensington" AURN urban
 #' background monitoring site.
 #'
-#' `traj_data` is supplied with the `openairmaps` package as an example dataset
-#' for use with documented examples.
-#'
-#' @format A data frame with 53940 rows and 10 variables:
 #' \describe{
 #'   \item{date}{The arrival time of the air-mass}
 #'   \item{receptor}{The receptor number}
@@ -64,13 +51,11 @@ NULL
 #'   \item{pm10}{Concentration of particulates (PM10)}
 #'   \item{pm2.5}{Concentration of fine particulates (PM2.5)}
 #' }
+#'
 #' @source `traj_data` was compiled from data using the [openair::importTraj()]
 #'   function from the `openair` package with air quality data from
 #'   [openair::importAURN()] function.
 #'
-#' @keywords datasets
 #' @examples
-#'
-#' # basic structure
-#' head(traj_data)
+#' traj_data
 "traj_data"
