@@ -107,29 +107,21 @@ produced instead.</p>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-before">before<a class="anchor" aria-label="anchor" href="#arg-before"></a></dt>
-<dd><p>A data frame that represents the "before" case. See
-<code><a href="https://rdrr.io/pkg/openair/man/polarPlot.html" class="external-link">polarPlot()</a></code> for details of different input requirements.</p></dd>
-
-
-<dt id="arg-after">after<a class="anchor" aria-label="anchor" href="#arg-after"></a></dt>
-<dd><p>A data frame that represents the "after" case. See <code><a href="https://rdrr.io/pkg/openair/man/polarPlot.html" class="external-link">polarPlot()</a></code>
-for details of different input requirements.</p></dd>
+<dl><dt id="arg-before-after">before, after<a class="anchor" aria-label="anchor" href="#arg-before-after"></a></dt>
+<dd><p>Data frames representing the "before" and "after" cases.
+See <code><a href="https://rdrr.io/pkg/openair/man/polarPlot.html" class="external-link">polarPlot()</a></code> for details of different input requirements.</p></dd>
 
 
 <dt id="arg-pollutant">pollutant<a class="anchor" aria-label="anchor" href="#arg-pollutant"></a></dt>
 <dd><p>Mandatory. A pollutant name corresponding to a variable in a
 data frame should be supplied e.g. <code>pollutant = "nox"</code>. There can also
-be more than one pollutant specified e.g. <code>pollutant = c("nox",
-  "no2")</code>. The main use of using two or more pollutants is for model
+be more than one pollutant specified e.g. <code>pollutant = c("nox", "no2")</code>. The main use of using two or more pollutants is for model
 evaluation where two species would be expected to have similar
 concentrations. This saves the user stacking the data and it is possible to
-work with columns of data directly. A typical use would be <code>pollutant
-  = c("obs", "mod")</code> to compare two columns “obs” (the observations)
+work with columns of data directly. A typical use would be <code>pollutant = c("obs", "mod")</code> to compare two columns “obs” (the observations)
 and “mod” (modelled values). When pair-wise statistics such as
 Pearson correlation and regression techniques are to be plotted,
-<code>pollutant</code> takes two elements too. For example, <code>pollutant =
-  c("bc", "pm25")</code> where <code>"bc"</code> is a function of <code>"pm25"</code>.</p></dd>
+<code>pollutant</code> takes two elements too. For example, <code>pollutant = c("bc", "pm25")</code> where <code>"bc"</code> is a function of <code>"pm25"</code>.</p></dd>
 
 
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
@@ -170,12 +162,21 @@ plotting on the map.</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p><em>A method to condition the <code>data</code> for separate plotting.</em></p>
-<p><em>default:</em> <code>NULL</code> | <em>scope:</em> dynamic &amp; static</p>
-<p>Used for splitting the input data into different groups, passed to the
-<code>type</code> argument of <code><a href="https://rdrr.io/pkg/openair/man/cutData.html" class="external-link">openair::cutData()</a></code>. When <code>type</code> is specified:</p><ul><li><p><em>Dynamic</em>: The different data splits can be toggled between using a "layer control" menu.</p></li>
-<li><p><em>Static:</em>: The data splits will each appear in a different panel.</p></li>
-</ul><p><code>type</code> cannot be used if multiple <code>pollutant</code> columns have been provided.</p></dd>
+<dd><p><code>type</code> determines how the data are split i.e. conditioned,
+and then plotted. The default is will produce a single plot using the
+entire data. Type can be one of the built-in types as detailed in
+<code>cutData</code> e.g. “season”, “year”, “weekday” and so
+on. For example, <code>type = "season"</code> will produce four plots — one for
+each season.</p>
+<p>It is also possible to choose <code>type</code> as another variable in the data
+frame. If that variable is numeric, then the data will be split into four
+quantiles (if possible) and labelled accordingly. If type is an existing
+character or factor variable, then those categories/levels will be used
+directly. This offers great flexibility for understanding the variation of
+different variables and how they depend on one another.</p>
+<p>Type can be up length two e.g. <code>type = c("season", "weekday")</code> will
+produce a 2x2 plot split by season and day of the week. Note, when two
+types are provided the first forms the columns and the second the rows.</p></dd>
 
 
 <dt id="arg-popup">popup<a class="anchor" aria-label="anchor" href="#arg-popup"></a></dt>
@@ -517,12 +518,10 @@ wind direction when <code>statistic = "nwr"</code> or when correlation and
 regression statistics are used such as <em>r</em>. Default is <code>4</code>.</p></dd>
 
     <dt><code>x_error</code></dt>
-<dd><p>The <code>x</code> error / uncertainty used when <code>statistic =
-"york_slope"</code>.</p></dd>
+<dd><p>The <code>x</code> error / uncertainty used when <code>statistic = "york_slope"</code>.</p></dd>
 
     <dt><code>y_error</code></dt>
-<dd><p>The <code>y</code> error / uncertainty used when <code>statistic =
-"york_slope"</code>.</p></dd>
+<dd><p>The <code>y</code> error / uncertainty used when <code>statistic = "york_slope"</code>.</p></dd>
 
     <dt><code>kernel</code></dt>
 <dd><p>Type of kernel used for the weighting procedure for when
