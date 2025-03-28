@@ -6,6 +6,8 @@
 
 * The progress bar shown when `progress = TRUE` now better reflects the actual time until function completion.
 
+* `networkMap()` can now use `source = 'imperial'`, in line with updates to `{openair}`.
+
 ## Refactoring
 
 This release includes several changes to make `{openairmaps}` more lightweight.

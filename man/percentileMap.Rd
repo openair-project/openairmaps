@@ -308,7 +308,7 @@ value between 0 and 360 degrees to mitigate such problems. For example
 titles and axis labels will automatically try and format pollutant names
 and units properly e.g.  by subscripting the `2' in NO2.}
     \item{\code{key.header}}{Adds additional text/labels to the scale key. For example,
-passing the options \code{key.header = "header", key.footer = "footer1"}
+passing the options \verb{key.header = "header", key.footer = "footer1"}
 adds addition text above and below the scale key. These arguments are
 passed to \code{drawOpenKey} via \code{quickText}, applying the
 \code{auto.text} argument, to handle formatting.}

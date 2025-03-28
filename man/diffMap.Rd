@@ -38,24 +38,18 @@ diffMap(
 )
 }
 \arguments{
-\item{before}{A data frame that represents the "before" case. See
-\code{\link[openair:polarPlot]{polarPlot()}} for details of different input requirements.}
-
-\item{after}{A data frame that represents the "after" case. See \code{\link[openair:polarPlot]{polarPlot()}}
-for details of different input requirements.}
+\item{before, after}{Data frames representing the "before" and "after" cases.
+See \code{\link[openair:polarPlot]{polarPlot()}} for details of different input requirements.}
 
 \item{pollutant}{Mandatory. A pollutant name corresponding to a variable in a
 data frame should be supplied e.g. \code{pollutant = "nox"}. There can also
-be more than one pollutant specified e.g. \code{pollutant = c("nox",
-  "no2")}. The main use of using two or more pollutants is for model
+be more than one pollutant specified e.g. \code{pollutant = c("nox", "no2")}. The main use of using two or more pollutants is for model
 evaluation where two species would be expected to have similar
 concentrations. This saves the user stacking the data and it is possible to
-work with columns of data directly. A typical use would be \code{pollutant
-  = c("obs", "mod")} to compare two columns \dQuote{obs} (the observations)
+work with columns of data directly. A typical use would be \code{pollutant = c("obs", "mod")} to compare two columns \dQuote{obs} (the observations)
 and \dQuote{mod} (modelled values). When pair-wise statistics such as
 Pearson correlation and regression techniques are to be plotted,
-\code{pollutant} takes two elements too. For example, \code{pollutant =
-  c("bc", "pm25")} where \code{"bc"} is a function of \code{"pm25"}.}
+\code{pollutant} takes two elements too. For example, \code{pollutant = c("bc", "pm25")} where \code{"bc"} is a function of \code{"pm25"}.}
 
 \item{x}{Name of variable to plot against wind direction in polar
 coordinates, the default is wind speed, \dQuote{ws}.}
@@ -96,18 +90,23 @@ Different coordinate systems can be specified using \code{crs} (e.g., \code{crs 
 non-lat/lng coordinate systems will be re-projected to EPSG:4326 for
 plotting on the map.}
 
-\item{type}{\emph{A method to condition the \code{data} for separate plotting.}
+\item{type}{\code{type} determines how the data are split i.e. conditioned,
+and then plotted. The default is will produce a single plot using the
+entire data. Type can be one of the built-in types as detailed in
+\code{cutData} e.g. \dQuote{season}, \dQuote{year}, \dQuote{weekday} and so
+on. For example, \code{type = "season"} will produce four plots --- one for
+each season.
 
-\emph{default:} \code{NULL} | \emph{scope:} dynamic & static
+It is also possible to choose \code{type} as another variable in the data
+frame. If that variable is numeric, then the data will be split into four
+quantiles (if possible) and labelled accordingly. If type is an existing
+character or factor variable, then those categories/levels will be used
+directly. This offers great flexibility for understanding the variation of
+different variables and how they depend on one another.
 
-Used for splitting the input data into different groups, passed to the
-\code{type} argument of \code{\link[openair:cutData]{openair::cutData()}}. When \code{type} is specified:
-\itemize{
-\item \emph{Dynamic}: The different data splits can be toggled between using a "layer control" menu.
-\item \emph{Static:}: The data splits will each appear in a different panel.
-}
-
-\code{type} cannot be used if multiple \code{pollutant} columns have been provided.}
+Type can be up length two e.g. \code{type = c("season", "weekday")} will
+produce a 2x2 plot split by season and day of the week. Note, when two
+types are provided the first forms the columns and the second the rows.}
 
 \item{popup}{\emph{Content for marker popups on dynamic maps.}
 
@@ -433,10 +432,8 @@ statistics are used such as \emph{r}. Default is \code{0.5}.}
     \item{\code{wd_spread}}{The value of sigma used for Gaussian kernel weighting of
 wind direction when \code{statistic = "nwr"} or when correlation and
 regression statistics are used such as \emph{r}. Default is \code{4}.}
-    \item{\code{x_error}}{The \code{x} error / uncertainty used when \code{statistic =
-"york_slope"}.}
-    \item{\code{y_error}}{The \code{y} error / uncertainty used when \code{statistic =
-"york_slope"}.}
+    \item{\code{x_error}}{The \code{x} error / uncertainty used when \code{statistic = "york_slope"}.}
+    \item{\code{y_error}}{The \code{y} error / uncertainty used when \code{statistic = "york_slope"}.}
     \item{\code{kernel}}{Type of kernel used for the weighting procedure for when
 correlation or regression techniques are used. Only \code{"gaussian"} is
 supported but this may be enhanced in the future.}

@@ -30,7 +30,7 @@ openair. Available networks include:
 \item \code{"waqn"}, The Welsh Air Quality Network.
 \item \code{"ni"}, The Northern Ireland Air Quality Network.
 \item \code{"local"}, Locally managed air quality networks in England.
-\item \code{"kcl"}, King's College London networks.
+\item \code{"imperial"}, Imperial College London (formerly King's College London) networks.
 \item \code{"europe"}, European AirBase/e-reporting data.
 }
 
@@ -66,9 +66,8 @@ over a range of years. See \code{\link[openair:importMeta]{openair::importMeta()
 \emph{default:} \code{TRUE}
 
 When \code{cluster = TRUE}, markers are clustered together. This may be useful
-for sources like "kcl" where there are many markers very close together.
-Defaults to \code{TRUE}, and is forced to be \code{TRUE} when \code{source = "europe"} due
-to the large number of sites.}
+for sources like \code{"imperial"} where there are many markers very close
+together. Defaults to \code{TRUE}, and is forced to be \code{TRUE} when \code{source = "europe"} due to the large number of sites.}
 
 \item{provider}{\emph{The basemap(s) to be used.}
 

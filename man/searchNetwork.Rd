@@ -39,7 +39,7 @@ openair. Available networks include:
 \item \code{"waqn"}, The Welsh Air Quality Network.
 \item \code{"ni"}, The Northern Ireland Air Quality Network.
 \item \code{"local"}, Locally managed air quality networks in England.
-\item \code{"kcl"}, King's College London networks.
+\item \code{"imperial"}, Imperial College London (formerly King's College London) networks.
 \item \code{"europe"}, European AirBase/e-reporting data.
 }
 

@@ -33,7 +33,7 @@
 #'    - `"waqn"`, The Welsh Air Quality Network.
 #'    - `"ni"`, The Northern Ireland Air Quality Network.
 #'    - `"local"`, Locally managed air quality networks in England.
-#'    - `"kcl"`, King's College London networks.
+#'    - `"imperial"`, Imperial College London (formerly King's College London) networks.
 #'    - `"europe"`, European AirBase/e-reporting data.
 #'
 #'   There are two additional options provided for convenience:
@@ -64,9 +64,9 @@
 #'  *default:* `TRUE`
 #'
 #'   When `cluster = TRUE`, markers are clustered together. This may be useful
-#'   for sources like "kcl" where there are many markers very close together.
-#'   Defaults to `TRUE`, and is forced to be `TRUE` when `source = "europe"` due
-#'   to the large number of sites.
+#'   for sources like `"imperial"` where there are many markers very close
+#'   together. Defaults to `TRUE`, and is forced to be `TRUE` when `source =
+#'   "europe"` due to the large number of sites.
 #'
 #' @param provider *The basemap(s) to be used.*
 #'
@@ -158,7 +158,7 @@ networkMap <-
           "WAQN",
           "NI",
           "Locally Managed",
-          "KCL",
+          "Imperial College",
           "Europe"
         ),
         colour = c(
@@ -467,6 +467,7 @@ prepNetworkData <- function(source, year) {
     dplyr::mutate(
       network = dplyr::case_when(
         source %in% c("local", "lmam") ~ "Locally Managed",
+        source %in% c("kcl", "imperial") ~ "Imperial College",
         source == "europe" ~ "Europe",
         TRUE ~ toupper(source)
       )
@@ -534,7 +535,11 @@ prepNetworkData <- function(source, year) {
   }
 
   # network-specific manipulations
-  if (!source %in% c("kcl", "europe")) {
+  if (!source %in% c("kcl", "imperial", "europe")) {
+    if (source == "kcl") {
+      source <- "imperial"
+    }
+
     if (source %in% c("local", "lmam")) {
       meta <-
         prepManagedNetwork(
@@ -637,7 +642,7 @@ prepNetworkData <- function(source, year) {
     }
   }
 
-  if (source == "kcl") {
+  if (source %in% c("imperial", "kcl")) {
     # create labels
     meta <-
       dplyr::mutate(
@@ -699,7 +704,7 @@ prepNetworkData <- function(source, year) {
 }
 
 #' function to prep AURN and LMAM data for plotting
-#' not used for Europe and KCL
+#' not used for Europe and Imperial
 #' @param data metadata
 #' @param vec char vector of columns - used for grouping/joining
 #' @param date from parent func

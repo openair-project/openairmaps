@@ -318,14 +318,13 @@ always ensure that wind speeds are displayed between 1-10, set
 \code{ws.int = 10}.}
     \item{\code{offset}}{\code{offset} controls the size of the \sQuote{hole} in the
 middle and is expressed as a percentage of the maximum wind speed. Setting
-a higher \code{offset} e.g. 50 is useful for \code{statistic =
-  "weighted.mean"} when \code{ws.int} is greater than the maximum wind
+a higher \code{offset} e.g. 50 is useful for \code{statistic = "weighted.mean"} when \code{ws.int} is greater than the maximum wind
 speed. See example below.}
     \item{\code{border.col}}{The colour of the boundary of each wind speed/direction
 bin. The default is transparent. Another useful choice sometimes is
 "white".}
     \item{\code{key.header}}{Adds additional text/labels to the scale key. For example,
-passing the options \code{key.header = "header", key.footer = "footer1"}
+passing the options \verb{key.header = "header", key.footer = "footer1"}
 adds addition text above and below the scale key. These arguments are
 passed to \code{drawOpenKey} via \code{quickText}, applying the
 \code{auto.text} argument, to handle formatting.}
