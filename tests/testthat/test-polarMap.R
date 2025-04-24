@@ -1,7 +1,7 @@
 test_that("polarMap works", {
   input <-
-    polar_data %>%
-    dplyr::filter(!is.na(no2), !is.na(pm10)) %>%
+    polar_data |>
+    dplyr::filter(!is.na(no2), !is.na(pm10)) |>
     dplyr::slice_head(n = 100, by = site)
 
   # dynamic map
@@ -74,8 +74,8 @@ test_that("polarMap works", {
   # pairwise stats
   testthat::expect_no_error(
     polarMap(
-      polar_data %>%
-        dplyr::filter(!is.na(no2), !is.na(pm10)) %>%
+      polar_data |>
+        dplyr::filter(!is.na(no2), !is.na(pm10)) |>
         dplyr::slice_head(n = 1000, by = site),
       c("no2", "pm10"),
       statistic = "Pearson",

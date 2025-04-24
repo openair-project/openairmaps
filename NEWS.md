@@ -1,5 +1,9 @@
 # openairmaps (development version)
 
+## Breaking Changes
+
+* `{openairmaps}` now depends on a minimum R version of 4.1.0 and no longer exports the `{magrittr}` pipe (`%>%`). Users are encouraged to use the base R pipe (`|>`) instead. In most cases, this is a drop-in replacement.
+
 ## New features
 
 * Polar marker functions have gained the `n.core` argument, which allows for the use of `{mirai}` for parallel plot creation. `{mirai}` is not imported by `{openairmaps}` by default, but users will be prompted to download it if they set `n.core` to be greater than `1L`.

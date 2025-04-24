@@ -369,7 +369,7 @@ create_polar_diffmarkers <-
       ))
 
     # nest data
-    nested_before <- before %>%
+    nested_before <- before |>
       tidyr::nest(
         before = -dplyr::all_of(c(
           latitude,
@@ -379,7 +379,7 @@ create_polar_diffmarkers <-
           label
         ))
       )
-    nested_after <- after %>%
+    nested_after <- after |>
       tidyr::nest(after = -dplyr::all_of(c(latitude, longitude, split_col)))
 
     # warn if missing
@@ -396,12 +396,12 @@ create_polar_diffmarkers <-
             nested_before,
             by = c(latitude, longitude, split_col)
           )
-        ) %>%
+        ) |>
         tidyr::unite(
           "warning",
           dplyr::any_of(c(latitude, longitude, split_col)),
           sep = "/"
-        ) %>%
+        ) |>
         dplyr::distinct(.data$warning)
 
       cli::cli_warn(
@@ -429,7 +429,7 @@ create_polar_diffmarkers <-
         nested_before,
         nested_after,
         by = c(latitude, longitude, split_col)
-      ) %>%
+      ) |>
       dplyr::mutate(
         plot = purrr::map2(
           before,

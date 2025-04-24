@@ -152,7 +152,7 @@ quickTextHTML <- function(text) {
 #'     "Site Type" = "site_type",
 #'     "Date Range" = "date"
 #'   )
-#' ) %>%
+#' ) |>
 #'   polarMap("nox", popup = "popup")
 #' }
 buildPopup <-
@@ -187,13 +187,13 @@ buildPopup <-
     make_popup <- function(data) {
       # multiple columns
       summary <-
-        data %>%
+        data |>
         dplyr::select(dplyr::all_of(c(
           latitude,
           longitude,
           as.vector(columns)
-        ))) %>%
-        dplyr::group_by(.data[[latitude]], .data[[longitude]]) %>%
+        ))) |>
+        dplyr::group_by(.data[[latitude]], .data[[longitude]]) |>
         dplyr::summarise(
           dplyr::across(
             dplyr::where(is.character) |
@@ -211,8 +211,8 @@ buildPopup <-
       }
 
       out <-
-        summary %>%
-        dplyr::select(-dplyr::all_of(c(latitude, longitude))) %>%
+        summary |>
+        dplyr::select(-dplyr::all_of(c(latitude, longitude))) |>
         purrr::imodify(.f = ~ stringr::str_glue("<b>{.y}</b>: {.x}"))
 
       if (typeof(out) == "list") {
@@ -221,12 +221,12 @@ buildPopup <-
       }
 
       out <-
-        out %>%
+        out |>
         dplyr::mutate(dplyr::across(
           .cols = dplyr::everything(),
           .fns = quickTextHTML
-        )) %>%
-        dplyr::rowwise() %>%
+        )) |>
+        dplyr::rowwise() |>
         dplyr::mutate(
           popup = paste(
             dplyr::c_across(cols = dplyr::everything()),
@@ -245,8 +245,8 @@ buildPopup <-
     }
 
     if (!is.null(type)) {
-      out <- dplyr::group_split(data, .data[[type]]) %>%
-        purrr::map(make_popup) %>%
+      out <- dplyr::group_split(data, .data[[type]]) |>
+        purrr::map(make_popup) |>
         purrr::list_rbind()
     } else {
       out <- make_popup(data)

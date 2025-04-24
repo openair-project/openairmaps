@@ -322,7 +322,7 @@ make_leaflet_map <-
       textfun <- identity
     }
 
-    data <- sf::st_as_sf(data, coords = c(longitude, latitude), crs = crs) %>%
+    data <- sf::st_as_sf(data, coords = c(longitude, latitude), crs = crs) |>
       sf::st_transform(crs = 4326)
 
     # create map
@@ -390,7 +390,7 @@ make_leaflet_map <-
           baseGroups = textfun(unique(data[[split_col]])),
           overlayGroups = names(provider),
           options = opts
-        ) %>%
+        ) |>
         leaflet::hideGroup(group = names(provider)[-1])
     } else if (flag_provider & !flag_split) {
       map <-
@@ -399,7 +399,7 @@ make_leaflet_map <-
           position = control.position,
           baseGroups = names(provider),
           options = opts
-        ) %>%
+        ) |>
         leaflet::hideGroup(group = names(provider)[-1])
     } else if (!flag_provider & flag_split) {
       map <-
@@ -472,7 +472,7 @@ create_polar_markers <-
       ))
 
     # nest data
-    nested_df <- data %>%
+    nested_df <- data |>
       tidyr::nest(
         data = -dplyr::all_of(c(
           latitude,
@@ -583,7 +583,7 @@ create_polar_markers <-
 #' @noRd
 estimate_bbox <-
   function(data) {
-    bbox <- sf::st_bbox(data) %>% as.list()
+    bbox <- sf::st_bbox(data) |> as.list()
     xdiff <- abs(bbox$xmin - bbox$xmax) / 2
     ydiff <- abs(bbox$ymin - bbox$ymax) / 2
     diff <- mean(c(xdiff, ydiff))
@@ -645,7 +645,7 @@ create_static_map <-
         coords = c(longitude, latitude),
         crs = crs,
         remove = FALSE
-      ) %>%
+      ) |>
       sf::st_transform(crs = 4326)
 
     # create link to image
@@ -697,7 +697,7 @@ create_static_map <-
 #' @noRd
 quick_popup <- function(data, popup, latitude, longitude, control) {
   nice_popup <-
-    stringr::str_replace_all(popup, "\\_|\\.|\\-", " ") %>%
+    stringr::str_replace_all(popup, "\\_|\\.|\\-", " ") |>
     stringr::str_to_title()
 
   names <- stats::setNames(popup, nice_popup)

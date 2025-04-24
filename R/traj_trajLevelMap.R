@@ -128,12 +128,12 @@ trajLevelMap <-
     if (smooth) {
       data <- smooth_trajgrid(data, pollutant)
 
-      xtest <- dplyr::filter(data, .data$ygrid == .data$ygrid[[1]]) %>%
+      xtest <- dplyr::filter(data, .data$ygrid == .data$ygrid[[1]]) |>
         dplyr::arrange(.data$xgrid)
       xtest <- xtest$xgrid - dplyr::lag(xtest$xgrid)
       lon.inc <- unique(xtest[!is.na(xtest)])[[1]]
 
-      ytest <- dplyr::filter(data, .data$xgrid == .data$xgrid[[1]]) %>%
+      ytest <- dplyr::filter(data, .data$xgrid == .data$xgrid[[1]]) |>
         dplyr::arrange(.data$ygrid)
       ytest <- ytest$ygrid - dplyr::lag(ytest$ygrid)
       lat.inc <- unique(ytest[!is.na(ytest)])[[1]]
@@ -227,7 +227,7 @@ trajLevelMap <-
         popup = popup,
         label = data[["label"]],
         group = data[[type %||% "default"]]
-      ) %>%
+      ) |>
       leaflet::addLegend(
         title = legend.title,
         position = legend.position,

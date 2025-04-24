@@ -96,7 +96,7 @@ buildPopup(
     "Site Type" = "site_type",
     "Date Range" = "date"
   )
-) \%>\%
+) |>
   polarMap("nox", popup = "popup")
 }
 }

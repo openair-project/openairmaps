@@ -17,7 +17,7 @@ URL: https://openair-project.github.io/openairmaps/,
     https://github.com/openair-project/openairmaps
 BugReports: https://github.com/openair-project/openairmaps/issues
 Depends:
-    R (>= 3.2.0)
+    R (>= 4.1.0)
 Imports:
     cli,
     dplyr,

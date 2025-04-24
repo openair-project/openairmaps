@@ -167,7 +167,7 @@ trajMap <-
     data <- openair::cutData(x = data, type = type, ...)
 
     # initialise map
-    map <- leaflet::leaflet() %>%
+    map <- leaflet::leaflet() |>
       leaflet::addProviderTiles(provider = provider)
 
     # if "colour", create colour palette
@@ -263,7 +263,7 @@ trajMap <-
             weight = 2,
             color = lcolors,
             group = as.character(unique(data[[type]])[[j]])
-          ) %>%
+          ) |>
           leaflet::addCircleMarkers(
             data = pdata,
             radius = 3,
@@ -637,7 +637,7 @@ trajMapStatic <-
       plt <-
         plt +
         ggplot2::geom_point(
-          data = dplyr::filter(data, .data$hour.inc == 0) %>%
+          data = dplyr::filter(data, .data$hour.inc == 0) |>
             dplyr::distinct(.data[[latitude]], .data[[longitude]]),
           size = 5,
           stroke = 1.5,

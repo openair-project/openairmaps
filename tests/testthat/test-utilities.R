@@ -21,14 +21,14 @@ test_that("quickTextHTML works", {
 test_that("popup creation works", {
   # columns
   expect_equal(
-    polar_data %>%
-      dplyr::slice_head(n = 1, by = "site") %>%
+    polar_data |>
+      dplyr::slice_head(n = 1, by = "site") |>
       buildPopup(
         columns = c("date", "nox", "site"),
         type = "site",
         latitude = "lat",
         longitude = "lon"
-      ) %>%
+      ) |>
       dplyr::pull(popup),
     c(
       "<b>site</b>: London Bloomsbury<br><b>NO<sub>x</sub></b>: 113<br><b>date</b>: 2009-01-01 to 2009-01-01",
@@ -40,13 +40,13 @@ test_that("popup creation works", {
 
   # named columns
   expect_equal(
-    polar_data %>%
-      dplyr::slice_head(n = 1, by = "site") %>%
+    polar_data |>
+      dplyr::slice_head(n = 1, by = "site") |>
       buildPopup(
         columns = c("Date" = "date", "NOx" = "nox", "Site" = "site"),
         latitude = "lat",
         longitude = "lon"
-      ) %>%
+      ) |>
       dplyr::pull(popup),
     c(
       "<b>Site</b>: London Bloomsbury<br><b>NO<sub>x</sub></b>: 113<br><b>Date</b>: 2009-01-01 to 2009-01-01",

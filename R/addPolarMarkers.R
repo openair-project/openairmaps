@@ -50,24 +50,24 @@
 #' library(openair)
 #'
 #' # different types of polar plot on one map
-#' leaflet(data = polar_data) %>%
-#'   addTiles() %>%
+#' leaflet(data = polar_data) |>
+#'   addTiles() |>
 #'   addPolarMarkers("ws",
 #'     fun = openair::windRose,
 #'     group = "Wind Rose"
-#'   ) %>%
+#'   ) |>
 #'   addPolarMarkers("nox",
 #'     fun = openair::polarPlot,
 #'     group = "Polar Plot"
-#'   ) %>%
+#'   ) |>
 #'   addLayersControl(
 #'     baseGroups = c("Wind Rose", "Polar Plot")
 #'   )
 #'
 #' # use of polar diff (NB: both 'before' and 'after' inherit from `leaflet()`,
 #' # so at least one should be overridden - in this case 'after')
-#' leaflet(data = polar_data) %>%
-#'   addTiles() %>%
+#' leaflet(data = polar_data) |>
+#'   addTiles() |>
 #'   addPolarDiffMarkers("nox",
 #'     after = dplyr::mutate(polar_data, nox = jitter(nox, 5))
 #'   )
@@ -114,7 +114,7 @@ addPolarMarkers <-
         plot = FALSE,
         !!!args,
         par.settings = list(axis.line = list(col = "transparent"))
-      )
+      )$plot
     }
 
     # create dummy split_col

@@ -1,10 +1,9 @@
 traj_data <- openairmaps::traj_data
-`%>%` <- openairmaps::`%>%`
 dates <- unique(traj_data$date)
 
 # create initial map
-map <- leaflet::leaflet() %>%
-  leaflet::addProviderTiles(provider = leaflet::providers$CartoDB.Voyager) %>%
+map <- leaflet::leaflet() |>
+  leaflet::addProviderTiles(provider = leaflet::providers$CartoDB.Voyager) |>
   leaflet::setView(lng = -10, lat = 60, zoom = 4)
 
 # create user interface
@@ -34,14 +33,14 @@ server <- function(input, output, session) {
   output$map <- leaflet::renderLeaflet(map)
 
   observeEvent(input$slider, {
-    leaflet::leafletProxy("map") %>%
+    leaflet::leafletProxy("map") |>
       leaflet::clearGroup("trajpaths")
 
     thedates <-
       dates[dates >= min(input$slider) & dates <= max(input$slider)]
 
     thedata <- traj_data[traj_data$date %in% thedates, ]
-    leaflet::leafletProxy("map") %>%
+    leaflet::leafletProxy("map") |>
       openairmaps::addTrajPaths(
         layerId = "traj",
         data = thedata,

@@ -206,12 +206,12 @@ windroseMap <- function(
       # sort out legend
       intervals <- attr(plots_df$plot[[1]]$data, "intervals")
       intervals <- factor(intervals, intervals)
-      pal <- openair::openColours(scheme = cols, n = length(intervals)) %>%
+      pal <- openair::openColours(scheme = cols, n = length(intervals)) |>
         stats::setNames(intervals)
 
       # create dummy df for creating legend
       dummy <-
-        dplyr::distinct(plots_df, .data[[longitude]], .data[[latitude]]) %>%
+        dplyr::distinct(plots_df, .data[[longitude]], .data[[latitude]]) |>
         tidyr::crossing(intervals)
 
       legend.title <-

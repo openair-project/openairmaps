@@ -223,12 +223,12 @@ percentileMap <- function(
     intervals <- intervals[!is.na(intervals)]
     intervals <- factor(intervals, intervals)
     pal <-
-      openair::openColours(scheme = cols, n = length(intervals)) %>%
+      openair::openColours(scheme = cols, n = length(intervals)) |>
       stats::setNames(intervals)
 
     # create dummy df for creating legend
     dummy <-
-      dplyr::distinct(plots_df, .data[[longitude]], .data[[latitude]]) %>%
+      dplyr::distinct(plots_df, .data[[longitude]], .data[[latitude]]) |>
       tidyr::crossing(intervals)
 
     if (legend) {

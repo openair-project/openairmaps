@@ -181,7 +181,7 @@ networkMap <-
           "#303030",
           "#ff8ee9"
         )
-      ) %>%
+      ) |>
       dplyr::mutate(
         colour2 = ifelse(.data$colour == "#FFFFFF", "#303030", "#FFFFFF")
       )
@@ -191,16 +191,16 @@ networkMap <-
       purrr::map(
         .x = source,
         .f = ~ prepNetworkData(source = .x, year = year)
-      ) %>%
-      purrr::list_rbind() %>%
+      ) |>
+      purrr::list_rbind() |>
       dplyr::left_join(cols, by = "network")
 
     # prep for legend
     cols <- dplyr::filter(cols, .data$network %in% meta$network)
 
     meta <-
-      meta %>%
-      dplyr::group_by(.data$site, .data$latitude, .data$longitude) %>%
+      meta |>
+      dplyr::group_by(.data$site, .data$latitude, .data$longitude) |>
       dplyr::mutate(
         network2 = paste(unique(.data$network), collapse = " <i>(& "),
         network2 = dplyr::if_else(
@@ -209,7 +209,7 @@ networkMap <-
           .data$network2
         ),
         lab = stringr::str_replace(.data$lab, .data$network, .data$network2)
-      ) %>%
+      ) |>
       dplyr::select(-"network2")
 
     # get unique pollutants if control = pollutant
@@ -320,7 +320,7 @@ networkMap <-
       for (i in seq(length(control_vars))) {
         dat <- dplyr::filter(meta, .data[[control]] == control_vars[[i]])
 
-        map <- map %>%
+        map <- map |>
           leaflet::addAwesomeMarkers(
             data = dat,
             lat = dat[["latitude"]],
@@ -350,7 +350,7 @@ networkMap <-
               ),
               baseGroups = sort(quickTextHTML(control_vars)),
               overlayGroups = names(provider)
-            ) %>%
+            ) |>
             leaflet::hideGroup(group = names(provider)[[-1]])
         } else {
           map <-
@@ -376,7 +376,7 @@ networkMap <-
               ),
               overlayGroups = quickTextHTML(sort(control_vars)),
               baseGroups = names(provider)
-            ) %>%
+            ) |>
             leaflet::hideGroup(group = names(provider)[[-1]])
         } else {
           map <-
@@ -397,7 +397,7 @@ networkMap <-
 
       dat <- dplyr::distinct(meta, .data$site, .keep_all = TRUE)
 
-      map <- map %>%
+      map <- map |>
         leaflet::addAwesomeMarkers(
           data = dat,
           lat = dat[["latitude"]],
@@ -423,7 +423,7 @@ networkMap <-
               autoZIndex = FALSE
             ),
             baseGroups = names(provider)
-          ) %>%
+          ) |>
           leaflet::hideGroup(group = names(provider)[[-1]])
       }
     }
@@ -462,8 +462,8 @@ prepNetworkData <- function(source, year) {
       source = source,
       all = TRUE,
       year = year
-    ) %>%
-    dplyr::filter(!is.na(.data$latitude), !is.na(.data$longitude)) %>%
+    ) |>
+    dplyr::filter(!is.na(.data$latitude), !is.na(.data$longitude)) |>
     dplyr::mutate(
       network = dplyr::case_when(
         source %in% c("local", "lmam") ~ "Locally Managed",
@@ -555,7 +555,7 @@ prepNetworkData <- function(source, year) {
             "agglomeration",
             "provider"
           )
-        ) %>%
+        ) |>
         dplyr::mutate(
           provider = stringr::str_trim(.data$provider),
           pcode = dplyr::case_when(
@@ -580,7 +580,7 @@ prepNetworkData <- function(source, year) {
             <b>Provider:</b> {provider}<br>
             <hr>{lab}"
           )
-        ) %>%
+        ) |>
         dplyr::mutate(
           lab = stringr::str_remove_all(
             .data$lab,
@@ -616,7 +616,7 @@ prepNetworkData <- function(source, year) {
             "agglomeration",
             "local_authority"
           )
-        ) %>%
+        ) |>
         dplyr::mutate(
           lab = stringr::str_glue(
             "<u><a href='{domain}{code}'><b>{toupper(stringr::str_to_title(site))}</b> ({code})</a></u><br>
@@ -628,7 +628,7 @@ prepNetworkData <- function(source, year) {
       <b>Local Authority:</b> {local_authority}<br>
       <hr>{lab}"
           )
-        ) %>%
+        ) |>
         dplyr::mutate(
           lab = stringr::str_remove_all(
             .data$lab,
@@ -694,7 +694,7 @@ prepNetworkData <- function(source, year) {
           <b>Network:</b> {network}<br>
           <b>Country:</b> {stringr::str_to_title(country)} ({country_iso_code})<br>
           <b>Site Type:</b> {stringr::str_to_title(site_type)}<br>
-          <b>Site Area:</b> {stringr::str_replace(site_area, '_', ' ') %>% stringr::str_to_title()}<hr>
+          <b>Site Area:</b> {stringr::str_replace(site_area, '_', ' ') |> stringr::str_to_title()}<hr>
           {start_date} - {end_date}"
         )
       )
@@ -715,18 +715,18 @@ prepManagedNetwork <- function(data, vec) {
   vars[vars == "NO"] <- "NOx"
 
   # create labels
-  data <- data %>%
-    dplyr::filter(.data$variable != "NO") %>%
+  data <- data |>
+    dplyr::filter(.data$variable != "NO") |>
     dplyr::mutate(
       lab = stringr::str_glue(
         "<b>{quickTextHTML(Parameter_name)} ({quickTextHTML(variable)})</b><br>{start_date} - {end_date}"
       )
-    ) %>%
-    dplyr::group_by(dplyr::across(dplyr::all_of(vec))) %>%
+    ) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(vec))) |>
     dplyr::summarise(
       lab = paste(.data$lab, collapse = "<br>"),
       .groups = "drop"
-    ) %>%
+    ) |>
     dplyr::right_join(data, by = vec)
 
   return(data)

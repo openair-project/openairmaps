@@ -1,12 +1,11 @@
 polar_data <- openairmaps::polar_data
-`%>%` <- openairmaps::`%>%`
 
 # get list of sites in data
 sites <- unique(polar_data$site)
 
 # create initial map
-map <- leaflet::leaflet() %>%
-  leaflet::addTiles() %>%
+map <- leaflet::leaflet() |>
+  leaflet::addTiles() |>
   leaflet::setView(lng = -0.213492, lat = 51.49548, zoom = 13)
 
 # create user interface
@@ -40,13 +39,13 @@ server <- function(input, output, session) {
   output$map <- leaflet::renderLeaflet(map)
 
   observeEvent(input$button, {
-    leaflet::leafletProxy("map") %>%
+    leaflet::leafletProxy("map") |>
       leaflet::clearGroup("polarmarkers")
 
     for (i in seq_along(input$sites)) {
       thedata <- polar_data[polar_data$site == input$sites[i], ]
 
-      leaflet::leafletProxy("map") %>%
+      leaflet::leafletProxy("map") |>
         openairmaps::addPolarMarkers(
           data = thedata,
           pollutant = input$pollutant,
