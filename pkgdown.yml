@@ -3,7 +3,7 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   articles/openairmaps: openairmaps.html
-last_built: 2025-03-28T10:14Z
+last_built: 2025-04-24T12:01Z
 urls:
   reference: https://openair-project.github.io/openairmaps/reference
   article: https://openair-project.github.io/openairmaps/articles
