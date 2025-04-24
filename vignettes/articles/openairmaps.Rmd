@@ -54,7 +54,7 @@ polarMap(london_data,
 
 By setting `static` to `TRUE` you will receive a static version of the map, which may be more useful for academic articles.
 
-```{r polarstatic}
+```{r polarstatic, fig.alt="A static polar plot map."}
 polarMap(london_data,
          c("no2", "pm10"),
          static = TRUE,

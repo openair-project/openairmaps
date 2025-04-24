@@ -1,7 +1,7 @@
 
 <div align="center">
 
-<img src="man/figures/logo.png" height="200"/>
+<img src="man/figures/logo.png" height="200" alt=""/>
 
 ## **openairmaps**
 ### open source tools to create maps of air pollution data
@@ -50,7 +50,7 @@ status](https://www.r-pkg.org/badges/version/openairmaps)](https://CRAN.R-projec
 - **Map building utilities** such as building popups for interactive maps, formatting common pollutant names and units, and converting UK postcodes to lat/lng coordinates.
 
 <div align="center">
-<img src="man/figures/feature-banner.png" width="800">
+<img src="man/figures/feature-banner.png" width="800" alt="">
 </div>
 
 <hr>
