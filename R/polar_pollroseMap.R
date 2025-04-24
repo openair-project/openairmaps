@@ -197,7 +197,7 @@ pollroseMap <- function(
       )
 
     # create legend
-    if (!is.null(breaks) & legend) {
+    if (!is.null(breaks) && legend) {
       intervals <- attr(plots_df$plot[[1]]$data, "intervals")
       intervals <- factor(intervals, intervals)
       pal <-
@@ -255,7 +255,7 @@ pollroseMap <- function(
       )
 
     # add legend if breaks are defined
-    if (!is.null(breaks) & legend) {
+    if (!is.null(breaks) && legend) {
       legend.title <-
         create_legend_title(
           static = static,

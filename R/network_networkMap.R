@@ -234,7 +234,7 @@ networkMap <-
     map <- leaflet::leaflet()
 
     # add provider tiles
-    if (is.null(names(provider)) | "" %in% names(provider)) {
+    if (is.null(names(provider)) || "" %in% names(provider)) {
       names(provider) <- provider
     }
     for (i in seq_along(provider)) {
@@ -247,7 +247,7 @@ networkMap <-
     }
 
     # cluster options
-    if (cluster | "europe" %in% source) {
+    if (cluster || "europe" %in% source) {
       clusteropts <- leaflet::markerClusterOptions()
     } else {
       clusteropts <- NA
@@ -317,7 +317,7 @@ networkMap <-
       control_vars <- control_vars[control_vars != "NO"]
 
       # add markers
-      for (i in seq(length(control_vars))) {
+      for (i in seq_along(control_vars)) {
         dat <- dplyr::filter(meta, .data[[control]] == control_vars[[i]])
 
         map <- map |>
@@ -429,7 +429,7 @@ networkMap <-
     }
 
     # multiple sources - add legend
-    if (length(source) > 1 & legend) {
+    if (length(source) > 1 && legend) {
       map <-
         leaflet::addLegend(
           map,

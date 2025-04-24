@@ -177,7 +177,7 @@ trajMap <-
 
         if (
           "factor" %in%
-            class(data[[colour]]) |
+            class(data[[colour]]) ||
             "character" %in% class(data[[colour]])
         ) {
           pal <- leaflet::colorFactor(
@@ -217,7 +217,7 @@ trajMap <-
     if (!is.null(colour)) {
       if (
         colour %in%
-          names(data) &
+          names(data) &&
           !colour %in% c("date", "date2", "lat", "lon", "height", "pressure")
       ) {
         data$lab <- paste(
@@ -229,13 +229,13 @@ trajMap <-
     }
 
     # iterate over columns in "type" column
-    for (j in seq(length(unique(data[[type]])))) {
+    for (j in seq_along(unique(data[[type]]))) {
       # get jth instance of "type"
       data2 <-
         dplyr::filter(data, .data[[type]] == unique(data[[type]])[[j]])
 
       # iterate over different arrival dates to plot separate trajectories
-      for (i in seq(length(unique(data2$datef)))) {
+      for (i in seq_along(unique(data2$datef))) {
         # get line/points data
         ldata <-
           dplyr::filter(data2, .data$datef == unique(data2$datef)[[i]])
@@ -267,7 +267,7 @@ trajMap <-
           leaflet::addCircleMarkers(
             data = pdata,
             radius = 3,
-            stroke = F,
+            stroke = FALSE,
             lng = pdata$lon,
             lat = pdata$lat,
             fillOpacity = alpha,

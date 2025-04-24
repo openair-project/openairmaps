@@ -244,7 +244,7 @@ freqMap <- function(
       )
 
     # create legend
-    if (!all(is.na(theBreaks)) & legend) {
+    if (!all(is.na(theBreaks)) && legend) {
       intervals <-
         stringr::str_c(theBreaks, dplyr::lead(theBreaks), sep = " - ")
       intervals <- intervals[!is.na(intervals)]
@@ -303,7 +303,7 @@ freqMap <- function(
       )
 
     # add legends if breaks are set
-    if (!all(is.na(theBreaks)) & legend) {
+    if (!all(is.na(theBreaks)) && legend) {
       legend.title <-
         create_legend_title(
           static = static,

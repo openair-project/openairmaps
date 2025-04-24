@@ -522,7 +522,7 @@ polarMap <- function(
       )
 
     # add legend if limits are set
-    if (!all(is.na(theLimits)) & legend) {
+    if (!all(is.na(theLimits)) && legend) {
       legend.title <-
         create_legend_title(
           static = static,
@@ -561,7 +561,7 @@ polarMap <- function(
         provider = provider
       )
 
-    if (!all(is.na(theLimits)) & legend) {
+    if (!all(is.na(theLimits)) && legend) {
       legend.title <-
         create_legend_title(
           static = static,

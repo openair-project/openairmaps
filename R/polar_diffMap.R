@@ -112,31 +112,6 @@ diffMap <- function(
     cli::cli_abort(
       "{.code limits = 'fixed'} is currently not supported for {.fun diffMap}."
     )
-    # if (length(pollutant) == 1) {
-    #   before <-
-    #     dplyr::mutate(before, latlng = paste(.data[[latitude]], .data[[longitude]]))
-    #   after <-
-    #     dplyr::mutate(after, latlng = paste(.data[[latitude]], .data[[longitude]]))
-    #
-    #   type <- control
-    #   if (is.null(control)) {
-    #     type <- "default"
-    #   }
-    #
-    #   testplots <-
-    #     openair::polarDiff(
-    #       before = before, after = after,
-    #       pollutant = pollutant,
-    #       x = x,
-    #       type = c("latlng", type),
-    #       plot = FALSE,
-    #       ...
-    #     )$data
-    #
-    #   theLimits <- range(testplots[[pollutant]], na.rm = TRUE)
-    # } else {
-    #   cli::cli_warn("{.code limits == 'auto'} only works with a single given {.field pollutant}")
-    # }
   } else if ("free" %in% limits) {
     theLimits <- NA
   } else if (is.numeric(limits)) {
@@ -252,7 +227,7 @@ diffMap <- function(
       )
 
     # create colorbar if limits specified
-    if (!all(is.na(theLimits)) & legend) {
+    if (!all(is.na(theLimits)) && legend) {
       legend.title <-
         create_legend_title(
           static = static,
@@ -296,7 +271,7 @@ diffMap <- function(
       )
 
     # add legend if limits are set
-    if (!all(is.na(theLimits)) & legend) {
+    if (!all(is.na(theLimits)) && legend) {
       legend.title <-
         create_legend_title(
           static = static,

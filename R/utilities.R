@@ -162,13 +162,18 @@ buildPopup <-
     latitude = NULL,
     longitude = NULL,
     type = NULL,
-    fun.character = function(x) paste(unique(x), collapse = ", "),
-    fun.numeric = function(x) signif(mean(x, na.rm = TRUE), 3),
-    fun.dttm = function(x)
+    fun.character = function(x) {
+      paste(unique(x), collapse = ", ")
+    },
+    fun.numeric = function(x) {
+      signif(mean(x, na.rm = TRUE), 3)
+    },
+    fun.dttm = function(x) {
       paste(
         lubridate::floor_date(range(x, na.rm = TRUE), "day"),
         collapse = " to "
-      ),
+      )
+    },
     ...
   ) {
     # check for old facet/control opts

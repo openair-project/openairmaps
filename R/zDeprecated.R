@@ -4,7 +4,7 @@
 check_facet_control <- function(control, ...) {
   dots <- rlang::list2(...)
 
-  if ("control" %in% names(dots) | !is.null(control)) {
+  if ("control" %in% names(dots) || !is.null(control)) {
     lifecycle::deprecate_warn(
       env = rlang::caller_env(),
       user_env = rlang::caller_env(2),

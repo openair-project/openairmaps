@@ -59,7 +59,7 @@ checkMapPrep <-
     })
 
     if ("ws" %in% Names) {
-      if ("ws" %in% Names & is.numeric(mydata$ws)) {
+      if ("ws" %in% Names && is.numeric(mydata$ws)) {
         ## check for negative wind speeds
         if (any(sign(mydata$ws[!is.na(mydata$ws)]) == -1)) {
           if (remove.neg) {
@@ -76,7 +76,7 @@ checkMapPrep <-
     ## data not rounded will be rounded to nearest 10 degrees
     ## assumes 10 is average of 5-15 etc
     if (wd %in% Names) {
-      if (wd %in% Names & is.numeric(mydata[, wd])) {
+      if (wd %in% Names && is.numeric(mydata[, wd])) {
         ## check for wd <0 or > 360
         if (
           any(
@@ -188,7 +188,7 @@ prepMapData <-
     }
 
     # check if more than one pollutant & is.null split
-    if (length(pollutant) > 1 & !is.null(control) & !.pairwise) {
+    if (length(pollutant) > 1 && !is.null(control) && !.pairwise) {
       cli::cli_warn(
         c(
           "!" = "Multiple pollutants {.emph and} {.code type} option specified",
@@ -252,7 +252,7 @@ assume_latlon <- function(data, latitude, longitude, quiet = FALSE) {
     }
   }
 
-  if (is.null(latitude) | is.null(longitude)) {
+  if (is.null(latitude) || is.null(longitude)) {
     if (is.null(latitude)) {
       latitude <- guess_latlon(data, "lat")
     } else {
@@ -279,7 +279,7 @@ assume_latlon <- function(data, latitude, longitude, quiet = FALSE) {
 #' @param polrose use pollutionrose method? T/F
 #' @noRd
 getBreaks <- function(breaks, ws.int, vec, polrose) {
-  if (is.numeric(breaks) & length(breaks) == 1 & polrose) {
+  if (is.numeric(breaks) && length(breaks) == 1 && polrose) {
     breaks <- unique(pretty(
       c(
         min(vec, na.rm = TRUE),
@@ -291,8 +291,8 @@ getBreaks <- function(breaks, ws.int, vec, polrose) {
   if (length(breaks) == 1) {
     breaks <- 0:(breaks - 1) * ws.int
   }
-  if (max(breaks) < max(vec, na.rm = T)) {
-    breaks <- c(breaks, max(vec, na.rm = T))
+  if (max(breaks) < max(vec, na.rm = TRUE)) {
+    breaks <- c(breaks, max(vec, na.rm = TRUE))
   }
   breaks <- unique(breaks)
   breaks <- sort(breaks)
@@ -329,7 +329,7 @@ make_leaflet_map <-
     map <- leaflet::leaflet(data)
 
     # add provider tiles
-    if (is.null(names(provider)) | "" %in% names(provider)) {
+    if (is.null(names(provider)) || "" %in% names(provider)) {
       names(provider) <- provider
     }
     for (i in seq_along(provider)) {
@@ -382,7 +382,7 @@ make_leaflet_map <-
         autoZIndex = FALSE
       )
 
-    if (flag_provider & flag_split) {
+    if (flag_provider && flag_split) {
       map <-
         leaflet::addLayersControl(
           map,
@@ -392,7 +392,7 @@ make_leaflet_map <-
           options = opts
         ) |>
         leaflet::hideGroup(group = names(provider)[-1])
-    } else if (flag_provider & !flag_split) {
+    } else if (flag_provider && !flag_split) {
       map <-
         leaflet::addLayersControl(
           map,
@@ -401,7 +401,7 @@ make_leaflet_map <-
           options = opts
         ) |>
         leaflet::hideGroup(group = names(provider)[-1])
-    } else if (!flag_provider & flag_split) {
+    } else if (!flag_provider && flag_split) {
       map <-
         leaflet::addLayersControl(
           map,
@@ -633,7 +633,7 @@ create_static_map <-
     }
 
     # don't turn facet levels into chr, keep as fct
-    if (length(pollutant) > 1 | !is.null(facet)) {
+    if (length(pollutant) > 1 || !is.null(facet)) {
       levels(plots_df[[split_col]]) <- quickTextHTML(levels(plots_df[[
         split_col
       ]]))
@@ -677,7 +677,7 @@ create_static_map <-
       ggplot2::labs(x = NULL, y = NULL)
 
     if (
-      length(pollutant) > 1 |
+      length(pollutant) > 1 ||
         !is.null(facet)
     ) {
       plt <-
@@ -714,7 +714,7 @@ quick_popup <- function(data, popup, latitude, longitude, control) {
 #' checks if multiple pollutants have been provided with a "fixed" scale
 #' @noRd
 check_multipoll <- function(vec, pollutant) {
-  if ("fixed" %in% vec & length(pollutant) > 1) {
+  if ("fixed" %in% vec && length(pollutant) > 1) {
     cli::cli_warn(
       "{.code 'fixed'} limits only work with a single given {.field pollutant}"
     )

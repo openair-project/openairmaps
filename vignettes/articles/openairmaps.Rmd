@@ -47,7 +47,7 @@ The `polarMap()` family includes `polarMap()`, `annulusMap()`, `freqMap()`, `per
 
 ```{r polar}
 polarMap(london_data,
-         c("no2", "pm10"), 
+         c("no2", "pm10"),
          popup = c("site", "site_type"),
          label = "site")
 ```

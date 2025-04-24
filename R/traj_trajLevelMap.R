@@ -99,7 +99,7 @@ trajLevelMap <-
     map <- leaflet::leaflet()
 
     # set provider tiles
-    for (i in seq(length(unique(provider)))) {
+    for (i in seq_along(unique(provider))) {
       map <- leaflet::addProviderTiles(
         map,
         provider = unique(provider)[[i]],
@@ -141,7 +141,7 @@ trajLevelMap <-
 
     names(data)[names(data) == "height"] <- pollutant
 
-    if (statistic == "frequency" & !smooth) {
+    if (statistic == "frequency" && !smooth) {
       pal <- leaflet::colorBin(
         palette = openair::openColours(scheme = cols),
         domain = data[[pollutant]],
@@ -178,7 +178,7 @@ trajLevelMap <-
       names(data)[names(data) == "count"] <- "gridcount"
     } else if ("n" %in% names(data)) {
       names(data)[names(data) == "n"] <- "gridcount"
-    } else if (tolower(statistic) == "sqtba" & !is.na(.combine)) {
+    } else if (tolower(statistic) == "sqtba" && !is.na(.combine)) {
       data$gridcount <- NA
     }
 
@@ -237,16 +237,16 @@ trajLevelMap <-
       )
 
     # control menu
-    if (length(unique(provider)) > 1 & is.null(type)) {
+    if (length(unique(provider)) > 1 && is.null(type)) {
       map <- leaflet::addLayersControl(map, baseGroups = unique(provider))
     } else if (
-      length(unique(provider)) == 1 &
+      length(unique(provider)) == 1 &&
         !is.null(type)
     ) {
       map <-
         leaflet::addLayersControl(map, baseGroups = sort(unique(data[[type]])))
     } else if (
-      length(unique(provider)) > 1 &
+      length(unique(provider)) > 1 &&
         !is.null(type)
     ) {
       map <-

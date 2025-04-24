@@ -112,7 +112,7 @@ addTrajPaths <-
       )
     )
 
-    for (i in seq(length(unique(data$datef)))) {
+    for (i in seq_along(unique(data$datef))) {
       if (!is.null(layerId)) {
         layerid <- paste(layerId, i, sep = "-")
       } else {
@@ -136,7 +136,7 @@ addTrajPaths <-
           ...
         )
 
-      for (i in 1:nrow(pdata)) {
+      for (i in seq_len(nrow(pdata))) {
         if (!is.null(layerId)) {
           layeridp <- paste(layerid, i, sep = "-")
         } else {
@@ -147,7 +147,7 @@ addTrajPaths <-
             map = map,
             data = pdata[i, ],
             radius = 3,
-            stroke = F,
+            stroke = FALSE,
             lng = pdata[i, ][[lng]],
             lat = pdata[i, ][[lat]],
             group = group,
