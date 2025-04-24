@@ -257,7 +257,11 @@ draws solid lines.</p></dd>
 <dd><p>Arguments passed on to <code><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">ggplot2::coord_sf</a></code></p><dl><dt><code>expand</code></dt>
 <dd><p>If <code>TRUE</code>, the default, adds a small expansion factor to
 the limits to ensure that data and axes don't overlap. If <code>FALSE</code>,
-limits are taken exactly from the data or <code>xlim</code>/<code>ylim</code>.</p></dd>
+limits are taken exactly from the data or <code>xlim</code>/<code>ylim</code>.
+Giving a logical vector will separately control the expansion for the four
+directions (top, left, bottom and right). The <code>expand</code> argument will be
+recycled to length 4 if necessary. Alternatively, can be a named logical
+vector to control a single direction, e.g. <code>expand = c(bottom = FALSE)</code>.</p></dd>
 
     <dt><code>datum</code></dt>
 <dd><p>CRS that provides datum to use when generating graticules.</p></dd>
@@ -325,6 +329,12 @@ drawing of data points anywhere on the plot, including in the plot margins. If
 limits are set via <code>xlim</code> and <code>ylim</code> and some data points fall outside those
 limits, then those data points may show up in places such as the axes, the
 legend, the plot title, or the plot margins.</p></dd>
+
+    <dt><code>reverse</code></dt>
+<dd><p>A string giving which directions to reverse. <code>"none"</code>
+(default) keeps directions as is. <code>"x"</code> and <code>"y"</code> can be used to reverse
+their respective directions. <code>"xy"</code> can be used to reverse both
+directions.</p></dd>
 
 
 </dl></dd>

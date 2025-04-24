@@ -50,6 +50,11 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="openairmaps-development-version">openairmaps (development version)<a class="anchor" aria-label="anchor" href="#openairmaps-development-version"></a></h2>
 <div class="section level3">
+<h3 id="breaking-changes-development-version">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<ul><li>
+<a href="https://openair-project.github.io/openairmaps/">openairmaps</a> now depends on a minimum R version of 4.1.0 and no longer exports the <a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a> pipe (<code>%&gt;%</code>). Users are encouraged to use the base R pipe (<code>|&gt;</code>) instead. In most cases, this is a drop-in replacement.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
 <ul><li><p>Polar marker functions have gained the <code>n.core</code> argument, which allows for the use of <a href="https://shikokuchuo.net/mirai/" class="external-link">mirai</a> for parallel plot creation. <a href="https://shikokuchuo.net/mirai/" class="external-link">mirai</a> is not imported by <a href="https://openair-project.github.io/openairmaps/">openairmaps</a> by default, but users will be prompted to download it if they set <code>n.core</code> to be greater than <code>1L</code>.</p></li>
 <li><p>The progress bar shown when <code>progress = TRUE</code> now better reflects the actual time until function completion.</p></li>
