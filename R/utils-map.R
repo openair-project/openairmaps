@@ -523,7 +523,7 @@ create_polar_markers <-
 
     save_plot <- function(data, url) {
       # suppress Rplots.pdf
-      withr::with_pdf(
+      withr::local_pdf(
         tempfile("PDFSINK"),
         {
           # create plot
