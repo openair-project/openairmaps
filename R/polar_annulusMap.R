@@ -177,7 +177,7 @@ annulusMap <- function(
         key = key,
         ...,
         par.settings = list(axis.line = list(col = "transparent"))
-      )$plot
+      )
     } else {
       openair::polarAnnulus(
         data,
@@ -189,7 +189,7 @@ annulusMap <- function(
         key = key,
         ...,
         par.settings = list(axis.line = list(col = "transparent"))
-      )$plot
+      )
     }
   }
 

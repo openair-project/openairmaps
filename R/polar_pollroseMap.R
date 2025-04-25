@@ -162,7 +162,7 @@ pollroseMap <- function(
       annotate = FALSE,
       ...,
       par.settings = list(axis.line = list(col = "transparent"))
-    )$plot
+    )
   }
 
   # plot and save static markers
@@ -225,13 +225,14 @@ pollroseMap <- function(
           ggplot2::aes(
             .data[[longitude]],
             .data[[latitude]],
-            fill = .data[["intervals"]]
+            color = .data[["intervals"]]
           ),
           size = 0,
-          key_glyph = ggplot2::draw_key_rect
+          key_glyph = ggplot2::draw_key_rect,
+          show.legend = TRUE
         ) +
-        ggplot2::scale_fill_manual(values = pal, drop = FALSE) +
-        ggplot2::labs(fill = legend.title) +
+        ggplot2::scale_color_manual(values = pal, drop = FALSE) +
+        ggplot2::labs(color = legend.title) +
         ggplot2::theme(legend.position = legend.position)
     }
   }

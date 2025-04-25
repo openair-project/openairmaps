@@ -522,28 +522,22 @@ create_polar_markers <-
     }
 
     save_plot <- function(data, url) {
-      # suppress Rplots.pdf
-      withr::local_pdf(
-        tempfile("PDFSINK"),
-        {
-          # create plot
-          plot <- fun(data)
+      # create plot
+      openair_obj <- fun(data)
+      plot <- openair_obj$plot
 
-          # save plot
-          ragg::agg_png(
-            filename = url,
-            width = width * 300,
-            height = height * 300,
-            res = 300,
-            background = "transparent"
-          )
-          print(plot)
-          grDevices::dev.off()
-
-          # return plot
-          return(plot)
-        }
+      # save plot
+      ragg::agg_png(
+        filename = url,
+        width = width * 300,
+        height = height * 300,
+        res = 300,
+        background = "transparent"
       )
+      print(plot)
+      grDevices::dev.off()
+
+      return(openair_obj)
     }
 
     if (ncores == 1L) {
@@ -555,23 +549,19 @@ create_polar_markers <-
     } else {
       rlang::check_installed("mirai")
       if (progress) {
+        mirai::daemons(ncores)
+        on.exit(mirai::daemons(0))
         plots_df$plot <-
-          with(
-            mirai::daemons(ncores),
-            mirai::mirai_map(
-              .x = dplyr::select(plots_df, "data", "url"),
-              .f = save_plot
-            )[mirai::.progress, mirai::.stop]
-          )
+          mirai::mirai_map(
+            .x = dplyr::select(plots_df, "data", "url"),
+            .f = save_plot
+          )[mirai::.progress, mirai::.stop]
       } else {
         plots_df$plot <-
-          with(
-            mirai::daemons(ncores),
-            mirai::mirai_map(
-              .x = dplyr::select(plots_df, "data", "url"),
-              .f = save_plot
-            )[mirai::.stop]
-          )
+          mirai::mirai_map(
+            .x = dplyr::select(plots_df, "data", "url"),
+            .f = save_plot
+          )[mirai::.stop]
       }
     }
 

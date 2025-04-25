@@ -352,7 +352,7 @@ When arguments like \code{limits}, \code{percentile} or \code{breaks} are define
 legend is automatically added to the figure. Legends can be removed using
 \code{ggplot2::theme(legend.position = "none")}, or further customised using
 \code{\link[ggplot2:guides]{ggplot2::guides()}} and either \code{color = ggplot2::guide_colourbar()} for
-continuous legends or \code{fill = ggplot2::guide_legend()} for discrete
+continuous legends or \code{color = ggplot2::guide_legend()} for discrete
 legends.
 }
 

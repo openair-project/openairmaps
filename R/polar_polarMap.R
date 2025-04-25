@@ -23,7 +23,7 @@
 #'   legend is automatically added to the figure. Legends can be removed using
 #'   `ggplot2::theme(legend.position = "none")`, or further customised using
 #'   [ggplot2::guides()] and either `color = ggplot2::guide_colourbar()` for
-#'   continuous legends or `fill = ggplot2::guide_legend()` for discrete
+#'   continuous legends or `color = ggplot2::guide_legend()` for discrete
 #'   legends.
 #'
 #' @family directional analysis maps
@@ -484,7 +484,7 @@ polarMap <- function(
       key = key,
       ...,
       par.settings = list(axis.line = list(col = "transparent"))
-    )$plot
+    )
   }
 
   # plot and save static markers
