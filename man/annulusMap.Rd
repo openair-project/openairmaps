@@ -31,7 +31,6 @@ annulusMap(
   static = FALSE,
   static.nrow = NULL,
   progress = TRUE,
-  n.core = 1L,
   ...,
   control = NULL
 )
@@ -274,15 +273,6 @@ By default, a progress bar is shown to visualise the function's progress
 creating individual polar markers. This option allows this to be turned
 off, if desired.}
 
-\item{n.core}{\emph{Number of cores to use in parallel processing.}
-
-\emph{default:} \code{1L} | \emph{scope:} dynamic & static
-
-By default, each polar marker is drawn and saved sequentially. For big maps
-with a lot of markers, this can be slow. Adjusting \code{n.core} to a number
-greater than \code{1} will use \link[mirai:mirai-package]{mirai} to create markers
-in parallel.}
-
 \item{...}{
   Arguments passed on to \code{\link[openair:polarAnnulus]{openair::polarAnnulus}}
   \describe{
@@ -299,7 +289,8 @@ of \dQuote{smearing-out} the concentrations. Sometimes, a useful approach
 is to express time as local time. This correction tends to produce
 better-defined diurnal profiles of concentration (or other variables) and
 allows a better comparison to be made with emissions/activity data. If set
-to \code{FALSE} then GMT is used. Examples of usage include \code{local.tz = "Europe/London"}, \code{local.tz = "America/New_York"}. See
+to \code{FALSE} then GMT is used. Examples of usage include \code{local.tz
+  = "Europe/London"}, \code{local.tz = "America/New_York"}. See
 \code{cutData} and \code{import} for more details.}
     \item{\code{statistic}}{The statistic that should be applied to each wind
 speed/direction bin. Can be \dQuote{mean} (default), \dQuote{median},
@@ -307,13 +298,15 @@ speed/direction bin. Can be \dQuote{mean} (default), \dQuote{median},
 deviation), \dQuote{weighted.mean} or \dQuote{cpf} (Conditional Probability
 Function). Because of the smoothing involved, the colour scale for some of
 these statistics is only to provide an indication of overall pattern and
-should not be interpreted in concentration units e.g. for \code{statistic = "weighted.mean"} where the bin mean is multiplied by the bin frequency and
+should not be interpreted in concentration units e.g. for \code{statistic =
+  "weighted.mean"} where the bin mean is multiplied by the bin frequency and
 divided by the total frequency. In many cases using \code{polarFreq} will
 be better. Setting \code{statistic = "weighted.mean"} can be useful because
 it provides an indication of the concentration * frequency of occurrence
 and will highlight the wind speed/direction conditions that dominate the
 overall mean.}
-    \item{\code{percentile}}{If \code{statistic = "percentile"} or \code{statistic = "cpf"} then \code{percentile} is used, expressed from 0 to 100. Note that
+    \item{\code{percentile}}{If \code{statistic = "percentile"} or \code{statistic =
+  "cpf"} then \code{percentile} is used, expressed from 0 to 100. Note that
 the percentile value is calculated in the wind speed, wind direction
 \sQuote{bins}. For this reason it can also be useful to set \code{min.bin}
 to ensure there are a sufficient number of points available to estimate a
@@ -361,7 +354,7 @@ This option is particularly useful if one is interested in the patterns of
 concentrations for several pollutants on different scales e.g. NOx and CO.
 Often useful if more than one \code{pollutant} is chosen.}
     \item{\code{key.header}}{Adds additional text/labels to the scale key. For example,
-passing the options \verb{key.header = "header", key.footer = "footer1"}
+passing the options \code{key.header = "header", key.footer = "footer1"}
 adds addition text above and below the scale key. These arguments are
 passed to \code{drawOpenKey} via \code{quickText}, applying the
 \code{auto.text} argument, to handle formatting.}

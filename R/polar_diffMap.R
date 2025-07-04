@@ -83,7 +83,6 @@ diffMap <- function(
   static = FALSE,
   static.nrow = NULL,
   progress = TRUE,
-  n.core = 1L,
   ...,
   control = NULL
 ) {

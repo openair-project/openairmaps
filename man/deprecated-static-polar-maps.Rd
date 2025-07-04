@@ -292,8 +292,11 @@ marker is desired.}
 
 \item{...}{Passed to the polar plotting function}
 
-\item{before, after}{Data frames representing the "before" and "after" cases.
-See \code{\link[openair:polarPlot]{polarPlot()}} for details of different input requirements.}
+\item{before}{A data frame that represents the "before" case. See
+\code{\link[openair:polarPlot]{polarPlot()}} for details of different input requirements.}
+
+\item{after}{A data frame that represents the "after" case. See \code{\link[openair:polarPlot]{polarPlot()}}
+for details of different input requirements.}
 
 \item{period}{\emph{Temporal period for radial axis.}
 

@@ -31,7 +31,6 @@ percentileMap(
   static = FALSE,
   static.nrow = NULL,
   progress = TRUE,
-  n.core = 1L,
   ...,
   control = NULL
 )
@@ -271,15 +270,6 @@ By default, a progress bar is shown to visualise the function's progress
 creating individual polar markers. This option allows this to be turned
 off, if desired.}
 
-\item{n.core}{\emph{Number of cores to use in parallel processing.}
-
-\emph{default:} \code{1L} | \emph{scope:} dynamic & static
-
-By default, each polar marker is drawn and saved sequentially. For big maps
-with a lot of markers, this can be slow. Adjusting \code{n.core} to a number
-greater than \code{1} will use \link[mirai:mirai-package]{mirai} to create markers
-in parallel.}
-
 \item{...}{
   Arguments passed on to \code{\link[openair:percentileRose]{openair::percentileRose}}
   \describe{
@@ -308,7 +298,7 @@ value between 0 and 360 degrees to mitigate such problems. For example
 titles and axis labels will automatically try and format pollutant names
 and units properly e.g.  by subscripting the `2' in NO2.}
     \item{\code{key.header}}{Adds additional text/labels to the scale key. For example,
-passing the options \verb{key.header = "header", key.footer = "footer1"}
+passing the options \code{key.header = "header", key.footer = "footer1"}
 adds addition text above and below the scale key. These arguments are
 passed to \code{drawOpenKey} via \code{quickText}, applying the
 \code{auto.text} argument, to handle formatting.}

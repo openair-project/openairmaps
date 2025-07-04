@@ -75,7 +75,6 @@ pollroseMap <- function(
   static = FALSE,
   static.nrow = NULL,
   progress = TRUE,
-  n.core = 1L,
   ...,
   control = NULL
 ) {
@@ -176,8 +175,7 @@ pollroseMap <- function(
       d.fig = d.fig,
       popup = popup,
       label = label,
-      progress = progress,
-      ncores = n.core
+      progress = progress
     )
 
   if (static) {

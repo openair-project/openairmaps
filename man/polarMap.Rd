@@ -32,7 +32,6 @@ polarMap(
   static = FALSE,
   static.nrow = NULL,
   progress = TRUE,
-  n.core = 1L,
   ...,
   control = NULL
 )
@@ -287,15 +286,6 @@ By default, a progress bar is shown to visualise the function's progress
 creating individual polar markers. This option allows this to be turned
 off, if desired.}
 
-\item{n.core}{\emph{Number of cores to use in parallel processing.}
-
-\emph{default:} \code{1L} | \emph{scope:} dynamic & static
-
-By default, each polar marker is drawn and saved sequentially. For big maps
-with a lot of markers, this can be slow. Adjusting \code{n.core} to a number
-greater than \code{1} will use \link[mirai:mirai-package]{mirai} to create markers
-in parallel.}
-
 \item{...}{
   Arguments passed on to \code{\link[openair:polarPlot]{openair::polarPlot}}
   \describe{
@@ -449,7 +439,7 @@ This option is particularly useful if one is interested in the patterns of
 concentrations for several pollutants on different scales e.g. NOx and CO.
 Often useful if more than one \code{pollutant} is chosen.}
     \item{\code{key.header}}{Adds additional text/labels to the scale key. For example,
-passing the options \verb{key.header = "header", key.footer = "footer1"}
+passing the options \code{key.header = "header", key.footer = "footer1"}
 adds addition text above and below the scale key. These arguments are
 passed to \code{drawOpenKey} via \code{quickText}, applying the
 \code{auto.text} argument, to handle formatting.}
@@ -466,15 +456,15 @@ statistics are used such as \emph{r}. Default is \code{0.5}.}
     \item{\code{wd_spread}}{The value of sigma used for Gaussian kernel weighting of
 wind direction when \code{statistic = "nwr"} or when correlation and
 regression statistics are used such as \emph{r}. Default is \code{4}.}
-    \item{\code{x_error}}{The \code{x} error / uncertainty used when \code{statistic = "york_slope"}.}
-    \item{\code{y_error}}{The \code{y} error / uncertainty used when \code{statistic = "york_slope"}.}
+    \item{\code{x_error}}{The \code{x} error / uncertainty used when \code{statistic =
+"york_slope"}.}
+    \item{\code{y_error}}{The \code{y} error / uncertainty used when \code{statistic =
+"york_slope"}.}
     \item{\code{kernel}}{Type of kernel used for the weighting procedure for when
 correlation or regression techniques are used. Only \code{"gaussian"} is
 supported but this may be enhanced in the future.}
     \item{\code{formula.label}}{When pair-wise statistics such as regression slopes are
-calculated and plotted, should a formula label be displayed?
-\code{formula.label} will also determine whether concentration information
-is printed when \code{statistic = "cpf"}.}
+calculated and plotted, should a formula label be displayed?}
     \item{\code{tau}}{The quantile to be estimated when \code{statistic} is set to
 \code{"quantile.slope"}. Default is \code{0.5} which is equal to the median
 and will be ignored if \code{"quantile.slope"} is not used.}

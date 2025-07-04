@@ -276,15 +276,6 @@
 #'   creating individual polar markers. This option allows this to be turned
 #'   off, if desired.
 #'
-#' @param n.core *Number of cores to use in parallel processing.*
-#'
-#'  *default:* `1L` | *scope:* dynamic & static
-#'
-#'   By default, each polar marker is drawn and saved sequentially. For big maps
-#'   with a lot of markers, this can be slow. Adjusting `n.core` to a number
-#'   greater than `1` will use [mirai][mirai::mirai-package] to create markers
-#'   in parallel.
-#'
 #' @param control **Deprecated.** Please use `type`.
 #'
 #' @inheritDotParams openair::polarPlot -mydata -pollutant -x -limits -type
@@ -335,7 +326,6 @@ polarMap <- function(
   static = FALSE,
   static.nrow = NULL,
   progress = TRUE,
-  n.core = 1L,
   ...,
   control = NULL
 ) {
@@ -499,8 +489,7 @@ polarMap <- function(
       popup = popup,
       label = label,
       dropcol = funpoll,
-      progress = progress,
-      ncores = n.core
+      progress = progress
     )
 
   if (!static) {
