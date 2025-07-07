@@ -225,14 +225,19 @@ pollroseMap <- function(
           ggplot2::aes(
             .data[[longitude]],
             .data[[latitude]],
-            color = .data[["intervals"]]
+            color = .data[["intervals"]],
+            fill = .data[["intervals"]]
           ),
           size = 0,
           key_glyph = ggplot2::draw_key_rect,
           show.legend = TRUE
         ) +
-        ggplot2::scale_color_manual(values = pal, drop = FALSE) +
-        ggplot2::labs(color = legend.title) +
+        ggplot2::scale_color_manual(
+          values = pal,
+          drop = FALSE,
+          aesthetics = c("fill", "color")
+        ) +
+        ggplot2::labs(color = legend.title, fill = legend.title) +
         ggplot2::theme(legend.position = legend.position)
     }
   }

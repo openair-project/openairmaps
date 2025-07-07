@@ -230,13 +230,18 @@ windroseMap <- function(
           ggplot2::aes(
             .data[[longitude]],
             .data[[latitude]],
-            color = .data[["intervals"]]
+            color = .data[["intervals"]],
+            fill = .data[["intervals"]]
           ),
           size = 0,
           key_glyph = ggplot2::draw_key_rect
         ) +
-        ggplot2::scale_color_manual(values = pal, drop = FALSE) +
-        ggplot2::labs(color = legend.title) +
+        ggplot2::scale_color_manual(
+          values = pal,
+          drop = FALSE,
+          aesthetics = c("color", "fill")
+        ) +
+        ggplot2::labs(color = legend.title, fill = legend.title) +
         ggplot2::theme(legend.position = legend.position)
     }
 
