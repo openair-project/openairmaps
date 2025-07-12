@@ -99,7 +99,6 @@ produced instead.</p>
 <span>  static <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  static.nrow <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  n.core <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  control <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -340,15 +339,6 @@ creating individual polar markers. This option allows this to be turned
 off, if desired.</p></dd>
 
 
-<dt id="arg-n-core">n.core<a class="anchor" aria-label="anchor" href="#arg-n-core"></a></dt>
-<dd><p><em>Number of cores to use in parallel processing.</em></p>
-<p><em>default:</em> <code>1L</code> | <em>scope:</em> dynamic &amp; static</p>
-<p>By default, each polar marker is drawn and saved sequentially. For big maps
-with a lot of markers, this can be slow. Adjusting <code>n.core</code> to a number
-greater than <code>1</code> will use <a href="https://mirai.r-lib.org/reference/mirai-package.html" class="external-link">mirai</a> to create markers
-in parallel.</p></dd>
-
-
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Arguments passed on to <code><a href="https://rdrr.io/pkg/openair/man/polarFreq.html" class="external-link">openair::polarFreq</a></code></p><dl><dt><code>ws.int</code></dt>
 <dd><p>Wind speed interval assumed. In some cases e.g. a low met
@@ -426,6 +416,23 @@ and units properly e.g.  by subscripting the `2' in NO2.</p></dd>
     <p>Either:</p><ul><li><p><em>Dynamic:</em> A leaflet object</p></li>
 <li><p><em>Static:</em> A <code>ggplot2</code> object using <code><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">ggplot2::coord_sf()</a></code> coordinates with a <code>ggspatial</code> basemap</p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="parallel-processing-with-mirai">Parallel processing with mirai<a class="anchor" aria-label="anchor" href="#parallel-processing-with-mirai"></a></h2>
+
+
+
+<p>Creating a directional analysis map can take a lot of time; each polar
+marker needs to be plot individually, and many of these require some
+expensive computations. <code>openairmaps</code> supports parallel processing with
+<code>{mirai}</code> to speed these computations up. Users may create workers by
+running <code><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">mirai::daemons()</a></code> in their R session.</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>mirai<span class="sc">::</span><span class="fu">daemons</span>(<span class="dv">4</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">polarMap</span>(polar_data, <span class="st">"no2"</span>)</span></code></pre><p></p></div>
+<p>Typically, spawning one
+fewer daemons than your number of available cores is a useful rule of
+thumb. Parallel processing will be most useful for the most computationally
+intensive plotting functions - i.e., <code><a href="polarMap.html">polarMap()</a></code> and <code><a href="annulusMap.html">annulusMap()</a></code>.</p>
+    </div>
     <div class="section level2">
     <h2 id="customisation-of-static-maps-using-ggplot-">Customisation of static maps using ggplot2<a class="anchor" aria-label="anchor" href="#customisation-of-static-maps-using-ggplot-"></a></h2>
 

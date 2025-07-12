@@ -59,7 +59,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
-<ul><li><p>Polar marker functions have gained the <code>n.core</code> argument, which allows for the use of <a href="https://mirai.r-lib.org" class="external-link">mirai</a> for parallel plot creation. <a href="https://mirai.r-lib.org" class="external-link">mirai</a> is not imported by <a href="https://openair-project.github.io/openairmaps/">openairmaps</a> by default, but users will be prompted to download it if they set <code>n.core</code> to be greater than <code>1L</code>.</p></li>
+<ul><li><p>Polar marker functions (both the <code><a href="../reference/polarMap.html">polarMap()</a></code> family and <code><a href="../reference/addPolarMarkers.html">addPolarMarkers()</a></code>) can now be run asynchronously if the user sets <code><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">mirai::daemons()</a></code>. Internally, this uses <code><a href="https://purrr.tidyverse.org/reference/in_parallel.html" class="external-link">purrr::in_parallel()</a></code>.</p></li>
 <li><p>The progress bar shown when <code>progress = TRUE</code> now better reflects the actual time until function completion.</p></li>
 <li><p><code><a href="../reference/networkMap.html">networkMap()</a></code> can now use <code>source = 'imperial'</code>, in line with updates to <a href="https://davidcarslaw.github.io/openair/" class="external-link">openair</a>.</p></li>
 </ul></div>
