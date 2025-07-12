@@ -648,7 +648,7 @@ prepNetworkData <- function(source, year) {
       dplyr::mutate(
         meta,
         url = paste0(
-          "https://www.londonair.org.uk/london/asp/publicdetails.asp?site=",
+          "https://londonair.org.uk/london/asp/publicdetails.asp?site=",
           .data$code
         ),
         start_date = lubridate::as_date(.data$start_date),
