@@ -32,6 +32,7 @@ Imports:
     stringr,
     tidyr
 Suggests:
+    carrier,
     curl,
     ggplot2,
     ggspatial,
@@ -39,6 +40,7 @@ Suggests:
     jsonlite,
     knitr,
     mgcv,
+    mirai,
     prettymapr,
     rmarkdown,
     shiny,

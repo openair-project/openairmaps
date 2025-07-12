@@ -309,6 +309,25 @@ multiple layers of markers can be created using \code{type}. By default, these
 maps are dynamic and can be panned, zoomed, and otherwise interacted with.
 Using the \code{static} argument allows for static images to be produced instead.
 }
+\section{Parallel processing with mirai}{
+
+
+Creating a directional analysis map can take a lot of time; each polar
+marker needs to be plot individually, and many of these require some
+expensive computations. \code{openairmaps} supports parallel processing with
+\code{{mirai}} to speed these computations up. Users may create workers by
+running \code{\link[mirai:daemons]{mirai::daemons()}} in their R session.
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{mirai::daemons(4)
+polarMap(polar_data, "no2")
+}\if{html}{\out{</div>}}
+
+Typically, spawning one
+fewer daemons than your number of available cores is a useful rule of
+thumb. Parallel processing will be most useful for the most computationally
+intensive plotting functions - i.e., \code{\link[=polarMap]{polarMap()}} and \code{\link[=annulusMap]{annulusMap()}}.
+}
+
 \section{Customisation of static maps using ggplot2}{
 
 

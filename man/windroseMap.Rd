@@ -261,6 +261,10 @@ direction values with which the first can be compared. See
     \item{\code{angle}}{Default angle of \dQuote{spokes} is 30. Other potentially useful
 angles are 45 and 10. Note that the width of the wind speed interval may
 need adjusting using \code{width}.}
+    \item{\code{calm.thresh}}{By default, conditions are considered to be calm when the
+wind speed is zero. The user can set a different threshold for calms be
+setting \code{calm.thresh} to a higher value. For example,
+\code{calm.thresh = 0.5} will identify wind speeds \strong{below} 0.5 as calm.}
     \item{\code{bias.corr}}{When \code{angle} does not divide exactly into 360 a bias is
 introduced in the frequencies when the wind direction is already supplied
 rounded to the nearest 10 degrees, as is often the case. For example, if
@@ -345,6 +349,25 @@ default, these maps are dynamic and can be panned, zoomed, and otherwise
 interacted with. Using the \code{static} argument allows for static images to be
 produced instead.
 }
+\section{Parallel processing with mirai}{
+
+
+Creating a directional analysis map can take a lot of time; each polar
+marker needs to be plot individually, and many of these require some
+expensive computations. \code{openairmaps} supports parallel processing with
+\code{{mirai}} to speed these computations up. Users may create workers by
+running \code{\link[mirai:daemons]{mirai::daemons()}} in their R session.
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{mirai::daemons(4)
+polarMap(polar_data, "no2")
+}\if{html}{\out{</div>}}
+
+Typically, spawning one
+fewer daemons than your number of available cores is a useful rule of
+thumb. Parallel processing will be most useful for the most computationally
+intensive plotting functions - i.e., \code{\link[=polarMap]{polarMap()}} and \code{\link[=annulusMap]{annulusMap()}}.
+}
+
 \section{Customisation of static maps using ggplot2}{
 
 

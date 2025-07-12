@@ -439,7 +439,7 @@ This option is particularly useful if one is interested in the patterns of
 concentrations for several pollutants on different scales e.g. NOx and CO.
 Often useful if more than one \code{pollutant} is chosen.}
     \item{\code{key.header}}{Adds additional text/labels to the scale key. For example,
-passing the options \code{key.header = "header", key.footer = "footer1"}
+passing the options \verb{key.header = "header", key.footer = "footer1"}
 adds addition text above and below the scale key. These arguments are
 passed to \code{drawOpenKey} via \code{quickText}, applying the
 \code{auto.text} argument, to handle formatting.}
@@ -456,15 +456,15 @@ statistics are used such as \emph{r}. Default is \code{0.5}.}
     \item{\code{wd_spread}}{The value of sigma used for Gaussian kernel weighting of
 wind direction when \code{statistic = "nwr"} or when correlation and
 regression statistics are used such as \emph{r}. Default is \code{4}.}
-    \item{\code{x_error}}{The \code{x} error / uncertainty used when \code{statistic =
-"york_slope"}.}
-    \item{\code{y_error}}{The \code{y} error / uncertainty used when \code{statistic =
-"york_slope"}.}
+    \item{\code{x_error}}{The \code{x} error / uncertainty used when \code{statistic = "york_slope"}.}
+    \item{\code{y_error}}{The \code{y} error / uncertainty used when \code{statistic = "york_slope"}.}
     \item{\code{kernel}}{Type of kernel used for the weighting procedure for when
 correlation or regression techniques are used. Only \code{"gaussian"} is
 supported but this may be enhanced in the future.}
     \item{\code{formula.label}}{When pair-wise statistics such as regression slopes are
-calculated and plotted, should a formula label be displayed?}
+calculated and plotted, should a formula label be displayed?
+\code{formula.label} will also determine whether concentration information
+is printed when \code{statistic = "cpf"}.}
     \item{\code{tau}}{The quantile to be estimated when \code{statistic} is set to
 \code{"quantile.slope"}. Default is \code{0.5} which is equal to the median
 and will be ignored if \code{"quantile.slope"} is not used.}
@@ -487,6 +487,25 @@ default, these maps are dynamic and can be panned, zoomed, and otherwise
 interacted with. Using the \code{static} argument allows for static images to be
 produced instead.
 }
+\section{Parallel processing with mirai}{
+
+
+Creating a directional analysis map can take a lot of time; each polar
+marker needs to be plot individually, and many of these require some
+expensive computations. \code{openairmaps} supports parallel processing with
+\code{{mirai}} to speed these computations up. Users may create workers by
+running \code{\link[mirai:daemons]{mirai::daemons()}} in their R session.
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{mirai::daemons(4)
+polarMap(polar_data, "no2")
+}\if{html}{\out{</div>}}
+
+Typically, spawning one
+fewer daemons than your number of available cores is a useful rule of
+thumb. Parallel processing will be most useful for the most computationally
+intensive plotting functions - i.e., \code{\link[=polarMap]{polarMap()}} and \code{\link[=annulusMap]{annulusMap()}}.
+}
+
 \section{Customisation of static maps using ggplot2}{
 
 

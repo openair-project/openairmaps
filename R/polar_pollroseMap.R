@@ -6,6 +6,7 @@
 #' maps are dynamic and can be panned, zoomed, and otherwise interacted with.
 #' Using the `static` argument allows for static images to be produced instead.
 #'
+#' @inheritSection polarMap Parallel processing with mirai
 #' @inheritSection polarMap Customisation of static maps using ggplot2
 #' @family directional analysis maps
 #'
