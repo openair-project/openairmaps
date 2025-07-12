@@ -440,8 +440,7 @@ create_polar_markers <-
     label = NULL,
     d.fig,
     dropcol = "conc",
-    progress = TRUE,
-    ncores
+    progress = TRUE
   ) {
     # make temp directory
     dir <- tempdir()
@@ -521,49 +520,28 @@ create_polar_markers <-
       height <- d.fig[[2]]
     }
 
-    save_plot <- function(data, url) {
-      # create plot
-      openair_obj <- fun(data)
-      plot <- openair_obj$plot
-
-      # save plot
-      ragg::agg_png(
-        filename = url,
-        width = width * 300,
-        height = height * 300,
-        res = 300,
-        background = "transparent"
-      )
-      print(plot)
-      grDevices::dev.off()
-
-      return(openair_obj)
-    }
-
-    if (ncores == 1L) {
-      plots_df$plot <- purrr::pmap(
-        .l = dplyr::select(plots_df, "data", "url"),
-        .f = save_plot,
-        .progress = progress
-      )
-    } else {
-      rlang::check_installed("mirai")
-      if (progress) {
-        mirai::daemons(ncores)
-        on.exit(mirai::daemons(0))
-        plots_df$plot <-
-          mirai::mirai_map(
-            .x = dplyr::select(plots_df, "data", "url"),
-            .f = save_plot
-          )[mirai::.progress, mirai::.stop]
-      } else {
-        plots_df$plot <-
-          mirai::mirai_map(
-            .x = dplyr::select(plots_df, "data", "url"),
-            .f = save_plot
-          )[mirai::.stop]
-      }
-    }
+    # create and save plots
+    purrr::pmap(
+      .l = dplyr::select(plots_df, "data", "url"),
+      .f = purrr::in_parallel(
+        function(data, url) {
+          # save plot
+          ragg::agg_png(
+            filename = url,
+            width = width * 300,
+            height = height * 300,
+            res = 300,
+            background = "transparent"
+          )
+          print(fun(data)$plot)
+          grDevices::dev.off()
+        },
+        fun = fun,
+        width = width,
+        height = height
+      ),
+      .progress = progress
+    )
 
     return(plots_df)
   }

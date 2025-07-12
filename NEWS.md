@@ -6,7 +6,7 @@
 
 ## New features
 
-* Polar marker functions have gained the `n.core` argument, which allows for the use of `{mirai}` for parallel plot creation. `{mirai}` is not imported by `{openairmaps}` by default, but users will be prompted to download it if they set `n.core` to be greater than `1L`.
+* Polar marker functions (both the `polarMap()` family and `addPolarMarkers()`) can now be run asynchronously if the user sets `mirai::daemons()`. Internally, this uses `purrr::in_parallel()`.
 
 * The progress bar shown when `progress = TRUE` now better reflects the actual time until function completion.
 

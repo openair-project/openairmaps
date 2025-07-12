@@ -7,6 +7,24 @@
 #' interacted with. Using the `static` argument allows for static images to be
 #' produced instead.
 #'
+#' @section Parallel processing with mirai:
+#'
+#'   Creating a directional analysis map can take a lot of time; each polar
+#'   marker needs to be plot individually, and many of these require some
+#'   expensive computations. `openairmaps` supports parallel processing with
+#'   `{mirai}` to speed these computations up. Users may create workers by
+#'   running [mirai::daemons()] in their R session.
+#'
+#'   ```
+#'   mirai::daemons(4)
+#'   polarMap(polar_data, "no2")
+#'   ```
+#'
+#'   Typically, spawning one
+#'   fewer daemons than your number of available cores is a useful rule of
+#'   thumb. Parallel processing will be most useful for the most computationally
+#'   intensive plotting functions - i.e., [polarMap()] and [annulusMap()].
+#'
 #' @section Customisation of static maps using ggplot2:
 #'
 #'   As the outputs of the static directional analysis functions are `ggplot2`
@@ -276,15 +294,6 @@
 #'   creating individual polar markers. This option allows this to be turned
 #'   off, if desired.
 #'
-#' @param n.core *Number of cores to use in parallel processing.*
-#'
-#'  *default:* `1L` | *scope:* dynamic & static
-#'
-#'   By default, each polar marker is drawn and saved sequentially. For big maps
-#'   with a lot of markers, this can be slow. Adjusting `n.core` to a number
-#'   greater than `1` will use [mirai][mirai::mirai-package] to create markers
-#'   in parallel.
-#'
 #' @param control **Deprecated.** Please use `type`.
 #'
 #' @inheritDotParams openair::polarPlot -mydata -pollutant -x -limits -type
@@ -335,7 +344,6 @@ polarMap <- function(
   static = FALSE,
   static.nrow = NULL,
   progress = TRUE,
-  n.core = 1L,
   ...,
   control = NULL
 ) {
@@ -499,8 +507,7 @@ polarMap <- function(
       popup = popup,
       label = label,
       dropcol = funpoll,
-      progress = progress,
-      ncores = n.core
+      progress = progress
     )
 
   if (!static) {

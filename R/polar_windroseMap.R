@@ -6,6 +6,7 @@
 #' interacted with. Using the `static` argument allows for static images to be
 #' produced instead.
 #'
+#' @inheritSection polarMap Parallel processing with mirai
 #' @inheritSection polarMap Customisation of static maps using ggplot2
 #' @family directional analysis maps
 #'
@@ -79,7 +80,6 @@ windroseMap <- function(
   static = FALSE,
   static.nrow = NULL,
   progress = TRUE,
-  n.core = 1L,
   ...,
   control = NULL
 ) {
@@ -182,8 +182,7 @@ windroseMap <- function(
       d.fig = d.fig,
       popup = popup,
       label = label,
-      progress = progress,
-      ncores = n.core
+      progress = progress
     )
 
   if (static) {

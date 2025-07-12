@@ -25,13 +25,14 @@ Imports:
     lifecycle,
     lubridate,
     openair (>= 2.13),
-    purrr (>= 1.0.0),
+    purrr (>= 1.1.0),
     ragg,
     rlang,
     sf,
     stringr,
     tidyr
 Suggests:
+    carrier,
     curl,
     ggplot2,
     ggspatial,
