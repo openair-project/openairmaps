@@ -20,10 +20,10 @@
 #'   polarMap(polar_data, "no2")
 #'   ```
 #'
-#'   Typically, spawning one
-#'   fewer daemons than your number of available cores is a useful rule of
-#'   thumb. Parallel processing will be most useful for the most computationally
-#'   intensive plotting functions - i.e., [polarMap()] and [annulusMap()].
+#'   Typically, spawning one fewer daemons than your number of available cores
+#'   is a useful rule of thumb. Parallel processing will be most useful for the
+#'   most computationally intensive plotting functions - i.e., [polarMap()] and
+#'   [annulusMap()].
 #'
 #' @section Customisation of static maps using ggplot2:
 #'
@@ -156,8 +156,8 @@
 #'
 #'  *default:* `"OpenStreetMap"` | *scope:* dynamic & static
 #'
-#'   The base map(s) to be used beneath the polar markers. If not provided, will
-#'   default to `"OpenStreetMap"`/`"osm"` for both dynamic and static maps.
+#'   The base map(s) to be used for the map. If not provided, will default to
+#'   `"OpenStreetMap"`/`"osm"` for both dynamic and static maps.
 #'
 #'   - *Dynamic*: Any number of [leaflet::providers].
 #'   See <http://leaflet-extras.github.io/leaflet-providers/preview/> for a list

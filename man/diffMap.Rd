@@ -127,8 +127,8 @@ useful for the same reasons as popups, though are typically shorter.}
 
 \emph{default:} \code{"OpenStreetMap"} | \emph{scope:} dynamic & static
 
-The base map(s) to be used beneath the polar markers. If not provided, will
-default to \code{"OpenStreetMap"}/\code{"osm"} for both dynamic and static maps.
+The base map(s) to be used for the map. If not provided, will default to
+\code{"OpenStreetMap"}/\code{"osm"} for both dynamic and static maps.
 \itemize{
 \item \emph{Dynamic}: Any number of \link[leaflet:providers]{leaflet::providers}.
 See \url{http://leaflet-extras.github.io/leaflet-providers/preview/} for a list
@@ -468,10 +468,10 @@ running \code{\link[mirai:daemons]{mirai::daemons()}} in their R session.
 polarMap(polar_data, "no2")
 }\if{html}{\out{</div>}}
 
-Typically, spawning one
-fewer daemons than your number of available cores is a useful rule of
-thumb. Parallel processing will be most useful for the most computationally
-intensive plotting functions - i.e., \code{\link[=polarMap]{polarMap()}} and \code{\link[=annulusMap]{annulusMap()}}.
+Typically, spawning one fewer daemons than your number of available cores
+is a useful rule of thumb. Parallel processing will be most useful for the
+most computationally intensive plotting functions - i.e., \code{\link[=polarMap]{polarMap()}} and
+\code{\link[=annulusMap]{annulusMap()}}.
 }
 
 \section{Customisation of static maps using ggplot2}{

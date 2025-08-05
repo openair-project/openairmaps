@@ -230,8 +230,8 @@ plotting on the map.}
 
 \emph{default:} \code{"OpenStreetMap"} | \emph{scope:} dynamic & static
 
-The base map(s) to be used beneath the polar markers. If not provided, will
-default to \code{"OpenStreetMap"}/\code{"osm"} for both dynamic and static maps.
+The base map(s) to be used for the map. If not provided, will default to
+\code{"OpenStreetMap"}/\code{"osm"} for both dynamic and static maps.
 \itemize{
 \item \emph{Dynamic}: Any number of \link[leaflet:providers]{leaflet::providers}.
 See \url{http://leaflet-extras.github.io/leaflet-providers/preview/} for a list
