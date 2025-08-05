@@ -521,27 +521,30 @@ create_polar_markers <-
     }
 
     # create and save plots
-    purrr::pmap(
-      .l = dplyr::select(plots_df, "data", "url"),
-      .f = purrr::in_parallel(
-        function(data, url) {
-          # save plot
-          ragg::agg_png(
-            filename = url,
-            width = width * 300,
-            height = height * 300,
-            res = 300,
-            background = "transparent"
-          )
-          print(fun(data)$plot)
-          grDevices::dev.off()
-        },
-        fun = fun,
-        width = width,
-        height = height
-      ),
-      .progress = progress
-    )
+    plots_df$plot <-
+      purrr::pmap(
+        .l = dplyr::select(plots_df, "data", "url"),
+        .f = purrr::in_parallel(
+          function(data, url) {
+            # save plot
+            ragg::agg_png(
+              filename = url,
+              width = width * 300,
+              height = height * 300,
+              res = 300,
+              background = "transparent"
+            )
+            plotdata <- fun(data)$data
+            print(fun(data)$plot)
+            grDevices::dev.off()
+            return(plotdata)
+          },
+          fun = fun,
+          width = width,
+          height = height
+        ),
+        .progress = progress
+      )
 
     return(plots_df)
   }

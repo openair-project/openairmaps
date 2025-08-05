@@ -197,7 +197,7 @@ pollroseMap <- function(
 
     # create legend
     if (!is.null(breaks) && legend) {
-      intervals <- attr(plots_df$plot[[1]]$data, "intervals")
+      intervals <- attr(plots_df$plot[[1]], "intervals")
       intervals <- factor(intervals, intervals)
       pal <-
         openair::openColours(scheme = cols, n = length(intervals)) |>
@@ -219,7 +219,7 @@ pollroseMap <- function(
       # add legend
       map <-
         map +
-        ggplot2::geom_point(
+        ggplot2::geom_tile(
           data = dummy,
           ggplot2::aes(
             .data[[longitude]],
@@ -227,17 +227,19 @@ pollroseMap <- function(
             color = .data[["intervals"]],
             fill = .data[["intervals"]]
           ),
-          size = 0,
-          key_glyph = ggplot2::draw_key_rect,
-          show.legend = TRUE
+          show.legend = TRUE,
+          alpha = 0
         ) +
-        ggplot2::scale_color_manual(
+        ggplot2::scale_fill_manual(
           values = pal,
           drop = FALSE,
           aesthetics = c("fill", "color")
         ) +
         ggplot2::labs(color = legend.title, fill = legend.title) +
-        ggplot2::theme(legend.position = legend.position)
+        ggplot2::theme(legend.position = legend.position) +
+        ggplot2::guides(
+          color = ggplot2::guide_legend(override.aes = list(alpha = 1))
+        )
     }
   }
 
