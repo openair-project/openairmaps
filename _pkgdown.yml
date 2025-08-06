@@ -4,37 +4,50 @@ template:
 
 reference:
 - title: Data
-  desc: In-built data to demonstrate openair functions.
+  desc: |
+    In-built data to demonstrate openair functions.
   contents:
   - polar_data
   - traj_data
 
 - title: Network Visualisation
-  desc: Quickly visualise UK air quality networks.
+  desc: |
+    Quickly visualise UK air quality networks.
   contents:
   - has_concept("uk air quality network mapping functions")
 
 - title: Directional Analysis
-  desc: Create HTML `leaflet` and static `ggplot2` maps with polar plot markers.
+  desc: |
+    Create HTML `leaflet` and static `ggplot2` maps with polar plot markers.
   contents:
   - has_concept("directional analysis maps")
   - addPolarMarkers
 
 - title: Trajectory Analysis
-  desc: Create HTML `leaflet` and static `ggplot2` maps of HYSPLIT trajectories.
+  desc: |
+    Create HTML `leaflet` and static `ggplot2` maps of HYSPLIT trajectories.
   contents:
   - has_concept("interactive trajectory maps")
   - has_concept("static trajectory maps")
   - addTrajPaths
 
+- title: Spatial Interpolation
+  desc: |
+    Create HTML `leaflet` and static `ggplot2` maps of spatially interpolated
+    pollution data.
+  contents:
+  - has_concept("spatial interpolation maps")
+
 - title: Utilities
-  desc: Tools to assist other openairmaps functions.
+  desc: |
+    Tools to assist other openairmaps functions.
   contents:
   - buildPopup
   - quickTextHTML
   - convertPostcode
 
 - title: Deprecated
-  desc: Functions which are no longer recommended for use.
+  desc: |
+    Functions which are no longer recommended for use.
   contents:
   - has_concept("deprecated functions")
