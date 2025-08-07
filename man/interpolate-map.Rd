@@ -279,4 +279,19 @@ spatially interpolated surface using either inverse distance weighting or
 point kriging. \code{\link[=voronoiMap]{voronoiMap()}} creates a surface of 'closest observation'
 polygons.
 }
+\examples{
+\dontrun{
+krigingMap(
+  daqi,
+  pollutant = "poll_index",
+  newdata = uk,
+  statistic = "max",
+  breaks = seq(0.5, 10.5, 1),
+  labels = as.character(1:10),
+  legend.title = "Max O3 DAQI",
+  cols = "daqi"
+)
+}
+
+}
 \concept{spatial interpolation maps}

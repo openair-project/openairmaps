@@ -131,6 +131,35 @@
 #' @rdname interpolate-map
 #' @order 1
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' # import ozone DAQI
+#' daqi <-
+#'   openair::importUKAQ(
+#'     pollutant = "o3",
+#'     year = 2020,
+#'     source = "aurn",
+#'     data_type = "daqi",
+#'     meta = TRUE
+#'   )
+#'
+#' # get a UK shapefile
+#' uk <- rnaturalearth::ne_countries(scale = 10, country = "united kingdom")
+#'
+#' # create spatially interpolated map
+#' krigingMap(
+#'   daqi,
+#'   pollutant = "poll_index",
+#'   newdata = uk,
+#'   statistic = "max",
+#'   breaks = seq(0.5, 10.5, 1),
+#'   labels = as.character(1:10),
+#'   legend.title = "Max O3 DAQI",
+#'   cols = "daqi"
+#' )
+#' }
+#'
 krigingMap <- function(
   data,
   pollutant = NULL,
