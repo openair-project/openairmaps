@@ -328,6 +328,7 @@ voronoiMap <- function(
       data_sf = data_sf,
       pollutant = pollutant,
       marker.border = marker.border,
+      voronoi.border = voronoi.border,
       provider = provider,
       cols = cols,
       legend = legend,
