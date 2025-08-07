@@ -11,6 +11,8 @@ krigingMap(
   statistic = "mean",
   newdata = NULL,
   method = c("idw", "kriging"),
+  breaks = NULL,
+  labels = NULL,
   limits = NULL,
   latitude = NULL,
   longitude = NULL,
@@ -27,7 +29,7 @@ krigingMap(
   static = FALSE,
   args.idw = list(),
   args.variogram = list(),
-  args.vgm = list(psill = 1, model = "Exp"),
+  args.vgm = list(psill = 1, model = "Exp", range = 50000, nugget = 1),
   args.fit.variogram = list(),
   args.krige = list()
 )
@@ -37,6 +39,8 @@ voronoiMap(
   pollutant = NULL,
   statistic = "mean",
   newdata = NULL,
+  breaks = NULL,
+  labels = NULL,
   limits = NULL,
   latitude = NULL,
   longitude = NULL,
@@ -105,6 +109,14 @@ The spatial interpolation method to use for \code{\link[=krigingMap]{krigingMap(
 inverse distance weighting (IDW) which is simpler and faster. \code{"kriging"}
 uses full point kriging which is typically more accurate, but is also more
 complex and computationally intensive.}
+
+\item{labels, breaks}{\emph{Discretise the map color scale.}
+
+\emph{default:} \code{NULL} | \emph{scope:} dynamic & static
+
+By default, a continuous colour scale is used. If \code{breaks} are provided,
+the colour scale will be discretised using \code{\link[=cut]{cut()}}. \code{labels} can also be
+provided to customise how each factor level is labelled.}
 
 \item{limits}{\emph{Specifier for the plot colour scale bounds.}
 

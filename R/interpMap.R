@@ -34,6 +34,14 @@
 #'   uses full point kriging which is typically more accurate, but is also more
 #'   complex and computationally intensive.
 #'
+#' @param labels,breaks *Discretise the map color scale.*
+#'
+#'  *default:* `NULL` | *scope:* dynamic & static
+#'
+#'   By default, a continuous colour scale is used. If `breaks` are provided,
+#'   the colour scale will be discretised using [cut()]. `labels` can also be
+#'   provided to customise how each factor level is labelled.
+#'
 #' @param statistic *Statistic for aggregating pollutant data.*
 #'
 #'   *default:* `"mean"` | *scope:* dynamic & static
@@ -129,6 +137,8 @@ krigingMap <- function(
   statistic = "mean",
   newdata = NULL,
   method = c("idw", "kriging"),
+  breaks = NULL,
+  labels = NULL,
   limits = NULL,
   latitude = NULL,
   longitude = NULL,
@@ -145,7 +155,7 @@ krigingMap <- function(
   static = FALSE,
   args.idw = list(),
   args.variogram = list(),
-  args.vgm = list(psill = 1, model = "Exp"),
+  args.vgm = list(psill = 1, model = "Exp", range = 50000, nugget = 1),
   args.fit.variogram = list(),
   args.krige = list()
 ) {
@@ -219,6 +229,26 @@ krigingMap <- function(
     interp <- rlang::exec(gstat::krige, !!!args.krige)
   }
 
+  if (!is.null(breaks)) {
+    if (is.null(labels)) {
+      labels <- c()
+      for (i in seq_along(breaks)) {
+        if (is.na(breaks[i + 1])) {
+          break
+        }
+        x <- paste(breaks[i], breaks[i + 1], sep = " - ")
+        labels <- append(labels, x)
+      }
+    }
+
+    interp$var1.pred <- cut(interp$var1.pred, breaks = breaks, labels = labels)
+    data_sf[[pollutant]] <- cut(
+      data_sf[[pollutant]],
+      breaks = breaks,
+      labels = labels
+    )
+  }
+
   if (static) {
     plot_fun <- make_static_interp_map
   } else {
@@ -234,6 +264,7 @@ krigingMap <- function(
       data_sf = data_sf,
       pollutant = pollutant,
       marker.border = marker.border,
+      voronoi.border = NULL,
       provider = provider,
       cols = cols,
       legend = legend,
@@ -264,6 +295,8 @@ voronoiMap <- function(
   pollutant = NULL,
   statistic = "mean",
   newdata = NULL,
+  breaks = NULL,
+  labels = NULL,
   limits = NULL,
   latitude = NULL,
   longitude = NULL,
@@ -312,6 +345,30 @@ voronoiMap <- function(
   interp <- rlang::exec(terra::voronoi, !!!args.voronoi) |>
     sf::st_as_sf() |>
     sf::st_intersection(sf::st_as_sf(stars_grid) |> dplyr::summarise())
+
+  if (!is.null(breaks)) {
+    if (is.null(labels)) {
+      labels <- c()
+      for (i in seq_along(breaks)) {
+        if (is.na(breaks[i + 1])) {
+          break
+        }
+        x <- paste(breaks[i], breaks[i + 1], sep = " - ")
+        labels <- append(labels, x)
+      }
+    }
+
+    interp[[pollutant]] <- cut(
+      interp[[pollutant]],
+      breaks = breaks,
+      labels = labels
+    )
+    data_sf[[pollutant]] <- cut(
+      data_sf[[pollutant]],
+      breaks = breaks,
+      labels = labels
+    )
+  }
 
   if (static) {
     plot_fun <- make_static_interp_map
@@ -409,28 +466,23 @@ make_static_interp_map <- function(
   legend,
   legend.title,
   legend.position,
-  legend.title.autotext
+  legend.title.autotext,
+  show.markers
 ) {
-  if (type == "rast") {
-    vals <- limits %||%
-      pretty(c(0, data_sf[[pollutant]], as.vector(interp$var1.pred)))
-  } else {
-    vals <- limits %||%
-      pretty(c(0, data_sf[[pollutant]], interp[[pollutant]]))
-  }
-
   map <- ggplot2::ggplot() +
     ggspatial::annotation_map_tile(zoomin = 0, cachedir = tempdir())
 
   if (type == "rast") {
-    map <- map + stars::geom_stars(data = interp, alpha = alpha)
+    map <- map +
+      stars::geom_stars(data = interp, alpha = alpha, show.legend = TRUE)
   } else {
     map <- map +
       ggplot2::geom_sf(
         data = interp,
         ggplot2::aes(fill = .data[[pollutant]]),
         alpha = alpha,
-        color = voronoi.border
+        color = voronoi.border,
+        show.legend = TRUE
       )
   }
 
@@ -440,17 +492,45 @@ make_static_interp_map <- function(
         data = data_sf,
         ggplot2::aes(fill = .data[[pollutant]]),
         shape = 21,
-        color = marker.border
+        color = marker.border,
+        show.legend = TRUE
+      )
+  }
+
+  vec <-
+    if (type == "rast") interp$var1.pred else interp[[pollutant]]
+
+  if (inherits(vec, "factor")) {
+    scale <-
+      ggplot2::scale_fill_manual(
+        values = openair::openColours(
+          cols,
+          n = length(levels(vec))
+        ),
+        na.value = NA,
+        drop = FALSE,
+        na.translate = F
+      )
+  } else {
+    if (type == "rast") {
+      vals <- limits %||%
+        pretty(c(0, data_sf[[pollutant]], as.vector(interp$var1.pred)))
+    } else {
+      vals <- limits %||%
+        pretty(c(0, data_sf[[pollutant]], interp[[pollutant]]))
+    }
+
+    scale <-
+      ggplot2::scale_fill_gradientn(
+        limits = range(vals),
+        colors = openair::openColours(cols),
+        na.value = NA
       )
   }
 
   map <- map +
     ggplot2::coord_sf(crs = 4326L) +
-    ggplot2::scale_fill_gradientn(
-      limits = range(vals),
-      colors = openair::openColours(cols),
-      na.value = NA
-    ) +
+    scale +
     theme_static() +
     ggplot2::theme(
       legend.position = check_legendposition(legend.position, static = TRUE)
@@ -490,33 +570,64 @@ make_dynamic_interp_map <- function(
   legend.title.autotext,
   show.markers
 ) {
-  if (type == "rast") {
-    vals <- limits %||%
-      pretty(c(0, data_sf[[pollutant]], as.vector(interp$var1.pred)))
+  vec <-
+    if (type == "rast") {
+      interp$var1.pred
+    } else {
+      interp[[pollutant]]
+    }
+
+  if (inherits(vec, "factor")) {
+    pal <-
+      leaflet::colorFactor(
+        palette = openair::openColours(cols, n = length(levels(vec))),
+        levels = levels(vec),
+        na.color = NA
+      )
   } else {
     vals <- limits %||%
-      pretty(c(0, data_sf[[pollutant]], interp[[pollutant]]))
-  }
+      pretty(c(0, data_sf[[pollutant]], as.vector(vec)))
 
-  pal <-
-    leaflet::colorNumeric(
-      palette = openair::openColours(cols),
-      domain = vals,
-      na.color = NA
-    )
+    pal <-
+      leaflet::colorNumeric(
+        palette = openair::openColours(cols),
+        domain = vals,
+        na.color = NA
+      )
+  }
 
   map <-
     leaflet::leaflet() |>
     leaflet::addProviderTiles(provider = provider)
 
   if (type == "rast") {
-    map <-
-      leaflet::addRasterImage(
-        map = map,
-        x = terra::rast(interp)[[1]],
-        opacity = alpha,
-        colors = pal
-      )
+    terra_interp <- terra::rast(interp)
+
+    if (inherits(vec, "factor")) {
+      cats_df <- terra::cats(terra_interp)[[1]]
+      false_pal <-
+        leaflet::colorFactor(
+          palette = openair::openColours(cols, n = length(levels(vec))),
+          domain = cats_df$value,
+          na.color = NA
+        )
+
+      map <-
+        leaflet::addRasterImage(
+          map = map,
+          x = terra_interp[[1]],
+          opacity = alpha,
+          colors = false_pal
+        )
+    } else {
+      map <-
+        leaflet::addRasterImage(
+          map = map,
+          x = terra_interp[[1]],
+          opacity = alpha,
+          colors = pal
+        )
+    }
   } else {
     map <-
       leaflet::addPolygons(
@@ -545,18 +656,33 @@ make_dynamic_interp_map <- function(
   }
 
   if (legend) {
-    map <-
-      leaflet::addLegend(
-        map = map,
-        pal = pal,
-        values = vals,
-        title = ifelse(
-          legend.title.autotext,
-          quickTextHTML(legend.title %||% pollutant),
-          legend.title %||% pollutant
-        ),
-        position = check_legendposition(legend.position, static = FALSE)
-      )
+    if (inherits(vec, "factor")) {
+      map <-
+        leaflet::addLegend(
+          map = map,
+          labels = levels(vec),
+          colors = pal(levels(vec)),
+          title = ifelse(
+            legend.title.autotext,
+            quickTextHTML(legend.title %||% pollutant),
+            legend.title %||% pollutant
+          ),
+          position = check_legendposition(legend.position, static = FALSE)
+        )
+    } else {
+      map <-
+        leaflet::addLegend(
+          map = map,
+          pal = pal,
+          values = vals,
+          title = ifelse(
+            legend.title.autotext,
+            quickTextHTML(legend.title %||% pollutant),
+            legend.title %||% pollutant
+          ),
+          position = check_legendposition(legend.position, static = FALSE)
+        )
+    }
   }
 
   return(map)

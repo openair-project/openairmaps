@@ -316,52 +316,50 @@ direction bin.  The default is 1. A value of two requires at least 2 valid
 records in each bin an so on; bins with less than 2 valid records are set
 to NA. Care should be taken when using a value > 1 because of the risk of
 removing real data points. It is recommended to consider your data with
-care. Also, the \code{polarFreq} function can be of use in such
-circumstances.}
-    \item{\code{exclude.missing}}{Setting this option to \code{TRUE} (the default)
-removes points from the plot that are too far from the original data. The
-smoothing routines will produce predictions at points where no data exist
-i.e. they predict. By removing the points too far from the original data
-produces a plot where it is clear where the original data lie. If set to
-\code{FALSE} missing data will be interpolated.}
+care. Also, the \code{polarFreq} function can be of use in such circumstances.}
+    \item{\code{exclude.missing}}{Setting this option to \code{TRUE} (the default) removes
+points from the plot that are too far from the original data. The smoothing
+routines will produce predictions at points where no data exist i.e. they
+predict. By removing the points too far from the original data produces a
+plot where it is clear where the original data lie. If set to \code{FALSE}
+missing data will be interpolated.}
     \item{\code{date.pad}}{For \code{type = "trend"} (default), \code{date.pad = TRUE}
 will pad-out missing data to the beginning of the first year and the end of
 the last year. The purpose is to ensure that the trend plot begins and ends
 at the beginning or end of year.}
-    \item{\code{force.positive}}{The default is \code{TRUE}. Sometimes if smoothing data
-with steep gradients it is possible for predicted values to be negative.
-\code{force.positive = TRUE} ensures that predictions remain positive. This
-is useful for several reasons. First, with lots of missing data more
+    \item{\code{force.positive}}{The default is \code{TRUE}. Sometimes if smoothing data with
+steep gradients it is possible for predicted values to be negative.
+\code{force.positive = TRUE} ensures that predictions remain positive. This is
+useful for several reasons. First, with lots of missing data more
 interpolation is needed and this can result in artefacts because the
 predictions are too far from the original data. Second, if it is known
 beforehand that the data are all positive, then this option carries that
 assumption through to the prediction. The only likely time where setting
-\code{force.positive = FALSE} would be if background concentrations were
-first subtracted resulting in data that is legitimately negative. For the
-vast majority of situations it is expected that the user will not need to
-alter the default option.}
+\code{force.positive = FALSE} would be if background concentrations were first
+subtracted resulting in data that is legitimately negative. For the vast
+majority of situations it is expected that the user will not need to alter
+the default option.}
     \item{\code{k}}{The smoothing value supplied to \code{gam} for the temporal and wind
 direction components, respectively. In some cases e.g. a trend plot with
 less than 1-year of data the smoothing with the default values may become
 too noisy and affected more by outliers. Choosing a lower value of \code{k}
 (say 10) may help produce a better plot.}
-    \item{\code{normalise}}{If \code{TRUE} concentrations are normalised by dividing by
-their mean value. This is done \emph{after} fitting the smooth surface.
-This option is particularly useful if one is interested in the patterns of
-concentrations for several pollutants on different scales e.g. NOx and CO.
-Often useful if more than one \code{pollutant} is chosen.}
+    \item{\code{normalise}}{If \code{TRUE} concentrations are normalised by dividing by their
+mean value. This is done \emph{after} fitting the smooth surface. This option is
+particularly useful if one is interested in the patterns of concentrations
+for several pollutants on different scales e.g. NOx and CO. Often useful if
+more than one \code{pollutant} is chosen.}
     \item{\code{key.header}}{Adds additional text/labels to the scale key. For example,
-passing the options \verb{key.header = "header", key.footer = "footer1"}
-adds addition text above and below the scale key. These arguments are
-passed to \code{drawOpenKey} via \code{quickText}, applying the
-\code{auto.text} argument, to handle formatting.}
+passing the options \verb{key.header = "header", key.footer = "footer1"} adds
+addition text above and below the scale key. These arguments are passed to
+\code{drawOpenKey} via \code{quickText}, applying the \code{auto.text} argument, to handle
+formatting.}
     \item{\code{key.footer}}{see \code{key.footer}.}
     \item{\code{key.position}}{Location where the scale key is to plotted. Allowed
-arguments currently include \code{"top"}, \code{"right"}, \code{"bottom"}
-and \code{"left"}.}
-    \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE}
-titles and axis labels will automatically try and format pollutant names
-and units properly e.g.  by subscripting the `2' in NO2.}
+arguments currently include \code{"top"}, \code{"right"}, \code{"bottom"} and \code{"left"}.}
+    \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE} titles and
+axis labels will automatically try and format pollutant names and units
+properly e.g.  by subscripting the `2' in NO2.}
   }}
 
 \item{control}{\strong{Deprecated.} Please use \code{type}.}
