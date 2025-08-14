@@ -37,21 +37,24 @@ diffMap(
 )
 }
 \arguments{
-\item{before, after}{Data frames representing the "before" and "after" cases.
-See \code{\link[openair:polarPlot]{polarPlot()}} for details of different input requirements.}
+\item{before}{A data frame that represents the "before" case. See
+\code{\link[openair:polarPlot]{polarPlot()}} for details of different input requirements.}
+
+\item{after}{A data frame that represents the "after" case. See \code{\link[openair:polarPlot]{polarPlot()}}
+for details of different input requirements.}
 
 \item{pollutant}{Mandatory. A pollutant name corresponding to a variable in a
-data frame should be supplied e.g. \code{pollutant = "nox"}. There can also be
-more than one pollutant specified e.g. \code{pollutant = c("nox", "no2")}. The
-main use of using two or more pollutants is for model evaluation where two
-species would be expected to have similar concentrations. This saves the
-user stacking the data and it is possible to work with columns of data
-directly. A typical use would be \code{pollutant = c("obs", "mod")} to compare
-two columns \dQuote{obs} (the observations) and \dQuote{mod} (modelled
-values). When pair-wise statistics such as Pearson correlation and
-regression techniques are to be plotted, \code{pollutant} takes two elements
-too. For example, \code{pollutant = c("bc", "pm25")} where \code{"bc"} is a function
-of \code{"pm25"}.}
+data frame should be supplied e.g. \code{pollutant = "nox"}. There can also
+be more than one pollutant specified e.g. \code{pollutant = c("nox",
+  "no2")}. The main use of using two or more pollutants is for model
+evaluation where two species would be expected to have similar
+concentrations. This saves the user stacking the data and it is possible to
+work with columns of data directly. A typical use would be \code{pollutant
+  = c("obs", "mod")} to compare two columns \dQuote{obs} (the observations)
+and \dQuote{mod} (modelled values). When pair-wise statistics such as
+Pearson correlation and regression techniques are to be plotted,
+\code{pollutant} takes two elements too. For example, \code{pollutant =
+  c("bc", "pm25")} where \code{"bc"} is a function of \code{"pm25"}.}
 
 \item{x}{Name of variable to plot against wind direction in polar
 coordinates, the default is wind speed, \dQuote{ws}.}
@@ -92,22 +95,18 @@ Different coordinate systems can be specified using \code{crs} (e.g., \code{crs 
 non-lat/lng coordinate systems will be re-projected to EPSG:4326 for
 plotting on the map.}
 
-\item{type}{\code{type} determines how the data are split i.e. conditioned, and
-then plotted. The default is will produce a single plot using the entire
-data. Type can be one of the built-in types as detailed in \code{cutData} e.g.
-\dQuote{season}, \dQuote{year}, \dQuote{weekday} and so on. For example,
-\code{type = "season"} will produce four plots --- one for each season.
+\item{type}{\emph{A method to condition the \code{data} for separate plotting.}
 
-It is also possible to choose \code{type} as another variable in the data frame.
-If that variable is numeric, then the data will be split into four
-quantiles (if possible) and labelled accordingly. If type is an existing
-character or factor variable, then those categories/levels will be used
-directly. This offers great flexibility for understanding the variation of
-different variables and how they depend on one another.
+\emph{default:} \code{NULL} | \emph{scope:} dynamic & static
 
-Type can be up length two e.g. \code{type = c("season", "weekday")} will produce
-a 2x2 plot split by season and day of the week. Note, when two types are
-provided the first forms the columns and the second the rows.}
+Used for splitting the input data into different groups, passed to the
+\code{type} argument of \code{\link[openair:cutData]{openair::cutData()}}. When \code{type} is specified:
+\itemize{
+\item \emph{Dynamic}: The different data splits can be toggled between using a "layer control" menu.
+\item \emph{Static:}: The data splits will each appear in a different panel.
+}
+
+\code{type} cannot be used if multiple \code{pollutant} columns have been provided.}
 
 \item{popup}{\emph{Content for marker popups on dynamic maps.}
 
@@ -273,12 +272,12 @@ off, if desired.}
 speed/direction bin. Because of the smoothing involved, the colour scale
 for some of these statistics is only to provide an indication of overall
 pattern and should not be interpreted in concentration units e.g. for
-\code{statistic = "weighted.mean"} where the bin mean is multiplied by the bin
-frequency and divided by the total frequency. In many cases using
-\code{polarFreq} will be better. Setting \code{statistic = "weighted.mean"} can be
-useful because it provides an indication of the concentration * frequency
-of occurrence and will highlight the wind speed/direction conditions that
-dominate the overall mean.Can be:
+\code{statistic = "weighted.mean"} where the bin mean is multiplied by the
+bin frequency and divided by the total frequency. In many cases using
+\code{polarFreq} will be better. Setting \code{statistic = "weighted.mean"}
+can be useful because it provides an indication of the concentration *
+frequency of occurrence and will highlight the wind speed/direction
+conditions that dominate the overall mean.Can be:
 
 \itemize{ \item  \dQuote{mean} (default), \dQuote{median}, \dQuote{max}
 (maximum), \dQuote{frequency}. \dQuote{stdev} (standard deviation),
@@ -327,48 +326,50 @@ uses the \emph{York regression method} to estimate the slope. In this
 method the uncertainties in \code{x} and \code{y} are used in the
 determination of the slope. The uncertainties are provided by
 \code{x_error} and \code{y_error} --- see below.}}
-    \item{\code{exclude.missing}}{Setting this option to \code{TRUE} (the default) removes
-points from the plot that are too far from the original data. The smoothing
-routines will produce predictions at points where no data exist i.e. they
-predict. By removing the points too far from the original data produces a
-plot where it is clear where the original data lie. If set to \code{FALSE}
-missing data will be interpolated.}
+    \item{\code{exclude.missing}}{Setting this option to \code{TRUE} (the default)
+removes points from the plot that are too far from the original data. The
+smoothing routines will produce predictions at points where no data exist
+i.e. they predict. By removing the points too far from the original data
+produces a plot where it is clear where the original data lie. If set to
+\code{FALSE} missing data will be interpolated.}
     \item{\code{uncertainty}}{Should the uncertainty in the calculated surface be shown?
-If \code{TRUE} three plots are produced on the same scale showing the predicted
-surface together with the estimated lower and upper uncertainties at the
-95\% confidence interval. Calculating the uncertainties is useful to
+If \code{TRUE} three plots are produced on the same scale showing the
+predicted surface together with the estimated lower and upper uncertainties
+at the 95\% confidence interval. Calculating the uncertainties is useful to
 understand whether features are real or not.  For example, at high wind
 speeds where there are few data there is greater uncertainty over the
 predicted values. The uncertainties are calculated using the GAM and
 weighting is done by the frequency of measurements in each wind
 speed-direction bin. Note that if uncertainties are calculated then the
 type is set to "default".}
-    \item{\code{percentile}}{If \code{statistic = "percentile"} then \code{percentile} is used,
-expressed from 0 to 100. Note that the percentile value is calculated in
-the wind speed, wind direction \sQuote{bins}. For this reason it can also
-be useful to set \code{min.bin} to ensure there are a sufficient number of
-points available to estimate a percentile. See \code{quantile} for more details
-of how percentiles are calculated.
+    \item{\code{percentile}}{If \code{statistic = "percentile"} then \code{percentile}
+is used, expressed from 0 to 100. Note that the percentile value is
+calculated in the wind speed, wind direction \sQuote{bins}. For this reason
+it can also be useful to set \code{min.bin} to ensure there are a
+sufficient number of points available to estimate a percentile. See
+\code{quantile} for more details of how percentiles are calculated.
 
-\code{percentile} is also used for the Conditional Probability Function (CPF)
-plots. \code{percentile} can be of length two, in which case the percentile
-\emph{interval} is considered for use with CPF. For example, \code{percentile = c(90, 100)} will plot the CPF for concentrations between the 90 and 100th
-percentiles. Percentile intervals can be useful for identifying specific
-sources. In addition, \code{percentile} can also be of length 3. The third value
-is the \sQuote{trim} value to be applied. When calculating percentile
-intervals many can cover very low values where there is no useful
-information. The trim value ensures that values greater than or equal to
-the trim * mean value are considered \emph{before} the percentile intervals are
-calculated. The effect is to extract more detail from many source
-signatures. See the manual for examples. Finally, if the trim value is less
-than zero the percentile range is interpreted as absolute concentration
-values and subsetting is carried out directly.}
+\code{percentile} is also used for the Conditional Probability Function
+(CPF) plots. \code{percentile} can be of length two, in which case the
+percentile \emph{interval} is considered for use with CPF. For example,
+\code{percentile = c(90, 100)} will plot the CPF for concentrations between
+the 90 and 100th percentiles. Percentile intervals can be useful for
+identifying specific sources. In addition, \code{percentile} can also be of
+length 3. The third value is the \sQuote{trim} value to be applied. When
+calculating percentile intervals many can cover very low values where there
+is no useful information. The trim value ensures that values greater than
+or equal to the trim * mean value are considered \emph{before} the
+percentile intervals are calculated. The effect is to extract more detail
+from many source signatures. See the manual for examples. Finally, if the
+trim value is less than zero the percentile range is interpreted as
+absolute concentration values and subsetting is carried out directly.}
     \item{\code{weights}}{At the edges of the plot there may only be a few data points
 in each wind speed-direction interval, which could in some situations
 distort the plot if the concentrations are high. \code{weights} applies a
 weighting to reduce their influence. For example and by default if only a
 single data point exists then the weighting factor is 0.25 and for two
-points 0.5. To not apply any weighting and use the data as is, use \code{weights = c(1, 1, 1)}.
+points 0.5. To not apply any weighting and use the data as is, use
+\code{weights = c(1, 1, 1)}.
 
 An alternative to down-weighting these points they can be removed
 altogether using \code{min.bin}.}
@@ -377,63 +378,65 @@ direction bin.  The default is 1. A value of two requires at least 2 valid
 records in each bin an so on; bins with less than 2 valid records are set
 to NA. Care should be taken when using a value > 1 because of the risk of
 removing real data points. It is recommended to consider your data with
-care. Also, the \code{polarFreq} function can be of use in such circumstances.}
-    \item{\code{mis.col}}{When \code{min.bin} is > 1 it can be useful to show where data are
-removed on the plots. This is done by shading the missing data in
-\code{mis.col}. To not highlight missing data when \code{min.bin} > 1 choose \code{mis.col = "transparent"}.}
+care. Also, the \code{polarFreq} function can be of use in such
+circumstances.}
+    \item{\code{mis.col}}{When \code{min.bin} is > 1 it can be useful to show where data
+are removed on the plots. This is done by shading the missing data in
+\code{mis.col}. To not highlight missing data when \code{min.bin} > 1
+choose \code{mis.col = "transparent"}.}
     \item{\code{upper}}{This sets the upper limit wind speed to be used. Often there are
 only a relatively few data points at very high wind speeds and plotting all
 of them can reduce the useful information in the plot.}
-    \item{\code{force.positive}}{The default is \code{TRUE}. Sometimes if smoothing data with
-steep gradients it is possible for predicted values to be negative.
-\code{force.positive = TRUE} ensures that predictions remain positive. This is
-useful for several reasons. First, with lots of missing data more
+    \item{\code{force.positive}}{The default is \code{TRUE}. Sometimes if smoothing data
+with steep gradients it is possible for predicted values to be negative.
+\code{force.positive = TRUE} ensures that predictions remain positive. This
+is useful for several reasons. First, with lots of missing data more
 interpolation is needed and this can result in artefacts because the
 predictions are too far from the original data. Second, if it is known
 beforehand that the data are all positive, then this option carries that
 assumption through to the prediction. The only likely time where setting
-\code{force.positive = FALSE} would be if background concentrations were first
-subtracted resulting in data that is legitimately negative. For the vast
-majority of situations it is expected that the user will not need to alter
-the default option.}
+\code{force.positive = FALSE} would be if background concentrations were
+first subtracted resulting in data that is legitimately negative. For the
+vast majority of situations it is expected that the user will not need to
+alter the default option.}
     \item{\code{k}}{This is the smoothing parameter used by the \code{gam} function in
-package \code{mgcv}. Typically, value of around 100 (the default) seems to be
-suitable and will resolve important features in the plot. The most
-appropriate choice of \code{k} is problem-dependent; but extensive testing of
-polar plots for many different problems suggests a value of \code{k} of about
-100 is suitable. Setting \code{k} to higher values will not tend to affect the
-surface predictions by much but will add to the computation time. Lower
-values of \code{k} will increase smoothing. Sometimes with few data to plot
-\code{polarPlot} will fail. Under these circumstances it can be worth lowering
-the value of \code{k}.}
-    \item{\code{normalise}}{If \code{TRUE} concentrations are normalised by dividing by their
-mean value. This is done \emph{after} fitting the smooth surface. This option is
-particularly useful if one is interested in the patterns of concentrations
-for several pollutants on different scales e.g. NOx and CO. Often useful if
-more than one \code{pollutant} is chosen.}
-    \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE} titles and
-axis labels will automatically try and format pollutant names and units
-properly e.g.  by subscripting the `2' in NO2.}
+package \code{mgcv}. Typically, value of around 100 (the default) seems to
+be suitable and will resolve important features in the plot. The most
+appropriate choice of \code{k} is problem-dependent; but extensive testing
+of polar plots for many different problems suggests a value of \code{k} of
+about 100 is suitable. Setting \code{k} to higher values will not tend to
+affect the surface predictions by much but will add to the computation
+time. Lower values of \code{k} will increase smoothing. Sometimes with few
+data to plot \code{polarPlot} will fail. Under these circumstances it can
+be worth lowering the value of \code{k}.}
+    \item{\code{normalise}}{If \code{TRUE} concentrations are normalised by dividing by
+their mean value. This is done \emph{after} fitting the smooth surface.
+This option is particularly useful if one is interested in the patterns of
+concentrations for several pollutants on different scales e.g. NOx and CO.
+Often useful if more than one \code{pollutant} is chosen.}
+    \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE}
+titles and axis labels will automatically try and format pollutant names
+and units properly e.g.  by subscripting the `2' in NO2.}
     \item{\code{ws_spread}}{The value of sigma used for Gaussian kernel weighting of
 wind speed when \code{statistic = "nwr"} or when correlation and regression
 statistics are used such as \emph{r}. Default is \code{0.5}.}
     \item{\code{wd_spread}}{The value of sigma used for Gaussian kernel weighting of
-wind direction when \code{statistic = "nwr"} or when correlation and regression
-statistics are used such as \emph{r}. Default is \code{4}.}
-    \item{\code{x_error}}{The \code{x} error / uncertainty used when \code{statistic = "york_slope"}.}
-    \item{\code{y_error}}{The \code{y} error / uncertainty used when \code{statistic = "york_slope"}.}
+wind direction when \code{statistic = "nwr"} or when correlation and
+regression statistics are used such as \emph{r}. Default is \code{4}.}
+    \item{\code{x_error}}{The \code{x} error / uncertainty used when \code{statistic =
+"york_slope"}.}
+    \item{\code{y_error}}{The \code{y} error / uncertainty used when \code{statistic =
+"york_slope"}.}
     \item{\code{kernel}}{Type of kernel used for the weighting procedure for when
 correlation or regression techniques are used. Only \code{"gaussian"} is
 supported but this may be enhanced in the future.}
     \item{\code{formula.label}}{When pair-wise statistics such as regression slopes are
-calculated and plotted, should a formula label be displayed?
-\code{formula.label} will also determine whether concentration information is
-printed when \code{statistic = "cpf"}.}
+calculated and plotted, should a formula label be displayed?}
     \item{\code{tau}}{The quantile to be estimated when \code{statistic} is set to
-\code{"quantile.slope"}. Default is \code{0.5} which is equal to the median and will
-be ignored if \code{"quantile.slope"} is not used.}
-    \item{\code{plot}}{Should a plot be produced? \code{FALSE} can be useful when analysing
-data to extract plot components and plotting them in other ways.}
+\code{"quantile.slope"}. Default is \code{0.5} which is equal to the median
+and will be ignored if \code{"quantile.slope"} is not used.}
+    \item{\code{plot}}{Should a plot be produced? \code{FALSE} can be useful when
+analysing data to extract plot components and plotting them in other ways.}
   }}
 
 \item{control}{\strong{Deprecated.} Please use \code{type}.}

@@ -6,7 +6,8 @@
 #' geographical patterns in pollution data. [krigingMap()] creates a smooth
 #' spatially interpolated surface using either inverse distance weighting or
 #' point kriging. [voronoiMap()] creates a surface of 'closest observation'
-#' polygons.
+#' polygons. The kriging formula is currently always `pollutant ~ 1`;
+#' [krigingMap()] does not currently support more complex models.
 #'
 #' @inheritParams polarMap
 #'
@@ -25,7 +26,7 @@
 #'   The column name of the pollutant to plot. Multiple `pollutants` are
 #'   prohibited by this function.
 #'
-#' @param method *Spatial interpolate method.*
+#' @param method *Spatial interpolation method.*
 #'
 #'  *default:* `"idw"` | *scope:* dynamic & static
 #'
@@ -53,9 +54,15 @@
 #'   - `"median"`: the median (middle) value (using [stats::median()])
 #'   - `"max"`: the maximum value (using [max()])
 #'   - `"min"`: the maximum value (using [min()])
+#'   - `"sd"`: the standard deviation (using [stats::sd()])
+#'   - `"percentile"`: a percentile value, defined using the `percentile` argument (using [stats::quantile()])
 #'
-#'   If `data` only has one value per latitude & longitude coordinate,
-#'   `statistic` will do nothing.
+#' @param percentile *The percentile when `statistic = "percentile"*
+#'
+#'  *default:* `95` | *scope:* dynamic & static
+#'
+#'   The percentile level used when `statistic = "percentile"`. The default is
+#'   `95`, representing 95%. Should be between `0` and `100`.
 #'
 #' @param newdata *A spatial dataset of prediction locations.*
 #'
@@ -75,17 +82,6 @@
 #'   scale. For example, `limits = c(0, 100)` would force the plot limits to
 #'   span 0-100. If `NULL`, appropriate limits will be selected based on the
 #'   range in `data[[pollutant]]`.
-#'
-#' @param type *A method to condition the `data` for separate plotting.*
-#'
-#'  *default:* `NULL` | *scope:* dynamic & static
-#'
-#'   Used for splitting the input data into different groups, passed to the
-#'   `type` argument of [openair::cutData()]. When `type` is specified:
-#'
-#'   - *Dynamic*: The different data splits can be toggled between using a "layer control" menu.
-#'
-#'   - *Static:*: The data splits will each appear in a different panel.
 #'
 #' @param alpha *Transparency value for interpolated surface.*
 #'
@@ -113,8 +109,15 @@
 #'
 #'   When `TRUE`, a legend will appear on the map identifying the colour scale.
 #'
-#' @param args.idw,args.vgm,args.fit.variogram,args.krige *Extra arguments to
-#'   pass to spatial interpolation functions for [krigingMap()].*
+#' @param vgm *A variogram model*
+#'
+#'  *default:* `gstat::vgm(psill = 1, model = "Exp", range = 50000, nugget = 1)` | *scope:* dynamic & static
+#'
+#'   The variogram model to use when `method = "kriging"`. Must be the output of
+#'   [gstat::vgm()].
+#'
+#' @param args.idw,args.variogram,args.fit.variogram,args.krige *Extra arguments
+#'   to pass to spatial interpolation functions for [krigingMap()].*
 #'
 #'  *scope:* dynamic & static
 #'
@@ -148,7 +151,7 @@
 #' uk <- rnaturalearth::ne_countries(scale = 10, country = "united kingdom")
 #'
 #' # create spatially interpolated map
-#' krigingMap(
+#' voronoiMap(
 #'   daqi,
 #'   pollutant = "poll_index",
 #'   newdata = uk,
@@ -158,12 +161,23 @@
 #'   legend.title = "Max O3 DAQI",
 #'   cols = "daqi"
 #' )
+#'
+#' krigingMap(
+#'   daqi,
+#'   pollutant = "poll_index",
+#'   newdata = uk,
+#'   statistic = "max",
+#'   legend.title = "Max O3 DAQI",
+#'   cols = openair::openColours("daqi", n = 10),
+#'   limits = c(1, 10)
+#' )
 #' }
 #'
 krigingMap <- function(
   data,
   pollutant = NULL,
   statistic = "mean",
+  percentile = 95,
   newdata = NULL,
   method = c("idw", "kriging"),
   breaks = NULL,
@@ -182,9 +196,9 @@ krigingMap <- function(
   legend.title = NULL,
   legend.title.autotext = TRUE,
   static = FALSE,
+  vgm = gstat::vgm(psill = 1, model = "Exp", range = 50000, nugget = 1),
   args.idw = list(),
   args.variogram = list(),
-  args.vgm = list(psill = 1, model = "Exp", range = 50000, nugget = 1),
   args.fit.variogram = list(),
   args.krige = list()
 ) {
@@ -203,6 +217,7 @@ krigingMap <- function(
   data_sf <- prepare_sf_data(
     data = data,
     statistic = statistic,
+    percentile = percentile,
     pollutant = pollutant,
     latitude = latitude,
     longitude = longitude,
@@ -215,7 +230,7 @@ krigingMap <- function(
     args.idw <- append(
       args.idw,
       list(
-        formula = as.formula(paste(pollutant, 1, sep = "~")),
+        formula = stats::as.formula(paste(pollutant, 1, sep = "~")),
         locations = data_sf,
         newdata = stars_grid
       )
@@ -224,23 +239,27 @@ krigingMap <- function(
   }
 
   if (method == "kriging") {
+    if (!inherits(vgm, "variogramModel")) {
+      cli::cli_abort(
+        "Please provide a {.fun gstat::vgm} output to {.arg vgm}. You have provided {.type {vgm}}."
+      )
+    }
+
     args.variogram <- append(
       args.variogram,
       list(
-        object = as.formula(paste(pollutant, 1, sep = "~")),
+        object = stats::as.formula(paste(pollutant, 1, sep = "~")),
         locations = data_sf
       )
     )
     v <- rlang::exec(gstat::variogram, !!!args.variogram)
-
-    vg <- rlang::exec(gstat::vgm, !!!args.vgm)
 
     args.fit.variogram <-
       append(
         args.fit.variogram,
         list(
           object = v,
-          model = vg
+          model = vgm
         )
       )
     v.m <- rlang::exec(gstat::fit.variogram, !!!args.fit.variogram)
@@ -249,7 +268,7 @@ krigingMap <- function(
       append(
         args.krige,
         list(
-          formula = as.formula(paste(pollutant, 1, sep = "~")),
+          formula = stats::as.formula(paste(pollutant, 1, sep = "~")),
           locations = data_sf,
           newdata = stars_grid,
           model = v.m
@@ -323,6 +342,7 @@ voronoiMap <- function(
   data,
   pollutant = NULL,
   statistic = "mean",
+  percentile = 95,
   newdata = NULL,
   breaks = NULL,
   labels = NULL,
@@ -355,6 +375,7 @@ voronoiMap <- function(
   data_sf <- prepare_sf_data(
     data = data,
     statistic = statistic,
+    percentile = percentile,
     pollutant = pollutant,
     latitude = latitude,
     longitude = longitude,
@@ -432,23 +453,31 @@ voronoiMap <- function(
 prepare_sf_data <- function(
   data,
   statistic,
+  percentile,
   pollutant,
   latitude,
   longitude,
   crs
 ) {
+  if (percentile < 0 || percentile > 100) {
+    cli::cli_abort("{.arg percentile} must be between {0L} and {100L}.")
+  }
+  percentile <- percentile / 100
+
   fun <- switch(
     statistic,
     "mean" = \(x) mean(x, na.rm = TRUE),
     "median" = \(x) stats::median(x, na.rm = TRUE),
     "max" = \(x) ifelse(all(is.na(x)), NA, max(x, na.rm = TRUE)),
-    "min" = \(x) ifelse(all(is.na(x)), NA, min(x, na.rm = TRUE))
+    "min" = \(x) ifelse(all(is.na(x)), NA, min(x, na.rm = TRUE)),
+    "sd" = \(x) ifelse(length(x) == 1, x, stats::sd(x, na.rm = TRUE)),
+    "percentile" = \(x) stats::quantile(x, percentile, na.rm = TRUE)
   )
 
   data_sf <-
     data |>
     dplyr::summarise(
-      avg_pollutant := fun(.data[[pollutant]]),
+      "avg_pollutant" := fun(.data[[pollutant]]),
       .by = dplyr::all_of(c(latitude, longitude))
     ) |>
     stats::setNames(c(latitude, longitude, pollutant)) |>

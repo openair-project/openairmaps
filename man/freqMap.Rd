@@ -300,29 +300,32 @@ direction bin.  The default is 1. A value of two requires at least 2 valid
 records in each bin an so on; bins with less than 2 valid records are set
 to NA. Care should be taken when using a value > 1 because of the risk of
 removing real data points. It is recommended to consider your data with
-care. Also, the \code{polarFreq} function can be of use in such circumstances.}
+care. Also, the \code{polarFreq} function can be of use in such
+circumstances.}
     \item{\code{ws.upper}}{A user-defined upper wind speed to use. This is useful for
 ensuring a consistent scale between different plots. For example, to
 always ensure that wind speeds are displayed between 1-10, set
 \code{ws.int = 10}.}
     \item{\code{offset}}{\code{offset} controls the size of the \sQuote{hole} in the
 middle and is expressed as a percentage of the maximum wind speed. Setting
-a higher \code{offset} e.g. 50 is useful for \code{statistic = "weighted.mean"} when \code{ws.int} is greater than the maximum wind
+a higher \code{offset} e.g. 50 is useful for \code{statistic =
+  "weighted.mean"} when \code{ws.int} is greater than the maximum wind
 speed. See example below.}
     \item{\code{border.col}}{The colour of the boundary of each wind speed/direction
 bin. The default is transparent. Another useful choice sometimes is
 "white".}
     \item{\code{key.header}}{Adds additional text/labels to the scale key. For example,
-passing the options \verb{key.header = "header", key.footer = "footer1"} adds
-addition text above and below the scale key. These arguments are passed to
-\code{drawOpenKey} via \code{quickText}, applying the \code{auto.text} argument, to handle
-formatting.}
+passing the options \code{key.header = "header", key.footer = "footer1"}
+adds addition text above and below the scale key. These arguments are
+passed to \code{drawOpenKey} via \code{quickText}, applying the
+\code{auto.text} argument, to handle formatting.}
     \item{\code{key.footer}}{see \code{key.footer}.}
     \item{\code{key.position}}{Location where the scale key is to plotted. Allowed
-arguments currently include \code{"top"}, \code{"right"}, \code{"bottom"} and \code{"left"}.}
-    \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE} titles and
-axis labels will automatically try and format pollutant names and units
-properly e.g.  by subscripting the `2' in NO2.}
+arguments currently include \code{"top"}, \code{"right"}, \code{"bottom"}
+and \code{"left"}.}
+    \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE}
+titles and axis labels will automatically try and format pollutant names
+and units properly e.g.  by subscripting the `2' in NO2.}
   }}
 
 \item{control}{\strong{Deprecated.} Please use \code{type}.}

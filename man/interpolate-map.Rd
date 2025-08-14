@@ -9,6 +9,7 @@ krigingMap(
   data,
   pollutant = NULL,
   statistic = "mean",
+  percentile = 95,
   newdata = NULL,
   method = c("idw", "kriging"),
   breaks = NULL,
@@ -27,9 +28,9 @@ krigingMap(
   legend.title = NULL,
   legend.title.autotext = TRUE,
   static = FALSE,
+  vgm = gstat::vgm(psill = 1, model = "Exp", range = 50000, nugget = 1),
   args.idw = list(),
   args.variogram = list(),
-  args.vgm = list(psill = 1, model = "Exp", range = 50000, nugget = 1),
   args.fit.variogram = list(),
   args.krige = list()
 )
@@ -38,6 +39,7 @@ voronoiMap(
   data,
   pollutant = NULL,
   statistic = "mean",
+  percentile = 95,
   newdata = NULL,
   breaks = NULL,
   labels = NULL,
@@ -86,10 +88,16 @@ controls how this is achieved. Possible statistics include:
 \item \code{"median"}: the median (middle) value (using \code{\link[stats:median]{stats::median()}})
 \item \code{"max"}: the maximum value (using \code{\link[=max]{max()}})
 \item \code{"min"}: the maximum value (using \code{\link[=min]{min()}})
-}
+\item \code{"sd"}: the standard deviation (using \code{\link[stats:sd]{stats::sd()}})
+\item \code{"percentile"}: a percentile value, defined using the \code{percentile} argument (using \code{\link[stats:quantile]{stats::quantile()}})
+}}
 
-If \code{data} only has one value per latitude & longitude coordinate,
-\code{statistic} will do nothing.}
+\item{percentile}{\emph{The percentile when `statistic = "percentile"}
+
+\emph{default:} \code{95} | \emph{scope:} dynamic & static
+
+The percentile level used when \code{statistic = "percentile"}. The default is
+\code{95}, representing 95\%. Should be between \code{0} and \code{100}.}
 
 \item{newdata}{\emph{A spatial dataset of prediction locations.}
 
@@ -101,7 +109,7 @@ prediction, but this is often not useful or aesthetically pleasing.
 \code{\link[sf:st_as_sf]{sf::st_as_sf()}}). This may be a country or authority boundary relevant to
 the \code{data} input.}
 
-\item{method}{\emph{Spatial interpolate method.}
+\item{method}{\emph{Spatial interpolation method.}
 
 \emph{default:} \code{"idw"} | \emph{scope:} dynamic & static
 
@@ -236,8 +244,15 @@ This controls whether a \emph{dynamic} or \emph{static} map is produced. The for
 is the default and is broadly more useful, but the latter may be preferable
 for DOCX or PDF outputs (e.g., academic papers).}
 
-\item{args.idw, args.vgm, args.fit.variogram, args.krige}{\emph{Extra arguments to
-pass to spatial interpolation functions for \code{\link[=krigingMap]{krigingMap()}}.}
+\item{vgm}{\emph{A variogram model}
+
+\emph{default:} \code{gstat::vgm(psill = 1, model = "Exp", range = 50000, nugget = 1)} | \emph{scope:} dynamic & static
+
+The variogram model to use when \code{method = "kriging"}. Must be the output of
+\code{\link[gstat:vgm]{gstat::vgm()}}.}
+
+\item{args.idw, args.variogram, args.fit.variogram, args.krige}{\emph{Extra arguments
+to pass to spatial interpolation functions for \code{\link[=krigingMap]{krigingMap()}}.}
 
 \emph{scope:} dynamic & static
 
@@ -251,17 +266,6 @@ functions for \code{\link[=voronoiMap]{voronoiMap()}}.}
 
 Extra arguments passed to \code{\link[terra:voronoi]{terra::voronoi()}}, with the exception of \code{x}
 which is dealt with by \code{\link[=voronoiMap]{voronoiMap()}}.}
-
-\item{type}{\emph{A method to condition the \code{data} for separate plotting.}
-
-\emph{default:} \code{NULL} | \emph{scope:} dynamic & static
-
-Used for splitting the input data into different groups, passed to the
-\code{type} argument of \code{\link[openair:cutData]{openair::cutData()}}. When \code{type} is specified:
-\itemize{
-\item \emph{Dynamic}: The different data splits can be toggled between using a "layer control" menu.
-\item \emph{Static:}: The data splits will each appear in a different panel.
-}}
 }
 \value{
 Either:
@@ -277,11 +281,26 @@ pollution concentrations where no monitoring is occurring, or better identify
 geographical patterns in pollution data. \code{\link[=krigingMap]{krigingMap()}} creates a smooth
 spatially interpolated surface using either inverse distance weighting or
 point kriging. \code{\link[=voronoiMap]{voronoiMap()}} creates a surface of 'closest observation'
-polygons.
+polygons. The kriging formula is currently always \code{pollutant ~ 1};
+\code{\link[=krigingMap]{krigingMap()}} does not currently support more complex models.
 }
 \examples{
 \dontrun{
-krigingMap(
+# import ozone DAQI
+daqi <-
+  openair::importUKAQ(
+    pollutant = "o3",
+    year = 2020,
+    source = "aurn",
+    data_type = "daqi",
+    meta = TRUE
+  )
+
+# get a UK shapefile
+uk <- rnaturalearth::ne_countries(scale = 10, country = "united kingdom")
+
+# create spatially interpolated map
+voronoiMap(
   daqi,
   pollutant = "poll_index",
   newdata = uk,
