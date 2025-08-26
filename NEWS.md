@@ -6,6 +6,12 @@
 
 ## New features
 
+* Added a new 'spatial interpolation' family of functions, which rely on the suggested `{stars}`, `{terra}` and `{gstat}` packages. These functions are most useful for dense air quality networks, and can be useful for identifying spatial patterns and hotspots of air pollution.
+
+    * `krigingMap()` allows for smooth spatial interpolation, either using simple inverse distance weighting or full point kriging.
+    
+    * `voronoiMap()` uses `terra::voronoi` to create a polygonal map of 'closest observations'.
+
 * Polar marker functions (both the `polarMap()` family and `addPolarMarkers()`) can now be run asynchronously if the user sets `mirai::daemons()`. Internally, this uses `purrr::in_parallel()`.
 
 * The progress bar shown when `progress = TRUE` now better reflects the actual time until function completion.

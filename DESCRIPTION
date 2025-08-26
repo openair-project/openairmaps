@@ -37,6 +37,7 @@ Suggests:
     ggplot2,
     ggspatial,
     ggtext,
+    gstat,
     jsonlite,
     knitr,
     mgcv,
@@ -44,6 +45,8 @@ Suggests:
     prettymapr,
     rmarkdown,
     shiny,
+    stars,
+    terra,
     testthat (>= 3.0.0)
 Config/Needs/website: openair-project/openairpkgdown
 Config/testthat/edition: 3

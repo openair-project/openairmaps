@@ -39,9 +39,10 @@
 "_PACKAGE"
 
 ## usethis namespace: start
+#' @importFrom dplyr tibble
 #' @importFrom lifecycle deprecated
 #' @importFrom rlang %||%
 #' @importFrom rlang .data
-#' @importFrom dplyr tibble
+#' @importFrom rlang :=
 ## usethis namespace: end
 NULL

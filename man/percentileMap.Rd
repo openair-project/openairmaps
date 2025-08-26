@@ -134,8 +134,8 @@ useful for the same reasons as popups, though are typically shorter.}
 
 \emph{default:} \code{"OpenStreetMap"} | \emph{scope:} dynamic & static
 
-The base map(s) to be used beneath the polar markers. If not provided, will
-default to \code{"OpenStreetMap"}/\code{"osm"} for both dynamic and static maps.
+The base map(s) to be used for the map. If not provided, will default to
+\code{"OpenStreetMap"}/\code{"osm"} for both dynamic and static maps.
 \itemize{
 \item \emph{Dynamic}: Any number of \link[leaflet:providers]{leaflet::providers}.
 See \url{http://leaflet-extras.github.io/leaflet-providers/preview/} for a list
@@ -298,7 +298,7 @@ value between 0 and 360 degrees to mitigate such problems. For example
 titles and axis labels will automatically try and format pollutant names
 and units properly e.g.  by subscripting the `2' in NO2.}
     \item{\code{key.header}}{Adds additional text/labels to the scale key. For example,
-passing the options \verb{key.header = "header", key.footer = "footer1"}
+passing the options \code{key.header = "header", key.footer = "footer1"}
 adds addition text above and below the scale key. These arguments are
 passed to \code{drawOpenKey} via \code{quickText}, applying the
 \code{auto.text} argument, to handle formatting.}
@@ -338,10 +338,10 @@ running \code{\link[mirai:daemons]{mirai::daemons()}} in their R session.
 polarMap(polar_data, "no2")
 }\if{html}{\out{</div>}}
 
-Typically, spawning one
-fewer daemons than your number of available cores is a useful rule of
-thumb. Parallel processing will be most useful for the most computationally
-intensive plotting functions - i.e., \code{\link[=polarMap]{polarMap()}} and \code{\link[=annulusMap]{annulusMap()}}.
+Typically, spawning one fewer daemons than your number of available cores
+is a useful rule of thumb. Parallel processing will be most useful for the
+most computationally intensive plotting functions - i.e., \code{\link[=polarMap]{polarMap()}} and
+\code{\link[=annulusMap]{annulusMap()}}.
 }
 
 \section{Customisation of static maps using ggplot2}{

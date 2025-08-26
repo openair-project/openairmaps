@@ -114,8 +114,8 @@ useful for the same reasons as popups, though are typically shorter.}
 
 \emph{default:} \code{"OpenStreetMap"} | \emph{scope:} dynamic & static
 
-The base map(s) to be used beneath the polar markers. If not provided, will
-default to \code{"OpenStreetMap"}/\code{"osm"} for both dynamic and static maps.
+The base map(s) to be used for the map. If not provided, will default to
+\code{"OpenStreetMap"}/\code{"osm"} for both dynamic and static maps.
 \itemize{
 \item \emph{Dynamic}: Any number of \link[leaflet:providers]{leaflet::providers}.
 See \url{http://leaflet-extras.github.io/leaflet-providers/preview/} for a list
@@ -261,10 +261,6 @@ direction values with which the first can be compared. See
     \item{\code{angle}}{Default angle of \dQuote{spokes} is 30. Other potentially useful
 angles are 45 and 10. Note that the width of the wind speed interval may
 need adjusting using \code{width}.}
-    \item{\code{calm.thresh}}{By default, conditions are considered to be calm when the
-wind speed is zero. The user can set a different threshold for calms be
-setting \code{calm.thresh} to a higher value. For example,
-\code{calm.thresh = 0.5} will identify wind speeds \strong{below} 0.5 as calm.}
     \item{\code{bias.corr}}{When \code{angle} does not divide exactly into 360 a bias is
 introduced in the frequencies when the wind direction is already supplied
 rounded to the nearest 10 degrees, as is often the case. For example, if
@@ -362,10 +358,10 @@ running \code{\link[mirai:daemons]{mirai::daemons()}} in their R session.
 polarMap(polar_data, "no2")
 }\if{html}{\out{</div>}}
 
-Typically, spawning one
-fewer daemons than your number of available cores is a useful rule of
-thumb. Parallel processing will be most useful for the most computationally
-intensive plotting functions - i.e., \code{\link[=polarMap]{polarMap()}} and \code{\link[=annulusMap]{annulusMap()}}.
+Typically, spawning one fewer daemons than your number of available cores
+is a useful rule of thumb. Parallel processing will be most useful for the
+most computationally intensive plotting functions - i.e., \code{\link[=polarMap]{polarMap()}} and
+\code{\link[=annulusMap]{annulusMap()}}.
 }
 
 \section{Customisation of static maps using ggplot2}{
