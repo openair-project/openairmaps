@@ -310,6 +310,16 @@ voronoiMap(
   legend.title = "Max O3 DAQI",
   cols = "daqi"
 )
+
+krigingMap(
+  daqi,
+  pollutant = "poll_index",
+  newdata = uk,
+  statistic = "max",
+  legend.title = "Max O3 DAQI",
+  cols = openair::openColours("daqi", n = 10),
+  limits = c(1, 10)
+)
 }
 
 }
