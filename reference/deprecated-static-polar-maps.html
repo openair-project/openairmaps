@@ -284,8 +284,8 @@ plotting on the map.</p></dd>
 <dt id="arg-provider">provider<a class="anchor" aria-label="anchor" href="#arg-provider"></a></dt>
 <dd><p><em>The basemap(s) to be used.</em></p>
 <p><em>default:</em> <code>"OpenStreetMap"</code> | <em>scope:</em> dynamic &amp; static</p>
-<p>The base map(s) to be used beneath the polar markers. If not provided, will
-default to <code>"OpenStreetMap"</code>/<code>"osm"</code> for both dynamic and static maps.</p><ul><li><p><em>Dynamic</em>: Any number of <a href="https://rstudio.github.io/leaflet/reference/providers.html" class="external-link">leaflet::providers</a>.
+<p>The base map(s) to be used for the map. If not provided, will default to
+<code>"OpenStreetMap"</code>/<code>"osm"</code> for both dynamic and static maps.</p><ul><li><p><em>Dynamic</em>: Any number of <a href="https://rstudio.github.io/leaflet/reference/providers.html" class="external-link">leaflet::providers</a>.
 See <a href="http://leaflet-extras.github.io/leaflet-providers/preview/" class="external-link">http://leaflet-extras.github.io/leaflet-providers/preview/</a> for a list
 of all base maps that can be used. If multiple base maps are provided, they
 can be toggled between using a "layer control" interface. By default, the
@@ -349,9 +349,14 @@ marker is desired.</p></dd>
 <dd><p>Passed to the polar plotting function</p></dd>
 
 
-<dt id="arg-before-after">before, after<a class="anchor" aria-label="anchor" href="#arg-before-after"></a></dt>
-<dd><p>Data frames representing the "before" and "after" cases.
-See <code><a href="https://rdrr.io/pkg/openair/man/polarPlot.html" class="external-link">polarPlot()</a></code> for details of different input requirements.</p></dd>
+<dt id="arg-before">before<a class="anchor" aria-label="anchor" href="#arg-before"></a></dt>
+<dd><p>A data frame that represents the "before" case. See
+<code><a href="https://rdrr.io/pkg/openair/man/polarPlot.html" class="external-link">polarPlot()</a></code> for details of different input requirements.</p></dd>
+
+
+<dt id="arg-after">after<a class="anchor" aria-label="anchor" href="#arg-after"></a></dt>
+<dd><p>A data frame that represents the "after" case. See <code><a href="https://rdrr.io/pkg/openair/man/polarPlot.html" class="external-link">polarPlot()</a></code>
+for details of different input requirements.</p></dd>
 
 
 <dt id="arg-period">period<a class="anchor" aria-label="anchor" href="#arg-period"></a></dt>

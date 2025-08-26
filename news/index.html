@@ -59,7 +59,12 @@
 </ul></div>
 <div class="section level3">
 <h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
-<ul><li><p>Polar marker functions (both the <code><a href="../reference/polarMap.html">polarMap()</a></code> family and <code><a href="../reference/addPolarMarkers.html">addPolarMarkers()</a></code>) can now be run asynchronously if the user sets <code><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">mirai::daemons()</a></code>. Internally, this uses <code><a href="https://purrr.tidyverse.org/reference/in_parallel.html" class="external-link">purrr::in_parallel()</a></code>.</p></li>
+<ul><li>
+<p>Added a new ‘spatial interpolation’ family of functions, which rely on the suggested <a href="https://r-spatial.github.io/stars/" class="external-link">stars</a>, <a href="https://rspatial.org/" class="external-link">terra</a> and <a href="https://github.com/r-spatial/gstat/" class="external-link">gstat</a> packages. These functions are most useful for dense air quality networks, and can be useful for identifying spatial patterns and hotspots of air pollution.</p>
+<ul><li><p><code><a href="../reference/interpolate-map.html">krigingMap()</a></code> allows for smooth spatial interpolation, either using simple inverse distance weighting or full point kriging.</p></li>
+<li><p><code><a href="../reference/interpolate-map.html">voronoiMap()</a></code> uses <code><a href="https://rspatial.github.io/terra/reference/voronoi.html" class="external-link">terra::voronoi</a></code> to create a polygonal map of ‘closest observations’.</p></li>
+</ul></li>
+<li><p>Polar marker functions (both the <code><a href="../reference/polarMap.html">polarMap()</a></code> family and <code><a href="../reference/addPolarMarkers.html">addPolarMarkers()</a></code>) can now be run asynchronously if the user sets <code><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">mirai::daemons()</a></code>. Internally, this uses <code><a href="https://purrr.tidyverse.org/reference/in_parallel.html" class="external-link">purrr::in_parallel()</a></code>.</p></li>
 <li><p>The progress bar shown when <code>progress = TRUE</code> now better reflects the actual time until function completion.</p></li>
 <li><p><code><a href="../reference/networkMap.html">networkMap()</a></code> can now use <code>source = 'imperial'</code>, in line with updates to <a href="https://davidcarslaw.github.io/openair/" class="external-link">openair</a>.</p></li>
 </ul></div>

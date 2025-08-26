@@ -209,8 +209,8 @@ useful for the same reasons as popups, though are typically shorter.</p></dd>
 <dt id="arg-provider">provider<a class="anchor" aria-label="anchor" href="#arg-provider"></a></dt>
 <dd><p><em>The basemap(s) to be used.</em></p>
 <p><em>default:</em> <code>"OpenStreetMap"</code> | <em>scope:</em> dynamic &amp; static</p>
-<p>The base map(s) to be used beneath the polar markers. If not provided, will
-default to <code>"OpenStreetMap"</code>/<code>"osm"</code> for both dynamic and static maps.</p><ul><li><p><em>Dynamic</em>: Any number of <a href="https://rstudio.github.io/leaflet/reference/providers.html" class="external-link">leaflet::providers</a>.
+<p>The base map(s) to be used for the map. If not provided, will default to
+<code>"OpenStreetMap"</code>/<code>"osm"</code> for both dynamic and static maps.</p><ul><li><p><em>Dynamic</em>: Any number of <a href="https://rstudio.github.io/leaflet/reference/providers.html" class="external-link">leaflet::providers</a>.
 See <a href="http://leaflet-extras.github.io/leaflet-providers/preview/" class="external-link">http://leaflet-extras.github.io/leaflet-providers/preview/</a> for a list
 of all base maps that can be used. If multiple base maps are provided, they
 can be toggled between using a "layer control" interface. By default, the
@@ -539,10 +539,12 @@ wind direction when <code>statistic = "nwr"</code> or when correlation and
 regression statistics are used such as <em>r</em>. Default is <code>4</code>.</p></dd>
 
     <dt><code>x_error</code></dt>
-<dd><p>The <code>x</code> error / uncertainty used when <code>statistic = "york_slope"</code>.</p></dd>
+<dd><p>The <code>x</code> error / uncertainty used when <code>statistic =
+"york_slope"</code>.</p></dd>
 
     <dt><code>y_error</code></dt>
-<dd><p>The <code>y</code> error / uncertainty used when <code>statistic = "york_slope"</code>.</p></dd>
+<dd><p>The <code>y</code> error / uncertainty used when <code>statistic =
+"york_slope"</code>.</p></dd>
 
     <dt><code>kernel</code></dt>
 <dd><p>Type of kernel used for the weighting procedure for when
@@ -551,9 +553,7 @@ supported but this may be enhanced in the future.</p></dd>
 
     <dt><code>formula.label</code></dt>
 <dd><p>When pair-wise statistics such as regression slopes are
-calculated and plotted, should a formula label be displayed?
-<code>formula.label</code> will also determine whether concentration information
-is printed when <code>statistic = "cpf"</code>.</p></dd>
+calculated and plotted, should a formula label be displayed?</p></dd>
 
     <dt><code>tau</code></dt>
 <dd><p>The quantile to be estimated when <code>statistic</code> is set to
@@ -585,10 +585,10 @@ expensive computations. <code>openairmaps</code> supports parallel processing wi
 running <code><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">mirai::daemons()</a></code> in their R session.</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>mirai<span class="sc">::</span><span class="fu">daemons</span>(<span class="dv">4</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">polarMap</span>(polar_data, <span class="st">"no2"</span>)</span></code></pre><p></p></div>
-<p>Typically, spawning one
-fewer daemons than your number of available cores is a useful rule of
-thumb. Parallel processing will be most useful for the most computationally
-intensive plotting functions - i.e., <code>polarMap()</code> and <code><a href="annulusMap.html">annulusMap()</a></code>.</p>
+<p>Typically, spawning one fewer daemons than your number of available cores
+is a useful rule of thumb. Parallel processing will be most useful for the
+most computationally intensive plotting functions - i.e., <code>polarMap()</code> and
+<code><a href="annulusMap.html">annulusMap()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="customisation-of-static-maps-using-ggplot-">Customisation of static maps using ggplot2<a class="anchor" aria-label="anchor" href="#customisation-of-static-maps-using-ggplot-"></a></h2>

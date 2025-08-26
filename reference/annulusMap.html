@@ -198,8 +198,8 @@ useful for the same reasons as popups, though are typically shorter.</p></dd>
 <dt id="arg-provider">provider<a class="anchor" aria-label="anchor" href="#arg-provider"></a></dt>
 <dd><p><em>The basemap(s) to be used.</em></p>
 <p><em>default:</em> <code>"OpenStreetMap"</code> | <em>scope:</em> dynamic &amp; static</p>
-<p>The base map(s) to be used beneath the polar markers. If not provided, will
-default to <code>"OpenStreetMap"</code>/<code>"osm"</code> for both dynamic and static maps.</p><ul><li><p><em>Dynamic</em>: Any number of <a href="https://rstudio.github.io/leaflet/reference/providers.html" class="external-link">leaflet::providers</a>.
+<p>The base map(s) to be used for the map. If not provided, will default to
+<code>"OpenStreetMap"</code>/<code>"osm"</code> for both dynamic and static maps.</p><ul><li><p><em>Dynamic</em>: Any number of <a href="https://rstudio.github.io/leaflet/reference/providers.html" class="external-link">leaflet::providers</a>.
 See <a href="http://leaflet-extras.github.io/leaflet-providers/preview/" class="external-link">http://leaflet-extras.github.io/leaflet-providers/preview/</a> for a list
 of all base maps that can be used. If multiple base maps are provided, they
 can be toggled between using a "layer control" interface. By default, the
@@ -346,7 +346,8 @@ of “smearing-out” the concentrations. Sometimes, a useful approach
 is to express time as local time. This correction tends to produce
 better-defined diurnal profiles of concentration (or other variables) and
 allows a better comparison to be made with emissions/activity data. If set
-to <code>FALSE</code> then GMT is used. Examples of usage include <code>local.tz = "Europe/London"</code>, <code>local.tz = "America/New_York"</code>. See
+to <code>FALSE</code> then GMT is used. Examples of usage include <code>local.tz
+  = "Europe/London"</code>, <code>local.tz = "America/New_York"</code>. See
 <code>cutData</code> and <code>import</code> for more details.</p></dd>
 
     <dt><code>statistic</code></dt>
@@ -356,7 +357,8 @@ speed/direction bin. Can be “mean” (default), “median”,
 deviation), “weighted.mean” or “cpf” (Conditional Probability
 Function). Because of the smoothing involved, the colour scale for some of
 these statistics is only to provide an indication of overall pattern and
-should not be interpreted in concentration units e.g. for <code>statistic = "weighted.mean"</code> where the bin mean is multiplied by the bin frequency and
+should not be interpreted in concentration units e.g. for <code>statistic =
+  "weighted.mean"</code> where the bin mean is multiplied by the bin frequency and
 divided by the total frequency. In many cases using <code>polarFreq</code> will
 be better. Setting <code>statistic = "weighted.mean"</code> can be useful because
 it provides an indication of the concentration * frequency of occurrence
@@ -364,7 +366,8 @@ and will highlight the wind speed/direction conditions that dominate the
 overall mean.</p></dd>
 
     <dt><code>percentile</code></dt>
-<dd><p>If <code>statistic = "percentile"</code> or <code>statistic = "cpf"</code> then <code>percentile</code> is used, expressed from 0 to 100. Note that
+<dd><p>If <code>statistic = "percentile"</code> or <code>statistic =
+  "cpf"</code> then <code>percentile</code> is used, expressed from 0 to 100. Note that
 the percentile value is calculated in the wind speed, wind direction
 ‘bins’. For this reason it can also be useful to set <code>min.bin</code>
 to ensure there are a sufficient number of points available to estimate a
@@ -471,10 +474,10 @@ expensive computations. <code>openairmaps</code> supports parallel processing wi
 running <code><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">mirai::daemons()</a></code> in their R session.</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>mirai<span class="sc">::</span><span class="fu">daemons</span>(<span class="dv">4</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">polarMap</span>(polar_data, <span class="st">"no2"</span>)</span></code></pre><p></p></div>
-<p>Typically, spawning one
-fewer daemons than your number of available cores is a useful rule of
-thumb. Parallel processing will be most useful for the most computationally
-intensive plotting functions - i.e., <code><a href="polarMap.html">polarMap()</a></code> and <code>annulusMap()</code>.</p>
+<p>Typically, spawning one fewer daemons than your number of available cores
+is a useful rule of thumb. Parallel processing will be most useful for the
+most computationally intensive plotting functions - i.e., <code><a href="polarMap.html">polarMap()</a></code> and
+<code>annulusMap()</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="customisation-of-static-maps-using-ggplot-">Customisation of static maps using ggplot2<a class="anchor" aria-label="anchor" href="#customisation-of-static-maps-using-ggplot-"></a></h2>
