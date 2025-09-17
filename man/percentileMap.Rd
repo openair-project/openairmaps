@@ -291,21 +291,20 @@ number of samples in the same wind sector (see Ashbaugh et al., 1985).}
     \item{\code{fill}}{Should the percentile intervals be filled (default) or should
 lines be drawn (\code{fill = FALSE}).}
     \item{\code{angle.scale}}{Sometimes the placement of the scale may interfere with an
-interesting feature. The user can therefore set \code{angle.scale} to any
-value between 0 and 360 degrees to mitigate such problems. For example
+interesting feature. The user can therefore set \code{angle.scale} to any value
+between 0 and 360 degrees to mitigate such problems. For example
 \code{angle.scale = 45} will draw the scale heading in a NE direction.}
-    \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE}
-titles and axis labels will automatically try and format pollutant names
-and units properly e.g.  by subscripting the `2' in NO2.}
+    \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE} titles and
+axis labels will automatically try and format pollutant names and units
+properly e.g.  by subscripting the `2' in NO2.}
     \item{\code{key.header}}{Adds additional text/labels to the scale key. For example,
-passing the options \code{key.header = "header", key.footer = "footer1"}
-adds addition text above and below the scale key. These arguments are
-passed to \code{drawOpenKey} via \code{quickText}, applying the
-\code{auto.text} argument, to handle formatting.}
+passing the options \verb{key.header = "header", key.footer = "footer1"} adds
+addition text above and below the scale key. These arguments are passed to
+\code{drawOpenKey} via \code{quickText}, applying the \code{auto.text} argument, to handle
+formatting.}
     \item{\code{key.footer}}{see \code{key.footer}.}
     \item{\code{key.position}}{Location where the scale key is to plotted. Allowed
-arguments currently include \code{"top"}, \code{"right"}, \code{"bottom"}
-and \code{"left"}.}
+arguments currently include \code{"top"}, \code{"right"}, \code{"bottom"} and \code{"left"}.}
   }}
 
 \item{control}{\strong{Deprecated.} Please use \code{type}.}
