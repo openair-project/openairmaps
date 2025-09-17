@@ -62,7 +62,7 @@ different layers.'><meta property="og:image" content="https://openair-project.gi
 
     <div class="ref-description section level2">
     <p>This function plots back trajectories on a <code>leaflet</code> map. This function
-requires that data are imported using the <code><a href="https://rdrr.io/pkg/openair/man/importTraj.html" class="external-link">openair::importTraj()</a></code> function.
+requires that data are imported using the <code><a href="https://openair-project.github.io/openair/reference/importTraj.html" class="external-link">openair::importTraj()</a></code> function.
 Options are provided to colour the individual trajectories (e.g., by
 pollutant concentrations) or create "layer control" menus to show/hide
 different layers.</p>
@@ -96,10 +96,10 @@ different layers.</p>
 
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p><em>A data frame containing a HYSPLIT trajectory, perhaps accessed
-with <code><a href="https://rdrr.io/pkg/openair/man/importTraj.html" class="external-link">openair::importTraj()</a></code>.</em></p>
+with <code><a href="https://openair-project.github.io/openair/reference/importTraj.html" class="external-link">openair::importTraj()</a></code>.</em></p>
 <p><strong>required</strong></p>
 <p>A data frame containing HYSPLIT model outputs. If this data were not
-obtained using <code><a href="https://rdrr.io/pkg/openair/man/importTraj.html" class="external-link">openair::importTraj()</a></code>.</p></dd>
+obtained using <code><a href="https://openair-project.github.io/openair/reference/importTraj.html" class="external-link">openair::importTraj()</a></code>.</p></dd>
 
 
 <dt id="arg-latitude-longitude">latitude, longitude<a class="anchor" aria-label="anchor" href="#arg-latitude-longitude"></a></dt>
@@ -121,13 +121,13 @@ commonly be a pollutant concentration which has been joined (e.g., by
 <p><em>default:</em> <code>NULL</code></p>
 <p>Used for splitting the trajectories into different groups which can be
 selected between using a "layer control" menu. Passed to
-<code><a href="https://rdrr.io/pkg/openair/man/cutData.html" class="external-link">openair::cutData()</a></code>.</p></dd>
+<code><a href="https://openair-project.github.io/openair/reference/cutData.html" class="external-link">openair::cutData()</a></code>.</p></dd>
 
 
 <dt id="arg-cols">cols<a class="anchor" aria-label="anchor" href="#arg-cols"></a></dt>
 <dd><p><em>Colours to use for plotting.</em></p>
 <p><em>default:</em> <code>"default"</code></p>
-<p>The colours used for plotting, passed to <code><a href="https://rdrr.io/pkg/openair/man/openColours.html" class="external-link">openair::openColours()</a></code>.</p></dd>
+<p>The colours used for plotting, passed to <code><a href="https://openair-project.github.io/openair/reference/openColours.html" class="external-link">openair::openColours()</a></code>.</p></dd>
 
 
 <dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
@@ -199,32 +199,46 @@ argument of <code><a href="https://rstudio.github.io/leaflet/reference/addLayers
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Arguments passed on to <code><a href="https://rdrr.io/pkg/openair/man/cutData.html" class="external-link">openair::cutData</a></code></p><dl><dt><code>hemisphere</code></dt>
-<dd><p>Can be <code>"northern"</code> or <code>"southern"</code>, used to
-split data into seasons.</p></dd>
+<dd><p>Arguments passed on to <code><a href="https://openair-project.github.io/openair/reference/cutData.html" class="external-link">openair::cutData</a></code></p><dl><dt><code>names</code></dt>
+<dd><p>By default, the columns created by <code><a href="https://openair-project.github.io/openair/reference/cutData.html" class="external-link">cutData()</a></code> are named after
+their <code>type</code> option. Specifying <code>names</code> defines other names for the columns,
+which map onto the <code>type</code> options in the same order they are given. The
+length of <code>names</code> should therefore be equal to the length of <code>type</code>.</p></dd>
+
+    <dt><code>suffix</code></dt>
+<dd><p>If <code>name</code> is not specified, <code>suffix</code> will be appended to any
+added columns that would otherwise overwrite existing columns. For example,
+<code>cutData(mydata, "nox", suffix = "_cuts")</code> would append a <code>nox_cuts</code> column
+rather than overwriting <code>nox</code>.</p></dd>
+
+    <dt><code>hemisphere</code></dt>
+<dd><p>Can be <code>"northern"</code> or <code>"southern"</code>, used to split data
+into seasons.</p></dd>
 
     <dt><code>n.levels</code></dt>
 <dd><p>Number of quantiles to split numeric data into.</p></dd>
 
     <dt><code>start.day</code></dt>
-<dd><p>What day of the week should the <code>type = "weekday"</code>
-start on?  The user can change the start day by supplying an integer
-between 0 and 6. Sunday = 0, Monday = 1, ... For example to start the
-weekday plots on a Saturday, choose <code>start.day = 6</code>.</p></dd>
+<dd><p>What day of the week should the <code>type = "weekday"</code> start on?
+The user can change the start day by supplying an integer between 0 and 6.
+Sunday = 0, Monday = 1, ... For example to start the weekday plots on a
+Saturday, choose <code>start.day = 6</code>.</p></dd>
 
     <dt><code>is.axis</code></dt>
-<dd><p>A logical (<code>TRUE</code>/<code>FALSE</code>), used to request
-shortened cut labels for axes.</p></dd>
+<dd><p>A logical (<code>TRUE</code>/<code>FALSE</code>), used to request shortened cut
+labels for axes.</p></dd>
 
     <dt><code>local.tz</code></dt>
 <dd><p>Used for identifying whether a date has daylight savings time
 (DST) applied or not. Examples include <code>local.tz = "Europe/London"</code>,
-<code>local.tz = "America/New_York"</code> i.e. time zones that assume DST.
+<code>local.tz = "America/New_York"</code>, i.e., time zones that assume DST.
 <a href="https://en.wikipedia.org/wiki/List_of_zoneinfo_time_zones" class="external-link">https://en.wikipedia.org/wiki/List_of_zoneinfo_time_zones</a> shows time
 zones that should be valid for most systems. It is important that the
-original data are in GMT (UTC) or a fixed offset from GMT. See
-<code>import</code> and the openair manual for information on how to import data
-and ensure no DST is applied.</p></dd>
+original data are in GMT (UTC) or a fixed offset from GMT.</p></dd>
+
+    <dt><code>latitude,longitude</code></dt>
+<dd><p>The decimal latitude and longitudes used when <code>type = "daylight"</code>. Note that locations west of Greenwich have negative
+longitudes.</p></dd>
 
 
 </dl></dd>
@@ -236,7 +250,7 @@ and ensure no DST is applied.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="https://rdrr.io/pkg/openair/man/trajPlot.html" class="external-link">openair::trajPlot()</a></code></p>
+    <div class="dont-index"><p><code><a href="https://openair-project.github.io/openair/reference/trajPlot.html" class="external-link">openair::trajPlot()</a></code></p>
 <p><code><a href="trajMapStatic.html">trajMapStatic()</a></code> for the static <code>ggplot2</code> equivalent of <code>trajMap()</code></p>
 <p>Other interactive trajectory maps:
 <code><a href="trajLevelMap.html">trajLevelMap</a>()</code></p></div>

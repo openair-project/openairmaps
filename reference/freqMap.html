@@ -144,7 +144,7 @@ speed/direction bins, and so on.  Finally, "weighted.mean" will plot the
 concentration of a pollutant weighted by wind speed/direction. Each segment
 therefore provides the percentage overall contribution to the total
 concentration. Note that for options other than "frequency", it is necessary
-to also provide the name of a pollutant. See function <code><a href="https://rdrr.io/pkg/openair/man/cutData.html" class="external-link">openair::cutData()</a></code>
+to also provide the name of a pollutant. See function <code><a href="https://openair-project.github.io/openair/reference/cutData.html" class="external-link">openair::cutData()</a></code>
 for further details.</p></dd>
 
 
@@ -185,7 +185,7 @@ plotting on the map.</p></dd>
 <dd><p><em>A method to condition the <code>data</code> for separate plotting.</em></p>
 <p><em>default:</em> <code>NULL</code> | <em>scope:</em> dynamic &amp; static</p>
 <p>Used for splitting the input data into different groups, passed to the
-<code>type</code> argument of <code><a href="https://rdrr.io/pkg/openair/man/cutData.html" class="external-link">openair::cutData()</a></code>. When <code>type</code> is specified:</p><ul><li><p><em>Dynamic</em>: The different data splits can be toggled between using a "layer control" menu.</p></li>
+<code>type</code> argument of <code><a href="https://openair-project.github.io/openair/reference/cutData.html" class="external-link">openair::cutData()</a></code>. When <code>type</code> is specified:</p><ul><li><p><em>Dynamic</em>: The different data splits can be toggled between using a "layer control" menu.</p></li>
 <li><p><em>Static:</em>: The data splits will each appear in a different panel.</p></li>
 </ul><p><code>type</code> cannot be used if multiple <code>pollutant</code> columns have been provided.</p></dd>
 
@@ -226,7 +226,7 @@ substitute the correct provider string.</p></dd>
 <dt id="arg-cols">cols<a class="anchor" aria-label="anchor" href="#arg-cols"></a></dt>
 <dd><p><em>Colours to use for plotting.</em></p>
 <p><em>default:</em> <code>"turbo"</code> | <em>scope:</em> dynamic &amp; static</p>
-<p>The colours used for plotting, passed to <code><a href="https://rdrr.io/pkg/openair/man/openColours.html" class="external-link">openair::openColours()</a></code>. The
+<p>The colours used for plotting, passed to <code><a href="https://openair-project.github.io/openair/reference/openColours.html" class="external-link">openair::openColours()</a></code>. The
 default, <code>"turbo"</code>, is a rainbow palette with relatively perceptually
 uniform colours.</p></dd>
 
@@ -271,7 +271,7 @@ this - for example, to include units or other contextual information. For
 <dd><p><em>Automatically format the title of the legend?</em></p>
 <p><em>default:</em> <code>TRUE</code> | <em>scope:</em> dynamic &amp; static</p>
 <p>When <code>legend.title.autotext = TRUE</code>, <code>legend.title</code> will be first run
-through <code><a href="quickTextHTML.html">quickTextHTML()</a></code> (<em>dynamic</em>) or <code><a href="https://rdrr.io/pkg/openair/man/quickText.html" class="external-link">openair::quickText()</a></code> (<em>static</em>).</p></dd>
+through <code><a href="quickTextHTML.html">quickTextHTML()</a></code> (<em>dynamic</em>) or <code><a href="https://openair-project.github.io/openair/reference/quickText.html" class="external-link">openair::quickText()</a></code> (<em>static</em>).</p></dd>
 
 
 <dt id="arg-control-collapsed">control.collapsed<a class="anchor" aria-label="anchor" href="#arg-control-collapsed"></a></dt>
@@ -341,7 +341,7 @@ off, if desired.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Arguments passed on to <code><a href="https://rdrr.io/pkg/openair/man/polarFreq.html" class="external-link">openair::polarFreq</a></code></p><dl><dt><code>ws.int</code></dt>
+<dd><p>Arguments passed on to <code><a href="https://openair-project.github.io/openair/reference/polarFreq.html" class="external-link">openair::polarFreq</a></code></p><dl><dt><code>ws.int</code></dt>
 <dd><p>Wind speed interval assumed. In some cases e.g. a low met
 mast, an interval of 0.5 may be more appropriate.</p></dd>
 
@@ -364,8 +364,7 @@ direction bin.  The default is 1. A value of two requires at least 2 valid
 records in each bin an so on; bins with less than 2 valid records are set
 to NA. Care should be taken when using a value &gt; 1 because of the risk of
 removing real data points. It is recommended to consider your data with
-care. Also, the <code>polarFreq</code> function can be of use in such
-circumstances.</p></dd>
+care. Also, the <code>polarFreq</code> function can be of use in such circumstances.</p></dd>
 
     <dt><code>ws.upper</code></dt>
 <dd><p>A user-defined upper wind speed to use. This is useful for
@@ -376,8 +375,7 @@ always ensure that wind speeds are displayed between 1-10, set
     <dt><code>offset</code></dt>
 <dd><p><code>offset</code> controls the size of the ‘hole’ in the
 middle and is expressed as a percentage of the maximum wind speed. Setting
-a higher <code>offset</code> e.g. 50 is useful for <code>statistic =
-  "weighted.mean"</code> when <code>ws.int</code> is greater than the maximum wind
+a higher <code>offset</code> e.g. 50 is useful for <code>statistic = "weighted.mean"</code> when <code>ws.int</code> is greater than the maximum wind
 speed. See example below.</p></dd>
 
     <dt><code>border.col</code></dt>
@@ -387,23 +385,22 @@ bin. The default is transparent. Another useful choice sometimes is
 
     <dt><code>key.header</code></dt>
 <dd><p>Adds additional text/labels to the scale key. For example,
-passing the options <code>key.header = "header", key.footer = "footer1"</code>
-adds addition text above and below the scale key. These arguments are
-passed to <code>drawOpenKey</code> via <code>quickText</code>, applying the
-<code>auto.text</code> argument, to handle formatting.</p></dd>
+passing the options <code>key.header = "header", key.footer = "footer1"</code> adds
+addition text above and below the scale key. These arguments are passed to
+<code>drawOpenKey</code> via <code>quickText</code>, applying the <code>auto.text</code> argument, to handle
+formatting.</p></dd>
 
     <dt><code>key.footer</code></dt>
 <dd><p>see <code>key.footer</code>.</p></dd>
 
     <dt><code>key.position</code></dt>
 <dd><p>Location where the scale key is to plotted. Allowed
-arguments currently include <code>"top"</code>, <code>"right"</code>, <code>"bottom"</code>
-and <code>"left"</code>.</p></dd>
+arguments currently include <code>"top"</code>, <code>"right"</code>, <code>"bottom"</code> and <code>"left"</code>.</p></dd>
 
     <dt><code>auto.text</code></dt>
-<dd><p>Either <code>TRUE</code> (default) or <code>FALSE</code>. If <code>TRUE</code>
-titles and axis labels will automatically try and format pollutant names
-and units properly e.g.  by subscripting the `2' in NO2.</p></dd>
+<dd><p>Either <code>TRUE</code> (default) or <code>FALSE</code>. If <code>TRUE</code> titles and
+axis labels will automatically try and format pollutant names and units
+properly e.g.  by subscripting the `2' in NO2.</p></dd>
 
 
 </dl></dd>
@@ -457,7 +454,7 @@ legends.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="https://rdrr.io/pkg/openair/man/polarFreq.html" class="external-link">openair::polarFreq()</a></code></p>
+    <div class="dont-index"><p><code><a href="https://openair-project.github.io/openair/reference/polarFreq.html" class="external-link">openair::polarFreq()</a></code></p>
 <p>Other directional analysis maps:
 <code><a href="annulusMap.html">annulusMap</a>()</code>,
 <code><a href="diffMap.html">diffMap</a>()</code>,

@@ -63,8 +63,8 @@ arguments, which should be more flexible for post-hoc changes."><meta property="
     <div class="ref-description section level2">
     <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p>This function plots back trajectories using <code>ggplot2</code>. The function
-requires that data are imported using <code><a href="https://rdrr.io/pkg/openair/man/importTraj.html" class="external-link">openair::importTraj()</a></code>. It is a
-<code>ggplot2</code> implementation of <code><a href="https://rdrr.io/pkg/openair/man/trajPlot.html" class="external-link">openair::trajPlot()</a></code> with many of the same
+requires that data are imported using <code><a href="https://openair-project.github.io/openair/reference/importTraj.html" class="external-link">openair::importTraj()</a></code>. It is a
+<code>ggplot2</code> implementation of <code><a href="https://openair-project.github.io/openair/reference/trajPlot.html" class="external-link">openair::trajPlot()</a></code> with many of the same
 arguments, which should be more flexible for post-hoc changes.</p>
     </div>
 
@@ -101,10 +101,10 @@ arguments, which should be more flexible for post-hoc changes.</p>
 
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p><em>A data frame containing a HYSPLIT trajectory, perhaps accessed
-with <code><a href="https://rdrr.io/pkg/openair/man/importTraj.html" class="external-link">openair::importTraj()</a></code>.</em></p>
+with <code><a href="https://openair-project.github.io/openair/reference/importTraj.html" class="external-link">openair::importTraj()</a></code>.</em></p>
 <p><strong>required</strong></p>
 <p>A data frame containing HYSPLIT model outputs. If this data were not
-obtained using <code><a href="https://rdrr.io/pkg/openair/man/importTraj.html" class="external-link">openair::importTraj()</a></code>.</p></dd>
+obtained using <code><a href="https://openair-project.github.io/openair/reference/importTraj.html" class="external-link">openair::importTraj()</a></code>.</p></dd>
 
 
 <dt id="arg-colour">colour<a class="anchor" aria-label="anchor" href="#arg-colour"></a></dt>
@@ -120,7 +120,7 @@ edited after the fact using <code><a href="https://ggplot2.tidyverse.org/referen
 <dd><p><em>A method to condition the <code>data</code> for separate plotting.</em></p>
 <p><em>default:</em> <code>NULL</code></p>
 <p>Used for splitting the trajectories into different groups which will appear
-as different panels. Passed to <code><a href="https://rdrr.io/pkg/openair/man/cutData.html" class="external-link">openair::cutData()</a></code>.</p></dd>
+as different panels. Passed to <code><a href="https://openair-project.github.io/openair/reference/cutData.html" class="external-link">openair::cutData()</a></code>.</p></dd>
 
 
 <dt id="arg-group">group<a class="anchor" aria-label="anchor" href="#arg-group"></a></dt>
@@ -229,32 +229,46 @@ draws solid lines.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Arguments passed on to <code><a href="https://rdrr.io/pkg/openair/man/cutData.html" class="external-link">openair::cutData</a></code></p><dl><dt><code>hemisphere</code></dt>
-<dd><p>Can be <code>"northern"</code> or <code>"southern"</code>, used to
-split data into seasons.</p></dd>
+<dd><p>Arguments passed on to <code><a href="https://openair-project.github.io/openair/reference/cutData.html" class="external-link">openair::cutData</a></code></p><dl><dt><code>names</code></dt>
+<dd><p>By default, the columns created by <code><a href="https://openair-project.github.io/openair/reference/cutData.html" class="external-link">cutData()</a></code> are named after
+their <code>type</code> option. Specifying <code>names</code> defines other names for the columns,
+which map onto the <code>type</code> options in the same order they are given. The
+length of <code>names</code> should therefore be equal to the length of <code>type</code>.</p></dd>
+
+    <dt><code>suffix</code></dt>
+<dd><p>If <code>name</code> is not specified, <code>suffix</code> will be appended to any
+added columns that would otherwise overwrite existing columns. For example,
+<code>cutData(mydata, "nox", suffix = "_cuts")</code> would append a <code>nox_cuts</code> column
+rather than overwriting <code>nox</code>.</p></dd>
+
+    <dt><code>hemisphere</code></dt>
+<dd><p>Can be <code>"northern"</code> or <code>"southern"</code>, used to split data
+into seasons.</p></dd>
 
     <dt><code>n.levels</code></dt>
 <dd><p>Number of quantiles to split numeric data into.</p></dd>
 
     <dt><code>start.day</code></dt>
-<dd><p>What day of the week should the <code>type = "weekday"</code>
-start on?  The user can change the start day by supplying an integer
-between 0 and 6. Sunday = 0, Monday = 1, ... For example to start the
-weekday plots on a Saturday, choose <code>start.day = 6</code>.</p></dd>
+<dd><p>What day of the week should the <code>type = "weekday"</code> start on?
+The user can change the start day by supplying an integer between 0 and 6.
+Sunday = 0, Monday = 1, ... For example to start the weekday plots on a
+Saturday, choose <code>start.day = 6</code>.</p></dd>
 
     <dt><code>is.axis</code></dt>
-<dd><p>A logical (<code>TRUE</code>/<code>FALSE</code>), used to request
-shortened cut labels for axes.</p></dd>
+<dd><p>A logical (<code>TRUE</code>/<code>FALSE</code>), used to request shortened cut
+labels for axes.</p></dd>
 
     <dt><code>local.tz</code></dt>
 <dd><p>Used for identifying whether a date has daylight savings time
 (DST) applied or not. Examples include <code>local.tz = "Europe/London"</code>,
-<code>local.tz = "America/New_York"</code> i.e. time zones that assume DST.
+<code>local.tz = "America/New_York"</code>, i.e., time zones that assume DST.
 <a href="https://en.wikipedia.org/wiki/List_of_zoneinfo_time_zones" class="external-link">https://en.wikipedia.org/wiki/List_of_zoneinfo_time_zones</a> shows time
 zones that should be valid for most systems. It is important that the
-original data are in GMT (UTC) or a fixed offset from GMT. See
-<code>import</code> and the openair manual for information on how to import data
-and ensure no DST is applied.</p></dd>
+original data are in GMT (UTC) or a fixed offset from GMT.</p></dd>
+
+    <dt><code>latitude,longitude</code></dt>
+<dd><p>The decimal latitude and longitudes used when <code>type = "daylight"</code>. Note that locations west of Greenwich have negative
+longitudes.</p></dd>
 
 
 </dl></dd>
@@ -266,7 +280,7 @@ and ensure no DST is applied.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="https://rdrr.io/pkg/openair/man/trajPlot.html" class="external-link">openair::trajPlot()</a></code></p>
+    <div class="dont-index"><p><code><a href="https://openair-project.github.io/openair/reference/trajPlot.html" class="external-link">openair::trajPlot()</a></code></p>
 <p><code><a href="trajMap.html">trajMap()</a></code> for the interactive <code>leaflet</code> equivalent of
 <code>trajMapStatic()</code></p>
 <p>Other static trajectory maps:
@@ -278,17 +292,17 @@ and ensure no DST is applied.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co"># colour by height</span></span></span>
 <span class="r-in"><span><span class="fu">trajMapStatic</span><span class="op">(</span><span class="va">traj_data</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_color_gradientn</a></span><span class="op">(</span>colors <span class="op">=</span> <span class="fu">openair</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/openair/man/openColours.html" class="external-link">openColours</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_color_gradientn</a></span><span class="op">(</span>colors <span class="op">=</span> <span class="fu">openair</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/openair/reference/openColours.html" class="external-link">openColours</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># colour by PM10, log transform scale</span></span></span>
 <span class="r-in"><span><span class="fu">trajMapStatic</span><span class="op">(</span><span class="va">traj_data</span>, colour <span class="op">=</span> <span class="st">"pm10"</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_color_viridis_c</a></span><span class="op">(</span>trans <span class="op">=</span> <span class="st">"log10"</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>color <span class="op">=</span> <span class="fu">openair</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/openair/man/quickText.html" class="external-link">quickText</a></span><span class="op">(</span><span class="st">"PM10"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>color <span class="op">=</span> <span class="fu">openair</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/openair/reference/quickText.html" class="external-link">quickText</a></span><span class="op">(</span><span class="st">"PM10"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># color by PM2.5, lat/lon projection</span></span></span>
 <span class="r-in"><span><span class="fu">trajMapStatic</span><span class="op">(</span><span class="va">traj_data</span>, colour <span class="op">=</span> <span class="st">"pm2.5"</span>, crs <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_color_viridis_c</a></span><span class="op">(</span>option <span class="op">=</span> <span class="st">"turbo"</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>color <span class="op">=</span> <span class="fu">openair</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/openair/man/quickText.html" class="external-link">quickText</a></span><span class="op">(</span><span class="st">"PM2.5"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>color <span class="op">=</span> <span class="fu">openair</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/openair/reference/quickText.html" class="external-link">quickText</a></span><span class="op">(</span><span class="st">"PM2.5"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

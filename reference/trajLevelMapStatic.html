@@ -63,8 +63,8 @@ same arguments, which should be more flexible for post-hoc changes."><meta prope
     <div class="ref-description section level2">
     <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
 <p>This function plots back trajectories on a <code>ggplot2</code> map. This function
-requires that data are imported using the <code><a href="https://rdrr.io/pkg/openair/man/importTraj.html" class="external-link">openair::importTraj()</a></code> function.
-It is a <code>ggplot2</code> implementation of <code><a href="https://rdrr.io/pkg/openair/man/trajLevel.html" class="external-link">openair::trajLevel()</a></code> with many of the
+requires that data are imported using the <code><a href="https://openair-project.github.io/openair/reference/importTraj.html" class="external-link">openair::importTraj()</a></code> function.
+It is a <code>ggplot2</code> implementation of <code><a href="https://openair-project.github.io/openair/reference/trajLevel.html" class="external-link">openair::trajLevel()</a></code> with many of the
 same arguments, which should be more flexible for post-hoc changes.</p>
     </div>
 
@@ -106,10 +106,10 @@ same arguments, which should be more flexible for post-hoc changes.</p>
 
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p><em>A data frame containing a HYSPLIT trajectory, perhaps accessed
-with <code><a href="https://rdrr.io/pkg/openair/man/importTraj.html" class="external-link">openair::importTraj()</a></code>.</em></p>
+with <code><a href="https://openair-project.github.io/openair/reference/importTraj.html" class="external-link">openair::importTraj()</a></code>.</em></p>
 <p><strong>required</strong></p>
 <p>A data frame containing HYSPLIT model outputs. If this data were not
-obtained using <code><a href="https://rdrr.io/pkg/openair/man/importTraj.html" class="external-link">openair::importTraj()</a></code>.</p></dd>
+obtained using <code><a href="https://openair-project.github.io/openair/reference/importTraj.html" class="external-link">openair::importTraj()</a></code>.</p></dd>
 
 
 <dt id="arg-latitude-longitude">latitude, longitude<a class="anchor" aria-label="anchor" href="#arg-latitude-longitude"></a></dt>
@@ -128,7 +128,7 @@ used.</p></dd>
 <p><em>default:</em> <code>NULL</code></p>
 <p>Used for splitting the trajectories into different groups which can be
 selected between using a "layer control" menu. Passed to
-<code><a href="https://rdrr.io/pkg/openair/man/cutData.html" class="external-link">openair::cutData()</a></code>.</p></dd>
+<code><a href="https://openair-project.github.io/openair/reference/cutData.html" class="external-link">openair::cutData()</a></code>.</p></dd>
 
 
 <dt id="arg-smooth">smooth<a class="anchor" aria-label="anchor" href="#arg-smooth"></a></dt>
@@ -138,7 +138,7 @@ setting <code>crs</code> to <code>sf::st_crs(4326)</code> or <code>NULL</code>.<
 
 
 <dt id="arg-statistic">statistic<a class="anchor" aria-label="anchor" href="#arg-statistic"></a></dt>
-<dd><p>Statistic to use for <code><a href="https://rdrr.io/pkg/openair/man/trajLevel.html" class="external-link">trajLevel()</a></code>. By default, the function
+<dd><p>Statistic to use for <code><a href="https://openair-project.github.io/openair/reference/trajLevel.html" class="external-link">trajLevel()</a></code>. By default, the function
 will plot the trajectory frequencies (<code>statistic = "frequency"</code>). As an
 alternative way of viewing trajectory frequencies, the argument <code>method = "hexbin"</code> can be used. In this case hexagonal binning of the trajectory
 <em>points</em> (i.e., a point every three hours along each back trajectory).
@@ -261,7 +261,11 @@ draws solid lines.</p></dd>
 <dd><p>Arguments passed on to <code><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">ggplot2::coord_sf</a></code></p><dl><dt><code>expand</code></dt>
 <dd><p>If <code>TRUE</code>, the default, adds a small expansion factor to
 the limits to ensure that data and axes don't overlap. If <code>FALSE</code>,
-limits are taken exactly from the data or <code>xlim</code>/<code>ylim</code>.</p></dd>
+limits are taken exactly from the data or <code>xlim</code>/<code>ylim</code>.
+Giving a logical vector will separately control the expansion for the four
+directions (top, left, bottom and right). The <code>expand</code> argument will be
+recycled to length 4 if necessary. Alternatively, can be a named logical
+vector to control a single direction, e.g. <code>expand = c(bottom = FALSE)</code>.</p></dd>
 
     <dt><code>datum</code></dt>
 <dd><p>CRS that provides datum to use when generating graticules.</p></dd>
@@ -330,6 +334,12 @@ limits are set via <code>xlim</code> and <code>ylim</code> and some data points 
 limits, then those data points may show up in places such as the axes, the
 legend, the plot title, or the plot margins.</p></dd>
 
+    <dt><code>reverse</code></dt>
+<dd><p>A string giving which directions to reverse. <code>"none"</code>
+(default) keeps directions as is. <code>"x"</code> and <code>"y"</code> can be used to reverse
+their respective directions. <code>"xy"</code> can be used to reverse both
+directions.</p></dd>
+
 
 </dl></dd>
 
@@ -340,7 +350,7 @@ legend, the plot title, or the plot margins.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="https://rdrr.io/pkg/openair/man/trajLevel.html" class="external-link">openair::trajLevel()</a></code></p>
+    <div class="dont-index"><p><code><a href="https://openair-project.github.io/openair/reference/trajLevel.html" class="external-link">openair::trajLevel()</a></code></p>
 <p><code><a href="trajLevelMap.html">trajLevelMap()</a></code> for the interactive <code>leaflet</code> equivalent of
 <code>trajLevelMapStatic()</code></p>
 <p>Other static trajectory maps:
