@@ -52,14 +52,13 @@
 #' # different types of polar plot on one map
 #' leaflet(data = polar_data) |>
 #'   addTiles() |>
-#'   addPolarMarkers("ws",
+#'   addPolarMarkers(
+#'     "ws",
 #'     fun = openair::windRose,
+#'     annotate = FALSE,
 #'     group = "Wind Rose"
 #'   ) |>
-#'   addPolarMarkers("nox",
-#'     fun = openair::polarPlot,
-#'     group = "Polar Plot"
-#'   ) |>
+#'   addPolarMarkers("nox", fun = openair::polarPlot, group = "Polar Plot") |>
 #'   addLayersControl(
 #'     baseGroups = c("Wind Rose", "Polar Plot")
 #'   )
@@ -94,6 +93,9 @@ addPolarMarkers <-
     data = leaflet::getMapData(map),
     ...
   ) {
+    # need to rename fun input - for carrier crating
+    polar_fun <- fun
+
     # guess lat/lon
     latlon <- assume_latlon(
       data = data,
@@ -104,16 +106,22 @@ addPolarMarkers <-
     longitude <- latlon$longitude
 
     # define plotting function
-    theargs <- list(...)
-    thefun <- function(data, args = theargs) {
-      rlang::exec(
-        .fn = fun,
-        mydata = data,
+    fun_args <- append(
+      list(
         pollutant = pollutant,
         key = key,
         plot = FALSE,
-        !!!args,
         par.settings = list(axis.line = list(col = "transparent"))
+      ),
+      rlang::list2(...)
+    )
+    fun <- function(data) {
+      rlang::exec(
+        .fn = polar_fun,
+        !!!append(
+          list(mydata = data),
+          fun_args
+        )
       )
     }
 
@@ -124,7 +132,8 @@ addPolarMarkers <-
     # plot and save static markers
     plots_df <-
       create_polar_markers(
-        fun = thefun,
+        fun = fun,
+        fun_args = fun_args,
         data = data,
         latitude = latitude,
         longitude = longitude,
@@ -132,7 +141,9 @@ addPolarMarkers <-
         d.fig = d.fig,
         popup = popup,
         label = label,
-        dropcol = pollutant
+        dropcol = "no2",
+        progress = TRUE,
+        polar_fun = polar_fun
       )
 
     # work out width/height

@@ -196,10 +196,9 @@ freqMap <- function(
     split_col <- "pollutant_name"
   }
 
-  # define function
-  fun <- function(data) {
-    openair::polarFreq(
-      data,
+  # arguments for function
+  fun_args <- append(
+    list(
       pollutant = "conc",
       breaks = theBreaks,
       plot = FALSE,
@@ -207,8 +206,19 @@ freqMap <- function(
       cols = cols,
       alpha = alpha,
       key = key,
-      ...,
       par.settings = list(axis.line = list(col = "transparent"))
+    ),
+    rlang::list2(...)
+  )
+
+  # define function
+  fun <- function(data) {
+    rlang::exec(
+      openair::polarFreq,
+      !!!append(
+        list(mydata = data),
+        fun_args
+      )
     )
   }
 
@@ -216,6 +226,7 @@ freqMap <- function(
   plots_df <-
     create_polar_markers(
       fun = fun,
+      fun_args = fun_args,
       data = data,
       latitude = latitude,
       longitude = longitude,

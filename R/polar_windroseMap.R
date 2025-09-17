@@ -155,10 +155,9 @@ windroseMap <- function(
     split_col <- "pollutant_name"
   }
 
-  # define function
-  fun <- function(data) {
-    openair::windRose(
-      data,
+  # arguments for function
+  fun_args <- append(
+    list(
       plot = FALSE,
       ws.int = ws.int,
       breaks = breaks,
@@ -166,8 +165,19 @@ windroseMap <- function(
       alpha = alpha,
       key = key,
       annotate = FALSE,
-      ...,
       par.settings = list(axis.line = list(col = "transparent"))
+    ),
+    rlang::list2(...)
+  )
+
+  # define function
+  fun <- function(data) {
+    rlang::exec(
+      openair::windRose,
+      !!!append(
+        list(mydata = data),
+        fun_args
+      )
     )
   }
 
@@ -175,6 +185,7 @@ windroseMap <- function(
   plots_df <-
     create_polar_markers(
       fun = fun,
+      fun_args = fun_args,
       data = data,
       latitude = latitude,
       longitude = longitude,
