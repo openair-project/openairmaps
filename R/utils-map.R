@@ -432,6 +432,7 @@ theme_static <- function() {
 create_polar_markers <-
   function(
     fun,
+    fun_args,
     data = data,
     latitude = latitude,
     longitude = longitude,
@@ -440,6 +441,7 @@ create_polar_markers <-
     label = NULL,
     d.fig,
     dropcol = "conc",
+    polar_fun = NULL,
     progress = TRUE
   ) {
     # make temp directory
@@ -540,8 +542,10 @@ create_polar_markers <-
             return(plotdata)
           },
           fun = fun,
+          fun_args = fun_args,
           width = width,
-          height = height
+          height = height,
+          polar_fun = polar_fun
         ),
         .progress = progress
       )

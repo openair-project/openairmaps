@@ -163,40 +163,37 @@ annulusMap <- function(
     split_col <- "pollutant_name"
   }
 
+  # arguments for function
+  fun_args <- append(
+    list(
+      pollutant = "conc",
+      period = period,
+      plot = FALSE,
+      limits = theLimits,
+      cols = cols,
+      alpha = alpha,
+      key = key,
+      par.settings = list(axis.line = list(col = "transparent"))
+    ),
+    rlang::list2(...)
+  )
+
   # define function
   fun <- function(data) {
-    if (!"free" %in% limits) {
-      openair::polarAnnulus(
-        data,
-        pollutant = "conc",
-        period = period,
-        plot = FALSE,
-        limits = theLimits,
-        cols = cols,
-        alpha = alpha,
-        key = key,
-        ...,
-        par.settings = list(axis.line = list(col = "transparent"))
+    rlang::exec(
+      openair::polarAnnulus,
+      !!!append(
+        list(mydata = data),
+        fun_args
       )
-    } else {
-      openair::polarAnnulus(
-        data,
-        pollutant = "conc",
-        period = period,
-        plot = FALSE,
-        cols = cols,
-        alpha = alpha,
-        key = key,
-        ...,
-        par.settings = list(axis.line = list(col = "transparent"))
-      )
-    }
+    )
   }
 
   # plot and save static markers
   plots_df <-
     create_polar_markers(
       fun = fun,
+      fun_args = fun_args,
       data = data,
       latitude = latitude,
       longitude = longitude,

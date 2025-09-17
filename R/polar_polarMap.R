@@ -480,25 +480,29 @@ polarMap <- function(
     funpoll <- "conc"
   }
 
-  extra_args <- rlang::list2(...)
+  # arguments for function
+  fun_args <- append(
+    list(
+      pollutant = funpoll,
+      x = x,
+      plot = FALSE,
+      limits = theLimits,
+      upper = upper,
+      cols = cols,
+      alpha = alpha,
+      key = key,
+      par.settings = list(axis.line = list(col = "transparent"))
+    ),
+    rlang::list2(...)
+  )
 
+  # define function
   fun <- function(data) {
     rlang::exec(
       openair::polarPlot,
       !!!append(
-        list(
-          mydata = data,
-          pollutant = funpoll,
-          x = x,
-          plot = FALSE,
-          limits = theLimits,
-          upper = upper,
-          cols = cols,
-          alpha = alpha,
-          key = key,
-          par.settings = list(axis.line = list(col = "transparent"))
-        ),
-        extra_args
+        list(mydata = data),
+        fun_args
       )
     )
   }
@@ -507,6 +511,7 @@ polarMap <- function(
   plots_df <-
     create_polar_markers(
       fun = fun,
+      fun_args = fun_args,
       data = data,
       latitude = latitude,
       longitude = longitude,

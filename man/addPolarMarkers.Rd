@@ -145,14 +145,13 @@ library(openair)
 # different types of polar plot on one map
 leaflet(data = polar_data) |>
   addTiles() |>
-  addPolarMarkers("ws",
+  addPolarMarkers(
+    "ws",
     fun = openair::windRose,
+    annotate = FALSE,
     group = "Wind Rose"
   ) |>
-  addPolarMarkers("nox",
-    fun = openair::polarPlot,
-    group = "Polar Plot"
-  ) |>
+  addPolarMarkers("nox", fun = openair::polarPlot, group = "Polar Plot") |>
   addLayersControl(
     baseGroups = c("Wind Rose", "Polar Plot")
   )
