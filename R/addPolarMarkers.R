@@ -114,7 +114,7 @@ addPolarMarkers <-
         plot = FALSE,
         !!!args,
         par.settings = list(axis.line = list(col = "transparent"))
-      )$plot
+      )
     }
 
     # create dummy split_col
