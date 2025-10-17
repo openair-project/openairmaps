@@ -18,3 +18,5 @@ README_cache
 man/figures/
 .mailmap
 ^vignettes/articles$
+^[.]?air[.]toml$
+^\.vscode$
