@@ -275,14 +275,15 @@ Either:
 }
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 These functions create interpolated surfaces out of data at individual
 monitoring sites. This can be useful to 'fill in the gaps' to estimate
-pollution concentrations where no monitoring is occurring, or better identify
-geographical patterns in pollution data. \code{\link[=krigingMap]{krigingMap()}} creates a smooth
-spatially interpolated surface using either inverse distance weighting or
-point kriging. \code{\link[=voronoiMap]{voronoiMap()}} creates a surface of 'closest observation'
-polygons. The kriging formula is currently always \code{pollutant ~ 1};
-\code{\link[=krigingMap]{krigingMap()}} does not currently support more complex models.
+pollution concentrations where no monitoring is occurring, or better
+identify geographical patterns in pollution data. \code{\link[=krigingMap]{krigingMap()}} creates a
+smooth spatially interpolated surface using either inverse distance
+weighting or point kriging. \code{\link[=voronoiMap]{voronoiMap()}} creates a surface of 'closest
+observation' polygons. The kriging formula is currently always \code{pollutant ~ 1}; \code{\link[=krigingMap]{krigingMap()}} does not currently support more complex models.
 }
 \examples{
 \dontrun{

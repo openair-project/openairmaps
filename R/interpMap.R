@@ -1,13 +1,15 @@
 #' Spatially interpolated dynamic and static maps
 #'
-#' These functions create interpolated surfaces out of data at individual
-#' monitoring sites. This can be useful to 'fill in the gaps' to estimate
-#' pollution concentrations where no monitoring is occurring, or better identify
-#' geographical patterns in pollution data. [krigingMap()] creates a smooth
-#' spatially interpolated surface using either inverse distance weighting or
-#' point kriging. [voronoiMap()] creates a surface of 'closest observation'
-#' polygons. The kriging formula is currently always `pollutant ~ 1`;
-#' [krigingMap()] does not currently support more complex models.
+#' @description `r lifecycle::badge("experimental")`
+#'
+#'   These functions create interpolated surfaces out of data at individual
+#'   monitoring sites. This can be useful to 'fill in the gaps' to estimate
+#'   pollution concentrations where no monitoring is occurring, or better
+#'   identify geographical patterns in pollution data. [krigingMap()] creates a
+#'   smooth spatially interpolated surface using either inverse distance
+#'   weighting or point kriging. [voronoiMap()] creates a surface of 'closest
+#'   observation' polygons. The kriging formula is currently always `pollutant ~
+#'   1`; [krigingMap()] does not currently support more complex models.
 #'
 #' @inheritParams polarMap
 #'
