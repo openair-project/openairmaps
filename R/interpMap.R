@@ -11,6 +11,8 @@
 #'   observation' polygons. The kriging formula is currently always `pollutant ~
 #'   1`; [krigingMap()] does not currently support more complex models.
 #'
+#' @inheritSection polarMap Customisation of static maps using ggplot2
+#'
 #' @inheritParams polarMap
 #'
 #' @param data *Input data table with pollutant and geo-spatial information.*

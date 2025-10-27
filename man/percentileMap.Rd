@@ -346,22 +346,27 @@ most computationally intensive plotting functions - i.e., \code{\link[=polarMap]
 \section{Customisation of static maps using ggplot2}{
 
 
-As the outputs of the static directional analysis functions are \code{ggplot2}
-figures, further customisation is possible using functions such as
-\code{\link[ggplot2:theme]{ggplot2::theme()}}, \code{\link[ggplot2:guides]{ggplot2::guides()}} and \code{\link[ggplot2:labs]{ggplot2::labs()}}.
+As all static plots functions are \code{ggplot2} figures, further customisation
+is possible using functions such as \code{\link[ggplot2:theme]{ggplot2::theme()}}, \code{\link[ggplot2:guides]{ggplot2::guides()}}
+and \code{\link[ggplot2:labs]{ggplot2::labs()}}.
 
-If multiple pollutants are specified, subscripting (e.g., the "x" in "NOx")
-is achieved using the \link[ggtext:ggtext]{ggtext} package. Therefore if you
-choose to override the plot theme, it is recommended to use
-\verb{[ggplot2::theme()]} and \verb{[ggtext::element_markdown()]} to define the
-\code{strip.text} parameter.
+Subscripting pollutants (e.g., the "x" in "NOx") is achieved using the
+\link[ggtext:ggtext]{ggtext} package. Therefore if you choose to override the
+plot theme, it is recommended to use \verb{[ggplot2::theme()]} and
+\verb{[ggtext::element_markdown()]} to define the \code{strip.text} parameter.
 
-When arguments like \code{limits}, \code{percentile} or \code{breaks} are defined, a
-legend is automatically added to the figure. Legends can be removed using
-\code{ggplot2::theme(legend.position = "none")}, or further customised using
-\code{\link[ggplot2:guides]{ggplot2::guides()}} and either \code{color = ggplot2::guide_colourbar()} for
-continuous legends or \code{color = ggplot2::guide_legend()} for discrete
-legends.
+Legends can be removed using \code{ggplot2::theme(legend.position = "none")}, or
+further customised using \code{\link[ggplot2:guides]{ggplot2::guides()}} and either \code{color = ggplot2::guide_colourbar()} for continuous legends or \code{color = ggplot2::guide_legend()} for discrete legends.
+
+The extent of a map can be adjusted using the \code{xlim} and \code{ylim} arguments
+of \code{\link[ggplot2:ggsf]{ggplot2::coord_sf()}}.
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{polarMap(polar_data, "no2", static = TRUE) +
+    ggplot2::coord_sf(
+        xlim = c(-0.3, 0.2),
+        ylim = c(51.2, 51.8)
+    )
+}\if{html}{\out{</div>}}
 }
 
 \examples{
