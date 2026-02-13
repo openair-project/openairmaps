@@ -1,0 +1,232 @@
+![](reference/figures/logo.png)
+
+## **openairmaps**
+
+### open source tools to create maps of air pollution data
+
+**openairmaps** combines the robust analytical methods found in
+[**openair**](https://openair-project.github.io/openair/) with a range
+of dynamic and static mapping capability. Core functionality includes
+visualising UK AQ networks
+([`networkMap()`](https://openair-project.github.io/openairmaps/reference/networkMap.md)),
+putting “polar directional markers” on maps (e.g.,
+[`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md))
+and overlaying HYSPLIT trajectories on maps (e.g.,
+[`trajMap()`](https://openair-project.github.io/openairmaps/reference/trajMap.md)),
+all using the [leaflet](https://rstudio.github.io/leaflet/) package.
+Static equivalents of most functions are also available for insertion
+into traditional reports and academic articles.
+
+*Part of the openair toolkit*
+
+[![openair](https://img.shields.io/badge/openair_core-06D6A0?style=flat-square)](https://openair-project.github.io/openair/)
+\|
+[![worldmet](https://img.shields.io/badge/worldmet-26547C?style=flat-square)](https://openair-project.github.io/worldmet/)
+\|
+[![openairmaps](https://img.shields.io/badge/openairmaps-FFD166?style=flat-square)](https://openair-project.github.io/openairmaps/)
+\|
+[![deweather](https://img.shields.io/badge/deweather-EF476F?style=flat-square)](https://openair-project.github.io/deweather/)
+
+------------------------------------------------------------------------
+
+## 💡 Core Features
+
+**openairmaps** has developed at pace to align **openair** with R’s
+modern geospatial ecosystem.
+
+- **Network visualisation** of many UK-based monitoring networks through
+  [`networkMap()`](https://openair-project.github.io/openairmaps/reference/networkMap.md),
+  all of which can also be searched using
+  [`searchNetwork()`](https://openair-project.github.io/openairmaps/reference/searchNetwork.md).
+
+- **Directional analysis maps** to place
+  [`openair::polarPlot()`](https://openair-project.github.io/openair/reference/polarPlot.html)
+  and other “polar coordinate” plots on maps.
+
+- **Trajectory analysis maps** (such as
+  [`trajMap()`](https://openair-project.github.io/openairmaps/reference/trajMap.md)
+  and
+  [`trajLevelMap()`](https://openair-project.github.io/openairmaps/reference/trajLevelMap.md))
+  for interactive implementations of the
+  [`openair::trajPlot()`](https://openair-project.github.io/openair/reference/trajPlot.html)
+  family.
+
+- **Flexible map conditioning** aligned with the **openair** `type`
+  option to easily condition maps by season, day of the week, and so on.
+
+- **Map building utilities** such as building popups for interactive
+  maps, formatting common pollutant names and units, and converting UK
+  postcodes to lat/lng coordinates.
+
+![](reference/figures/feature-banner.png)
+
+------------------------------------------------------------------------
+
+## 📖 Documentation
+
+All **openairmaps** functions are fully documented; access documentation
+using R in your IDE of choice.
+
+``` r
+?openairmaps::polarMap
+```
+
+Documentation is also hosted online on the **package website**.
+
+[![website](https://img.shields.io/badge/website-documentation-blue)](https://openair-project.github.io/openairmaps/)
+
+A guide to the openair toolkit can be found in the **online book**,
+which contains lots of code snippets, demonstrations of functionality,
+and ideas for the application of **openair**’s various functions.
+
+[![book](https://img.shields.io/badge/book-code_demos_and_ideas-blue)](https://openair-project.github.io/book/)
+
+------------------------------------------------------------------------
+
+## 🗃️ Installation
+
+**openairmaps** can be installed from **CRAN** with:
+
+``` r
+install.packages("openairmaps")
+```
+
+You can also install the development version of **openairmaps** from
+GitHub using [pak](https://pak.r-lib.org/):
+
+``` r
+# install.packages("pak")
+pak::pak("openair-project/openairmaps")
+```
+
+------------------------------------------------------------------------
+
+🏛️ **openairmaps** is primarily maintained by [Jack
+Davison](https://github.com/jack-davison).
+
+📃 **openairmaps** is licensed under the [MIT
+License](https://openair-project.github.io/openairmaps/LICENSE.html).
+
+🧑‍💻 Contributions are welcome from the wider community. See the
+[contributing
+guide](https://openair-project.github.io/openairmaps/CONTRIBUTING.html)
+and [code of
+conduct](https://openair-project.github.io/openairmaps/CODE_OF_CONDUCT.html)
+for more information.
+
+# Package index
+
+## Data
+
+In-built data to demonstrate openair functions.
+
+- [`polar_data`](https://openair-project.github.io/openairmaps/reference/polar_data.md)
+  : Example data for polar mapping functions
+- [`traj_data`](https://openair-project.github.io/openairmaps/reference/traj_data.md)
+  : Example data for trajectory mapping functions
+
+## Network Visualisation
+
+Quickly visualise UK air quality networks.
+
+- [`networkMap()`](https://openair-project.github.io/openairmaps/reference/networkMap.md)
+  : Create a leaflet map of air quality measurement network sites
+
+- [`searchNetwork()`](https://openair-project.github.io/openairmaps/reference/searchNetwork.md)
+  :
+
+  Geographically search the air quality networks made available by
+  [`openair::importMeta()`](https://openair-project.github.io/openair/reference/importMeta.html)
+
+## Directional Analysis
+
+Create HTML `leaflet` and static `ggplot2` maps with polar plot markers.
+
+- [`annulusMap()`](https://openair-project.github.io/openairmaps/reference/annulusMap.md)
+  : Polar annulus plots on dynamic and static maps
+- [`diffMap()`](https://openair-project.github.io/openairmaps/reference/diffMap.md)
+  : Bivariate polar 'difference' plots on dynamic and static maps
+- [`freqMap()`](https://openair-project.github.io/openairmaps/reference/freqMap.md)
+  : Polar frequency plots on dynamic and static maps
+- [`percentileMap()`](https://openair-project.github.io/openairmaps/reference/percentileMap.md)
+  : Percentile roses on dynamic and static maps
+- [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  : Bivariate polar plots on dynamic and static maps
+- [`pollroseMap()`](https://openair-project.github.io/openairmaps/reference/pollroseMap.md)
+  : Pollution roses on dynamic and static maps
+- [`windroseMap()`](https://openair-project.github.io/openairmaps/reference/windroseMap.md)
+  : Wind roses on dynamic and static maps
+- [`addPolarMarkers()`](https://openair-project.github.io/openairmaps/reference/addPolarMarkers.md)
+  [`addPolarDiffMarkers()`](https://openair-project.github.io/openairmaps/reference/addPolarMarkers.md)
+  : Add polar markers to leaflet map
+
+## Trajectory Analysis
+
+Create HTML `leaflet` and static `ggplot2` maps of HYSPLIT trajectories.
+
+- [`trajLevelMap()`](https://openair-project.github.io/openairmaps/reference/trajLevelMap.md)
+  :
+
+  Trajectory level plots in `leaflet`
+
+- [`trajMap()`](https://openair-project.github.io/openairmaps/reference/trajMap.md)
+  :
+
+  Trajectory line plots in `leaflet`
+
+- [`trajLevelMapStatic()`](https://openair-project.github.io/openairmaps/reference/trajLevelMapStatic.md)
+  **\[experimental\]** :
+
+  Trajectory level plots in `ggplot2`
+
+- [`trajMapStatic()`](https://openair-project.github.io/openairmaps/reference/trajMapStatic.md)
+  **\[experimental\]** :
+
+  Trajectory line plots in `ggplot2`
+
+- [`addTrajPaths()`](https://openair-project.github.io/openairmaps/reference/addTrajPaths.md)
+  : Add trajectory paths to leaflet map
+
+## Spatial Interpolation
+
+Create HTML `leaflet` and static `ggplot2` maps of spatially
+interpolated pollution data.
+
+- [`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  [`voronoiMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  **\[experimental\]** : Spatially interpolated dynamic and static maps
+
+## Utilities
+
+Tools to assist other openairmaps functions.
+
+- [`buildPopup()`](https://openair-project.github.io/openairmaps/reference/buildPopup.md)
+  : Build a Complex Popup for a Leaflet Map
+
+- [`quickTextHTML()`](https://openair-project.github.io/openairmaps/reference/quickTextHTML.md)
+  :
+
+  Automatic text formatting for `openairmaps`
+
+- [`convertPostcode()`](https://openair-project.github.io/openairmaps/reference/convertPostcode.md)
+  : Convert a UK postcode to a latitude/longitude pair
+
+## Deprecated
+
+Functions which are no longer recommended for use.
+
+- [`polarMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
+  [`diffMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
+  [`annulusMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
+  [`windroseMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
+  [`pollroseMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
+  [`percentileMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
+  [`freqMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
+  **\[deprecated\]** : Deprecated static directional analysis functions
+
+# Articles
+
+### All vignettes
+
+- [Examples of {openairmaps}
+  Functionality](https://openair-project.github.io/openairmaps/articles/openairmaps.md):
