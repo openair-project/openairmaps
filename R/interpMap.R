@@ -367,7 +367,7 @@ voronoiMap <- function(
   static = FALSE,
   args.voronoi = list()
 ) {
-  rlang::check_installed(c("terra"))
+  rlang::check_installed(c("terra", "stars"))
   latlon <- assume_latlon(
     data,
     latitude = latitude,
@@ -532,7 +532,7 @@ make_static_interp_map <- function(
   legend.title.autotext,
   show.markers
 ) {
-  rlang::check_installed(c("ggplot2", "ggspatial", "prettymapr"))
+  rlang::check_installed(c("ggplot2", "ggspatial", "prettymapr", "stars"))
 
   map <- ggplot2::ggplot() +
     ggspatial::annotation_map_tile(zoomin = 0, cachedir = tempdir())

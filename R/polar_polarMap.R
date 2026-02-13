@@ -356,7 +356,13 @@ polarMap <- function(
   control = NULL
 ) {
   if (static) {
-    rlang::check_installed(c("ggplot2", "ggspatial", "prettymapr", "ggtext"))
+    rlang::check_installed(c(
+      "ggplot2",
+      "ggspatial",
+      "prettymapr",
+      "ggtext",
+      "png"
+    ))
   }
   # list pairwise statistics
   pairwise_stats <- c(
@@ -497,7 +503,6 @@ polarMap <- function(
       limits = theLimits,
       upper = upper,
       cols = cols,
-      alpha = alpha,
       key = key,
       par.settings = list(axis.line = list(col = "transparent"))
     ),
@@ -546,7 +551,8 @@ polarMap <- function(
         split_col,
         control.collapsed,
         control.position,
-        control.autotext
+        control.autotext,
+        alpha
       )
 
     # add legend if limits are set
@@ -586,7 +592,8 @@ polarMap <- function(
         facet.nrow = static.nrow,
         d.icon = d.icon,
         crs = crs,
-        provider = provider
+        provider = provider,
+        alpha = alpha
       )
 
     if (!all(is.na(theLimits)) && legend) {

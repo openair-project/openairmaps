@@ -314,7 +314,8 @@ make_leaflet_map <-
     split_col,
     control.collapsed,
     control.position,
-    control.autotext
+    control.autotext,
+    alpha
   ) {
     if (control.autotext) {
       textfun <- quickTextHTML
@@ -361,7 +362,8 @@ make_leaflet_map <-
         popupAnchorX = -.Machine$double.eps,
         popupAnchorY = -(height / 2) * 0.7
       ),
-      group = textfun(data[[split_col]])
+      group = textfun(data[[split_col]]),
+      options = leaflet::markerOptions(opacity = alpha)
     )
 
     if (!is.null(popup)) {
@@ -584,9 +586,16 @@ create_static_map <-
     pollutant,
     d.icon,
     facet,
-    facet.nrow
+    facet.nrow,
+    alpha
   ) {
-    rlang::check_installed(c("ggplot2", "ggspatial", "prettymapr", "ggtext"))
+    rlang::check_installed(c(
+      "ggplot2",
+      "ggspatial",
+      "prettymapr",
+      "ggtext",
+      "png"
+    ))
 
     # silence R CMD check
     if (FALSE) {
@@ -604,7 +613,9 @@ create_static_map <-
     }
 
     link_to_img <- function(x, width, height) {
-      stringr::str_glue("<img src='{x}' width='{width}' height='{height}'/>")
+      stringr::str_glue(
+        "<img src='{x}' width='{width}' height='{height}'/>"
+      )
     }
 
     # don't turn facet levels into chr, keep as fct
@@ -614,6 +625,7 @@ create_static_map <-
       ]]))
     }
 
+    # turn into sf object
     plots_sf <-
       sf::st_as_sf(
         plots_df,
@@ -623,8 +635,24 @@ create_static_map <-
       ) |>
       sf::st_transform(crs = 4326)
 
+    # add alpha channel, if requested
+    for (x in plots_sf$url) {
+      img <- png::readPNG(x)
+      if (dim(img)[3] == 3) {
+        # RGB image, add alpha channel
+        img_alpha <- array(dim = c(dim(img)[1], dim(img)[2], 4))
+        img_alpha[,, 1:3] <- img
+        img_alpha[,, 4] <- 0.5 # Set alpha to 0.5 (50% transparent)
+      } else if (dim(img)[3] == 4) {
+        # Already has alpha, multiply it
+        img_alpha <- img
+        img_alpha[,, 4] <- img[,, 4] * alpha
+      }
+      png::writePNG(img_alpha, x)
+    }
+
     # create link to image
-    plots_sf$link <- link_to_img(plots_sf$url, height, width)
+    plots_sf$link <- link_to_img(plots_sf$url, width, height)
 
     # work out an approximate bounding box for the plot
     bbox <- estimate_bbox(plots_sf)

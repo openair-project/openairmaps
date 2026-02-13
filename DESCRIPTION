@@ -42,6 +42,7 @@ Suggests:
     knitr,
     mgcv,
     mirai,
+    png,
     prettymapr,
     rmarkdown,
     shiny,

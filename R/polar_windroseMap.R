@@ -84,7 +84,13 @@ windroseMap <- function(
   control = NULL
 ) {
   if (static) {
-    rlang::check_installed(c("ggplot2", "ggspatial", "prettymapr", "ggtext"))
+    rlang::check_installed(c(
+      "ggplot2",
+      "ggspatial",
+      "prettymapr",
+      "ggtext",
+      "png"
+    ))
   }
 
   # check basemap providers are valid
@@ -162,7 +168,6 @@ windroseMap <- function(
       ws.int = ws.int,
       breaks = breaks,
       cols = cols,
-      alpha = alpha,
       key = key,
       annotate = FALSE,
       par.settings = list(axis.line = list(col = "transparent"))
@@ -209,7 +214,8 @@ windroseMap <- function(
         facet.nrow = static.nrow,
         d.icon = d.icon,
         crs = crs,
-        provider = provider
+        provider = provider,
+        alpha = alpha
       )
 
     if (legend) {
@@ -276,7 +282,8 @@ windroseMap <- function(
         split_col,
         control.collapsed,
         control.position,
-        control.autotext
+        control.autotext,
+        alpha
       )
 
     # add legend

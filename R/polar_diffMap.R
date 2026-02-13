@@ -88,7 +88,13 @@ diffMap <- function(
   control = NULL
 ) {
   if (static) {
-    rlang::check_installed(c("ggplot2", "ggspatial", "prettymapr", "ggtext"))
+    rlang::check_installed(c(
+      "ggplot2",
+      "ggspatial",
+      "prettymapr",
+      "ggtext",
+      "png"
+    ))
   }
 
   # check basemap providers are valid
@@ -187,7 +193,6 @@ diffMap <- function(
       x = x,
       limits = theLimits,
       cols = cols,
-      alpha = alpha,
       key = key,
       plot = FALSE,
       ...,
@@ -223,7 +228,8 @@ diffMap <- function(
         facet.nrow = static.nrow,
         d.icon = d.icon,
         crs = crs,
-        provider = provider
+        provider = provider,
+        alpha = alpha
       )
 
     # create colorbar if limits specified
@@ -267,7 +273,8 @@ diffMap <- function(
         split_col,
         control.collapsed,
         control.position,
-        control.autotext
+        control.autotext,
+        alpha
       )
 
     # add legend if limits are set

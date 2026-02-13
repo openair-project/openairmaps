@@ -80,7 +80,13 @@ pollroseMap <- function(
   control = NULL
 ) {
   if (static) {
-    rlang::check_installed(c("ggplot2", "ggspatial", "prettymapr", "ggtext"))
+    rlang::check_installed(c(
+      "ggplot2",
+      "ggspatial",
+      "prettymapr",
+      "ggtext",
+      "png"
+    ))
   }
 
   # check basemap providers are valid
@@ -156,7 +162,6 @@ pollroseMap <- function(
       breaks = theBreaks,
       plot = FALSE,
       cols = cols,
-      alpha = alpha,
       key = key,
       annotate = FALSE,
       par.settings = list(axis.line = list(col = "transparent"))
@@ -203,7 +208,8 @@ pollroseMap <- function(
         facet.nrow = static.nrow,
         d.icon = d.icon,
         crs = crs,
-        provider = provider
+        provider = provider,
+        alpha = alpha
       )
 
     # create legend
@@ -269,7 +275,8 @@ pollroseMap <- function(
         split_col,
         control.collapsed,
         control.position,
-        control.autotext
+        control.autotext,
+        alpha
       )
 
     # add legend if breaks are defined
