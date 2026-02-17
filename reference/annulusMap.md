@@ -189,8 +189,9 @@ annulusMap(
     labels, but users can define their own using a named vector (e.g.,
     `c("Default" = "OpenStreetMap", "Satellite" = "Esri.WorldImagery")`)
 
-  - *Static*: One of
-    [`rosm::osm.types()`](https://rdrr.io/pkg/rosm/man/deprecated.html).
+  - *Static*: One of the options listed in
+    [`rosm::osm.types()`](https://rdrr.io/pkg/rosm/man/deprecated.html)
+    (for example, `"osm"`, `"cartodark"`, `"cartolight"`, etc.).
 
   There is some overlap in static and dynamic providers. For example,
   `{ggspatial}` uses "osm" to specify "OpenStreetMap". When static
