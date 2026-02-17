@@ -589,13 +589,7 @@ create_static_map <-
     facet.nrow,
     alpha
   ) {
-    rlang::check_installed(c(
-      "ggplot2",
-      "ggspatial",
-      "prettymapr",
-      "ggtext",
-      "png"
-    ))
+    check_installed_static()
 
     # silence R CMD check
     if (FALSE) {
@@ -906,4 +900,17 @@ create_legend_title <- function(
   legend.title <- legend.title %||% str
   legend.title <- textfun(legend.title)
   return(legend.title)
+}
+
+#' Check packages are installed for static mapping
+#' @noRd
+check_installed_static <- function() {
+  rlang::check_installed(c(
+    "ggplot2",
+    "ggspatial",
+    "prettymapr",
+    "ggtext",
+    "png",
+    "rosm"
+  ))
 }

@@ -175,7 +175,8 @@
 #'   own using a named vector (e.g., `c("Default" = "OpenStreetMap", "Satellite"
 #'   = "Esri.WorldImagery")`)
 #'
-#'  - *Static*: One of [rosm::osm.types()].
+#'  - *Static*: One of the options listed in `rosm::osm.types()` (for
+#'   example, `"osm"`, `"cartodark"`, `"cartolight"`, etc.).
 #'
 #'   There is some overlap in static and dynamic providers. For example,
 #'   `{ggspatial}` uses "osm" to specify "OpenStreetMap". When static providers
@@ -356,13 +357,7 @@ polarMap <- function(
   control = NULL
 ) {
   if (static) {
-    rlang::check_installed(c(
-      "ggplot2",
-      "ggspatial",
-      "prettymapr",
-      "ggtext",
-      "png"
-    ))
+    check_installed_static()
   }
   # list pairwise statistics
   pairwise_stats <- c(

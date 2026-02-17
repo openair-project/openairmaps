@@ -91,13 +91,7 @@ freqMap <- function(
   control = NULL
 ) {
   if (static) {
-    rlang::check_installed(c(
-      "ggplot2",
-      "ggspatial",
-      "prettymapr",
-      "ggtext",
-      "png"
-    ))
+    check_installed_static()
   }
 
   # check basemap providers are valid

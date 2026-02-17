@@ -143,7 +143,8 @@ of all base maps that can be used. If multiple base maps are provided, they
 can be toggled between using a "layer control" interface. By default, the
 interface will use the provider names as labels, but users can define their
 own using a named vector (e.g., \code{c("Default" = "OpenStreetMap", "Satellite"   = "Esri.WorldImagery")})
-\item \emph{Static}: One of \code{\link[rosm:deprecated]{rosm::osm.types()}}.
+\item \emph{Static}: One of the options listed in \code{rosm::osm.types()} (for
+example, \code{"osm"}, \code{"cartodark"}, \code{"cartolight"}, etc.).
 }
 
 There is some overlap in static and dynamic providers. For example,
