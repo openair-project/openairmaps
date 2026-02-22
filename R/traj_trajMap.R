@@ -131,7 +131,7 @@ trajMap <-
     colour = NULL,
     type = NULL,
     cols = "default",
-    alpha = .5,
+    alpha = 0.5,
     npoints = 12,
     provider = "OpenStreetMap",
     legend.position = "topright",
@@ -176,9 +176,8 @@ trajMap <-
         data <- dplyr::arrange(data, .data$datef)
 
         if (
-          "factor" %in%
-            class(data[[colour]]) ||
-            "character" %in% class(data[[colour]])
+          inherits(data[[colour]], "factor") ||
+            inherits(data[[colour]], "character")
         ) {
           pal <- leaflet::colorFactor(
             palette = openair::openColours(
@@ -187,7 +186,7 @@ trajMap <-
             ),
             domain = data[[colour]]
           )
-        } else if ("POSIXct" %in% class(data[[colour]])) {
+        } else if (inherits(data[[colour]], "POSIXct")) {
           pal <- leaflet::colorNumeric(
             palette = openair::openColours(scheme = cols),
             domain = as.numeric(data[[colour]], origin = "1964-10-22")
@@ -286,7 +285,7 @@ trajMap <-
       }
 
       if (colour %in% names(data)) {
-        if ("POSIXct" %in% class(data[[colour]])) {
+        if (inherits(data[[colour]], "POSIXct")) {
           map <-
             leaflet::addLegend(
               map,

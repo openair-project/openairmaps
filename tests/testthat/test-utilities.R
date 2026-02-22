@@ -20,8 +20,7 @@ test_that("quickTextHTML works", {
 
 test_that("popup creation works", {
   # columns
-  expect_equal(
-    polar_data |>
+  expect_identical(polar_data |>
       dplyr::slice_head(n = 1, by = "site") |>
       buildPopup(
         columns = c("date", "nox", "site"),
@@ -29,32 +28,27 @@ test_that("popup creation works", {
         latitude = "lat",
         longitude = "lon"
       ) |>
-      dplyr::pull(popup),
-    c(
+      dplyr::pull(popup), c(
       "<b>site</b>: London Bloomsbury<br><b>NO<sub>x</sub></b>: 113<br><b>date</b>: 2009-01-01 to 2009-01-01",
       "<b>site</b>: London Cromwell Road 2<br><b>NO<sub>x</sub></b>: NaN<br><b>date</b>: 2009-01-01 to 2009-01-01",
       "<b>site</b>: London Marylebone Road<br><b>NO<sub>x</sub></b>: 130<br><b>date</b>: 2009-01-01 to 2009-01-01",
       "<b>site</b>: London N. Kensington<br><b>NO<sub>x</sub></b>: 31<br><b>date</b>: 2009-01-01 to 2009-01-01"
-    )
-  )
+    ))
 
   # named columns
-  expect_equal(
-    polar_data |>
+  expect_identical(polar_data |>
       dplyr::slice_head(n = 1, by = "site") |>
       buildPopup(
         columns = c("Date" = "date", "NOx" = "nox", "Site" = "site"),
         latitude = "lat",
         longitude = "lon"
       ) |>
-      dplyr::pull(popup),
-    c(
+      dplyr::pull(popup), c(
       "<b>Site</b>: London Bloomsbury<br><b>NO<sub>x</sub></b>: 113<br><b>Date</b>: 2009-01-01 to 2009-01-01",
       "<b>Site</b>: London Cromwell Road 2<br><b>NO<sub>x</sub></b>: NaN<br><b>Date</b>: 2009-01-01 to 2009-01-01",
       "<b>Site</b>: London Marylebone Road<br><b>NO<sub>x</sub></b>: 130<br><b>Date</b>: 2009-01-01 to 2009-01-01",
       "<b>Site</b>: London N. Kensington<br><b>NO<sub>x</sub></b>: 31<br><b>Date</b>: 2009-01-01 to 2009-01-01"
-    )
-  )
+    ))
 })
 
 test_that("postcode conversion works", {

@@ -28,7 +28,7 @@ test_that("polarMap works", {
     static = TRUE,
     k = 50
   )
-  testthat::expect_true(inherits(staticplot, "ggplot"))
+  testthat::expect_s3_class(staticplot, "ggplot")
 
   # multiple pollutants
   testthat::expect_no_error(

@@ -28,7 +28,7 @@ checkMapPrep <-
     varNames <- c(Names) ## names we want to be there
     matching <- varNames %in% all.vars
 
-    if (any(!matching)) {
+    if (!all(matching)) {
       ## not all variables are present
       stop(
         "Can't find the variable(s): ",
@@ -110,7 +110,7 @@ checkMapPrep <-
 
     ## make sure date is ordered in time if present
     if ("date" %in% Names) {
-      if ("POSIXlt" %in% class(mydata$date)) {
+      if (inherits(mydata$date, "POSIXlt")) {
         stop("date should be in POSIXct format not POSIXlt")
       }
 

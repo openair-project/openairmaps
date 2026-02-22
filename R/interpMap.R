@@ -570,11 +570,11 @@ make_static_interp_map <- function(
       ggplot2::scale_fill_manual(
         values = openair::openColours(
           cols,
-          n = length(levels(vec))
+          n = nlevels(vec)
         ),
         na.value = NA,
         drop = FALSE,
-        na.translate = F
+        na.translate = FALSE
       )
   } else {
     if (type == "rast") {
@@ -645,7 +645,7 @@ make_dynamic_interp_map <- function(
   if (inherits(vec, "factor")) {
     pal <-
       leaflet::colorFactor(
-        palette = openair::openColours(cols, n = length(levels(vec))),
+        palette = openair::openColours(cols, n = nlevels(vec)),
         levels = levels(vec),
         na.color = NA
       )
@@ -672,7 +672,7 @@ make_dynamic_interp_map <- function(
       cats_df <- terra::cats(terra_interp)[[1]]
       false_pal <-
         leaflet::colorFactor(
-          palette = openair::openColours(cols, n = length(levels(vec))),
+          palette = openair::openColours(cols, n = nlevels(vec)),
           domain = cats_df$value,
           na.color = NA
         )
