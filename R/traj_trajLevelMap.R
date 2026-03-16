@@ -40,7 +40,7 @@ trajLevelMap <-
     lon.inc = 1,
     lat.inc = 1,
     min.bin = 1,
-    .combine = NA,
+    .combine = NULL,
     sigma = 1.5,
     cols = "turbo",
     alpha = 0.5,
@@ -178,7 +178,7 @@ trajLevelMap <-
       names(data)[names(data) == "count"] <- "gridcount"
     } else if ("n" %in% names(data)) {
       names(data)[names(data) == "n"] <- "gridcount"
-    } else if (tolower(statistic) == "sqtba" && !is.na(.combine)) {
+    } else if (tolower(statistic) == "sqtba" && !is.null(.combine)) {
       data$gridcount <- NA
     }
 
@@ -300,7 +300,7 @@ trajLevelMapStatic <-
     lon.inc = 1,
     lat.inc = 1,
     min.bin = 1,
-    .combine = NA,
+    .combine = NULL,
     sigma = 1.5,
     alpha = 0.5,
     tile.border = NA,
