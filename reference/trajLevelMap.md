@@ -20,7 +20,7 @@ trajLevelMap(
   lon.inc = 1,
   lat.inc = 1,
   min.bin = 1,
-  .combine = NA,
+  .combine = NULL,
   sigma = 1.5,
   cols = "turbo",
   alpha = 0.5,
@@ -57,7 +57,8 @@ trajLevelMap(
 
 - pollutant:
 
-  Pollutant to be plotted. By default the trajectory height is used.
+  Pollutant (or any numeric column) to be plotted, if any.
+  Alternatively, use `group`.
 
 - type:
 
@@ -76,34 +77,28 @@ trajLevelMap(
 
 - statistic:
 
-  Statistic to use for
-  [`trajLevel()`](https://openair-project.github.io/openair/reference/trajLevel.html).
-  By default, the function will plot the trajectory frequencies
-  (`statistic = "frequency"`). As an alternative way of viewing
-  trajectory frequencies, the argument `method = "hexbin"` can be used.
-  In this case hexagonal binning of the trajectory *points* (i.e., a
-  point every three hours along each back trajectory). The plot then
-  shows the trajectory frequencies uses hexagonal binning.
+  One of:
 
-  There are also various ways of plotting concentrations.
+  - `"frequency"` (the default) shows trajectory frequencies.
 
-  It is possible to set `statistic = "difference"`. In this case
-  trajectories where the associated concentration is greater than
-  `percentile` are compared with the the full set of trajectories to
-  understand the differences in frequencies of the origin of air masses.
-  The comparison is made by comparing the percentage change in gridded
-  frequencies. For example, such a plot could show that the top 10\\
-  tend to originate from air-mass origins to the east.
+  - `"hexbin"`, which is similar to `"frequency"` but shows a hexagonal
+    grid of counts.
 
-  If `statistic = "pscf"` then a Potential Source Contribution Function
-  map is produced. This statistic method interacts with `percentile`.
+  - `"difference"` - in this case trajectories where the associated
+    concentration is greater than `percentile` are compared with the the
+    full set of trajectories to understand the differences in
+    frequencies of the origin of air masses. The comparison is made by
+    comparing the percentage change in gridded frequencies. For example,
+    such a plot could show that the top 10\\ to the east.
 
-  If `statistic = "cwt"` then concentration weighted trajectories are
-  plotted.
+  - `"pscf"` for a Potential Source Contribution Function map. This
+    statistic method interacts with `percentile`.
 
-  If `statistic = "sqtba"` then Simplified Quantitative Transport Bias
-  Analysis is undertaken. This statistic method interacts with
-  `.combine` and `sigma`.
+  - `"cwt"` for concentration weighted trajectories.
+
+  - `"sqtba"` to undertake Simplified Quantitative Transport Bias
+    Analysis. This statistic method interacts with `.combine` and
+    `sigma`.
 
 - percentile:
 
@@ -112,7 +107,10 @@ trajLevelMap(
 
 - lon.inc, lat.inc:
 
-  The longitude and latitude intervals to be used for binning data.
+  The longitude and latitude intervals to be used for binning data. If
+  `statistic = "hexbin"`, the minimum value out of of `lon.inc` and
+  `lat.inc` is passed to the `binwidth` argument of
+  [`ggplot2::geom_hex()`](https://ggplot2.tidyverse.org/reference/geom_hex.html).
 
 - min.bin:
 

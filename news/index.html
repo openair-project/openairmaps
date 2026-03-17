@@ -60,7 +60,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
-<ul><li>
+<ul><li><p>In line with updates to <code>openair</code>, polar markers are now produced using <code>ggplot2</code>. This has allowed the <code>theme</code> argument to be added to the <code><a href="../reference/polarMap.html">polarMap()</a></code> family, which allows for extensive customisation of polar markers.</p></li>
+<li>
 <p>Added a new ‘spatial interpolation’ family of functions, which rely on the suggested <a href="https://r-spatial.github.io/stars/" class="external-link">stars</a>, <a href="https://rspatial.org/" class="external-link">terra</a> and <a href="https://github.com/r-spatial/gstat/" class="external-link">gstat</a> packages. These functions are most useful for dense air quality networks, and can be useful for identifying spatial patterns and hotspots of air pollution.</p>
 <ul><li><p><code><a href="../reference/interpolate-map.html">krigingMap()</a></code> allows for smooth spatial interpolation, either using simple inverse distance weighting or full point kriging.</p></li>
 <li><p><code><a href="../reference/interpolate-map.html">voronoiMap()</a></code> uses <code><a href="https://rspatial.github.io/terra/reference/voronoi.html" class="external-link">terra::voronoi</a></code> to create a polygonal map of ‘closest observations’.</p></li>
@@ -72,7 +73,7 @@
 <div class="section level3">
 <h3 id="refactoring-development-version">Refactoring<a class="anchor" aria-label="anchor" href="#refactoring-development-version"></a></h3>
 <p>This release includes several changes to make <a href="https://openair-project.github.io/openairmaps/">openairmaps</a> more lightweight.</p>
-<ul><li><p><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>, <a href="https://paleolimbot.github.io/ggspatial/" class="external-link">ggspatial</a>, <a href="https://github.com/paleolimbot/prettymapr" class="external-link">prettymapr</a> and <a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a>, the packages which support static mapping, have been moved to <code>Suggests</code> from <code>Imports</code>. This gives the package a smaller size for users who only use <a href="https://openair-project.github.io/openairmaps/">openairmaps</a> for interactive mapping. On first trying to use a static mapping function, users will be prompted to install these packages.</p></li>
+<ul><li><p><a href="https://paleolimbot.github.io/ggspatial/" class="external-link">ggspatial</a>, <a href="https://github.com/paleolimbot/prettymapr" class="external-link">prettymapr</a> and <a href="https://wilkelab.org/ggtext/" class="external-link">ggtext</a>, the packages which support static mapping, have been moved to <code>Suggests</code> from <code>Imports</code>. This gives the package a smaller size for users who only use <a href="https://openair-project.github.io/openairmaps/">openairmaps</a> for interactive mapping. On first trying to use a static mapping function, users will be prompted to install these packages.</p></li>
 <li><p><code>{mgcv}</code> has been moved to <code>Suggests</code> as it is only used in one place (<code>trajLevelMap(smooth = TRUE)</code>)</p></li>
 <li><p><code><a href="../reference/convertPostcode.html">convertPostcode()</a></code> now uses <a href="https://jeroen.r-universe.dev/curl" class="external-link">curl</a> over <a href="https://httr.r-lib.org/" class="external-link">httr</a>.</p></li>
 <li><p>Removed dependency on <a href="https://forcats.tidyverse.org/" class="external-link">forcats</a>.</p></li>

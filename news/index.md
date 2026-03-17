@@ -12,6 +12,12 @@
 
 ### New features
 
+- In line with updates to `openair`, polar markers are now produced
+  using `ggplot2`. This has allowed the `theme` argument to be added to
+  the
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  family, which allows for extensive customisation of polar markers.
+
 - Added a new ‘spatial interpolation’ family of functions, which rely on
   the suggested [stars](https://r-spatial.github.io/stars/),
   [terra](https://rspatial.org/) and
@@ -50,8 +56,7 @@ This release includes several changes to make
 [openairmaps](https://openair-project.github.io/openairmaps/) more
 lightweight.
 
-- [ggplot2](https://ggplot2.tidyverse.org),
-  [ggspatial](https://paleolimbot.github.io/ggspatial/),
+- [ggspatial](https://paleolimbot.github.io/ggspatial/),
   [prettymapr](https://github.com/paleolimbot/prettymapr) and
   [ggtext](https://wilkelab.org/ggtext/), the packages which support
   static mapping, have been moved to `Suggests` from `Imports`. This

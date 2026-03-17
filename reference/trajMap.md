@@ -206,6 +206,12 @@ trajMap(
       and 6. Sunday = 0, Monday = 1, ... For example to start the
       weekday plots on a Saturday, choose `start.day = 6`.
 
+  `start.season`
+
+  :   What order should the season be. By default, the order is spring,
+      summer, autumn, winter. `start.season = "winter"` would plot
+      winter first.
+
   `is.axis`
 
   :   A logical (`TRUE`/`FALSE`), used to request shortened cut labels
@@ -226,6 +232,29 @@ trajMap(
 
   :   The decimal latitude and longitudes used when `type = "daylight"`.
       Note that locations west of Greenwich have negative longitudes.
+
+  `drop`
+
+  :   How to handle empty factor levels. One of:
+
+      - `"default"`: Sensible defaults selected on a case-by-case basis
+        for different `type` options.
+
+      - `"empty"`: Drop all empty factor levels.
+
+      - `"none"`: Retain all empty factor levels, where possible. For
+        example, for `type = "hour"`, all factor levels from `0` and
+        `23` will be represented.
+
+      - `"outside"`: Retain empty factor levels within the range of the
+        data. For example, for `type = "hour"` when the data only
+        contains data for 1 AM and 5 AM, the factor levels, `1`, `2`,
+        `3`, `4` and `5` will be retained.
+
+      Some of these options only apply to certain `type` options. For
+      example, for `type = "year"`, `"outside"` is equivalent to
+      `"none"` as there is no fixed range of years to use in the
+      `"none"` case.
 
 ## Value
 

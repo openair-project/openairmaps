@@ -83,6 +83,7 @@ produced instead.</p>
 <span>  provider <span class="op">=</span> <span class="st">"OpenStreetMap"</span>,</span>
 <span>  cols <span class="op">=</span> <span class="st">"turbo"</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  theme <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  key <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  legend.position <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -208,6 +209,16 @@ uniform colours.</p></dd>
 <p>A value between 0 (fully transparent) and 1 (fully opaque).</p></dd>
 
 
+<dt id="arg-theme">theme<a class="anchor" aria-label="anchor" href="#arg-theme"></a></dt>
+<dd><p><em>Custom ggplot2 theme for the polar markers.</em></p>
+<p><em>default:</em> <code>NULL</code> | <em>scope:</em> dynamic &amp; static</p>
+<p>A custom <code>ggplot2</code> theme to add to the polar markers. This should ideally
+be a partial theme (i.e., <code><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">ggplot2::theme()</a></code>) over a complete theme (e.g.,
+<code><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">ggplot2::theme_bw()</a></code>) as other arguments like <code>key</code> interact with the plot
+theme <em>before</em> custom themes are set, so would be overriden by a complete
+theme.</p></dd>
+
+
 <dt id="arg-key">key<a class="anchor" aria-label="anchor" href="#arg-key"></a></dt>
 <dd><p><em>Draw individual marker legends?</em></p>
 <p><em>default:</em> <code>FALSE</code> | <em>scope:</em> dynamic &amp; static</p>
@@ -331,47 +342,44 @@ need adjusting using <code>width</code>.</p></dd>
     <dt><code>calm.thresh</code></dt>
 <dd><p>By default, conditions are considered to be calm when the
 wind speed is zero. The user can set a different threshold for calms be
-setting <code>calm.thresh</code> to a higher value. For example,
-<code>calm.thresh = 0.5</code> will identify wind speeds <strong>below</strong> 0.5 as calm.</p></dd>
+setting <code>calm.thresh</code> to a higher value. For example, <code>calm.thresh = 0.5</code>
+will identify wind speeds <strong>below</strong> 0.5 as calm.</p></dd>
 
     <dt><code>bias.corr</code></dt>
 <dd><p>When <code>angle</code> does not divide exactly into 360 a bias is
 introduced in the frequencies when the wind direction is already supplied
 rounded to the nearest 10 degrees, as is often the case. For example, if
-<code>angle = 22.5</code>, N, E, S, W will include 3 wind sectors and all other
-angles will be two. A bias correction can made to correct for this problem.
-A simple method according to Applequist (2012) is used to adjust the
+<code>angle = 22.5</code>, N, E, S, W will include 3 wind sectors and all other angles
+will be two. A bias correction can made to correct for this problem. A
+simple method according to Applequist (2012) is used to adjust the
 frequencies.</p></dd>
 
     <dt><code>grid.line</code></dt>
-<dd><p>Grid line interval to use. If <code>NULL</code>, as in default,
-this is assigned based on the available data range. However, it can also be
-forced to a specific value, e.g. <code>grid.line = 10</code>. <code>grid.line</code>
-can also be a list to control the interval, line type and colour. For
-example <code>grid.line = list(value = 10, lty = 5, col = "purple")</code>.</p></dd>
+<dd><p>Grid line interval to use. If <code>NULL</code>, as in default, this is
+assigned based on the available data range. However, it can also be forced
+to a specific value, e.g. <code>grid.line = 10</code>. <code>grid.line</code> can also be a list
+to control the interval, line type and colour. For example <code>grid.line = list(value = 10, lty = 5, col = "purple")</code>.</p></dd>
 
     <dt><code>width</code></dt>
-<dd><p>For <code>paddle = TRUE</code>, the adjustment factor for width of
-wind speed intervals. For example, <code>width = 1.5</code> will make the paddle
-width 1.5 times wider.</p></dd>
+<dd><p>For paddle = TRUE, the adjustment factor for width of wind speed
+intervals. For example, width = 1.5 will make the paddle width 1.5 times
+wider.</p></dd>
 
     <dt><code>seg</code></dt>
-<dd><p>When <code>paddle = TRUE</code>, <code>seg</code> determines with width of the
-segments. For example, <code>seg = 0.5</code> will produce segments 0.5 *
-<code>angle</code>.</p></dd>
+<dd><p><code>seg</code> determines with width of the segments. For example, <code>seg = 0.5</code> will produce segments 0.5 * <code>angle</code>.</p></dd>
 
     <dt><code>auto.text</code></dt>
-<dd><p>Either <code>TRUE</code> (default) or <code>FALSE</code>. If <code>TRUE</code>
-titles and axis labels will automatically try and format pollutant names
-and units properly, e.g., by subscripting the ‘2’ in NO2.</p></dd>
+<dd><p>Either <code>TRUE</code> (default) or <code>FALSE</code>. If <code>TRUE</code> titles and
+axis labels will automatically try and format pollutant names and units
+properly, e.g., by subscripting the ‘2’ in NO2.</p></dd>
 
     <dt><code>offset</code></dt>
 <dd><p>The size of the 'hole' in the middle of the plot, expressed as
 a percentage of the polar axis scale, default 10.</p></dd>
 
     <dt><code>normalise</code></dt>
-<dd><p>If <code>TRUE</code> each wind direction segment is normalised to
-equal one. This is useful for showing how the concentrations (or other
+<dd><p>If <code>TRUE</code> each wind direction segment is normalised to equal
+one. This is useful for showing how the concentrations (or other
 parameters) contribute to each wind sector when the proportion of time the
 wind is from that direction is low. A line showing the probability that the
 wind directions is from a particular wind sector is also shown.</p></dd>
@@ -382,16 +390,14 @@ the radial limits. This is useful to ensure several plots use the same
 radial limits.</p></dd>
 
     <dt><code>paddle</code></dt>
-<dd><p>Either <code>TRUE</code> or <code>FALSE</code>. If <code>TRUE</code> plots rose
-using 'paddle' style spokes. If <code>FALSE</code> plots rose using 'wedge' style
-spokes.</p></dd>
+<dd><p>Either <code>TRUE</code> or <code>FALSE</code>. If <code>TRUE</code> plots rose using 'paddle'
+style spokes. If <code>FALSE</code> plots rose using 'wedge' style spokes.</p></dd>
 
     <dt><code>key.header</code></dt>
 <dd><p>Adds additional text/labels above the scale key. For
-example, passing <code>windRose(mydata, key.header = "ws")</code> adds the
-addition text as a scale header. Note: This argument is passed to
-<code><a href="https://openair-project.github.io/openair/reference/drawOpenKey.html" class="external-link">drawOpenKey()</a></code> via <code><a href="https://openair-project.github.io/openair/reference/quickText.html" class="external-link">quickText()</a></code>, applying the auto.text argument, to
-handle formatting.</p></dd>
+example, passing <code>windRose(mydata, key.header = "ws")</code> adds the addition
+text as a scale header. Note: This argument is passed to <code><a href="https://openair-project.github.io/openair/reference/quickText.html" class="external-link">quickText()</a></code>,
+applying the auto.text argument, to handle formatting.</p></dd>
 
     <dt><code>key.footer</code></dt>
 <dd><p>Adds additional text/labels below the scale key. See
@@ -407,14 +413,14 @@ and “left”.</p></dd>
 formatting is used in break point and key labelling. Default 5.</p></dd>
 
     <dt><code>include.lowest</code></dt>
-<dd><p>Logical. If <code>FALSE</code> (the default), the first
-interval will be left exclusive and right inclusive. If <code>TRUE</code>, the
-first interval will be left and right inclusive. Passed to the
-<code>include.lowest</code> argument of <code><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut()</a></code>.</p></dd>
+<dd><p>Logical. If <code>FALSE</code> (the default), the first interval
+will be left exclusive and right inclusive. If <code>TRUE</code>, the first interval
+will be left and right inclusive. Passed to the <code>include.lowest</code> argument
+of <code><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut()</a></code>.</p></dd>
 
     <dt><code>statistic</code></dt>
-<dd><p>The <code>statistic</code> to be applied to each data bin in the
-plot. Options currently include “prop.count”, “prop.mean” and
+<dd><p>The <code>statistic</code> to be applied to each data bin in the plot.
+Options currently include “prop.count”, “prop.mean” and
 “abs.count”. The default “prop.count” sizes bins according to
 the proportion of the frequency of measurements.  Similarly,
 “prop.mean” sizes bins according to their relative contribution to
@@ -423,15 +429,14 @@ each bin.</p></dd>
 
     <dt><code>pollutant</code></dt>
 <dd><p>Alternative data series to be sampled instead of wind speed.
-The <code><a href="https://openair-project.github.io/openair/reference/windRose.html" class="external-link">windRose()</a></code> default NULL is equivalent to <code>pollutant = "ws"</code>. Use
-in <code><a href="https://openair-project.github.io/openair/reference/pollutionRose.html" class="external-link">pollutionRose()</a></code>.</p></dd>
+The <code><a href="https://openair-project.github.io/openair/reference/windRose.html" class="external-link">windRose()</a></code> default NULL is equivalent to <code>pollutant = "ws"</code>. Use in
+<code><a href="https://openair-project.github.io/openair/reference/pollutionRose.html" class="external-link">pollutionRose()</a></code>.</p></dd>
 
     <dt><code>angle.scale</code></dt>
 <dd><p>The scale is by default shown at a 315 degree angle.
 Sometimes the placement of the scale may interfere with an interesting
-feature. The user can therefore set <code>angle.scale</code> to another value
-(between 0 and 360 degrees) to mitigate such problems. For example
-<code>angle.scale = 45</code> will draw the scale heading in a NE direction.</p></dd>
+feature. The user can therefore set <code>angle.scale</code> to another value (between
+0 and 360 degrees) to mitigate such problems. For example <code>angle.scale = 45</code> will draw the scale heading in a NE direction.</p></dd>
 
     <dt><code>border</code></dt>
 <dd><p>Border colour for shaded areas. Default is no border.</p></dd>

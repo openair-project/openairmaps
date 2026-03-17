@@ -24,6 +24,7 @@ percentileMap(
   provider = "OpenStreetMap",
   cols = "turbo",
   alpha = 1,
+  theme = NULL,
   key = FALSE,
   legend = TRUE,
   legend.position = NULL,
@@ -216,6 +217,20 @@ percentileMap(
   *default:* `1` \| *scope:* dynamic & static
 
   A value between 0 (fully transparent) and 1 (fully opaque).
+
+- theme:
+
+  *Custom ggplot2 theme for the polar markers.*
+
+  *default:* `NULL` \| *scope:* dynamic & static
+
+  A custom `ggplot2` theme to add to the polar markers. This should
+  ideally be a partial theme (i.e.,
+  [`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html))
+  over a complete theme (e.g.,
+  [`ggplot2::theme_bw()`](https://ggplot2.tidyverse.org/reference/ggtheme.html))
+  as other arguments like `key` interact with the plot theme *before*
+  custom themes are set, so would be overriden by a complete theme.
 
 - key:
 
@@ -418,6 +433,12 @@ percentileMap(
       example `angle.scale = 45` will draw the scale heading in a NE
       direction.
 
+  `offset`
+
+  :   `offset` controls the size of the 'hole' in the middle and is
+      expressed on a scale of `0` to `100`, where `0` is no hole and
+      `100` is a hole that takes up the entire plotting area.
+
   `auto.text`
 
   :   Either `TRUE` (default) or `FALSE`. If `TRUE` titles and axis
@@ -429,8 +450,8 @@ percentileMap(
   :   Adds additional text/labels to the scale key. For example, passing
       the options `key.header = "header", key.footer = "footer1"` adds
       addition text above and below the scale key. These arguments are
-      passed to `drawOpenKey` via `quickText`, applying the `auto.text`
-      argument, to handle formatting.
+      passed to `quickText`, applying the `auto.text` argument, to
+      handle formatting.
 
   `key.footer`
 
@@ -440,6 +461,15 @@ percentileMap(
 
   :   Location where the scale key is to plotted. Allowed arguments
       currently include `"top"`, `"right"`, `"bottom"` and `"left"`.
+
+  `strip.position`
+
+  :   Location where the facet 'strips' are located when using `type`.
+      When one `type` is provided, can be one of `"left"`, `"right"`,
+      `"bottom"` or `"top"`. When two `type`s are provided, this
+      argument defines whether the strips are "switched" and can take
+      either `"x"`, `"y"`, or `"both"`. For example, `"x"` will switch
+      the 'top' strip locations to the bottom of the plot.
 
 - control:
 

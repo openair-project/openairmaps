@@ -84,6 +84,7 @@ Using the <code>static</code> argument allows for static images to be produced i
 <span>  provider <span class="op">=</span> <span class="st">"OpenStreetMap"</span>,</span>
 <span>  cols <span class="op">=</span> <span class="st">"turbo"</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  theme <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  key <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  legend.position <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -226,6 +227,16 @@ uniform colours.</p></dd>
 <p>A value between 0 (fully transparent) and 1 (fully opaque).</p></dd>
 
 
+<dt id="arg-theme">theme<a class="anchor" aria-label="anchor" href="#arg-theme"></a></dt>
+<dd><p><em>Custom ggplot2 theme for the polar markers.</em></p>
+<p><em>default:</em> <code>NULL</code> | <em>scope:</em> dynamic &amp; static</p>
+<p>A custom <code>ggplot2</code> theme to add to the polar markers. This should ideally
+be a partial theme (i.e., <code><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">ggplot2::theme()</a></code>) over a complete theme (e.g.,
+<code><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">ggplot2::theme_bw()</a></code>) as other arguments like <code>key</code> interact with the plot
+theme <em>before</em> custom themes are set, so would be overriden by a complete
+theme.</p></dd>
+
+
 <dt id="arg-key">key<a class="anchor" aria-label="anchor" href="#arg-key"></a></dt>
 <dd><p><em>Draw individual marker legends?</em></p>
 <p><em>default:</em> <code>FALSE</code> | <em>scope:</em> dynamic &amp; static</p>
@@ -340,18 +351,15 @@ arguments currently include “top”, “right”, “bottom”
 and “left”.</p></dd>
 
     <dt><code>paddle</code></dt>
-<dd><p>Either <code>TRUE</code> or <code>FALSE</code>. If <code>TRUE</code> plots rose
-using 'paddle' style spokes. If <code>FALSE</code> plots rose using 'wedge' style
-spokes.</p></dd>
+<dd><p>Either <code>TRUE</code> or <code>FALSE</code>. If <code>TRUE</code> plots rose using 'paddle'
+style spokes. If <code>FALSE</code> plots rose using 'wedge' style spokes.</p></dd>
 
     <dt><code>seg</code></dt>
-<dd><p>When <code>paddle = TRUE</code>, <code>seg</code> determines with width of the
-segments. For example, <code>seg = 0.5</code> will produce segments 0.5 *
-<code>angle</code>.</p></dd>
+<dd><p><code>seg</code> determines with width of the segments. For example, <code>seg = 0.5</code> will produce segments 0.5 * <code>angle</code>.</p></dd>
 
     <dt><code>normalise</code></dt>
-<dd><p>If <code>TRUE</code> each wind direction segment is normalised to
-equal one. This is useful for showing how the concentrations (or other
+<dd><p>If <code>TRUE</code> each wind direction segment is normalised to equal
+one. This is useful for showing how the concentrations (or other
 parameters) contribute to each wind sector when the proportion of time the
 wind is from that direction is low. A line showing the probability that the
 wind directions is from a particular wind sector is also shown.</p></dd>

@@ -22,6 +22,7 @@ windroseMap(
   provider = "OpenStreetMap",
   cols = "turbo",
   alpha = 1,
+  theme = NULL,
   key = FALSE,
   legend = TRUE,
   legend.position = NULL,
@@ -189,6 +190,20 @@ windroseMap(
   *default:* `1` \| *scope:* dynamic & static
 
   A value between 0 (fully transparent) and 1 (fully opaque).
+
+- theme:
+
+  *Custom ggplot2 theme for the polar markers.*
+
+  *default:* `NULL` \| *scope:* dynamic & static
+
+  A custom `ggplot2` theme to add to the polar markers. This should
+  ideally be a partial theme (i.e.,
+  [`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html))
+  over a complete theme (e.g.,
+  [`ggplot2::theme_bw()`](https://ggplot2.tidyverse.org/reference/ggtheme.html))
+  as other arguments like `key` interact with the plot theme *before*
+  custom themes are set, so would be overriden by a complete theme.
 
 - key:
 
@@ -389,14 +404,14 @@ windroseMap(
 
   `width`
 
-  :   For `paddle = TRUE`, the adjustment factor for width of wind speed
-      intervals. For example, `width = 1.5` will make the paddle width
-      1.5 times wider.
+  :   For paddle = TRUE, the adjustment factor for width of wind speed
+      intervals. For example, width = 1.5 will make the paddle width 1.5
+      times wider.
 
   `seg`
 
-  :   When `paddle = TRUE`, `seg` determines with width of the segments.
-      For example, `seg = 0.5` will produce segments 0.5 \* `angle`.
+  :   `seg` determines with width of the segments. For example,
+      `seg = 0.5` will produce segments 0.5 \* `angle`.
 
   `auto.text`
 
@@ -434,8 +449,6 @@ windroseMap(
   :   Adds additional text/labels above the scale key. For example,
       passing `windRose(mydata, key.header = "ws")` adds the addition
       text as a scale header. Note: This argument is passed to
-      [`drawOpenKey()`](https://openair-project.github.io/openair/reference/drawOpenKey.html)
-      via
       [`quickText()`](https://openair-project.github.io/openair/reference/quickText.html),
       applying the auto.text argument, to handle formatting.
 

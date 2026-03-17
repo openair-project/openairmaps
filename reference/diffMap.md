@@ -25,6 +25,7 @@ diffMap(
   provider = "OpenStreetMap",
   cols = rev(openair::openColours("RdBu", 10)),
   alpha = 1,
+  theme = NULL,
   key = FALSE,
   legend = TRUE,
   legend.position = NULL,
@@ -207,6 +208,20 @@ diffMap(
   *default:* `1` \| *scope:* dynamic & static
 
   A value between 0 (fully transparent) and 1 (fully opaque).
+
+- theme:
+
+  *Custom ggplot2 theme for the polar markers.*
+
+  *default:* `NULL` \| *scope:* dynamic & static
+
+  A custom `ggplot2` theme to add to the polar markers. This should
+  ideally be a partial theme (i.e.,
+  [`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html))
+  over a complete theme (e.g.,
+  [`ggplot2::theme_bw()`](https://ggplot2.tidyverse.org/reference/ggtheme.html))
+  as other arguments like `key` interact with the plot theme *before*
+  custom themes are set, so would be overriden by a complete theme.
 
 - key:
 

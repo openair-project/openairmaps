@@ -82,7 +82,7 @@ same arguments, which should be more flexible for post-hoc changes.</p>
 <span>  lon.inc <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  lat.inc <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  min.bin <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  .combine <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  .combine <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  sigma <span class="op">=</span> <span class="fl">1.5</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  tile.border <span class="op">=</span> <span class="cn">NA</span>,</span>
@@ -119,8 +119,8 @@ obtained using <code><a href="https://openair-project.github.io/openair/referenc
 
 
 <dt id="arg-pollutant">pollutant<a class="anchor" aria-label="anchor" href="#arg-pollutant"></a></dt>
-<dd><p>Pollutant to be plotted. By default the trajectory height is
-used.</p></dd>
+<dd><p>Pollutant (or any numeric column) to be plotted, if any.
+Alternatively, use <code>group</code>.</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
@@ -138,26 +138,22 @@ setting <code>crs</code> to <code>sf::st_crs(4326)</code> or <code>NULL</code>.<
 
 
 <dt id="arg-statistic">statistic<a class="anchor" aria-label="anchor" href="#arg-statistic"></a></dt>
-<dd><p>Statistic to use for <code><a href="https://openair-project.github.io/openair/reference/trajLevel.html" class="external-link">trajLevel()</a></code>. By default, the function
-will plot the trajectory frequencies (<code>statistic = "frequency"</code>). As an
-alternative way of viewing trajectory frequencies, the argument <code>method = "hexbin"</code> can be used. In this case hexagonal binning of the trajectory
-<em>points</em> (i.e., a point every three hours along each back trajectory).
-The plot then shows the trajectory frequencies uses hexagonal binning.</p>
-<p>There are also various ways of plotting concentrations.</p>
-<p>It is possible to set <code>statistic = "difference"</code>. In this case trajectories
-where the associated concentration is greater than <code>percentile</code> are
-compared with the the full set of trajectories to understand the
-differences in frequencies of the origin of air masses. The comparison is
-made by comparing the percentage change in gridded frequencies. For
-example, such a plot could show that the top 10\<!-- % of concentrations of PM10 -->
-tend to originate from air-mass origins to the east.</p>
-<p>If <code>statistic = "pscf"</code> then a Potential Source Contribution Function map
-is produced. This statistic method interacts with <code>percentile</code>.</p>
-<p>If <code>statistic = "cwt"</code> then concentration weighted trajectories are
-plotted.</p>
-<p>If <code>statistic = "sqtba"</code> then Simplified Quantitative Transport Bias
-Analysis is undertaken. This statistic method interacts with <code>.combine</code> and
-<code>sigma</code>.</p></dd>
+<dd><p>One of:</p><ul><li><p><code>"frequency"</code> (the default) shows trajectory frequencies.</p></li>
+<li><p><code>"hexbin"</code>, which is similar to <code>"frequency"</code> but shows a hexagonal
+grid of counts.</p></li>
+<li><p><code>"difference"</code> - in this case trajectories where the associated
+concentration is greater than <code>percentile</code> are compared with the the full
+set of trajectories to understand the differences in frequencies of the
+origin of air masses. The comparison is made by comparing the percentage
+change in gridded frequencies. For example, such a plot could show that the
+top 10\<!-- % of concentrations of PM10 tend to originate from air-mass origins -->
+to the east.</p></li>
+<li><p><code>"pscf"</code> for a Potential Source Contribution Function map. This statistic
+method interacts with <code>percentile</code>.</p></li>
+<li><p><code>"cwt"</code> for concentration weighted trajectories.</p></li>
+<li><p><code>"sqtba"</code> to undertake Simplified Quantitative Transport Bias
+Analysis. This statistic method interacts with <code>.combine</code> and <code>sigma</code>.</p></li>
+</ul></dd>
 
 
 <dt id="arg-percentile">percentile<a class="anchor" aria-label="anchor" href="#arg-percentile"></a></dt>
@@ -167,7 +163,9 @@ the all trajectories are compared.</p></dd>
 
 <dt id="arg-lon-inc-lat-inc">lon.inc, lat.inc<a class="anchor" aria-label="anchor" href="#arg-lon-inc-lat-inc"></a></dt>
 <dd><p>The longitude and latitude intervals to be used for
-binning data.</p></dd>
+binning data. If <code>statistic = "hexbin"</code>, the minimum value out of of
+<code>lon.inc</code> and <code>lat.inc</code> is passed to the <code>binwidth</code> argument of
+<code><a href="https://ggplot2.tidyverse.org/reference/geom_hex.html" class="external-link">ggplot2::geom_hex()</a></code>.</p></dd>
 
 
 <dt id="arg-min-bin">min.bin<a class="anchor" aria-label="anchor" href="#arg-min-bin"></a></dt>
