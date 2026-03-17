@@ -74,6 +74,7 @@ freqMap <- function(
   provider = "OpenStreetMap",
   cols = "turbo",
   alpha = 1,
+  theme = NULL,
   key = FALSE,
   legend = TRUE,
   legend.position = NULL,
@@ -204,7 +205,11 @@ freqMap <- function(
       plot = FALSE,
       statistic = statistic,
       cols = cols,
-      key = key,
+      key.position = ifelse(
+        rlang::is_logical(key),
+        ifelse(key, "right", "none"),
+        key
+      ),
       par.settings = list(axis.line = list(col = "transparent"))
     ),
     rlang::list2(...)
@@ -233,6 +238,7 @@ freqMap <- function(
       d.fig = d.fig,
       popup = popup,
       label = label,
+      theme = theme,
       progress = progress
     )
 

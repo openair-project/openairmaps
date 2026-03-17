@@ -6,6 +6,8 @@
 
 ## New features
 
+* In line with updates to `openair`, polar markers are now produced using `ggplot2`. This has allowed the `theme` argument to be added to the `polarMap()` family, which allows for extensive customisation of polar markers.
+
 * Added a new 'spatial interpolation' family of functions, which rely on the suggested `{stars}`, `{terra}` and `{gstat}` packages. These functions are most useful for dense air quality networks, and can be useful for identifying spatial patterns and hotspots of air pollution.
 
     * `krigingMap()` allows for smooth spatial interpolation, either using simple inverse distance weighting or full point kriging.
@@ -22,7 +24,7 @@
 
 This release includes several changes to make `{openairmaps}` more lightweight.
 
-* `{ggplot2}`, `{ggspatial}`, `{prettymapr}` and `{ggtext}`, the packages which support static mapping, have been moved to `Suggests` from `Imports`. This gives the package a smaller size for users who only use `{openairmaps}` for interactive mapping. On first trying to use a static mapping function, users will be prompted to install these packages.
+* `{ggspatial}`, `{prettymapr}` and `{ggtext}`, the packages which support static mapping, have been moved to `Suggests` from `Imports`. This gives the package a smaller size for users who only use `{openairmaps}` for interactive mapping. On first trying to use a static mapping function, users will be prompted to install these packages.
 
 * `{mgcv}` has been moved to `Suggests` as it is only used in one place (`trajLevelMap(smooth = TRUE)`)
 

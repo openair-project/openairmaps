@@ -18,6 +18,7 @@ annulusMap(
   provider = "OpenStreetMap",
   cols = "turbo",
   alpha = 1,
+  theme = NULL,
   key = FALSE,
   legend = TRUE,
   legend.position = NULL,
@@ -169,6 +170,16 @@ uniform colours.}
 
 A value between 0 (fully transparent) and 1 (fully opaque).}
 
+\item{theme}{\emph{Custom ggplot2 theme for the polar markers.}
+
+\emph{default:} \code{NULL} | \emph{scope:} dynamic & static
+
+A custom \code{ggplot2} theme to add to the polar markers. This should ideally
+be a partial theme (i.e., \code{\link[ggplot2:theme]{ggplot2::theme()}}) over a complete theme (e.g.,
+\code{\link[ggplot2:ggtheme]{ggplot2::theme_bw()}}) as other arguments like \code{key} interact with the plot
+theme \emph{before} custom themes are set, so would be overriden by a complete
+theme.}
+
 \item{key}{\emph{Draw individual marker legends?}
 
 \emph{default:} \code{FALSE} | \emph{scope:} dynamic & static
@@ -290,8 +301,8 @@ of \dQuote{smearing-out} the concentrations. Sometimes, a useful approach
 is to express time as local time. This correction tends to produce
 better-defined diurnal profiles of concentration (or other variables) and
 allows a better comparison to be made with emissions/activity data. If set
-to \code{FALSE} then GMT is used. Examples of usage include \code{local.tz = "Europe/London"}, \code{local.tz = "America/New_York"}. See
-\code{cutData} and \code{import} for more details.}
+to \code{FALSE} then GMT is used. Examples of usage include \code{local.tz = "Europe/London"}, \code{local.tz = "America/New_York"}. See \code{cutData} and
+\code{import} for more details.}
     \item{\code{statistic}}{The statistic that should be applied to each wind
 speed/direction bin. Can be \dQuote{mean} (default), \dQuote{median},
 \dQuote{max} (maximum), \dQuote{frequency}. \dQuote{stdev} (standard
@@ -299,19 +310,25 @@ deviation), \dQuote{weighted.mean} or \dQuote{cpf} (Conditional Probability
 Function). Because of the smoothing involved, the colour scale for some of
 these statistics is only to provide an indication of overall pattern and
 should not be interpreted in concentration units e.g. for \code{statistic = "weighted.mean"} where the bin mean is multiplied by the bin frequency and
-divided by the total frequency. In many cases using \code{polarFreq} will
-be better. Setting \code{statistic = "weighted.mean"} can be useful because
-it provides an indication of the concentration * frequency of occurrence
-and will highlight the wind speed/direction conditions that dominate the
+divided by the total frequency. In many cases using \code{polarFreq} will be
+better. Setting \code{statistic = "weighted.mean"} can be useful because it
+provides an indication of the concentration * frequency of occurrence and
+will highlight the wind speed/direction conditions that dominate the
 overall mean.}
-    \item{\code{percentile}}{If \code{statistic = "percentile"} or \code{statistic = "cpf"} then \code{percentile} is used, expressed from 0 to 100. Note that
-the percentile value is calculated in the wind speed, wind direction
-\sQuote{bins}. For this reason it can also be useful to set \code{min.bin}
-to ensure there are a sufficient number of points available to estimate a
-percentile. See \code{quantile} for more details of how percentiles are
-calculated.}
-    \item{\code{width}}{The width of the annulus; can be \dQuote{normal} (the default),
-\dQuote{thin} or \dQuote{fat}.}
+    \item{\code{percentile}}{If \code{statistic = "percentile"} or \code{statistic = "cpf"} then
+\code{percentile} is used, expressed from 0 to 100. Note that the percentile
+value is calculated in the wind speed, wind direction \sQuote{bins}. For
+this reason it can also be useful to set \code{min.bin} to ensure there are a
+sufficient number of points available to estimate a percentile. See
+\code{quantile} for more details of how percentiles are calculated.}
+    \item{\code{col.na}}{Colour to be used to show missing data.}
+    \item{\code{offset}}{\code{offset} controls the size of the 'hole' in the middle and is
+expressed on a scale of \code{0} to \code{100}, where \code{0} is no hole and \code{100} is a
+hole that takes up the entire plotting area.}
+    \item{\code{angle.scale}}{The scale is by default shown at a 315 degree angle.
+Sometimes the placement of the scale may interfere with an interesting
+feature. The user can therefore set \code{angle.scale} to another value (between
+0 and 360 degrees) to mitigate such problems. For example \code{angle.scale = 45} will draw the scale heading in a NE direction.}
     \item{\code{min.bin}}{The minimum number of points allowed in a wind speed/wind
 direction bin.  The default is 1. A value of two requires at least 2 valid
 records in each bin an so on; bins with less than 2 valid records are set
@@ -324,10 +341,10 @@ routines will produce predictions at points where no data exist i.e. they
 predict. By removing the points too far from the original data produces a
 plot where it is clear where the original data lie. If set to \code{FALSE}
 missing data will be interpolated.}
-    \item{\code{date.pad}}{For \code{type = "trend"} (default), \code{date.pad = TRUE}
-will pad-out missing data to the beginning of the first year and the end of
-the last year. The purpose is to ensure that the trend plot begins and ends
-at the beginning or end of year.}
+    \item{\code{date.pad}}{For \code{type = "trend"} (default), \code{date.pad = TRUE} will
+pad-out missing data to the beginning of the first year and the end of the
+last year. The purpose is to ensure that the trend plot begins and ends at
+the beginning or end of year.}
     \item{\code{force.positive}}{The default is \code{TRUE}. Sometimes if smoothing data with
 steep gradients it is possible for predicted values to be negative.
 \code{force.positive = TRUE} ensures that predictions remain positive. This is
@@ -343,18 +360,23 @@ the default option.}
     \item{\code{k}}{The smoothing value supplied to \code{gam} for the temporal and wind
 direction components, respectively. In some cases e.g. a trend plot with
 less than 1-year of data the smoothing with the default values may become
-too noisy and affected more by outliers. Choosing a lower value of \code{k}
-(say 10) may help produce a better plot.}
+too noisy and affected more by outliers. Choosing a lower value of \code{k} (say
+10) may help produce a better plot.}
     \item{\code{normalise}}{If \code{TRUE} concentrations are normalised by dividing by their
 mean value. This is done \emph{after} fitting the smooth surface. This option is
 particularly useful if one is interested in the patterns of concentrations
 for several pollutants on different scales e.g. NOx and CO. Often useful if
 more than one \code{pollutant} is chosen.}
+    \item{\code{strip.position}}{Location where the facet 'strips' are located when
+using \code{type}. When one \code{type} is provided, can be one of \code{"left"},
+\code{"right"}, \code{"bottom"} or \code{"top"}. When two \code{type}s are provided, this
+argument defines whether the strips are "switched" and can take either
+\code{"x"}, \code{"y"}, or \code{"both"}. For example, \code{"x"} will switch the 'top' strip
+locations to the bottom of the plot.}
     \item{\code{key.header}}{Adds additional text/labels to the scale key. For example,
 passing the options \verb{key.header = "header", key.footer = "footer1"} adds
 addition text above and below the scale key. These arguments are passed to
-\code{drawOpenKey} via \code{quickText}, applying the \code{auto.text} argument, to handle
-formatting.}
+\code{quickText}, applying the \code{auto.text} argument, to handle formatting.}
     \item{\code{key.footer}}{see \code{key.footer}.}
     \item{\code{key.position}}{Location where the scale key is to plotted. Allowed
 arguments currently include \code{"top"}, \code{"right"}, \code{"bottom"} and \code{"left"}.}

@@ -21,12 +21,12 @@ Depends:
 Imports:
     cli,
     dplyr,
+    ggplot2,
     leaflet (>= 2.2.0),
     lifecycle,
     lubridate,
-    openair (>= 2.13),
+    openair (>= 2.19.2.0),
     purrr (>= 1.1.0),
-    ragg,
     rlang,
     sf,
     stringr,
@@ -34,7 +34,6 @@ Imports:
 Suggests:
     carrier,
     curl,
-    ggplot2,
     ggspatial,
     ggtext,
     gstat,
@@ -49,10 +48,12 @@ Suggests:
     stars,
     terra,
     testthat (>= 3.0.0)
-Config/Needs/website: openair-project/openairpkgdown
+Config/Needs/website: openair-project/openairpkgdown, maps
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-GB
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
+Remotes: 
+    openair-project/openair

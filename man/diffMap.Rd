@@ -19,6 +19,7 @@ diffMap(
   provider = "OpenStreetMap",
   cols = rev(openair::openColours("RdBu", 10)),
   alpha = 1,
+  theme = NULL,
   key = FALSE,
   legend = TRUE,
   legend.position = NULL,
@@ -160,6 +161,16 @@ recommended to use a "diverging" colour palette (along with a symmetrical
 \emph{default:} \code{1} | \emph{scope:} dynamic & static
 
 A value between 0 (fully transparent) and 1 (fully opaque).}
+
+\item{theme}{\emph{Custom ggplot2 theme for the polar markers.}
+
+\emph{default:} \code{NULL} | \emph{scope:} dynamic & static
+
+A custom \code{ggplot2} theme to add to the polar markers. This should ideally
+be a partial theme (i.e., \code{\link[ggplot2:theme]{ggplot2::theme()}}) over a complete theme (e.g.,
+\code{\link[ggplot2:ggtheme]{ggplot2::theme_bw()}}) as other arguments like \code{key} interact with the plot
+theme \emph{before} custom themes are set, so would be overriden by a complete
+theme.}
 
 \item{key}{\emph{Draw individual marker legends?}
 

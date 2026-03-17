@@ -443,6 +443,7 @@ create_polar_markers <-
     label = NULL,
     d.fig,
     dropcol = "conc",
+    theme,
     polar_fun = NULL,
     progress = TRUE
   ) {
@@ -530,24 +531,26 @@ create_polar_markers <-
         .l = dplyr::select(plots_df, "data", "url"),
         .f = purrr::in_parallel(
           function(data, url) {
+            openair_obj <- fun(data)
             # save plot
-            ragg::agg_png(
+            ggplot2::ggsave(
+              plot = openair_obj$plot +
+                ggplot2::theme(plot.margin = ggplot2::unit(rep(0, 4), "cm")) +
+                theme,
               filename = url,
-              width = width * 300,
-              height = height * 300,
-              res = 300,
-              background = "transparent"
+              width = width * 0.75,
+              height = height * 0.75,
+              dpi = 72,
+              bg = "transparent"
             )
-            plotdata <- fun(data)$data
-            print(fun(data)$plot)
-            grDevices::dev.off()
-            return(plotdata)
+            return(openair_obj$data)
           },
           fun = fun,
           fun_args = fun_args,
           width = width,
           height = height,
-          polar_fun = polar_fun
+          polar_fun = polar_fun,
+          theme = theme
         ),
         .progress = progress
       )

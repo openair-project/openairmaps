@@ -16,7 +16,7 @@ trajLevelMapStatic(
   lon.inc = 1,
   lat.inc = 1,
   min.bin = 1,
-  .combine = NA,
+  .combine = NULL,
   sigma = 1.5,
   alpha = 0.5,
   tile.border = NA,
@@ -48,8 +48,8 @@ obtained using \code{\link[openair:importTraj]{openair::importTraj()}}.}
 
 Column names representing the decimal latitude and longitude.}
 
-\item{pollutant}{Pollutant to be plotted. By default the trajectory height is
-used.}
+\item{pollutant}{Pollutant (or any numeric column) to be plotted, if any.
+Alternatively, use \code{group}.}
 
 \item{type}{\emph{A method to condition the \code{data} for separate plotting.}
 
@@ -63,37 +63,32 @@ selected between using a "layer control" menu. Passed to
 Note that smoothing may cause the plot to render slower, so consider
 setting \code{crs} to \code{sf::st_crs(4326)} or \code{NULL}.}
 
-\item{statistic}{Statistic to use for \code{\link[openair:trajLevel]{trajLevel()}}. By default, the function
-will plot the trajectory frequencies (\code{statistic = "frequency"}). As an
-alternative way of viewing trajectory frequencies, the argument \code{method = "hexbin"} can be used. In this case hexagonal binning of the trajectory
-\emph{points} (i.e., a point every three hours along each back trajectory).
-The plot then shows the trajectory frequencies uses hexagonal binning.
-
-There are also various ways of plotting concentrations.
-
-It is possible to set \code{statistic = "difference"}. In this case trajectories
-where the associated concentration is greater than \code{percentile} are
-compared with the the full set of trajectories to understand the
-differences in frequencies of the origin of air masses. The comparison is
-made by comparing the percentage change in gridded frequencies. For
-example, such a plot could show that the top 10\\% of concentrations of PM10
-tend to originate from air-mass origins to the east.
-
-If \code{statistic = "pscf"} then a Potential Source Contribution Function map
-is produced. This statistic method interacts with \code{percentile}.
-
-If \code{statistic = "cwt"} then concentration weighted trajectories are
-plotted.
-
-If \code{statistic = "sqtba"} then Simplified Quantitative Transport Bias
-Analysis is undertaken. This statistic method interacts with \code{.combine} and
-\code{sigma}.}
+\item{statistic}{One of:
+\itemize{
+\item \code{"frequency"} (the default) shows trajectory frequencies.
+\item \code{"hexbin"}, which is similar to \code{"frequency"} but shows a hexagonal
+grid of counts.
+\item \code{"difference"} - in this case trajectories where the associated
+concentration is greater than \code{percentile} are compared with the the full
+set of trajectories to understand the differences in frequencies of the
+origin of air masses. The comparison is made by comparing the percentage
+change in gridded frequencies. For example, such a plot could show that the
+top 10\\% of concentrations of PM10 tend to originate from air-mass origins
+to the east.
+\item \code{"pscf"} for a Potential Source Contribution Function map. This statistic
+method interacts with \code{percentile}.
+\item \code{"cwt"} for concentration weighted trajectories.
+\item \code{"sqtba"} to undertake Simplified Quantitative Transport Bias
+Analysis. This statistic method interacts with \code{.combine} and \code{sigma}.
+}}
 
 \item{percentile}{The percentile concentration of \code{pollutant} against which
 the all trajectories are compared.}
 
 \item{lon.inc, lat.inc}{The longitude and latitude intervals to be used for
-binning data.}
+binning data. If \code{statistic = "hexbin"}, the minimum value out of of
+\code{lon.inc} and \code{lat.inc} is passed to the \code{binwidth} argument of
+\code{\link[ggplot2:geom_hex]{ggplot2::geom_hex()}}.}
 
 \item{min.bin}{The minimum number of unique points in a grid cell. Counts
 below \code{min.bin} are set as missing.}

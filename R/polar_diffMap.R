@@ -18,26 +18,26 @@
 #'
 #'  *default:* `"free"` | *scope:* dynamic & static
 #'
-#'  One of:
+#'   One of:
 #'  - `"free"` (the default) which allows all of the markers to use different
-#'  colour scales.
+#'   colour scales.
 #'  - A numeric vector in the form `c(lower, upper)` used to define the colour
-#'  scale. For example, `limits = c(-10, 10)` would force the plot limits to
-#'  span -10 to 10. It is recommended to use a symmetrical limit scale (along
-#'  with a "diverging" colour palette) for effective visualisation.
+#'   scale. For example, `limits = c(-10, 10)` would force the plot limits to
+#'   span -10 to 10. It is recommended to use a symmetrical limit scale (along
+#'   with a "diverging" colour palette) for effective visualisation.
 #'
-#'  Note that the `"fixed"` option is not supported in [diffMap()].
+#'   Note that the `"fixed"` option is not supported in [diffMap()].
 #'
 #' @param cols *Colours to use for plotting.*
 #'
 #'  *default:* `rev(openair::openColours("RdBu", 10))` | *scope:* dynamic & static
 #'
-#'  The colours used for plotting, passed to [openair::openColours()].  It is
-#'  recommended to use a "diverging" colour palette (along with a symmetrical
-#'  `limit` scale) for effective visualisation.
+#'   The colours used for plotting, passed to [openair::openColours()].  It is
+#'   recommended to use a "diverging" colour palette (along with a symmetrical
+#'   `limit` scale) for effective visualisation.
 #'
 #' @inheritDotParams openair::polarPlot -mydata -pollutant -x -limits -type
-#'   -cols -key -key.footer -key.header -key.position -units -angle.scale -alpha
+#'   -cols -key -key.footer -key.header -key.position -units -angle.scale
 #'   -plot
 #' @returns Either:
 #'
@@ -71,6 +71,7 @@ diffMap <- function(
   provider = "OpenStreetMap",
   cols = rev(openair::openColours("RdBu", 10)),
   alpha = 1,
+  theme = NULL,
   key = FALSE,
   legend = TRUE,
   legend.position = NULL,
@@ -187,7 +188,11 @@ diffMap <- function(
       x = x,
       limits = theLimits,
       cols = cols,
-      key = key,
+      key.position = ifelse(
+        rlang::is_logical(key),
+        ifelse(key, "right", "none"),
+        key
+      ),
       plot = FALSE,
       ...,
       par.settings = list(axis.line = list(col = "transparent"))
@@ -206,6 +211,7 @@ diffMap <- function(
       d.fig = d.fig,
       popup = popup,
       label = label,
+      theme = theme,
       progress = progress
     )
 
@@ -313,6 +319,7 @@ create_polar_diffmarkers <-
     label = NULL,
     d.fig,
     dropcol = "conc",
+    theme,
     progress = TRUE
   ) {
     # make temp directory
@@ -444,17 +451,16 @@ create_polar_diffmarkers <-
         plots_df$plot
       ),
       .f = ~ {
-        ragg::agg_png(
+        ggplot2::ggsave(
+          plot = ..4 +
+            ggplot2::theme(plot.margin = ggplot2::unit(rep(0, 4), "cm")) +
+            theme,
           filename = paste0(dir, "/", ..1, "_", ..2, "_", ..3, "_", id, ".png"),
-          width = width * 300,
-          height = height * 300,
-          res = 300,
-          background = "transparent"
+          width = width * 0.75,
+          height = height * 0.75,
+          dpi = 72,
+          bg = "transparent"
         )
-
-        plot(..4)
-
-        grDevices::dev.off()
       }
     )
 
