@@ -541,7 +541,7 @@ create_polar_markers <-
               width = width * 0.75,
               height = height * 0.75,
               dpi = 72,
-              background = "transparent"
+              bg = "transparent"
             )
             return(openair_obj$data)
           },

@@ -459,7 +459,7 @@ create_polar_diffmarkers <-
           width = width * 0.75,
           height = height * 0.75,
           dpi = 72,
-          background = "transparent"
+          bg = "transparent"
         )
       }
     )
