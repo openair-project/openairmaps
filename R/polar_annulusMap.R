@@ -172,7 +172,11 @@ annulusMap <- function(
       plot = FALSE,
       limits = theLimits,
       cols = cols,
-      key.position = ifelse(!key, "none", key),
+      key.position = ifelse(
+        rlang::is_logical(key),
+        ifelse(key, "right", "none"),
+        key
+      ),
       par.settings = list(axis.line = list(col = "transparent"))
     ),
     rlang::list2(...)

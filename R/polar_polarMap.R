@@ -316,7 +316,7 @@
 #' @param control **Deprecated.** Please use `type`.
 #'
 #' @inheritDotParams openair::polarPlot -mydata -pollutant -x -limits -type
-#'   -cols -key -alpha -plot
+#'   -cols -key -plot
 #'
 #' @returns Either:
 #'
@@ -509,7 +509,11 @@ polarMap <- function(
       limits = theLimits,
       upper = upper,
       cols = cols,
-      key.position = ifelse(!key, "none", key),
+      key.position = ifelse(
+        rlang::is_logical(key),
+        ifelse(key, "right", "none"),
+        key
+      ),
       par.settings = list(axis.line = list(col = "transparent"))
     ),
     rlang::list2(...)

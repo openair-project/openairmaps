@@ -177,7 +177,11 @@ percentileMap <- function(
       percentile = percentile,
       plot = FALSE,
       cols = cols,
-      key.position = ifelse(!key, "none", key),
+      key.position = ifelse(
+        rlang::is_logical(key),
+        ifelse(key, "right", "none"),
+        key
+      ),
       intervals = theIntervals,
       par.settings = list(axis.line = list(col = "transparent"))
     ),

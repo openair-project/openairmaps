@@ -109,7 +109,11 @@ addPolarMarkers <-
     fun_args <- append(
       list(
         pollutant = pollutant,
-        key.position = ifelse(!key, "none", key),
+        key.position = ifelse(
+          rlang::is_logical(key),
+          ifelse(key, "right", "none"),
+          key
+        ),
         plot = FALSE,
         par.settings = list(axis.line = list(col = "transparent"))
       ),
@@ -240,7 +244,11 @@ addPolarDiffMarkers <-
         before = before,
         after = after,
         pollutant = pollutant,
-        key.position = ifelse(!key, "none", key),
+        key.position = ifelse(
+          rlang::is_logical(key),
+          ifelse(key, "right", "none"),
+          key
+        ),
         plot = FALSE,
         !!!args,
         par.settings = list(axis.line = list(col = "transparent"))

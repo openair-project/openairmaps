@@ -157,7 +157,11 @@ pollroseMap <- function(
       breaks = theBreaks,
       plot = FALSE,
       cols = cols,
-      key.position = ifelse(!key, "none", key),
+      key.position = ifelse(
+        rlang::is_logical(key),
+        ifelse(key, "right", "none"),
+        key
+      ),
       annotate = FALSE,
       par.settings = list(axis.line = list(col = "transparent"))
     ),
