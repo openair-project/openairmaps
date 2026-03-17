@@ -17,6 +17,7 @@ windroseMap(
   provider = "OpenStreetMap",
   cols = "turbo",
   alpha = 1,
+  theme = NULL,
   key = FALSE,
   legend = TRUE,
   legend.position = NULL,
@@ -146,6 +147,16 @@ uniform colours.}
 
 A value between 0 (fully transparent) and 1 (fully opaque).}
 
+\item{theme}{\emph{Custom ggplot2 theme for the polar markers.}
+
+\emph{default:} \code{NULL} | \emph{scope:} dynamic & static
+
+A custom \code{ggplot2} theme to add to the polar markers. This should ideally
+be a partial theme (i.e., \code{\link[ggplot2:theme]{ggplot2::theme()}}) over a complete theme (e.g.,
+\code{\link[ggplot2:ggtheme]{ggplot2::theme_bw()}}) as other arguments like \code{key} interact with the plot
+theme \emph{before} custom themes are set, so would be overriden by a complete
+theme.}
+
 \item{key}{\emph{Draw individual marker legends?}
 
 \emph{default:} \code{FALSE} | \emph{scope:} dynamic & static
@@ -264,47 +275,42 @@ angles are 45 and 10. Note that the width of the wind speed interval may
 need adjusting using \code{width}.}
     \item{\code{calm.thresh}}{By default, conditions are considered to be calm when the
 wind speed is zero. The user can set a different threshold for calms be
-setting \code{calm.thresh} to a higher value. For example,
-\code{calm.thresh = 0.5} will identify wind speeds \strong{below} 0.5 as calm.}
+setting \code{calm.thresh} to a higher value. For example, \code{calm.thresh = 0.5}
+will identify wind speeds \strong{below} 0.5 as calm.}
     \item{\code{bias.corr}}{When \code{angle} does not divide exactly into 360 a bias is
 introduced in the frequencies when the wind direction is already supplied
 rounded to the nearest 10 degrees, as is often the case. For example, if
-\code{angle = 22.5}, N, E, S, W will include 3 wind sectors and all other
-angles will be two. A bias correction can made to correct for this problem.
-A simple method according to Applequist (2012) is used to adjust the
+\code{angle = 22.5}, N, E, S, W will include 3 wind sectors and all other angles
+will be two. A bias correction can made to correct for this problem. A
+simple method according to Applequist (2012) is used to adjust the
 frequencies.}
-    \item{\code{grid.line}}{Grid line interval to use. If \code{NULL}, as in default,
-this is assigned based on the available data range. However, it can also be
-forced to a specific value, e.g. \code{grid.line = 10}. \code{grid.line}
-can also be a list to control the interval, line type and colour. For
-example \code{grid.line = list(value = 10, lty = 5, col = "purple")}.}
-    \item{\code{width}}{For \code{paddle = TRUE}, the adjustment factor for width of
-wind speed intervals. For example, \code{width = 1.5} will make the paddle
-width 1.5 times wider.}
-    \item{\code{seg}}{When \code{paddle = TRUE}, \code{seg} determines with width of the
-segments. For example, \code{seg = 0.5} will produce segments 0.5 *
-\code{angle}.}
-    \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE}
-titles and axis labels will automatically try and format pollutant names
-and units properly, e.g., by subscripting the \sQuote{2} in NO2.}
+    \item{\code{grid.line}}{Grid line interval to use. If \code{NULL}, as in default, this is
+assigned based on the available data range. However, it can also be forced
+to a specific value, e.g. \code{grid.line = 10}. \code{grid.line} can also be a list
+to control the interval, line type and colour. For example \code{grid.line = list(value = 10, lty = 5, col = "purple")}.}
+    \item{\code{width}}{For paddle = TRUE, the adjustment factor for width of wind speed
+intervals. For example, width = 1.5 will make the paddle width 1.5 times
+wider.}
+    \item{\code{seg}}{\code{seg} determines with width of the segments. For example, \code{seg = 0.5} will produce segments 0.5 * \code{angle}.}
+    \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE} titles and
+axis labels will automatically try and format pollutant names and units
+properly, e.g., by subscripting the \sQuote{2} in NO2.}
     \item{\code{offset}}{The size of the 'hole' in the middle of the plot, expressed as
 a percentage of the polar axis scale, default 10.}
-    \item{\code{normalise}}{If \code{TRUE} each wind direction segment is normalised to
-equal one. This is useful for showing how the concentrations (or other
+    \item{\code{normalise}}{If \code{TRUE} each wind direction segment is normalised to equal
+one. This is useful for showing how the concentrations (or other
 parameters) contribute to each wind sector when the proportion of time the
 wind is from that direction is low. A line showing the probability that the
 wind directions is from a particular wind sector is also shown.}
     \item{\code{max.freq}}{Controls the scaling used by setting the maximum value for
 the radial limits. This is useful to ensure several plots use the same
 radial limits.}
-    \item{\code{paddle}}{Either \code{TRUE} or \code{FALSE}. If \code{TRUE} plots rose
-using 'paddle' style spokes. If \code{FALSE} plots rose using 'wedge' style
-spokes.}
+    \item{\code{paddle}}{Either \code{TRUE} or \code{FALSE}. If \code{TRUE} plots rose using 'paddle'
+style spokes. If \code{FALSE} plots rose using 'wedge' style spokes.}
     \item{\code{key.header}}{Adds additional text/labels above the scale key. For
-example, passing \code{windRose(mydata, key.header = "ws")} adds the
-addition text as a scale header. Note: This argument is passed to
-\code{\link[openair:drawOpenKey]{drawOpenKey()}} via \code{\link[openair:quickText]{quickText()}}, applying the auto.text argument, to
-handle formatting.}
+example, passing \code{windRose(mydata, key.header = "ws")} adds the addition
+text as a scale header. Note: This argument is passed to \code{\link[openair:quickText]{quickText()}},
+applying the auto.text argument, to handle formatting.}
     \item{\code{key.footer}}{Adds additional text/labels below the scale key. See
 \code{key.header} for further information.}
     \item{\code{key.position}}{Location where the scale key is to plotted. Allowed
@@ -312,25 +318,24 @@ arguments currently include \dQuote{top}, \dQuote{right}, \dQuote{bottom}
 and \dQuote{left}.}
     \item{\code{dig.lab}}{The number of significant figures at which scientific number
 formatting is used in break point and key labelling. Default 5.}
-    \item{\code{include.lowest}}{Logical. If \code{FALSE} (the default), the first
-interval will be left exclusive and right inclusive. If \code{TRUE}, the
-first interval will be left and right inclusive. Passed to the
-\code{include.lowest} argument of \code{\link[=cut]{cut()}}.}
-    \item{\code{statistic}}{The \code{statistic} to be applied to each data bin in the
-plot. Options currently include \dQuote{prop.count}, \dQuote{prop.mean} and
+    \item{\code{include.lowest}}{Logical. If \code{FALSE} (the default), the first interval
+will be left exclusive and right inclusive. If \code{TRUE}, the first interval
+will be left and right inclusive. Passed to the \code{include.lowest} argument
+of \code{\link[=cut]{cut()}}.}
+    \item{\code{statistic}}{The \code{statistic} to be applied to each data bin in the plot.
+Options currently include \dQuote{prop.count}, \dQuote{prop.mean} and
 \dQuote{abs.count}. The default \dQuote{prop.count} sizes bins according to
 the proportion of the frequency of measurements.  Similarly,
 \dQuote{prop.mean} sizes bins according to their relative contribution to
 the mean. \dQuote{abs.count} provides the absolute count of measurements in
 each bin.}
     \item{\code{pollutant}}{Alternative data series to be sampled instead of wind speed.
-The \code{\link[openair:windRose]{windRose()}} default NULL is equivalent to \code{pollutant = "ws"}. Use
-in \code{\link[openair:pollutionRose]{pollutionRose()}}.}
+The \code{\link[openair:windRose]{windRose()}} default NULL is equivalent to \code{pollutant = "ws"}. Use in
+\code{\link[openair:pollutionRose]{pollutionRose()}}.}
     \item{\code{angle.scale}}{The scale is by default shown at a 315 degree angle.
 Sometimes the placement of the scale may interfere with an interesting
-feature. The user can therefore set \code{angle.scale} to another value
-(between 0 and 360 degrees) to mitigate such problems. For example
-\code{angle.scale = 45} will draw the scale heading in a NE direction.}
+feature. The user can therefore set \code{angle.scale} to another value (between
+0 and 360 degrees) to mitigate such problems. For example \code{angle.scale = 45} will draw the scale heading in a NE direction.}
     \item{\code{border}}{Border colour for shaded areas. Default is no border.}
   }}
 

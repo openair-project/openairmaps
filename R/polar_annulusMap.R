@@ -51,6 +51,7 @@ annulusMap <- function(
   provider = "OpenStreetMap",
   cols = "turbo",
   alpha = 1,
+  theme = NULL,
   key = FALSE,
   legend = TRUE,
   legend.position = NULL,
@@ -109,9 +110,9 @@ annulusMap <- function(
         ...
       )$data
 
-    theLimits <- range(testplots$z, na.rm = TRUE)
+    theLimits <- range(testplots$pred, na.rm = TRUE)
   } else if ("free" %in% limits) {
-    theLimits <- NA
+    theLimits <- NULL
   } else if (is.numeric(limits)) {
     theLimits <- limits
   } else {
@@ -171,7 +172,7 @@ annulusMap <- function(
       plot = FALSE,
       limits = theLimits,
       cols = cols,
-      key = key,
+      key.position = ifelse(!key, "none", key),
       par.settings = list(axis.line = list(col = "transparent"))
     ),
     rlang::list2(...)
@@ -200,6 +201,7 @@ annulusMap <- function(
       d.fig = d.fig,
       popup = popup,
       label = label,
+      theme = theme,
       progress = progress
     )
 

@@ -67,6 +67,7 @@ windroseMap <- function(
   provider = "OpenStreetMap",
   cols = "turbo",
   alpha = 1,
+  theme = NULL,
   key = FALSE,
   legend = TRUE,
   legend.position = NULL,
@@ -162,7 +163,7 @@ windroseMap <- function(
       ws.int = ws.int,
       breaks = breaks,
       cols = cols,
-      key = key,
+      key.position = ifelse(!key, "none", key),
       annotate = FALSE,
       par.settings = list(axis.line = list(col = "transparent"))
     ),
@@ -192,6 +193,7 @@ windroseMap <- function(
       d.fig = d.fig,
       popup = popup,
       label = label,
+      theme = theme,
       progress = progress
     )
 

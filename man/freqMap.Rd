@@ -18,6 +18,7 @@ freqMap(
   provider = "OpenStreetMap",
   cols = "turbo",
   alpha = 1,
+  theme = NULL,
   key = FALSE,
   legend = TRUE,
   legend.position = NULL,
@@ -179,6 +180,16 @@ uniform colours.}
 
 A value between 0 (fully transparent) and 1 (fully opaque).}
 
+\item{theme}{\emph{Custom ggplot2 theme for the polar markers.}
+
+\emph{default:} \code{NULL} | \emph{scope:} dynamic & static
+
+A custom \code{ggplot2} theme to add to the polar markers. This should ideally
+be a partial theme (i.e., \code{\link[ggplot2:theme]{ggplot2::theme()}}) over a complete theme (e.g.,
+\code{\link[ggplot2:ggtheme]{ggplot2::theme_bw()}}) as other arguments like \code{key} interact with the plot
+theme \emph{before} custom themes are set, so would be overriden by a complete
+theme.}
+
 \item{key}{\emph{Draw individual marker legends?}
 
 \emph{default:} \code{FALSE} | \emph{scope:} dynamic & static
@@ -287,14 +298,14 @@ off, if desired.}
 \item{...}{
   Arguments passed on to \code{\link[openair:polarFreq]{openair::polarFreq}}
   \describe{
-    \item{\code{ws.int}}{Wind speed interval assumed. In some cases e.g. a low met
-mast, an interval of 0.5 may be more appropriate.}
+    \item{\code{ws.int}}{Wind speed interval assumed. In some cases e.g. a low met mast,
+an interval of 0.5 may be more appropriate.}
     \item{\code{wd.nint}}{Number of intervals of wind direction.}
     \item{\code{grid.line}}{Radial spacing of grid lines.}
     \item{\code{trans}}{Should a transformation be applied? Sometimes when producing
 plots of this kind they can be dominated by a few high points. The default
-therefore is \code{TRUE} and a square-root transform is applied. This
-results in a non-linear scale and (usually) a better representation of the
+therefore is \code{TRUE} and a square-root transform is applied. This results in
+a non-linear scale and (usually) a better representation of the
 distribution. If set to \code{FALSE} a linear scale is used.}
     \item{\code{min.bin}}{The minimum number of points allowed in a wind speed/wind
 direction bin.  The default is 1. A value of two requires at least 2 valid
@@ -303,24 +314,27 @@ to NA. Care should be taken when using a value > 1 because of the risk of
 removing real data points. It is recommended to consider your data with
 care. Also, the \code{polarFreq} function can be of use in such circumstances.}
     \item{\code{ws.upper}}{A user-defined upper wind speed to use. This is useful for
-ensuring a consistent scale between different plots. For example, to
-always ensure that wind speeds are displayed between 1-10, set
-\code{ws.int = 10}.}
-    \item{\code{offset}}{\code{offset} controls the size of the \sQuote{hole} in the
-middle and is expressed as a percentage of the maximum wind speed. Setting
-a higher \code{offset} e.g. 50 is useful for \code{statistic = "weighted.mean"} when \code{ws.int} is greater than the maximum wind
-speed. See example below.}
+ensuring a consistent scale between different plots. For example, to always
+ensure that wind speeds are displayed between 1-10, set \code{ws.int = 10}.}
+    \item{\code{offset}}{\code{offset} controls the size of the 'hole' in the middle and is
+expressed on a scale of \code{0} to \code{100}, where \code{0} is no hole and \code{100} is a
+hole that takes up the entire plotting area.}
     \item{\code{border.col}}{The colour of the boundary of each wind speed/direction
 bin. The default is transparent. Another useful choice sometimes is
 "white".}
     \item{\code{key.header}}{Adds additional text/labels to the scale key. For example,
 passing the options \verb{key.header = "header", key.footer = "footer1"} adds
 addition text above and below the scale key. These arguments are passed to
-\code{drawOpenKey} via \code{quickText}, applying the \code{auto.text} argument, to handle
-formatting.}
+\code{quickText}, applying the \code{auto.text} argument, to handle formatting.}
     \item{\code{key.footer}}{see \code{key.footer}.}
     \item{\code{key.position}}{Location where the scale key is to plotted. Allowed
 arguments currently include \code{"top"}, \code{"right"}, \code{"bottom"} and \code{"left"}.}
+    \item{\code{strip.position}}{Location where the facet 'strips' are located when
+using \code{type}. When one \code{type} is provided, can be one of \code{"left"},
+\code{"right"}, \code{"bottom"} or \code{"top"}. When two \code{type}s are provided, this
+argument defines whether the strips are "switched" and can take either
+\code{"x"}, \code{"y"}, or \code{"both"}. For example, \code{"x"} will switch the 'top' strip
+locations to the bottom of the plot.}
     \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE} titles and
 axis labels will automatically try and format pollutant names and units
 properly e.g.  by subscripting the `2' in NO2.}

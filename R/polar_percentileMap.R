@@ -60,6 +60,7 @@ percentileMap <- function(
   provider = "OpenStreetMap",
   cols = "turbo",
   alpha = 1,
+  theme = NULL,
   key = FALSE,
   legend = TRUE,
   legend.position = NULL,
@@ -176,7 +177,7 @@ percentileMap <- function(
       percentile = percentile,
       plot = FALSE,
       cols = cols,
-      key = key,
+      key.position = ifelse(!key, "none", key),
       intervals = theIntervals,
       par.settings = list(axis.line = list(col = "transparent"))
     ),
@@ -206,6 +207,7 @@ percentileMap <- function(
       d.fig = d.fig,
       popup = popup,
       label = label,
+      theme = theme,
       progress = progress
     )
 

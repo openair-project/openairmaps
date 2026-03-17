@@ -18,6 +18,7 @@ percentileMap(
   provider = "OpenStreetMap",
   cols = "turbo",
   alpha = 1,
+  theme = NULL,
   key = FALSE,
   legend = TRUE,
   legend.position = NULL,
@@ -166,6 +167,16 @@ uniform colours.}
 
 A value between 0 (fully transparent) and 1 (fully opaque).}
 
+\item{theme}{\emph{Custom ggplot2 theme for the polar markers.}
+
+\emph{default:} \code{NULL} | \emph{scope:} dynamic & static
+
+A custom \code{ggplot2} theme to add to the polar markers. This should ideally
+be a partial theme (i.e., \code{\link[ggplot2:theme]{ggplot2::theme()}}) over a complete theme (e.g.,
+\code{\link[ggplot2:ggtheme]{ggplot2::theme_bw()}}) as other arguments like \code{key} interact with the plot
+theme \emph{before} custom themes are set, so would be overriden by a complete
+theme.}
+
 \item{key}{\emph{Draw individual marker legends?}
 
 \emph{default:} \code{FALSE} | \emph{scope:} dynamic & static
@@ -278,12 +289,12 @@ off, if desired.}
     \item{\code{smooth}}{Should the wind direction data be smoothed using a cyclic
 spline?}
     \item{\code{method}}{When \code{method = "default"} the supplied percentiles by wind
-direction are calculated. When \code{method = "cpf"} the conditional
-probability function (CPF) is plotted and a single (usually high)
-percentile level is supplied. The CPF is defined as CPF = my/ny, where my
-is the number of samples in the wind sector y with mixing ratios greater
-than the \emph{overall} percentile concentration, and ny is the total
-number of samples in the same wind sector (see Ashbaugh et al., 1985).}
+direction are calculated. When \code{method = "cpf"} the conditional probability
+function (CPF) is plotted and a single (usually high) percentile level is
+supplied. The CPF is defined as CPF = my/ny, where my is the number of
+samples in the wind sector y with mixing ratios greater than the \emph{overall}
+percentile concentration, and ny is the total number of samples in the same
+wind sector (see Ashbaugh et al., 1985).}
     \item{\code{angle}}{Default angle of \dQuote{spokes} is when \code{smooth = FALSE}.}
     \item{\code{mean}}{Show the mean by wind direction as a line?}
     \item{\code{mean.lty}}{Line type for mean line.}
@@ -295,17 +306,25 @@ lines be drawn (\code{fill = FALSE}).}
 interesting feature. The user can therefore set \code{angle.scale} to any value
 between 0 and 360 degrees to mitigate such problems. For example
 \code{angle.scale = 45} will draw the scale heading in a NE direction.}
+    \item{\code{offset}}{\code{offset} controls the size of the 'hole' in the middle and is
+expressed on a scale of \code{0} to \code{100}, where \code{0} is no hole and \code{100} is a
+hole that takes up the entire plotting area.}
     \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE} titles and
 axis labels will automatically try and format pollutant names and units
 properly e.g.  by subscripting the `2' in NO2.}
     \item{\code{key.header}}{Adds additional text/labels to the scale key. For example,
 passing the options \verb{key.header = "header", key.footer = "footer1"} adds
 addition text above and below the scale key. These arguments are passed to
-\code{drawOpenKey} via \code{quickText}, applying the \code{auto.text} argument, to handle
-formatting.}
+\code{quickText}, applying the \code{auto.text} argument, to handle formatting.}
     \item{\code{key.footer}}{see \code{key.footer}.}
     \item{\code{key.position}}{Location where the scale key is to plotted. Allowed
 arguments currently include \code{"top"}, \code{"right"}, \code{"bottom"} and \code{"left"}.}
+    \item{\code{strip.position}}{Location where the facet 'strips' are located when
+using \code{type}. When one \code{type} is provided, can be one of \code{"left"},
+\code{"right"}, \code{"bottom"} or \code{"top"}. When two \code{type}s are provided, this
+argument defines whether the strips are "switched" and can take either
+\code{"x"}, \code{"y"}, or \code{"both"}. For example, \code{"x"} will switch the 'top' strip
+locations to the bottom of the plot.}
   }}
 
 \item{control}{\strong{Deprecated.} Please use \code{type}.}

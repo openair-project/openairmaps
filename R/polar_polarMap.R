@@ -197,6 +197,16 @@
 #'
 #'   A value between 0 (fully transparent) and 1 (fully opaque).
 #'
+#' @param theme *Custom ggplot2 theme for the polar markers.*
+#'
+#'  *default:* `NULL` | *scope:* dynamic & static
+#'
+#'   A custom `ggplot2` theme to add to the polar markers. This should ideally
+#'   be a partial theme (i.e., [ggplot2::theme()]) over a complete theme (e.g.,
+#'   [ggplot2::theme_bw()]) as other arguments like `key` interact with the plot
+#'   theme *before* custom themes are set, so would be overriden by a complete
+#'   theme.
+#'
 #' @param key *Draw individual marker legends?*
 #'
 #'  *default:* `FALSE` | *scope:* dynamic & static
@@ -340,6 +350,7 @@ polarMap <- function(
   provider = "OpenStreetMap",
   cols = "turbo",
   alpha = 1,
+  theme = NULL,
   key = FALSE,
   legend = TRUE,
   legend.position = NULL,
@@ -498,7 +509,7 @@ polarMap <- function(
       limits = theLimits,
       upper = upper,
       cols = cols,
-      key = key,
+      key.position = ifelse(!key, "none", key),
       par.settings = list(axis.line = list(col = "transparent"))
     ),
     rlang::list2(...)
@@ -528,6 +539,7 @@ polarMap <- function(
       popup = popup,
       label = label,
       dropcol = funpoll,
+      theme = theme,
       progress = progress
     )
 
