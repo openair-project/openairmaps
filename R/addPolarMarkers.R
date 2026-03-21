@@ -146,6 +146,7 @@ addPolarMarkers <-
         popup = popup,
         label = label,
         dropcol = "no2",
+        theme = ggplot2::theme(),
         progress = TRUE,
         polar_fun = polar_fun
       )
