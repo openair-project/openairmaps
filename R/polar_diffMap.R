@@ -453,7 +453,11 @@ create_polar_diffmarkers <-
       .f = ~ {
         ggplot2::ggsave(
           plot = ..4 +
-            ggplot2::theme(plot.margin = ggplot2::unit(rep(0, 4), "cm")) +
+            ggplot2::theme(
+              plot.margin = ggplot2::unit(rep(0, 4), "cm"),
+              legend.background = ggplot2::element_blank(),
+              legend.title = ggplot2::element_blank()
+            ) +
             theme,
           filename = paste0(dir, "/", ..1, "_", ..2, "_", ..3, "_", id, ".png"),
           width = width * 0.75,
