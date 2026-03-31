@@ -85,7 +85,7 @@ Using the <code>static</code> argument allows for static images to be produced i
 <span>  cols <span class="op">=</span> <span class="st">"turbo"</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  theme <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  key <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  key.position <span class="op">=</span> <span class="st">"none"</span>,</span>
 <span>  legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  legend.position <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  legend.title <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -237,10 +237,12 @@ theme <em>before</em> custom themes are set, so would be overriden by a complete
 theme.</p></dd>
 
 
-<dt id="arg-key">key<a class="anchor" aria-label="anchor" href="#arg-key"></a></dt>
-<dd><p><em>Draw individual marker legends?</em></p>
+<dt id="arg-key-position">key.position<a class="anchor" aria-label="anchor" href="#arg-key-position"></a></dt>
+<dd><p><em>Legend position for individual marker legends.</em></p>
 <p><em>default:</em> <code>FALSE</code> | <em>scope:</em> dynamic &amp; static</p>
-<p>Draw a key for each individual marker? Potentially useful when <code>limits = "free"</code>, but of limited use otherwise.</p></dd>
+<p>When <code>key.position</code> is not <code>"none"</code>, a key will be drawn for each
+individual marker. Potentially useful when <code>limits = "free"</code>, but of
+limited use otherwise.</p></dd>
 
 
 <dt id="arg-legend">legend<a class="anchor" aria-label="anchor" href="#arg-legend"></a></dt>
@@ -341,14 +343,9 @@ off, if desired.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Arguments passed on to <code><a href="https://openair-project.github.io/openair/reference/pollutionRose.html" class="external-link">openair::pollutionRose</a></code></p><dl><dt><code>key.footer</code></dt>
-<dd><p>Adds additional text/labels below the scale key. See
-<code>key.header</code> for further information.</p></dd>
-
-    <dt><code>key.position</code></dt>
-<dd><p>Location where the scale key is to plotted. Allowed
-arguments currently include “top”, “right”, “bottom”
-and “left”.</p></dd>
+<dd><p>Arguments passed on to <code><a href="https://openair-project.github.io/openair/reference/pollutionRose.html" class="external-link">openair::pollutionRose</a></code></p><dl><dt><code>key.title</code></dt>
+<dd><p>Used to set the title of the legend. The legend title is
+passed to <code><a href="https://openair-project.github.io/openair/reference/quickText.html" class="external-link">quickText()</a></code> if <code>auto.text = TRUE</code>.</p></dd>
 
     <dt><code>paddle</code></dt>
 <dd><p>Either <code>TRUE</code> or <code>FALSE</code>. If <code>TRUE</code> plots rose using 'paddle'
@@ -363,6 +360,10 @@ one. This is useful for showing how the concentrations (or other
 parameters) contribute to each wind sector when the proportion of time the
 wind is from that direction is low. A line showing the probability that the
 wind directions is from a particular wind sector is also shown.</p></dd>
+
+    <dt><code>key</code></dt>
+<dd><p>Deprecated; please use <code>key.position</code>. If <code>FALSE</code>, sets
+<code>key.position</code> to <code>"none"</code>.</p></dd>
 
 
 </dl></dd>

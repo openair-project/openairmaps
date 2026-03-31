@@ -26,7 +26,7 @@ diffMap(
   cols = rev(openair::openColours("RdBu", 10)),
   alpha = 1,
   theme = NULL,
-  key = FALSE,
+  key.position = "none",
   legend = TRUE,
   legend.position = NULL,
   legend.title = NULL,
@@ -120,24 +120,33 @@ diffMap(
 
 - type:
 
-  `type` determines how the data are split i.e. conditioned, and then
-  plotted. The default is will produce a single plot using the entire
-  data. Type can be one of the built-in types as detailed in `cutData`
-  e.g. “season”, “year”, “weekday” and so on. For example,
-  `type = "season"` will produce four plots — one for each season.
+  Character string(s) defining how data should be split/conditioned
+  before plotting. `"default"` produces a single panel using the entire
+  dataset. Any other options will split the plot into different panels -
+  a roughly square grid of panels if one `type` is given, or a 2D matrix
+  of panels if two `types` are given. `type` is always passed to
+  [`cutData()`](https://openair-project.github.io/openair/reference/cutData.html),
+  and can therefore be any of:
 
-  It is also possible to choose `type` as another variable in the data
-  frame. If that variable is numeric, then the data will be split into
-  four quantiles (if possible) and labelled accordingly. If type is an
-  existing character or factor variable, then those categories/levels
-  will be used directly. This offers great flexibility for understanding
-  the variation of different variables and how they depend on one
-  another.
+  - A built-in type defined in
+    [`cutData()`](https://openair-project.github.io/openair/reference/cutData.html)
+    (e.g., `"season"`, `"year"`, `"weekday"`, etc.). For example,
+    `type = "season"` will split the plot into four panels, one for each
+    season.
 
-  Type can be up length two e.g. `type = c("season", "weekday")` will
-  produce a 2x2 plot split by season and day of the week. Note, when two
-  types are provided the first forms the columns and the second the
-  rows.
+  - The name of a numeric column in `mydata`, which will be split into
+    `n.levels` quantiles (defaulting to 4).
+
+  - The name of a character or factor column in `mydata`, which will be
+    used as-is. Commonly this could be a variable like `"site"` to
+    ensure data from different monitoring sites are handled and
+    presented separately. It could equally be any arbitrary column
+    created by the user (e.g., whether a nearby possible pollutant
+    source is active or not).
+
+  Most `openair` plotting functions can take two `type` arguments. If
+  two are given, the first is used for the columns and the second for
+  the rows.
 
 - popup:
 
@@ -223,14 +232,15 @@ diffMap(
   as other arguments like `key` interact with the plot theme *before*
   custom themes are set, so would be overriden by a complete theme.
 
-- key:
+- key.position:
 
-  *Draw individual marker legends?*
+  *Legend position for individual marker legends.*
 
   *default:* `FALSE` \| *scope:* dynamic & static
 
-  Draw a key for each individual marker? Potentially useful when
-  `limits = "free"`, but of limited use otherwise.
+  When `key.position` is not `"none"`, a key will be drawn for each
+  individual marker. Potentially useful when `limits = "free"`, but of
+  limited use otherwise.
 
 - legend:
 
@@ -564,11 +574,21 @@ diffMap(
       of concentrations for several pollutants on different scales e.g.
       NOx and CO. Often useful if more than one `pollutant` is chosen.
 
+  `strip.position`
+
+  :   Location where the facet 'strips' are located when using `type`.
+      When one `type` is provided, can be one of `"left"`, `"right"`,
+      `"bottom"` or `"top"`. When two `type`s are provided, this
+      argument defines whether the strips are "switched" and can take
+      either `"x"`, `"y"`, or `"both"`. For example, `"x"` will switch
+      the 'top' strip locations to the bottom of the plot.
+
   `auto.text`
 
   :   Either `TRUE` (default) or `FALSE`. If `TRUE` titles and axis
       labels will automatically try and format pollutant names and units
-      properly e.g. by subscripting the \`2' in NO2.
+      properly, e.g., by subscripting the "2" in "NO2". Passed to
+      [`quickText()`](https://openair-project.github.io/openair/reference/quickText.html).
 
   `ws_spread`
 
@@ -611,8 +631,11 @@ diffMap(
 
   `plot`
 
-  :   Should a plot be produced? `FALSE` can be useful when analysing
-      data to extract plot components and plotting them in other ways.
+  :   When `openair` plots are created they are automatically printed to
+      the active graphics device. `plot = FALSE` deactivates this
+      behaviour. This may be useful when the plot *data* is of more
+      interest, or the plot is required to appear later (e.g., later in
+      a Quarto document, or to be saved to a file).
 
 - control:
 

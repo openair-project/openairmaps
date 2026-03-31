@@ -27,7 +27,7 @@ addPolarMarkers(
   options = leaflet::markerOptions(),
   clusterOptions = NULL,
   clusterId = NULL,
-  key = FALSE,
+  key.position = "none",
   d.icon = 200,
   d.fig = 3.5,
   data = leaflet::getMapData(map),
@@ -50,7 +50,7 @@ addPolarDiffMarkers(
   options = leaflet::markerOptions(),
   clusterOptions = NULL,
   clusterId = NULL,
-  key = FALSE,
+  key.position = "none",
   d.icon = 200,
   d.fig = 3.5,
   ...
@@ -145,9 +145,9 @@ addPolarDiffMarkers(
 
   the id for the marker cluster layer
 
-- key:
+- key.position:
 
-  Should a key for each marker be drawn? Default is `FALSE`.
+  Passed to `key.position` for the relevant `fun`.
 
 - d.icon:
 

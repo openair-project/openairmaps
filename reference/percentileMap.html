@@ -88,7 +88,7 @@ produced instead.</p>
 <span>  cols <span class="op">=</span> <span class="st">"turbo"</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  theme <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  key <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  key.position <span class="op">=</span> <span class="st">"none"</span>,</span>
 <span>  legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  legend.position <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  legend.title <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -236,10 +236,12 @@ theme <em>before</em> custom themes are set, so would be overriden by a complete
 theme.</p></dd>
 
 
-<dt id="arg-key">key<a class="anchor" aria-label="anchor" href="#arg-key"></a></dt>
-<dd><p><em>Draw individual marker legends?</em></p>
+<dt id="arg-key-position">key.position<a class="anchor" aria-label="anchor" href="#arg-key-position"></a></dt>
+<dd><p><em>Legend position for individual marker legends.</em></p>
 <p><em>default:</em> <code>FALSE</code> | <em>scope:</em> dynamic &amp; static</p>
-<p>Draw a key for each individual marker? Potentially useful when <code>limits = "free"</code>, but of limited use otherwise.</p></dd>
+<p>When <code>key.position</code> is not <code>"none"</code>, a key will be drawn for each
+individual marker. Potentially useful when <code>limits = "free"</code>, but of
+limited use otherwise.</p></dd>
 
 
 <dt id="arg-legend">legend<a class="anchor" aria-label="anchor" href="#arg-legend"></a></dt>
@@ -376,10 +378,12 @@ wind sector (see Ashbaugh et al., 1985).</p></dd>
 lines be drawn (<code>fill = FALSE</code>).</p></dd>
 
     <dt><code>angle.scale</code></dt>
-<dd><p>Sometimes the placement of the scale may interfere with an
-interesting feature. The user can therefore set <code>angle.scale</code> to any value
-between 0 and 360 degrees to mitigate such problems. For example
-<code>angle.scale = 45</code> will draw the scale heading in a NE direction.</p></dd>
+<dd><p>In radial plots (e.g., <code><a href="https://openair-project.github.io/openair/reference/polarPlot.html" class="external-link">polarPlot()</a></code>), the radial scale is
+drawn directly on the plot itself. While suitable defaults have been
+chosen, sometimes the placement of the scale may interfere with an
+interesting feature. <code>angle.scale</code> can take any value between <code>0</code> and <code>360</code>
+to place the scale at a different angle, or <code>FALSE</code> to move it to the side
+of the plots.</p></dd>
 
     <dt><code>offset</code></dt>
 <dd><p><code>offset</code> controls the size of the 'hole' in the middle and is
@@ -389,20 +393,11 @@ hole that takes up the entire plotting area.</p></dd>
     <dt><code>auto.text</code></dt>
 <dd><p>Either <code>TRUE</code> (default) or <code>FALSE</code>. If <code>TRUE</code> titles and
 axis labels will automatically try and format pollutant names and units
-properly e.g.  by subscripting the `2' in NO2.</p></dd>
+properly, e.g., by subscripting the "2" in "NO2". Passed to <code><a href="https://openair-project.github.io/openair/reference/quickText.html" class="external-link">quickText()</a></code>.</p></dd>
 
-    <dt><code>key.header</code></dt>
-<dd><p>Adds additional text/labels to the scale key. For example,
-passing the options <code>key.header = "header", key.footer = "footer1"</code> adds
-addition text above and below the scale key. These arguments are passed to
-<code>quickText</code>, applying the <code>auto.text</code> argument, to handle formatting.</p></dd>
-
-    <dt><code>key.footer</code></dt>
-<dd><p>see <code>key.footer</code>.</p></dd>
-
-    <dt><code>key.position</code></dt>
-<dd><p>Location where the scale key is to plotted. Allowed
-arguments currently include <code>"top"</code>, <code>"right"</code>, <code>"bottom"</code> and <code>"left"</code>.</p></dd>
+    <dt><code>key.title</code></dt>
+<dd><p>Used to set the title of the legend. The legend title is
+passed to <code><a href="https://openair-project.github.io/openair/reference/quickText.html" class="external-link">quickText()</a></code> if <code>auto.text = TRUE</code>.</p></dd>
 
     <dt><code>strip.position</code></dt>
 <dd><p>Location where the facet 'strips' are located when

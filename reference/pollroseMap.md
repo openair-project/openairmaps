@@ -25,7 +25,7 @@ pollroseMap(
   cols = "turbo",
   alpha = 1,
   theme = NULL,
-  key = FALSE,
+  key.position = "none",
   legend = TRUE,
   legend.position = NULL,
   legend.title = NULL,
@@ -229,14 +229,15 @@ pollroseMap(
   as other arguments like `key` interact with the plot theme *before*
   custom themes are set, so would be overriden by a complete theme.
 
-- key:
+- key.position:
 
-  *Draw individual marker legends?*
+  *Legend position for individual marker legends.*
 
   *default:* `FALSE` \| *scope:* dynamic & static
 
-  Draw a key for each individual marker? Potentially useful when
-  `limits = "free"`, but of limited use otherwise.
+  When `key.position` is not `"none"`, a key will be drawn for each
+  individual marker. Potentially useful when `limits = "free"`, but of
+  limited use otherwise.
 
 - legend:
 
@@ -378,15 +379,11 @@ pollroseMap(
   Arguments passed on to
   [`openair::pollutionRose`](https://openair-project.github.io/openair/reference/pollutionRose.html)
 
-  `key.footer`
+  `key.title`
 
-  :   Adds additional text/labels below the scale key. See `key.header`
-      for further information.
-
-  `key.position`
-
-  :   Location where the scale key is to plotted. Allowed arguments
-      currently include “top”, “right”, “bottom” and “left”.
+  :   Used to set the title of the legend. The legend title is passed to
+      [`quickText()`](https://openair-project.github.io/openair/reference/quickText.html)
+      if `auto.text = TRUE`.
 
   `paddle`
 
@@ -406,6 +403,11 @@ pollroseMap(
       time the wind is from that direction is low. A line showing the
       probability that the wind directions is from a particular wind
       sector is also shown.
+
+  `key`
+
+  :   Deprecated; please use `key.position`. If `FALSE`, sets
+      `key.position` to `"none"`.
 
 - control:
 

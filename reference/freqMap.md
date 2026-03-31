@@ -25,7 +25,7 @@ freqMap(
   cols = "turbo",
   alpha = 1,
   theme = NULL,
-  key = FALSE,
+  key.position = "none",
   legend = TRUE,
   legend.position = NULL,
   legend.title = NULL,
@@ -245,14 +245,15 @@ freqMap(
   as other arguments like `key` interact with the plot theme *before*
   custom themes are set, so would be overriden by a complete theme.
 
-- key:
+- key.position:
 
-  *Draw individual marker legends?*
+  *Legend position for individual marker legends.*
 
   *default:* `FALSE` \| *scope:* dynamic & static
 
-  Draw a key for each individual marker? Potentially useful when
-  `limits = "free"`, but of limited use otherwise.
+  When `key.position` is not `"none"`, a key will be drawn for each
+  individual marker. Potentially useful when `limits = "free"`, but of
+  limited use otherwise.
 
 - legend:
 
@@ -445,22 +446,11 @@ freqMap(
       default is transparent. Another useful choice sometimes is
       "white".
 
-  `key.header`
+  `key.title`
 
-  :   Adds additional text/labels to the scale key. For example, passing
-      the options `key.header = "header", key.footer = "footer1"` adds
-      addition text above and below the scale key. These arguments are
-      passed to `quickText`, applying the `auto.text` argument, to
-      handle formatting.
-
-  `key.footer`
-
-  :   see `key.footer`.
-
-  `key.position`
-
-  :   Location where the scale key is to plotted. Allowed arguments
-      currently include `"top"`, `"right"`, `"bottom"` and `"left"`.
+  :   Used to set the title of the legend. The legend title is passed to
+      [`quickText()`](https://openair-project.github.io/openair/reference/quickText.html)
+      if `auto.text = TRUE`.
 
   `strip.position`
 
@@ -475,7 +465,8 @@ freqMap(
 
   :   Either `TRUE` (default) or `FALSE`. If `TRUE` titles and axis
       labels will automatically try and format pollutant names and units
-      properly e.g. by subscripting the \`2' in NO2.
+      properly, e.g., by subscripting the "2" in "NO2". Passed to
+      [`quickText()`](https://openair-project.github.io/openair/reference/quickText.html).
 
 - control:
 

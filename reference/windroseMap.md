@@ -23,7 +23,7 @@ windroseMap(
   cols = "turbo",
   alpha = 1,
   theme = NULL,
-  key = FALSE,
+  key.position = "none",
   legend = TRUE,
   legend.position = NULL,
   legend.title = NULL,
@@ -205,14 +205,15 @@ windroseMap(
   as other arguments like `key` interact with the plot theme *before*
   custom themes are set, so would be overriden by a complete theme.
 
-- key:
+- key.position:
 
-  *Draw individual marker legends?*
+  *Legend position for individual marker legends.*
 
   *default:* `FALSE` \| *scope:* dynamic & static
 
-  Draw a key for each individual marker? Potentially useful when
-  `limits = "free"`, but of limited use otherwise.
+  When `key.position` is not `"none"`, a key will be drawn for each
+  individual marker. Potentially useful when `limits = "free"`, but of
+  limited use otherwise.
 
 - legend:
 
@@ -417,12 +418,14 @@ windroseMap(
 
   :   Either `TRUE` (default) or `FALSE`. If `TRUE` titles and axis
       labels will automatically try and format pollutant names and units
-      properly, e.g., by subscripting the ‘2’ in NO2.
+      properly, e.g., by subscripting the "2" in "NO2". Passed to
+      [`quickText()`](https://openair-project.github.io/openair/reference/quickText.html).
 
   `offset`
 
-  :   The size of the 'hole' in the middle of the plot, expressed as a
-      percentage of the polar axis scale, default 10.
+  :   `offset` controls the size of the 'hole' in the middle and is
+      expressed on a scale of `0` to `100`, where `0` is no hole and
+      `100` is a hole that takes up the entire plotting area.
 
   `normalise`
 
@@ -444,23 +447,20 @@ windroseMap(
   :   Either `TRUE` or `FALSE`. If `TRUE` plots rose using 'paddle'
       style spokes. If `FALSE` plots rose using 'wedge' style spokes.
 
-  `key.header`
+  `key.title`
 
-  :   Adds additional text/labels above the scale key. For example,
-      passing `windRose(mydata, key.header = "ws")` adds the addition
-      text as a scale header. Note: This argument is passed to
-      [`quickText()`](https://openair-project.github.io/openair/reference/quickText.html),
-      applying the auto.text argument, to handle formatting.
+  :   Used to set the title of the legend. The legend title is passed to
+      [`quickText()`](https://openair-project.github.io/openair/reference/quickText.html)
+      if `auto.text = TRUE`.
 
-  `key.footer`
+  `strip.position`
 
-  :   Adds additional text/labels below the scale key. See `key.header`
-      for further information.
-
-  `key.position`
-
-  :   Location where the scale key is to plotted. Allowed arguments
-      currently include “top”, “right”, “bottom” and “left”.
+  :   Location where the facet 'strips' are located when using `type`.
+      When one `type` is provided, can be one of `"left"`, `"right"`,
+      `"bottom"` or `"top"`. When two `type`s are provided, this
+      argument defines whether the strips are "switched" and can take
+      either `"x"`, `"y"`, or `"both"`. For example, `"x"` will switch
+      the 'top' strip locations to the bottom of the plot.
 
   `dig.lab`
 
@@ -493,15 +493,22 @@ windroseMap(
 
   `angle.scale`
 
-  :   The scale is by default shown at a 315 degree angle. Sometimes the
-      placement of the scale may interfere with an interesting feature.
-      The user can therefore set `angle.scale` to another value (between
-      0 and 360 degrees) to mitigate such problems. For example
-      `angle.scale = 45` will draw the scale heading in a NE direction.
+  :   In radial plots (e.g.,
+      [`polarPlot()`](https://openair-project.github.io/openair/reference/polarPlot.html)),
+      the radial scale is drawn directly on the plot itself. While
+      suitable defaults have been chosen, sometimes the placement of the
+      scale may interfere with an interesting feature. `angle.scale` can
+      take any value between `0` and `360` to place the scale at a
+      different angle, or `FALSE` to move it to the side of the plots.
 
   `border`
 
   :   Border colour for shaded areas. Default is no border.
+
+  `key`
+
+  :   Deprecated; please use `key.position`. If `FALSE`, sets
+      `key.position` to `"none"`.
 
 - control:
 

@@ -215,15 +215,6 @@ Tools to assist other openairmaps functions.
 
 Functions which are no longer recommended for use.
 
-- [`polarMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
-  [`diffMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
-  [`annulusMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
-  [`windroseMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
-  [`pollroseMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
-  [`percentileMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
-  [`freqMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
-  **\[deprecated\]** : Deprecated static directional analysis functions
-
 # Articles
 
 ### All vignettes

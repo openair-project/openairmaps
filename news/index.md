@@ -10,13 +10,32 @@
   encouraged to use the base R pipe (`|>`) instead. In most cases, this
   is a drop-in replacement.
 
-### New features
-
-- In line with updates to `openair`, polar markers are now produced
-  using `ggplot2`. This has allowed the `theme` argument to be added to
-  the
+- [openairmaps](https://openair-project.github.io/openairmaps/) now
+  requires a a minimum
+  [openair](https://openair-project.github.io/openair/) version of
+  3.0.0. Polar markers are therefore now produced using `ggplot2`. This
+  has allowed the `theme` argument to be added to the
   [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
   family, which allows for extensive customisation of polar markers.
+  This has included the following changes:
+
+  - `key` has been replaced with `key.position`, in line with
+    deprecations in
+    [openair](https://openair-project.github.io/openair/).
+
+  - Polar markers will inherit any styling set using
+    [`ggplot2::theme_set()`](https://ggplot2.tidyverse.org/reference/get_theme.html).
+    This may be unfavourable, but can be partially overriden using the
+    new `theme` argument.
+
+- The `polarMapStatic()` family have been removed.
+
+### New features
+
+- The
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  gains the `theme` argument for customising the `ggplot2` theme of the
+  markers.
 
 - Added a new ‘spatial interpolation’ family of functions, which rely on
   the suggested [stars](https://r-spatial.github.io/stars/),
@@ -74,8 +93,8 @@ lightweight.
 
 - Removed dependency on [forcats](https://forcats.tidyverse.org/).
 
-- [worldmet](https://openair-project.github.io/worldmet/) is no longer a
-  suggested package.
+- Removed suggested dependency on
+  [worldmet](https://openair-project.github.io/worldmet/).
 
 ## openairmaps 0.9.1
 
@@ -142,9 +161,7 @@ CRAN release: 2024-05-19
 
 ### Breaking changes
 
-- BREAKING: The
-  [`polarMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
-  family is now powered by
+- BREAKING: The `polarMapStatic()` family is now powered by
   [ggspatial](https://paleolimbot.github.io/ggspatial/) rather than
   [ggmap](https://github.com/dkahle/ggmap) as it does not require an API
   key. This means the `ggmap` argument has been removed and the
@@ -177,15 +194,13 @@ CRAN release: 2024-05-19
 
 ### New features
 
-- The
-  [`polarMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
-  family of functions have been combined with the
+- The `polarMapStatic()` family of functions have been combined with the
   [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
   family, with static maps available to be accessed using the `static`
   argument.
   ([\#59](https://github.com/openair-project/openairmaps/issues/59)) The
-  [`polarMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
-  family are therefore deprecated, and will later be removed from
+  `polarMapStatic()` family are therefore deprecated, and will later be
+  removed from
   [openairmaps](https://openair-project.github.io/openairmaps/). The
   justification for this is as follows:
 
@@ -209,9 +224,7 @@ CRAN release: 2024-05-19
 
 - The `crs` argument has been added to the
   [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
-  and
-  [`polarMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
-  families and to
+  and `polarMapStatic()` families and to
   [`searchNetwork()`](https://openair-project.github.io/openairmaps/reference/searchNetwork.md).
   This argument allows for users to specify that their data is using an
   alternative coordinate system to the standard longitude/latitude
@@ -249,9 +262,8 @@ CRAN release: 2024-05-19
 
 ### Bug fixes
 
-- Legends drawn by the
-  [`polarMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
-  function should now render using more recent versions of
+- Legends drawn by the `polarMapStatic()` function should now render
+  using more recent versions of
   [ggplot2](https://ggplot2.tidyverse.org).
 
 - The
@@ -451,9 +463,8 @@ adding two new experimental functions, and fixing a few bugs.
   caused by recent updates to [dplyr](https://dplyr.tidyverse.org) and
   [forcats](https://forcats.tidyverse.org/).
 
-- Fixed issue where
-  [`polarMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
-  and others would turn factor facet levels into characters.
+- Fixed issue where `polarMapStatic()` and others would turn factor
+  facet levels into characters.
 
   - Specifically, this meant that, for example, months of the year would
     be in alphabetical order. Now factor levels, including those
@@ -462,9 +473,8 @@ adding two new experimental functions, and fixing a few bugs.
     will now be honoured by the `facet` argument.
     ([\#31](https://github.com/openair-project/openairmaps/issues/31))
 
-- Fixed issue where
-  [`polarMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
-  and others would error when trying to draw a legend.
+- Fixed issue where `polarMapStatic()` and others would error when
+  trying to draw a legend.
 
 ## openairmaps 0.7.0
 
@@ -514,9 +524,8 @@ breaking changes to improve consistency within
     example,
     [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
     is the [leaflet](https://rstudio.github.io/leaflet/) polar plot map,
-    whereas
-    [`polarMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
-    is the [ggplot2](https://ggplot2.tidyverse.org) equivalent.
+    whereas `polarMapStatic()` is the
+    [ggplot2](https://ggplot2.tidyverse.org) equivalent.
 
   - Currently, “static” versions of the trajectory maps are served by
     [`openair::trajPlot()`](https://openair-project.github.io/openair/reference/trajPlot.html)
@@ -527,15 +536,11 @@ breaking changes to improve consistency within
 
 - Added
   [`diffMap()`](https://openair-project.github.io/openairmaps/reference/diffMap.md)
-  and
-  [`diffMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
-  which are to
+  and `diffMapStatic()` which are to
   [`openair::polarDiff()`](https://openair-project.github.io/openair/reference/polarDiff.html)
   what
   [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
-  and
-  [`polarMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-static-polar-maps.md)
-  are to
+  and `polarMapStatic()` are to
   [`openair::polarPlot()`](https://openair-project.github.io/openair/reference/polarPlot.html)
   ([\#17](https://github.com/openair-project/openairmaps/issues/17)).
   Also added

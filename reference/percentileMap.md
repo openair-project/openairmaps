@@ -25,7 +25,7 @@ percentileMap(
   cols = "turbo",
   alpha = 1,
   theme = NULL,
-  key = FALSE,
+  key.position = "none",
   legend = TRUE,
   legend.position = NULL,
   legend.title = NULL,
@@ -232,14 +232,15 @@ percentileMap(
   as other arguments like `key` interact with the plot theme *before*
   custom themes are set, so would be overriden by a complete theme.
 
-- key:
+- key.position:
 
-  *Draw individual marker legends?*
+  *Legend position for individual marker legends.*
 
   *default:* `FALSE` \| *scope:* dynamic & static
 
-  Draw a key for each individual marker? Potentially useful when
-  `limits = "free"`, but of limited use otherwise.
+  When `key.position` is not `"none"`, a key will be drawn for each
+  individual marker. Potentially useful when `limits = "free"`, but of
+  limited use otherwise.
 
 - legend:
 
@@ -427,11 +428,13 @@ percentileMap(
 
   `angle.scale`
 
-  :   Sometimes the placement of the scale may interfere with an
-      interesting feature. The user can therefore set `angle.scale` to
-      any value between 0 and 360 degrees to mitigate such problems. For
-      example `angle.scale = 45` will draw the scale heading in a NE
-      direction.
+  :   In radial plots (e.g.,
+      [`polarPlot()`](https://openair-project.github.io/openair/reference/polarPlot.html)),
+      the radial scale is drawn directly on the plot itself. While
+      suitable defaults have been chosen, sometimes the placement of the
+      scale may interfere with an interesting feature. `angle.scale` can
+      take any value between `0` and `360` to place the scale at a
+      different angle, or `FALSE` to move it to the side of the plots.
 
   `offset`
 
@@ -443,24 +446,14 @@ percentileMap(
 
   :   Either `TRUE` (default) or `FALSE`. If `TRUE` titles and axis
       labels will automatically try and format pollutant names and units
-      properly e.g. by subscripting the \`2' in NO2.
+      properly, e.g., by subscripting the "2" in "NO2". Passed to
+      [`quickText()`](https://openair-project.github.io/openair/reference/quickText.html).
 
-  `key.header`
+  `key.title`
 
-  :   Adds additional text/labels to the scale key. For example, passing
-      the options `key.header = "header", key.footer = "footer1"` adds
-      addition text above and below the scale key. These arguments are
-      passed to `quickText`, applying the `auto.text` argument, to
-      handle formatting.
-
-  `key.footer`
-
-  :   see `key.footer`.
-
-  `key.position`
-
-  :   Location where the scale key is to plotted. Allowed arguments
-      currently include `"top"`, `"right"`, `"bottom"` and `"left"`.
+  :   Used to set the title of the legend. The legend title is passed to
+      [`quickText()`](https://openair-project.github.io/openair/reference/quickText.html)
+      if `auto.text = TRUE`.
 
   `strip.position`
 

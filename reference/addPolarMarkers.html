@@ -85,7 +85,7 @@ control over groups and layerIds than in "all-in-one" functions like
 <span>  options <span class="op">=</span> <span class="fu">leaflet</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/leaflet/reference/map-options.html" class="external-link">markerOptions</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  clusterOptions <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  clusterId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  key <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  key.position <span class="op">=</span> <span class="st">"none"</span>,</span>
 <span>  d.icon <span class="op">=</span> <span class="fl">200</span>,</span>
 <span>  d.fig <span class="op">=</span> <span class="fl">3.5</span>,</span>
 <span>  data <span class="op">=</span> <span class="fu">leaflet</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/leaflet/reference/getMapData.html" class="external-link">getMapData</a></span><span class="op">(</span><span class="va">map</span><span class="op">)</span>,</span>
@@ -108,7 +108,7 @@ control over groups and layerIds than in "all-in-one" functions like
 <span>  options <span class="op">=</span> <span class="fu">leaflet</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/leaflet/reference/map-options.html" class="external-link">markerOptions</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  clusterOptions <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  clusterId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  key <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  key.position <span class="op">=</span> <span class="st">"none"</span>,</span>
 <span>  d.icon <span class="op">=</span> <span class="fl">200</span>,</span>
 <span>  d.fig <span class="op">=</span> <span class="fl">3.5</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -189,8 +189,8 @@ options</p></dd>
 <dd><p>the id for the marker cluster layer</p></dd>
 
 
-<dt id="arg-key">key<a class="anchor" aria-label="anchor" href="#arg-key"></a></dt>
-<dd><p>Should a key for each marker be drawn? Default is <code>FALSE</code>.</p></dd>
+<dt id="arg-key-position">key.position<a class="anchor" aria-label="anchor" href="#arg-key-position"></a></dt>
+<dd><p>Passed to <code>key.position</code> for the relevant <code>fun</code>.</p></dd>
 
 
 <dt id="arg-d-icon">d.icon<a class="anchor" aria-label="anchor" href="#arg-d-icon"></a></dt>
