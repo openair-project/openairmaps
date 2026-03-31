@@ -101,6 +101,15 @@ percentileMap <- function(
   intervals <- check_multipoll(intervals, pollutant)
 
   if ("fixed" %in% intervals) {
+    if (is.null(pollutant)) {
+      cli::cli_abort(
+        c(
+          "x" = "{.code pollutant} is missing with no default.",
+          "i" = "Please provide a column of {.code data} which represents the pollutant(s) of interest."
+        )
+      )
+    }
+
     data <-
       dplyr::mutate(data, latlng = paste(.data[[latitude]], .data[[longitude]]))
 

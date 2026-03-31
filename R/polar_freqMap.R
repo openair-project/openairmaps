@@ -113,7 +113,7 @@ freqMap <- function(
 
   # allow no pollutant when statistic = "frequency"
   if (statistic == "frequency") {
-    data$dummy <- "freq"
+    data$dummy <- seq_len(nrow(data))
     lab <- "frequency"
     pollutant <- "dummy"
   } else {

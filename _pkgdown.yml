@@ -45,9 +45,3 @@ reference:
   - buildPopup
   - quickTextHTML
   - convertPostcode
-
-- title: Deprecated
-  desc: |
-    Functions which are no longer recommended for use.
-  contents:
-  - has_concept("deprecated functions")
