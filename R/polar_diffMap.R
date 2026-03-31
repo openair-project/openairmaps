@@ -37,7 +37,7 @@
 #'   `limit` scale) for effective visualisation.
 #'
 #' @inheritDotParams openair::polarPlot -mydata -pollutant -x -limits -type
-#'   -cols -key -key.footer -key.header -key.position -units -angle.scale
+#'   -cols -key -key.title -key.position -units -angle.scale
 #'   -plot
 #' @returns Either:
 #'
@@ -72,7 +72,7 @@ diffMap <- function(
   cols = rev(openair::openColours("RdBu", 10)),
   alpha = 1,
   theme = NULL,
-  key = FALSE,
+  key.position = "none",
   legend = TRUE,
   legend.position = NULL,
   legend.title = NULL,
@@ -188,14 +188,9 @@ diffMap <- function(
       x = x,
       limits = theLimits,
       cols = cols,
-      key.position = ifelse(
-        rlang::is_logical(key),
-        ifelse(key, "right", "none"),
-        key
-      ),
+      key.position = key.position,
       plot = FALSE,
-      ...,
-      par.settings = list(axis.line = list(col = "transparent"))
+      ...
     )$plot
   }
 

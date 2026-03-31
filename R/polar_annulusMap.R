@@ -20,7 +20,7 @@
 #'   plot variation throughout the year, "weekday" to plot day of the week
 #'   variation and "trend" to plot the trend by wind direction.
 #' @inheritDotParams openair::polarAnnulus -mydata -pollutant -period -limits
-#'   -type -cols -key -plot
+#'   -type -cols -key.position -plot
 #' @returns Either:
 #'
 #'  - *Dynamic:* A leaflet object
@@ -52,7 +52,7 @@ annulusMap <- function(
   cols = "turbo",
   alpha = 1,
   theme = NULL,
-  key = FALSE,
+  key.position = "none",
   legend = TRUE,
   legend.position = NULL,
   legend.title = NULL,
@@ -172,12 +172,7 @@ annulusMap <- function(
       plot = FALSE,
       limits = theLimits,
       cols = cols,
-      key.position = ifelse(
-        rlang::is_logical(key),
-        ifelse(key, "right", "none"),
-        key
-      ),
-      par.settings = list(axis.line = list(col = "transparent"))
+      key.position = key.position
     ),
     rlang::list2(...)
   )

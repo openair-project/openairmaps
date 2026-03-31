@@ -4,9 +4,17 @@
 
 * `{openairmaps}` now depends on a minimum R version of 4.1.0 and no longer exports the `{magrittr}` pipe (`%>%`). Users are encouraged to use the base R pipe (`|>`) instead. In most cases, this is a drop-in replacement.
 
+* `{openairmaps}` now requires a a minimum `{openair}` version of 3.0.0. Polar markers are therefore now produced using `ggplot2`. This has allowed the `theme` argument to be added to the `polarMap()` family, which allows for extensive customisation of polar markers. This has included the following changes:
+
+    * `key` has been replaced with `key.position`, in line with deprecations in `{openair}`.
+    
+    * Polar markers will inherit any styling set using `ggplot2::theme_set()`. This may be unfavourable, but can be partially overriden using the new `theme` argument.
+
+* The `polarMapStatic()` family have been removed.
+
 ## New features
 
-* In line with updates to `openair`, polar markers are now produced using `ggplot2`. This has allowed the `theme` argument to be added to the `polarMap()` family, which allows for extensive customisation of polar markers.
+* The `polarMap()` gains the `theme` argument for customising the `ggplot2` theme of the markers.
 
 * Added a new 'spatial interpolation' family of functions, which rely on the suggested `{stars}`, `{terra}` and `{gstat}` packages. These functions are most useful for dense air quality networks, and can be useful for identifying spatial patterns and hotspots of air pollution.
 
@@ -32,7 +40,7 @@ This release includes several changes to make `{openairmaps}` more lightweight.
 
 * Removed dependency on `{forcats}`.
 
-* `{worldmet}` is no longer a suggested package.
+* Removed suggested dependency on `{worldmet}`.
 
 # openairmaps 0.9.1
 

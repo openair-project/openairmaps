@@ -61,7 +61,7 @@ percentileMap <- function(
   cols = "turbo",
   alpha = 1,
   theme = NULL,
-  key = FALSE,
+  key.position = "none",
   legend = TRUE,
   legend.position = NULL,
   legend.title = NULL,
@@ -177,13 +177,8 @@ percentileMap <- function(
       percentile = percentile,
       plot = FALSE,
       cols = cols,
-      key.position = ifelse(
-        rlang::is_logical(key),
-        ifelse(key, "right", "none"),
-        key
-      ),
-      intervals = theIntervals,
-      par.settings = list(axis.line = list(col = "transparent"))
+      key.position = key.position,
+      intervals = theIntervals
     ),
     rlang::list2(...)
   )

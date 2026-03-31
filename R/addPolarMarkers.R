@@ -26,7 +26,7 @@
 #' @param lat The decimal latitude.
 #' @param popup A column of `data` to be used as a popup.
 #' @param label A column of `data` to be used as a label.
-#' @param key Should a key for each marker be drawn? Default is `FALSE`.
+#' @param key.position Passed to `key.position` for the relevant `fun`.
 #' @param d.icon The diameter of the plot on the map in pixels. This will affect
 #'   the size of the individual polar markers. Alternatively, a vector in the
 #'   form `c(width, height)` can be provided if a non-circular marker is
@@ -87,7 +87,7 @@ addPolarMarkers <-
     options = leaflet::markerOptions(),
     clusterOptions = NULL,
     clusterId = NULL,
-    key = FALSE,
+    key.position = "none",
     d.icon = 200,
     d.fig = 3.5,
     data = leaflet::getMapData(map),
@@ -109,13 +109,8 @@ addPolarMarkers <-
     fun_args <- append(
       list(
         pollutant = pollutant,
-        key.position = ifelse(
-          rlang::is_logical(key),
-          ifelse(key, "right", "none"),
-          key
-        ),
-        plot = FALSE,
-        par.settings = list(axis.line = list(col = "transparent"))
+        key.position = key.position,
+        plot = FALSE
       ),
       rlang::list2(...)
     )
@@ -223,7 +218,7 @@ addPolarDiffMarkers <-
     options = leaflet::markerOptions(),
     clusterOptions = NULL,
     clusterId = NULL,
-    key = FALSE,
+    key.position = "none",
     d.icon = 200,
     d.fig = 3.5,
     ...
@@ -245,14 +240,9 @@ addPolarDiffMarkers <-
         before = before,
         after = after,
         pollutant = pollutant,
-        key.position = ifelse(
-          rlang::is_logical(key),
-          ifelse(key, "right", "none"),
-          key
-        ),
+        key.position = key.position,
         plot = FALSE,
-        !!!args,
-        par.settings = list(axis.line = list(col = "transparent"))
+        !!!args
       )
       plt$plot
     }

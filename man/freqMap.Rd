@@ -19,7 +19,7 @@ freqMap(
   cols = "turbo",
   alpha = 1,
   theme = NULL,
-  key = FALSE,
+  key.position = "none",
   legend = TRUE,
   legend.position = NULL,
   legend.title = NULL,
@@ -190,11 +190,13 @@ be a partial theme (i.e., \code{\link[ggplot2:theme]{ggplot2::theme()}}) over a 
 theme \emph{before} custom themes are set, so would be overriden by a complete
 theme.}
 
-\item{key}{\emph{Draw individual marker legends?}
+\item{key.position}{\emph{Legend position for individual marker legends.}
 
 \emph{default:} \code{FALSE} | \emph{scope:} dynamic & static
 
-Draw a key for each individual marker? Potentially useful when \code{limits = "free"}, but of limited use otherwise.}
+When \code{key.position} is not \code{"none"}, a key will be drawn for each
+individual marker. Potentially useful when \code{limits = "free"}, but of
+limited use otherwise.}
 
 \item{legend}{\emph{Draw a shared legend?}
 
@@ -322,13 +324,8 @@ hole that takes up the entire plotting area.}
     \item{\code{border.col}}{The colour of the boundary of each wind speed/direction
 bin. The default is transparent. Another useful choice sometimes is
 "white".}
-    \item{\code{key.header}}{Adds additional text/labels to the scale key. For example,
-passing the options \verb{key.header = "header", key.footer = "footer1"} adds
-addition text above and below the scale key. These arguments are passed to
-\code{quickText}, applying the \code{auto.text} argument, to handle formatting.}
-    \item{\code{key.footer}}{see \code{key.footer}.}
-    \item{\code{key.position}}{Location where the scale key is to plotted. Allowed
-arguments currently include \code{"top"}, \code{"right"}, \code{"bottom"} and \code{"left"}.}
+    \item{\code{key.title}}{Used to set the title of the legend. The legend title is
+passed to \code{\link[openair:quickText]{quickText()}} if \code{auto.text = TRUE}.}
     \item{\code{strip.position}}{Location where the facet 'strips' are located when
 using \code{type}. When one \code{type} is provided, can be one of \code{"left"},
 \code{"right"}, \code{"bottom"} or \code{"top"}. When two \code{type}s are provided, this
@@ -337,7 +334,7 @@ argument defines whether the strips are "switched" and can take either
 locations to the bottom of the plot.}
     \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE} titles and
 axis labels will automatically try and format pollutant names and units
-properly e.g.  by subscripting the `2' in NO2.}
+properly, e.g., by subscripting the "2" in "NO2". Passed to \code{\link[openair:quickText]{quickText()}}.}
   }}
 
 \item{control}{\strong{Deprecated.} Please use \code{type}.}

@@ -19,7 +19,7 @@ pollroseMap(
   cols = "turbo",
   alpha = 1,
   theme = NULL,
-  key = FALSE,
+  key.position = "none",
   legend = TRUE,
   legend.position = NULL,
   legend.title = NULL,
@@ -179,11 +179,13 @@ be a partial theme (i.e., \code{\link[ggplot2:theme]{ggplot2::theme()}}) over a 
 theme \emph{before} custom themes are set, so would be overriden by a complete
 theme.}
 
-\item{key}{\emph{Draw individual marker legends?}
+\item{key.position}{\emph{Legend position for individual marker legends.}
 
 \emph{default:} \code{FALSE} | \emph{scope:} dynamic & static
 
-Draw a key for each individual marker? Potentially useful when \code{limits = "free"}, but of limited use otherwise.}
+When \code{key.position} is not \code{"none"}, a key will be drawn for each
+individual marker. Potentially useful when \code{limits = "free"}, but of
+limited use otherwise.}
 
 \item{legend}{\emph{Draw a shared legend?}
 
@@ -287,11 +289,8 @@ off, if desired.}
 \item{...}{
   Arguments passed on to \code{\link[openair:pollutionRose]{openair::pollutionRose}}
   \describe{
-    \item{\code{key.footer}}{Adds additional text/labels below the scale key. See
-\code{key.header} for further information.}
-    \item{\code{key.position}}{Location where the scale key is to plotted. Allowed
-arguments currently include \dQuote{top}, \dQuote{right}, \dQuote{bottom}
-and \dQuote{left}.}
+    \item{\code{key.title}}{Used to set the title of the legend. The legend title is
+passed to \code{\link[openair:quickText]{quickText()}} if \code{auto.text = TRUE}.}
     \item{\code{paddle}}{Either \code{TRUE} or \code{FALSE}. If \code{TRUE} plots rose using 'paddle'
 style spokes. If \code{FALSE} plots rose using 'wedge' style spokes.}
     \item{\code{seg}}{\code{seg} determines with width of the segments. For example, \code{seg = 0.5} will produce segments 0.5 * \code{angle}.}
@@ -300,6 +299,8 @@ one. This is useful for showing how the concentrations (or other
 parameters) contribute to each wind sector when the proportion of time the
 wind is from that direction is low. A line showing the probability that the
 wind directions is from a particular wind sector is also shown.}
+    \item{\code{key}}{Deprecated; please use \code{key.position}. If \code{FALSE}, sets
+\code{key.position} to \code{"none"}.}
   }}
 
 \item{control}{\strong{Deprecated.} Please use \code{type}.}

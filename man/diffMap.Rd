@@ -20,7 +20,7 @@ diffMap(
   cols = rev(openair::openColours("RdBu", 10)),
   alpha = 1,
   theme = NULL,
-  key = FALSE,
+  key.position = "none",
   legend = TRUE,
   legend.position = NULL,
   legend.title = NULL,
@@ -93,22 +93,27 @@ Different coordinate systems can be specified using \code{crs} (e.g., \code{crs 
 non-lat/lng coordinate systems will be re-projected to EPSG:4326 for
 plotting on the map.}
 
-\item{type}{\code{type} determines how the data are split i.e. conditioned, and
-then plotted. The default is will produce a single plot using the entire
-data. Type can be one of the built-in types as detailed in \code{cutData} e.g.
-\dQuote{season}, \dQuote{year}, \dQuote{weekday} and so on. For example,
-\code{type = "season"} will produce four plots --- one for each season.
+\item{type}{Character string(s) defining how data should be split/conditioned
+before plotting. \code{"default"} produces a single panel using the entire
+dataset. Any other options will split the plot into different panels - a
+roughly square grid of panels if one \code{type} is given, or a 2D matrix of
+panels if two \code{types} are given. \code{type} is always passed to \code{\link[openair:cutData]{cutData()}},
+and can therefore be any of:
+\itemize{
+\item A built-in type defined in \code{\link[openair:cutData]{cutData()}} (e.g., \code{"season"}, \code{"year"},
+\code{"weekday"}, etc.). For example, \code{type = "season"} will split the plot into
+four panels, one for each season.
+\item The name of a numeric column in \code{mydata}, which will be split into
+\code{n.levels} quantiles (defaulting to 4).
+\item The name of a character or factor column in \code{mydata}, which will be used
+as-is. Commonly this could be a variable like \code{"site"} to ensure data from
+different monitoring sites are handled and presented separately. It could
+equally be any arbitrary column created by the user (e.g., whether a nearby
+possible pollutant source is active or not).
+}
 
-It is also possible to choose \code{type} as another variable in the data frame.
-If that variable is numeric, then the data will be split into four
-quantiles (if possible) and labelled accordingly. If type is an existing
-character or factor variable, then those categories/levels will be used
-directly. This offers great flexibility for understanding the variation of
-different variables and how they depend on one another.
-
-Type can be up length two e.g. \code{type = c("season", "weekday")} will produce
-a 2x2 plot split by season and day of the week. Note, when two types are
-provided the first forms the columns and the second the rows.}
+Most \code{openair} plotting functions can take two \code{type} arguments. If two are
+given, the first is used for the columns and the second for the rows.}
 
 \item{popup}{\emph{Content for marker popups on dynamic maps.}
 
@@ -172,11 +177,13 @@ be a partial theme (i.e., \code{\link[ggplot2:theme]{ggplot2::theme()}}) over a 
 theme \emph{before} custom themes are set, so would be overriden by a complete
 theme.}
 
-\item{key}{\emph{Draw individual marker legends?}
+\item{key.position}{\emph{Legend position for individual marker legends.}
 
 \emph{default:} \code{FALSE} | \emph{scope:} dynamic & static
 
-Draw a key for each individual marker? Potentially useful when \code{limits = "free"}, but of limited use otherwise.}
+When \code{key.position} is not \code{"none"}, a key will be drawn for each
+individual marker. Potentially useful when \code{limits = "free"}, but of
+limited use otherwise.}
 
 \item{legend}{\emph{Draw a shared legend?}
 
@@ -423,9 +430,15 @@ mean value. This is done \emph{after} fitting the smooth surface. This option is
 particularly useful if one is interested in the patterns of concentrations
 for several pollutants on different scales e.g. NOx and CO. Often useful if
 more than one \code{pollutant} is chosen.}
+    \item{\code{strip.position}}{Location where the facet 'strips' are located when
+using \code{type}. When one \code{type} is provided, can be one of \code{"left"},
+\code{"right"}, \code{"bottom"} or \code{"top"}. When two \code{type}s are provided, this
+argument defines whether the strips are "switched" and can take either
+\code{"x"}, \code{"y"}, or \code{"both"}. For example, \code{"x"} will switch the 'top' strip
+locations to the bottom of the plot.}
     \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE} titles and
 axis labels will automatically try and format pollutant names and units
-properly e.g.  by subscripting the `2' in NO2.}
+properly, e.g., by subscripting the "2" in "NO2". Passed to \code{\link[openair:quickText]{quickText()}}.}
     \item{\code{ws_spread}}{The value of sigma used for Gaussian kernel weighting of
 wind speed when \code{statistic = "nwr"} or when correlation and regression
 statistics are used such as \emph{r}. Default is \code{0.5}.}
@@ -444,8 +457,11 @@ printed when \code{statistic = "cpf"}.}
     \item{\code{tau}}{The quantile to be estimated when \code{statistic} is set to
 \code{"quantile.slope"}. Default is \code{0.5} which is equal to the median and will
 be ignored if \code{"quantile.slope"} is not used.}
-    \item{\code{plot}}{Should a plot be produced? \code{FALSE} can be useful when analysing
-data to extract plot components and plotting them in other ways.}
+    \item{\code{plot}}{When \code{openair} plots are created they are automatically printed
+to the active graphics device. \code{plot = FALSE} deactivates this behaviour.
+This may be useful when the plot \emph{data} is of more interest, or the plot is
+required to appear later (e.g., later in a Quarto document, or to be saved
+to a file).}
   }}
 
 \item{control}{\strong{Deprecated.} Please use \code{type}.}

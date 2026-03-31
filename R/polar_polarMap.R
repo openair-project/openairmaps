@@ -207,12 +207,13 @@
 #'   theme *before* custom themes are set, so would be overriden by a complete
 #'   theme.
 #'
-#' @param key *Draw individual marker legends?*
+#' @param key.position *Legend position for individual marker legends.*
 #'
 #'  *default:* `FALSE` | *scope:* dynamic & static
 #'
-#'   Draw a key for each individual marker? Potentially useful when `limits =
-#'   "free"`, but of limited use otherwise.
+#'   When `key.position` is not `"none"`, a key will be drawn for each
+#'   individual marker. Potentially useful when `limits = "free"`, but of
+#'   limited use otherwise.
 #'
 #' @param legend *Draw a shared legend?*
 #'
@@ -316,7 +317,7 @@
 #' @param control **Deprecated.** Please use `type`.
 #'
 #' @inheritDotParams openair::polarPlot -mydata -pollutant -x -limits -type
-#'   -cols -key -plot
+#'   -cols -key.position -plot
 #'
 #' @returns Either:
 #'
@@ -351,7 +352,7 @@ polarMap <- function(
   cols = "turbo",
   alpha = 1,
   theme = NULL,
-  key = FALSE,
+  key.position = "none",
   legend = TRUE,
   legend.position = NULL,
   legend.title = NULL,
@@ -509,12 +510,7 @@ polarMap <- function(
       limits = theLimits,
       upper = upper,
       cols = cols,
-      key.position = ifelse(
-        rlang::is_logical(key),
-        ifelse(key, "right", "none"),
-        key
-      ),
-      par.settings = list(axis.line = list(col = "transparent"))
+      key.position = key.position
     ),
     rlang::list2(...)
   )

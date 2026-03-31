@@ -20,7 +20,7 @@ addPolarMarkers(
   options = leaflet::markerOptions(),
   clusterOptions = NULL,
   clusterId = NULL,
-  key = FALSE,
+  key.position = "none",
   d.icon = 200,
   d.fig = 3.5,
   data = leaflet::getMapData(map),
@@ -43,7 +43,7 @@ addPolarDiffMarkers(
   options = leaflet::markerOptions(),
   clusterOptions = NULL,
   clusterId = NULL,
-  key = FALSE,
+  key.position = "none",
   d.icon = 200,
   d.fig = 3.5,
   ...
@@ -92,7 +92,7 @@ options}
 
 \item{clusterId}{the id for the marker cluster layer}
 
-\item{key}{Should a key for each marker be drawn? Default is \code{FALSE}.}
+\item{key.position}{Passed to \code{key.position} for the relevant \code{fun}.}
 
 \item{d.icon}{The diameter of the plot on the map in pixels. This will affect
 the size of the individual polar markers. Alternatively, a vector in the

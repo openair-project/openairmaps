@@ -64,7 +64,7 @@ pollroseMap <- function(
   cols = "turbo",
   alpha = 1,
   theme = NULL,
-  key = FALSE,
+  key.position = "none",
   legend = TRUE,
   legend.position = NULL,
   legend.title = NULL,
@@ -157,13 +157,8 @@ pollroseMap <- function(
       breaks = theBreaks,
       plot = FALSE,
       cols = cols,
-      key.position = ifelse(
-        rlang::is_logical(key),
-        ifelse(key, "right", "none"),
-        key
-      ),
-      annotate = FALSE,
-      par.settings = list(axis.line = list(col = "transparent"))
+      key.position = key.position,
+      annotate = FALSE
     ),
     rlang::list2(...)
   )

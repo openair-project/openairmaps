@@ -38,7 +38,7 @@
 #'   c(0, 1, 10, 100)`` breaks the data into segments <1, 1-10, 10-100, >100.
 #'
 #' @inheritDotParams openair::windRose -ws.int -breaks -mydata -plot -annotate
-#'   -pollutant -type -cols -key
+#'   -pollutant -type -cols -key.position
 #' @returns Either:
 #'
 #'  - *Dynamic:* A leaflet object
@@ -68,7 +68,7 @@ windroseMap <- function(
   cols = "turbo",
   alpha = 1,
   theme = NULL,
-  key = FALSE,
+  key.position = "none",
   legend = TRUE,
   legend.position = NULL,
   legend.title = NULL,
@@ -163,13 +163,8 @@ windroseMap <- function(
       ws.int = ws.int,
       breaks = breaks,
       cols = cols,
-      key.position = ifelse(
-        rlang::is_logical(key),
-        ifelse(key, "right", "none"),
-        key
-      ),
-      annotate = FALSE,
-      par.settings = list(axis.line = list(col = "transparent"))
+      key.position = key.position,
+      annotate = FALSE
     ),
     rlang::list2(...)
   )

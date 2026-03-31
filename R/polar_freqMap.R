@@ -75,7 +75,7 @@ freqMap <- function(
   cols = "turbo",
   alpha = 1,
   theme = NULL,
-  key = FALSE,
+  key.position = "none",
   legend = TRUE,
   legend.position = NULL,
   legend.title = NULL,
@@ -205,12 +205,7 @@ freqMap <- function(
       plot = FALSE,
       statistic = statistic,
       cols = cols,
-      key.position = ifelse(
-        rlang::is_logical(key),
-        ifelse(key, "right", "none"),
-        key
-      ),
-      par.settings = list(axis.line = list(col = "transparent"))
+      key.position = key.position
     ),
     rlang::list2(...)
   )

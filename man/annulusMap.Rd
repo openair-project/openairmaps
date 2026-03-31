@@ -19,7 +19,7 @@ annulusMap(
   cols = "turbo",
   alpha = 1,
   theme = NULL,
-  key = FALSE,
+  key.position = "none",
   legend = TRUE,
   legend.position = NULL,
   legend.title = NULL,
@@ -180,11 +180,13 @@ be a partial theme (i.e., \code{\link[ggplot2:theme]{ggplot2::theme()}}) over a 
 theme \emph{before} custom themes are set, so would be overriden by a complete
 theme.}
 
-\item{key}{\emph{Draw individual marker legends?}
+\item{key.position}{\emph{Legend position for individual marker legends.}
 
 \emph{default:} \code{FALSE} | \emph{scope:} dynamic & static
 
-Draw a key for each individual marker? Potentially useful when \code{limits = "free"}, but of limited use otherwise.}
+When \code{key.position} is not \code{"none"}, a key will be drawn for each
+individual marker. Potentially useful when \code{limits = "free"}, but of
+limited use otherwise.}
 
 \item{legend}{\emph{Draw a shared legend?}
 
@@ -325,10 +327,12 @@ sufficient number of points available to estimate a percentile. See
     \item{\code{offset}}{\code{offset} controls the size of the 'hole' in the middle and is
 expressed on a scale of \code{0} to \code{100}, where \code{0} is no hole and \code{100} is a
 hole that takes up the entire plotting area.}
-    \item{\code{angle.scale}}{The scale is by default shown at a 315 degree angle.
-Sometimes the placement of the scale may interfere with an interesting
-feature. The user can therefore set \code{angle.scale} to another value (between
-0 and 360 degrees) to mitigate such problems. For example \code{angle.scale = 45} will draw the scale heading in a NE direction.}
+    \item{\code{angle.scale}}{In radial plots (e.g., \code{\link[openair:polarPlot]{polarPlot()}}), the radial scale is
+drawn directly on the plot itself. While suitable defaults have been
+chosen, sometimes the placement of the scale may interfere with an
+interesting feature. \code{angle.scale} can take any value between \code{0} and \code{360}
+to place the scale at a different angle, or \code{FALSE} to move it to the side
+of the plots.}
     \item{\code{min.bin}}{The minimum number of points allowed in a wind speed/wind
 direction bin.  The default is 1. A value of two requires at least 2 valid
 records in each bin an so on; bins with less than 2 valid records are set
@@ -373,16 +377,13 @@ using \code{type}. When one \code{type} is provided, can be one of \code{"left"}
 argument defines whether the strips are "switched" and can take either
 \code{"x"}, \code{"y"}, or \code{"both"}. For example, \code{"x"} will switch the 'top' strip
 locations to the bottom of the plot.}
-    \item{\code{key.header}}{Adds additional text/labels to the scale key. For example,
-passing the options \verb{key.header = "header", key.footer = "footer1"} adds
-addition text above and below the scale key. These arguments are passed to
-\code{quickText}, applying the \code{auto.text} argument, to handle formatting.}
-    \item{\code{key.footer}}{see \code{key.footer}.}
-    \item{\code{key.position}}{Location where the scale key is to plotted. Allowed
-arguments currently include \code{"top"}, \code{"right"}, \code{"bottom"} and \code{"left"}.}
+    \item{\code{key.title}}{Used to set the title of the legend. The legend title is
+passed to \code{\link[openair:quickText]{quickText()}} if \code{auto.text = TRUE}.}
     \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE} titles and
 axis labels will automatically try and format pollutant names and units
-properly e.g.  by subscripting the `2' in NO2.}
+properly, e.g., by subscripting the "2" in "NO2". Passed to \code{\link[openair:quickText]{quickText()}}.}
+    \item{\code{key}}{Deprecated; please use \code{key.position}. If \code{FALSE}, sets
+\code{key.position} to \code{"none"}.}
   }}
 
 \item{control}{\strong{Deprecated.} Please use \code{type}.}
