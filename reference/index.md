@@ -94,7 +94,3 @@ Tools to assist other openairmaps functions.
 
 - [`convertPostcode()`](https://openair-project.github.io/openairmaps/reference/convertPostcode.md)
   : Convert a UK postcode to a latitude/longitude pair
-
-## Deprecated
-
-Functions which are no longer recommended for use.
