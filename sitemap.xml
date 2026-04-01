@@ -14,6 +14,7 @@
 <url><loc>https://openair-project.github.io/openairmaps/reference/annulusMap.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/buildPopup.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/convertPostcode.html</loc></url>
+<url><loc>https://openair-project.github.io/openairmaps/reference/deprecated-traj.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/diffMap.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/freqMap.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/index.html</loc></url>
@@ -27,9 +28,7 @@
 <url><loc>https://openair-project.github.io/openairmaps/reference/quickTextHTML.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/searchNetwork.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/trajLevelMap.html</loc></url>
-<url><loc>https://openair-project.github.io/openairmaps/reference/trajLevelMapStatic.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/trajMap.html</loc></url>
-<url><loc>https://openair-project.github.io/openairmaps/reference/trajMapStatic.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/traj_data.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/windroseMap.html</loc></url>
 </urlset>

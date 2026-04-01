@@ -221,7 +221,7 @@ A leaflet object.
 
 [`openair::trajLevel()`](https://openair-project.github.io/openair/reference/trajLevel.html)
 
-[`trajLevelMapStatic()`](https://openair-project.github.io/openairmaps/reference/trajLevelMapStatic.md)
+[`trajLevelMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
 for the static `ggplot2` equivalent of `trajLevelMap()`
 
 Other interactive trajectory maps:

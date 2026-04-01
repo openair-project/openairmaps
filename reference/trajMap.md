@@ -264,7 +264,7 @@ A leaflet object.
 
 [`openair::trajPlot()`](https://openair-project.github.io/openair/reference/trajPlot.html)
 
-[`trajMapStatic()`](https://openair-project.github.io/openairmaps/reference/trajMapStatic.md)
+[`trajMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
 for the static `ggplot2` equivalent of `trajMap()`
 
 Other interactive trajectory maps:

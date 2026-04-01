@@ -58,18 +58,14 @@ Create HTML `leaflet` and static `ggplot2` maps of HYSPLIT trajectories.
 
   Trajectory line plots in `leaflet`
 
-- [`trajLevelMapStatic()`](https://openair-project.github.io/openairmaps/reference/trajLevelMapStatic.md)
-  **\[experimental\]** :
-
-  Trajectory level plots in `ggplot2`
-
-- [`trajMapStatic()`](https://openair-project.github.io/openairmaps/reference/trajMapStatic.md)
-  **\[experimental\]** :
-
-  Trajectory line plots in `ggplot2`
-
 - [`addTrajPaths()`](https://openair-project.github.io/openairmaps/reference/addTrajPaths.md)
   : Add trajectory paths to leaflet map
+
+- [`trajLevelMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
+  [`trajMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
+  **\[deprecated\]** :
+
+  Trajectory plots in `ggplot2`
 
 ## Spatial Interpolation
 

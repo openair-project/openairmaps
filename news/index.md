@@ -28,7 +28,9 @@
     This may be unfavourable, but can be partially overriden using the
     new `theme` argument.
 
-- The `polarMapStatic()` family have been removed.
+- The `polarMapStatic()` family have been removed. The
+  [`trajMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
+  family are still exported but have been deprecated.
 
 ### New features
 
@@ -111,7 +113,7 @@ CRAN release: 2024-11-19
   family has gained the `progress` argument, allowing users to switch
   the progress bar on and off.
 
-- [`trajMapStatic()`](https://openair-project.github.io/openairmaps/reference/trajMapStatic.md)
+- [`trajMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
   has gained the `size` and `linewidth` arguments, which directly map
   onto the arguments in
   [`ggplot2::geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html)
@@ -147,7 +149,7 @@ CRAN release: 2024-11-19
   `quickTextHTML("ug/m3")`.
 
 - The order in which
-  [`trajMapStatic()`](https://openair-project.github.io/openairmaps/reference/trajMapStatic.md)
+  [`trajMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
   draws points and paths has been tweaked, which should ensure that
   markers are drawn on top of their respective path, rather than on top
   of all paths.
@@ -400,9 +402,9 @@ adding two new experimental functions, and fixing a few bugs.
 
 ### New features
 
-- [`trajMapStatic()`](https://openair-project.github.io/openairmaps/reference/trajMapStatic.md)
+- [`trajMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
   and
-  [`trajLevelMapStatic()`](https://openair-project.github.io/openairmaps/reference/trajLevelMapStatic.md)
+  [`trajLevelMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
   have been added as two new *experimental* functions to provide
   [ggplot2](https://ggplot2.tidyverse.org) equivalents of
   [`openair::trajPlot()`](https://openair-project.github.io/openair/reference/trajPlot.html)

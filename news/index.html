@@ -61,7 +61,7 @@
 <ul><li><p><code>key</code> has been replaced with <code>key.position</code>, in line with deprecations in <a href="https://openair-project.github.io/openair/" class="external-link">openair</a>.</p></li>
 <li><p>Polar markers will inherit any styling set using <code><a href="https://ggplot2.tidyverse.org/reference/get_theme.html" class="external-link">ggplot2::theme_set()</a></code>. This may be unfavourable, but can be partially overriden using the new <code>theme</code> argument.</p></li>
 </ul></li>
-<li><p>The <code>polarMapStatic()</code> family have been removed.</p></li>
+<li><p>The <code>polarMapStatic()</code> family have been removed. The <code><a href="../reference/deprecated-traj.html">trajMapStatic()</a></code> family are still exported but have been deprecated.</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
@@ -91,7 +91,7 @@
 <h3 id="new-features-0-9-1">New features<a class="anchor" aria-label="anchor" href="#new-features-0-9-1"></a></h3>
 <ul><li><p>Pairwise statistics (e.g., <code>"robust_slope"</code>) are now supported by <code><a href="../reference/polarMap.html">polarMap()</a></code>. (<a href="https://github.com/openair-project/openairmaps/issues/72" class="external-link">#72</a>)</p></li>
 <li><p>The <code><a href="../reference/polarMap.html">polarMap()</a></code> family has gained the <code>progress</code> argument, allowing users to switch the progress bar on and off.</p></li>
-<li><p><code><a href="../reference/trajMapStatic.html">trajMapStatic()</a></code> has gained the <code>size</code> and <code>linewidth</code> arguments, which directly map onto the arguments in <code><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">ggplot2::geom_point()</a></code> and <code><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">ggplot2::geom_path()</a></code>, respectively. These can either be a column of the data (like <code>colour</code>), or can be an absolute value (e.g., <code>2L</code>). Note that, by default, <code>linewidth</code> takes the value of <code>size</code>, but both can be set independently.</p></li>
+<li><p><code><a href="../reference/deprecated-traj.html">trajMapStatic()</a></code> has gained the <code>size</code> and <code>linewidth</code> arguments, which directly map onto the arguments in <code><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">ggplot2::geom_point()</a></code> and <code><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">ggplot2::geom_path()</a></code>, respectively. These can either be a column of the data (like <code>colour</code>), or can be an absolute value (e.g., <code>2L</code>). Note that, by default, <code>linewidth</code> takes the value of <code>size</code>, but both can be set independently.</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-0-9-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-9-1"></a></h3>
@@ -99,7 +99,7 @@
 <li><p><code>...</code> will successfully pass to <code><a href="https://openair-project.github.io/openair/reference/cutData.html" class="external-link">openair::cutData()</a></code> in the <code><a href="../reference/polarMap.html">polarMap()</a></code> and <code><a href="../reference/trajMap.html">trajMap()</a></code> families of functions.</p></li>
 <li><p>The default <code><a href="../reference/diffMap.html">diffMap()</a></code> colour scale will no longer appear inverted compared to <code><a href="https://openair-project.github.io/openair/reference/polarDiff.html" class="external-link">openair::polarDiff()</a></code>.</p></li>
 <li><p>Fixed an issue in which <code><a href="../reference/quickTextHTML.html">quickTextHTML()</a></code> would incorrectly format non breaking spaces when doing, e.g., <code>quickTextHTML("ug/m3")</code>.</p></li>
-<li><p>The order in which <code><a href="../reference/trajMapStatic.html">trajMapStatic()</a></code> draws points and paths has been tweaked, which should ensure that markers are drawn on top of their respective path, rather than on top of all paths.</p></li>
+<li><p>The order in which <code><a href="../reference/deprecated-traj.html">trajMapStatic()</a></code> draws points and paths has been tweaked, which should ensure that markers are drawn on top of their respective path, rather than on top of all paths.</p></li>
 <li><p><code><a href="../reference/buildPopup.html">buildPopup()</a></code> will now work correctly if no <code>type</code> is provided.</p></li>
 </ul></div>
 </div>
@@ -175,7 +175,7 @@
 <div class="section level3">
 <h3 id="new-features-0-8-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-8-0"></a></h3>
 <ul><li>
-<p><code><a href="../reference/trajMapStatic.html">trajMapStatic()</a></code> and <code><a href="../reference/trajLevelMapStatic.html">trajLevelMapStatic()</a></code> have been added as two new <em>experimental</em> functions to provide <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> equivalents of <code><a href="https://openair-project.github.io/openair/reference/trajPlot.html" class="external-link">openair::trajPlot()</a></code> and <code><a href="https://openair-project.github.io/openair/reference/trajLevel.html" class="external-link">openair::trajLevel()</a></code>. (<a href="https://github.com/openair-project/openairmaps/issues/28" class="external-link">#28</a>)</p>
+<p><code><a href="../reference/deprecated-traj.html">trajMapStatic()</a></code> and <code><a href="../reference/deprecated-traj.html">trajLevelMapStatic()</a></code> have been added as two new <em>experimental</em> functions to provide <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> equivalents of <code><a href="https://openair-project.github.io/openair/reference/trajPlot.html" class="external-link">openair::trajPlot()</a></code> and <code><a href="https://openair-project.github.io/openair/reference/trajLevel.html" class="external-link">openair::trajLevel()</a></code>. (<a href="https://github.com/openair-project/openairmaps/issues/28" class="external-link">#28</a>)</p>
 <ul><li>These are experimental as the long term place for these functions is uncertain; there will definitely be need for a <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> incarnation of the trajectory plotting functions, but whether they will sit in <a href="https://openair-project.github.io/openair/" class="external-link">openair</a>, <code>{ggopenair}</code> or <a href="https://openair-project.github.io/openairmaps/">openairmaps</a> and what they will be named is not clear.</li>
 </ul></li>
 <li><p>The <code>control</code> and <code>facet</code> arguments of all polar marker mapping functions (static and interactive) and trajectory mapping functions are now passed to <code><a href="https://openair-project.github.io/openair/reference/cutData.html" class="external-link">openair::cutData()</a></code>.</p></li>
