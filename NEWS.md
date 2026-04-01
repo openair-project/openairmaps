@@ -10,7 +10,7 @@
     
     * Polar markers will inherit any styling set using `ggplot2::theme_set()`. This may be unfavourable, but can be partially overriden using the new `theme` argument.
 
-* The `polarMapStatic()` family have been removed.
+* The `polarMapStatic()` family have been removed. The `trajMapStatic()` family are still exported but have been deprecated.
 
 ## New features
 

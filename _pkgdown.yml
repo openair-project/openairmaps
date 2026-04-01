@@ -28,8 +28,8 @@ reference:
     Create HTML `leaflet` and static `ggplot2` maps of HYSPLIT trajectories.
   contents:
   - has_concept("interactive trajectory maps")
-  - has_concept("static trajectory maps")
   - addTrajPaths
+  - trajMapStatic
 
 - title: Spatial Interpolation
   desc: |
