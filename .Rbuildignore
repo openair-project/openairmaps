@@ -20,3 +20,4 @@ man/figures/
 ^vignettes/articles$
 ^[.]?air[.]toml$
 ^\.vscode$
+^revdep$
