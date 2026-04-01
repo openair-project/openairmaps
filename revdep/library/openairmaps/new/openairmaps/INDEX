@@ -1,0 +1,26 @@
+addPolarMarkers         Add polar markers to leaflet map
+addTrajPaths            Add trajectory paths to leaflet map
+annulusMap              Polar annulus plots on dynamic and static maps
+buildPopup              Build a Complex Popup for a Leaflet Map
+convertPostcode         Convert a UK postcode to a latitude/longitude
+                        pair
+diffMap                 Bivariate polar 'difference' plots on dynamic
+                        and static maps
+freqMap                 Polar frequency plots on dynamic and static
+                        maps
+krigingMap              Spatially interpolated dynamic and static maps
+networkMap              Create a leaflet map of air quality measurement
+                        network sites
+percentileMap           Percentile roses on dynamic and static maps
+polarMap                Bivariate polar plots on dynamic and static
+                        maps
+polar_data              Example data for polar mapping functions
+pollroseMap             Pollution roses on dynamic and static maps
+quickTextHTML           Automatic text formatting for 'openairmaps'
+searchNetwork           Geographically search the air quality networks
+                        made available by 'openair::importMeta()'
+trajLevelMap            Trajectory level plots in 'leaflet'
+trajLevelMapStatic      Trajectory plots in 'ggplot2'
+trajMap                 Trajectory line plots in 'leaflet'
+traj_data               Example data for trajectory mapping functions
+windroseMap             Wind roses on dynamic and static maps

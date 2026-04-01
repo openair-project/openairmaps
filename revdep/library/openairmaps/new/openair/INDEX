@@ -1,0 +1,77 @@
+GaussianSmooth          Calculate rolling Gaussian smooth of pollutant
+                        values
+TaylorDiagram           Taylor Diagram for model evaluation with
+                        conditioning
+TheilSen                Tests for trends using Theil-Sen estimates
+WhittakerSmooth         Calculate Whittaker-Eilers Smoothing,
+                        Interpolation and Baseline Determination
+aqStats                 Calculate summary statistics for air pollution
+                        data by year
+binData                 Bin data, calculate mean and bootstrap
+                        confidence interval in the mean
+calcPercentile          Calculate percentile values from a time series
+calendarPlot            Plot time series values in a conventional
+                        calendar format
+conditionalEval         Conditional quantile estimates with additional
+                        variables for model evaluation
+conditionalQuantile     Conditional quantile estimates for model
+                        evaluation
+corPlot                 Correlation matrices with conditioning
+cutData                 Function to split data in different ways for
+                        conditioning
+datePad                 Pad a time-series dataframe and optionally fill
+                        values by block
+importADMS              CERC Atmospheric Dispersion Modelling System
+                        (ADMS) data import function(s) for openair
+importAURN              Import data from individual UK Air Pollution
+                        Networks
+importEurope            Import air quality data from European database
+                        until February 2024
+importImperial          Import data from Imperial College London
+                        networks
+importMeta              Import monitoring site meta data for UK and
+                        European networks
+importTraj              Import pre-calculated HYSPLIT 96-hour back
+                        trajectories
+importUKAQ              Import data from the UK Air Pollution Networks
+modStats                Calculate common model evaluation statistics
+mydata                  Example air quality monitoring data for openair
+openColours             Pre-defined openair colours and definition of
+                        user-defined colours
+percentileRose          Function to plot percentiles by wind direction
+polarAnnulus            Bivariate polarAnnulus plot
+polarCluster            K-means clustering of bivariate polar plots
+polarDiff               Polar plots considering changes in
+                        concentrations between two time periods
+polarFreq               Function to plot wind speed/direction
+                        frequencies and other statistics
+polarPlot               Function for plotting bivariate polar plots
+                        with smoothing.
+pollutionRose           Pollution rose variation of the traditional
+                        wind rose plot
+quickText               Automatic text formatting for openair
+rollingMean             Calculate rolling mean pollutant values
+rollingQuantile         Calculate rolling quantile pollutant values
+runRegression           Rolling regression for pollutant source
+                        characterisation.
+scatterPlot             Flexible scatter plots
+selectByDate            Subset a data frame based on date
+selectRunning           Function to extract run lengths greater than a
+                        threshold
+smoothTrend             Calculate nonparametric smooth trends
+splitByDate             Divide up a data frame by time
+timeAverage             Function to calculate time averages for data
+                        frames
+timePlot                Plot time series, perhaps for multiple
+                        pollutants, grouped or in separate panels.
+timeProp                Time series plot with categories shown as a
+                        stacked bar chart
+timeVariation           Temporal variation plots with flexible panel
+                        control
+trajCluster             Calculate clusters for back trajectories
+trajLevel               Trajectory level plots with conditioning
+trajPlot                Trajectory line plots with conditioning
+trendLevel              Plot heat maps of atmospheric composition data
+variationPlot           Variation Plot
+windRose                Traditional wind rose plot
+windflowOpts            Define 'windflow' options for 'openair' plots

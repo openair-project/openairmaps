@@ -1,0 +1,4 @@
+package,old,new,delta
+openairmaps,0.9.1,0.9.1.9011,*
+openair,NA,3.0.0,*
+vroom,NA,1.7.0,*
