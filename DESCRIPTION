@@ -49,7 +49,7 @@ Suggests:
     terra,
     testthat (>= 3.0.0),
     withr
-Config/Needs/website: openair-project/openairpkgdown, maps
+Config/Needs/website: openair-project/openairpkgdown, rnaturalearthdata
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-GB
