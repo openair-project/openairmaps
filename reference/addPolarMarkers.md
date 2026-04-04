@@ -27,9 +27,11 @@ addPolarMarkers(
   options = leaflet::markerOptions(),
   clusterOptions = NULL,
   clusterId = NULL,
+  theme = NULL,
   key.position = "none",
   d.icon = 200,
   d.fig = 3.5,
+  alpha = 1,
   data = leaflet::getMapData(map),
   ...
 )
@@ -50,9 +52,11 @@ addPolarDiffMarkers(
   options = leaflet::markerOptions(),
   clusterOptions = NULL,
   clusterId = NULL,
+  theme = NULL,
   key.position = "none",
   d.icon = 200,
   d.fig = 3.5,
+  alpha = 1,
   ...
 )
 ```
@@ -145,6 +149,12 @@ addPolarDiffMarkers(
 
   the id for the marker cluster layer
 
+- theme:
+
+  Optional
+  [`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html)
+  elements to add to the polar marker before it is saved.
+
 - key.position:
 
   Passed to `key.position` for the relevant `fun`.
@@ -162,6 +172,11 @@ addPolarDiffMarkers(
   This will affect the resolution of the markers on the map.
   Alternatively, a vector in the form `c(width, height)` can be provided
   if a non-circular marker is desired.
+
+- alpha:
+
+  The desired opacity of the polar markers. Can also be set via
+  `options` but is provided here for convenience.
 
 - data:
 
