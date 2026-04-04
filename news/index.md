@@ -1,6 +1,6 @@
 # Changelog
 
-## openairmaps (development version)
+## openairmaps 0.10.0
 
 ### Breaking Changes
 

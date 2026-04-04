@@ -13,13 +13,13 @@ Source:
 [`DESCRIPTION`](https://github.com/openair-project/openairmaps/blob/main/DESCRIPTION)
 
 Davison J, Carslaw D (2026). *openairmaps: Create Maps of Air Pollution
-Data*. R package version 0.9.1.9011,
+Data*. R package version 0.10.0,
 <https://openair-project.github.io/openairmaps/>.
 
     @Manual{,
       title = {openairmaps: Create Maps of Air Pollution Data},
       author = {Jack Davison and David Carslaw},
       year = {2026},
-      note = {R package version 0.9.1.9011},
+      note = {R package version 0.10.0},
       url = {https://openair-project.github.io/openairmaps/},
     }
