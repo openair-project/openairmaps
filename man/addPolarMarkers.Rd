@@ -20,9 +20,11 @@ addPolarMarkers(
   options = leaflet::markerOptions(),
   clusterOptions = NULL,
   clusterId = NULL,
+  theme = NULL,
   key.position = "none",
   d.icon = 200,
   d.fig = 3.5,
+  alpha = 1,
   data = leaflet::getMapData(map),
   ...
 )
@@ -43,9 +45,11 @@ addPolarDiffMarkers(
   options = leaflet::markerOptions(),
   clusterOptions = NULL,
   clusterId = NULL,
+  theme = NULL,
   key.position = "none",
   d.icon = 200,
   d.fig = 3.5,
+  alpha = 1,
   ...
 )
 }
@@ -92,6 +96,9 @@ options}
 
 \item{clusterId}{the id for the marker cluster layer}
 
+\item{theme}{Optional \code{\link[ggplot2:theme]{ggplot2::theme()}} elements to add to the polar marker
+before it is saved.}
+
 \item{key.position}{Passed to \code{key.position} for the relevant \code{fun}.}
 
 \item{d.icon}{The diameter of the plot on the map in pixels. This will affect
@@ -103,6 +110,9 @@ desired.}
 inches. This will affect the resolution of the markers on the map.
 Alternatively, a vector in the form \code{c(width, height)} can be provided if a
 non-circular marker is desired.}
+
+\item{alpha}{The desired opacity of the polar markers. Can also be set via
+\code{options} but is provided here for convenience.}
 
 \item{data}{A data frame. The data frame must contain the data to plot your
 choice of openair directional analysis plot, which includes wind speed

@@ -531,23 +531,26 @@ create_polar_markers <-
         .l = dplyr::select(plots_df, "data", "url"),
         .f = purrr::in_parallel(
           function(data, url) {
-            openair_obj <- fun(data)
-            # save plot
-            ggplot2::ggsave(
-              plot = openair_obj$plot +
-                ggplot2::theme(
-                  plot.margin = ggplot2::unit(rep(0, 4), "cm"),
-                  legend.background = ggplot2::element_blank(),
-                  legend.title = ggplot2::element_blank()
-                ) +
-                theme,
-              filename = url,
-              width = width * 0.75,
-              height = height * 0.75,
-              dpi = 72,
-              bg = "transparent"
-            )
-            return(openair_obj$data)
+            openair_obj <- tryCatch(error = function(cnd) {}, fun(data))
+
+            if (!is.null(openair_obj)) {
+              # save plot
+              ggplot2::ggsave(
+                plot = openair_obj$plot +
+                  ggplot2::theme(
+                    plot.margin = ggplot2::unit(rep(0, 4), "cm"),
+                    legend.background = ggplot2::element_blank(),
+                    legend.title = ggplot2::element_blank()
+                  ) +
+                  theme,
+                filename = url,
+                width = width * 0.75,
+                height = height * 0.75,
+                dpi = 72,
+                bg = "transparent"
+              )
+              return(openair_obj$data)
+            }
           },
           fun = fun,
           fun_args = fun_args,

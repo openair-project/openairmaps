@@ -35,6 +35,10 @@
 #'   inches. This will affect the resolution of the markers on the map.
 #'   Alternatively, a vector in the form `c(width, height)` can be provided if a
 #'   non-circular marker is desired.
+#' @param theme Optional [ggplot2::theme()] elements to add to the polar marker
+#'   before it is saved.
+#' @param alpha The desired opacity of the polar markers. Can also be set via
+#'   `options` but is provided here for convenience.
 #' @param ... Other arguments for the plotting function (e.g. `period` for
 #'   [openair::polarAnnulus()]).
 #' @returns A leaflet object.
@@ -87,9 +91,11 @@ addPolarMarkers <-
     options = leaflet::markerOptions(),
     clusterOptions = NULL,
     clusterId = NULL,
+    theme = NULL,
     key.position = "none",
     d.icon = 200,
     d.fig = 3.5,
+    alpha = 1,
     data = leaflet::getMapData(map),
     ...
   ) {
@@ -141,7 +147,7 @@ addPolarMarkers <-
         popup = popup,
         label = label,
         dropcol = "no2",
-        theme = ggplot2::theme(),
+        theme = theme,
         progress = TRUE,
         polar_fun = polar_fun
       )
@@ -153,6 +159,22 @@ addPolarMarkers <-
     if (length(d.icon) == 2) {
       width <- d.icon[[1]]
       height <- d.icon[[2]]
+    }
+
+    # handle alpha
+    if (!missing(alpha)) {
+      options$opacity <- alpha
+    }
+
+    # drop data where no plot was created
+    plots_df <- dplyr::filter(
+      plots_df,
+      purrr::map_vec(.data$plot, \(x) !is.null(x))
+    )
+
+    if (nrow(plots_df) == 0L) {
+      cli::cli_warn("No valid polar markers were created.")
+      return(map)
     }
 
     # get marker arguments
@@ -218,9 +240,11 @@ addPolarDiffMarkers <-
     options = leaflet::markerOptions(),
     clusterOptions = NULL,
     clusterId = NULL,
+    theme = NULL,
     key.position = "none",
     d.icon = 200,
     d.fig = 3.5,
+    alpha = 1,
     ...
   ) {
     # guess lat/lon
@@ -264,7 +288,9 @@ addPolarDiffMarkers <-
         d.fig = d.fig,
         popup = popup,
         label = label,
-        dropcol = pollutant
+        dropcol = pollutant,
+        theme = theme,
+        progress = TRUE
       )
 
     # work out width/height
@@ -274,6 +300,22 @@ addPolarDiffMarkers <-
     if (length(d.icon) == 2) {
       width <- d.icon[[1]]
       height <- d.icon[[2]]
+    }
+
+    # handle alpha
+    if (!missing(alpha)) {
+      options$opacity <- alpha
+    }
+
+    # drop data where no plot was created
+    plots_df <- dplyr::filter(
+      plots_df,
+      purrr::map_vec(.data$plot, \(x) !is.null(x))
+    )
+
+    if (nrow(plots_df) == 0L) {
+      cli::cli_warn("No valid polar markers were created.")
+      return(map)
     }
 
     # get marker arguments
