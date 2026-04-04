@@ -44,7 +44,7 @@ Suggests:
     png,
     prettymapr,
     rmarkdown,
-    shiny,
+    shiny (>= 1.9.0),
     stars,
     terra,
     testthat (>= 3.0.0),
