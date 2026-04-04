@@ -306,7 +306,7 @@ percentileMap <- function(
       )
 
     # add legend
-    if (!any(is.na(percentile)) && legend) {
+    if (!anyNA(percentile) && legend) {
       percs <- unique(c(0, percentile))
       map <-
         leaflet::addLegend(

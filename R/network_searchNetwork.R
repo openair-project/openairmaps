@@ -183,7 +183,7 @@ searchNetwork <-
     vars <- stringr::str_c(source, collapse = ", ")
     html <- stringr::str_glue("{html}<li><b>Source(s):</b> {vars}</li>")
 
-    if (!any(is.na(year))) {
+    if (!anyNA(year)) {
       vars <- stringr::str_glue("{min(year)} - {max(year)}")
       html <- stringr::str_glue("{html}<li><b>Year(s):</b> {vars}</li>")
     }
