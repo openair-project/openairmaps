@@ -10,7 +10,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/openair-project/openairmaps/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/openair-project/openairmaps/blob/v0.10.0/DESCRIPTION)
 
 Davison J, Carslaw D (2026). *openairmaps: Create Maps of Air Pollution
 Data*. R package version 0.10.0,

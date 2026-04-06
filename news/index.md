@@ -2,6 +2,8 @@
 
 ## openairmaps 0.10.0
 
+CRAN release: 2026-04-04
+
 ### Breaking Changes
 
 - [openairmaps](https://openair-project.github.io/openairmaps/) now
