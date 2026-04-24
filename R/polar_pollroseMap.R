@@ -157,8 +157,7 @@ pollroseMap <- function(
       breaks = theBreaks,
       plot = FALSE,
       cols = cols,
-      key.position = key.position,
-      annotate = FALSE
+      key.position = key.position
     ),
     rlang::list2(...)
   )
