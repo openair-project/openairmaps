@@ -2,6 +2,15 @@
 
 ## openairmaps (development version)
 
+### New features
+
+- The entire
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  family now defaults to `annotate = FALSE`, which removes many of the
+  “captions” added automatically since
+  [openair](https://openair-project.github.io/openair/) v.3.1.0. These
+  can be restored by passing `annotate = TRUE` to `...`.
+
 ## openairmaps 0.10.0
 
 CRAN release: 2026-04-04
