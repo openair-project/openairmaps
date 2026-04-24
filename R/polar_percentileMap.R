@@ -180,6 +180,8 @@ percentileMap <- function(
   }
 
   # arguments for function
+  dots <- rlang::list2(...)
+  dots$annotate <- dots$annotate %||% FALSE
   fun_args <- append(
     list(
       pollutant = "conc",
@@ -189,7 +191,7 @@ percentileMap <- function(
       key.position = key.position,
       intervals = theIntervals
     ),
-    rlang::list2(...)
+    dots
   )
 
   # define function

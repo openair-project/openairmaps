@@ -502,6 +502,8 @@ polarMap <- function(
   }
 
   # arguments for function
+  dots <- rlang::list2(...)
+  dots$annotate <- dots$annotate %||% FALSE
   fun_args <- append(
     list(
       pollutant = funpoll,
@@ -512,7 +514,7 @@ polarMap <- function(
       cols = cols,
       key.position = key.position
     ),
-    rlang::list2(...)
+    dots
   )
 
   # define function

@@ -542,9 +542,6 @@ create_polar_markers <-
                     legend.background = ggplot2::element_blank(),
                     legend.title = ggplot2::element_blank()
                   ) +
-                  ggplot2::labs(
-                    caption = NULL
-                  ) +
                   theme,
                 filename = url,
                 width = width * 0.75,
