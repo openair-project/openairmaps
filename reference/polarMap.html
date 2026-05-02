@@ -356,7 +356,13 @@ off, if desired.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Arguments passed on to <code><a href="https://openair-project.github.io/openair/reference/polarPlot.html" class="external-link">openair::polarPlot</a></code></p><dl><dt><code>wd</code></dt>
+<dd><p>Arguments passed on to <code><a href="https://openair-project.github.io/openair/reference/polarPlot.html" class="external-link">openair::polarPlot</a></code></p><dl><dt><code>mydata</code></dt>
+<dd><p>A data frame minimally containing <code>wd</code>, another variable to
+plot in polar coordinates (the default is a column “ws” — wind
+speed) and a pollutant. Should also contain <code>date</code> if plots by time period
+are required.</p></dd>
+
+    <dt><code>wd</code></dt>
 <dd><p>Name of wind direction field.</p></dd>
 
     <dt><code>statistic</code></dt>
@@ -569,6 +575,13 @@ printed when <code>statistic = "cpf"</code>.</p></dd>
 <dd><p>The quantile to be estimated when <code>statistic</code> is set to
 <code>"quantile.slope"</code>. Default is <code>0.5</code> which is equal to the median and will
 be ignored if <code>"quantile.slope"</code> is not used.</p></dd>
+
+    <dt><code>plot</code></dt>
+<dd><p>When <code>openair</code> plots are created they are automatically printed
+to the active graphics device. <code>plot = FALSE</code> deactivates this behaviour.
+This may be useful when the plot <em>data</em> is of more interest, or the plot is
+required to appear later (e.g., later in a Quarto document, or to be saved
+to a file).</p></dd>
 
     <dt><code>key</code></dt>
 <dd><p>Deprecated; please use <code>key.position</code>. If <code>FALSE</code>, sets

@@ -6,6 +6,7 @@ further examples, please see the [online
 book](https://openair-project.github.io/book/).
 
 ``` r
+
 library(openairmaps)
 ```
 
@@ -18,6 +19,7 @@ site to the returned data. If not using data from
 ensure that your data has coordinate data appended in a similar way.
 
 ``` r
+
 london_data <-
   openair::importUKAQ(site = c("my1", "hors", "cll2"),
                       year = 2020,
@@ -57,6 +59,7 @@ Alternatively,
 will allow you to target a specific region.
 
 ``` r
+
 networkMap(source = c("aurn", "aqe"),
            year = 2020,
            control = "variable")
@@ -78,6 +81,7 @@ and
 and all work similarly to create interactive air quality maps:
 
 ``` r
+
 polarMap(london_data,
          c("no2", "pm10"),
          popup = c("site", "site_type"),
@@ -88,6 +92,7 @@ By setting `static` to `TRUE` you will receive a static version of the
 map, which may be more useful for academic articles.
 
 ``` r
+
 polarMap(london_data,
          c("no2", "pm10"),
          static = TRUE,
@@ -108,9 +113,11 @@ with
 [`openair::trajLevel()`](https://openair-project.github.io/openair/reference/trajLevel.html).
 
 ``` r
+
 trajMap(traj_data, colour = "pm10")
 ```
 
 ``` r
+
 trajLevelMap(traj_data)
 ```

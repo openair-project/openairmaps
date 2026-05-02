@@ -382,6 +382,11 @@ percentileMap(
   Arguments passed on to
   [`openair::percentileRose`](https://openair-project.github.io/openair/reference/percentileRose.html)
 
+  `mydata`
+
+  :   A data frame minimally containing `wd` and a numeric field to plot
+      — `pollutant`.
+
   `wd`
 
   :   Name of wind direction field.
@@ -463,6 +468,19 @@ percentileMap(
       argument defines whether the strips are "switched" and can take
       either `"x"`, `"y"`, or `"both"`. For example, `"x"` will switch
       the 'top' strip locations to the bottom of the plot.
+
+  `plot`
+
+  :   When `openair` plots are created they are automatically printed to
+      the active graphics device. `plot = FALSE` deactivates this
+      behaviour. This may be useful when the plot *data* is of more
+      interest, or the plot is required to appear later (e.g., later in
+      a Quarto document, or to be saved to a file).
+
+  `key`
+
+  :   Deprecated; please use `key.position`. If `FALSE`, sets
+      `key.position` to `"none"`.
 
 - control:
 

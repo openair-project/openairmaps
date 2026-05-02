@@ -345,7 +345,11 @@ off, if desired.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Arguments passed on to <code><a href="https://openair-project.github.io/openair/reference/polarAnnulus.html" class="external-link">openair::polarAnnulus</a></code></p><dl><dt><code>resolution</code></dt>
+<dd><p>Arguments passed on to <code><a href="https://openair-project.github.io/openair/reference/polarAnnulus.html" class="external-link">openair::polarAnnulus</a></code></p><dl><dt><code>mydata</code></dt>
+<dd><p>A data frame minimally containing <code>date</code>, <code>wd</code> and a
+pollutant.</p></dd>
+
+    <dt><code>resolution</code></dt>
 <dd><p>Two plot resolutions can be set: “normal” and
 “fine” (the default).</p></dd>
 
@@ -468,6 +472,13 @@ passed to <code><a href="https://openair-project.github.io/openair/reference/qui
 <dd><p>Either <code>TRUE</code> (default) or <code>FALSE</code>. If <code>TRUE</code> titles and
 axis labels will automatically try and format pollutant names and units
 properly, e.g., by subscripting the "2" in "NO2". Passed to <code><a href="https://openair-project.github.io/openair/reference/quickText.html" class="external-link">quickText()</a></code>.</p></dd>
+
+    <dt><code>plot</code></dt>
+<dd><p>When <code>openair</code> plots are created they are automatically printed
+to the active graphics device. <code>plot = FALSE</code> deactivates this behaviour.
+This may be useful when the plot <em>data</em> is of more interest, or the plot is
+required to appear later (e.g., later in a Quarto document, or to be saved
+to a file).</p></dd>
 
     <dt><code>key</code></dt>
 <dd><p>Deprecated; please use <code>key.position</code>. If <code>FALSE</code>, sets

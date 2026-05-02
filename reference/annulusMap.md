@@ -382,6 +382,10 @@ annulusMap(
   Arguments passed on to
   [`openair::polarAnnulus`](https://openair-project.github.io/openair/reference/polarAnnulus.html)
 
+  `mydata`
+
+  :   A data frame minimally containing `date`, `wd` and a pollutant.
+
   `resolution`
 
   :   Two plot resolutions can be set: “normal” and “fine” (the
@@ -533,6 +537,14 @@ annulusMap(
       labels will automatically try and format pollutant names and units
       properly, e.g., by subscripting the "2" in "NO2". Passed to
       [`quickText()`](https://openair-project.github.io/openair/reference/quickText.html).
+
+  `plot`
+
+  :   When `openair` plots are created they are automatically printed to
+      the active graphics device. `plot = FALSE` deactivates this
+      behaviour. This may be useful when the plot *data* is of more
+      interest, or the plot is required to appear later (e.g., later in
+      a Quarto document, or to be saved to a file).
 
   `key`
 

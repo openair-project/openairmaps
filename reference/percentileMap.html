@@ -342,7 +342,11 @@ off, if desired.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Arguments passed on to <code><a href="https://openair-project.github.io/openair/reference/percentileRose.html" class="external-link">openair::percentileRose</a></code></p><dl><dt><code>wd</code></dt>
+<dd><p>Arguments passed on to <code><a href="https://openair-project.github.io/openair/reference/percentileRose.html" class="external-link">openair::percentileRose</a></code></p><dl><dt><code>mydata</code></dt>
+<dd><p>A data frame minimally containing <code>wd</code> and a numeric field to
+plot — <code>pollutant</code>.</p></dd>
+
+    <dt><code>wd</code></dt>
 <dd><p>Name of wind direction field.</p></dd>
 
     <dt><code>smooth</code></dt>
@@ -406,6 +410,17 @@ using <code>type</code>. When one <code>type</code> is provided, can be one of <
 argument defines whether the strips are "switched" and can take either
 <code>"x"</code>, <code>"y"</code>, or <code>"both"</code>. For example, <code>"x"</code> will switch the 'top' strip
 locations to the bottom of the plot.</p></dd>
+
+    <dt><code>plot</code></dt>
+<dd><p>When <code>openair</code> plots are created they are automatically printed
+to the active graphics device. <code>plot = FALSE</code> deactivates this behaviour.
+This may be useful when the plot <em>data</em> is of more interest, or the plot is
+required to appear later (e.g., later in a Quarto document, or to be saved
+to a file).</p></dd>
+
+    <dt><code>key</code></dt>
+<dd><p>Deprecated; please use <code>key.position</code>. If <code>FALSE</code>, sets
+<code>key.position</code> to <code>"none"</code>.</p></dd>
 
 
 </dl></dd>

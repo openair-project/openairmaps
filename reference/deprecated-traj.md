@@ -367,6 +367,141 @@ trajMapStatic(
       their respective directions. `"xy"` can be used to reverse both
       directions.
 
+  `mapping`
+
+  :   Set of aesthetic mappings created by
+      [`aes()`](https://ggplot2.tidyverse.org/reference/aes.html). If
+      specified and `inherit.aes = TRUE` (the default), it is combined
+      with the default mapping at the top level of the plot. You must
+      supply `mapping` if there is no plot mapping.
+
+  `stat`
+
+  :   The statistical transformation to use on the data for this layer.
+      When using a `geom_*()` function to construct a layer, the `stat`
+      argument can be used to override the default coupling between
+      geoms and stats. The `stat` argument accepts the following:
+
+      - A `Stat` ggproto subclass, for example `StatCount`.
+
+      - A string naming the stat. To give the stat as a string, strip
+        the function name of the `stat_` prefix. For example, to use
+        `stat_count()`, give the stat as `"count"`.
+
+      - For more information and other ways to specify the stat, see the
+        [layer
+        stat](https://ggplot2.tidyverse.org/reference/layer_stats.html)
+        documentation.
+
+  `position`
+
+  :   A position adjustment to use on the data for this layer. This can
+      be used in various ways, including to prevent overplotting and
+      improving the display. The `position` argument accepts the
+      following:
+
+      - The result of calling a position function, such as
+        `position_jitter()`. This method allows for passing extra
+        arguments to the position.
+
+      - A string naming the position adjustment. To give the position as
+        a string, strip the function name of the `position_` prefix. For
+        example, to use `position_jitter()`, give the position as
+        `"jitter"`.
+
+      - For more information and other ways to specify the position, see
+        the [layer
+        position](https://ggplot2.tidyverse.org/reference/layer_positions.html)
+        documentation.
+
+  `na.rm`
+
+  :   If `FALSE`, the default, missing values are removed with a
+      warning. If `TRUE`, missing values are silently removed.
+
+  `show.legend`
+
+  :   logical. Should this layer be included in the legends? `NA`, the
+      default, includes if any aesthetics are mapped. `FALSE` never
+      includes, and `TRUE` always includes.
+
+      You can also set this to one of "polygon", "line", and "point" to
+      override the default legend.
+
+  `inherit.aes`
+
+  :   If `FALSE`, overrides the default aesthetics, rather than
+      combining with them. This is most useful for helper functions that
+      define both data and aesthetics and shouldn't inherit behaviour
+      from the default plot specification, e.g.
+      [`annotation_borders()`](https://ggplot2.tidyverse.org/reference/annotation_borders.html).
+
+  `parse`
+
+  :   If `TRUE`, the labels will be parsed into expressions and
+      displayed as described in
+      [`?plotmath`](https://rdrr.io/r/grDevices/plotmath.html).
+
+  `label.padding`
+
+  :   Amount of padding around label. Defaults to 0.25 lines.
+
+  `label.r`
+
+  :   Radius of rounded corners. Defaults to 0.15 lines.
+
+  `label.size`
+
+  :   **\[deprecated\]** Replaced by the `linewidth` aesthetic. Size of
+      label border, in mm.
+
+  `border.colour,border.color`
+
+  :   Colour of label border. When `NULL` (default), the `colour`
+      aesthetic determines the colour of the label border.
+      `border.color` is an alias for `border.colour`.
+
+  `text.colour,text.color`
+
+  :   Colour of the text. When `NULL` (default), the `colour` aesthetic
+      determines the colour of the text. `text.color` is an alias for
+      `text.colour`.
+
+  `fun.geometry`
+
+  :   A function that takes a `sfc` object and returns a `sfc_POINT`
+      with the same length as the input. If `NULL`,
+      `function(x) sf::st_point_on_surface(sf::st_zm(x))` will be used.
+      Note that the function may warn about the incorrectness of the
+      result if the data is not projected, but you can ignore this
+      except when you really care about the exact locations.
+
+  `check_overlap`
+
+  :   If `TRUE`, text that overlaps previous text in the same layer will
+      not be plotted. `check_overlap` happens at draw time and in the
+      order of the data. Therefore data should be arranged by the label
+      column before calling `geom_text()`. Note that this argument is
+      not supported by `geom_label()`.
+
+  `geom`
+
+  :   The geometric object to use to display the data for this layer.
+      When using a `stat_*()` function to construct a layer, the `geom`
+      argument can be used to override the default coupling between
+      stats and geoms. The `geom` argument accepts the following:
+
+      - A `Geom` ggproto subclass, for example `GeomPoint`.
+
+      - A string naming the geom. To give the geom as a string, strip
+        the function name of the `geom_` prefix. For example, to use
+        `geom_point()`, give the geom as `"point"`.
+
+      - For more information and other ways to specify the geom, see the
+        [layer
+        geom](https://ggplot2.tidyverse.org/reference/layer_geoms.html)
+        documentation.
+
   `names`
 
   :   By default, the columns created by

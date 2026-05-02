@@ -355,6 +355,10 @@ windroseMap(
   Arguments passed on to
   [`openair::windRose`](https://openair-project.github.io/openair/reference/windRose.html)
 
+  `mydata`
+
+  :   A data frame containing fields `ws` and `wd`
+
   `ws`
 
   :   Name of the column representing wind speed.
@@ -491,6 +495,12 @@ windroseMap(
       default NULL is equivalent to `pollutant = "ws"`. Use in
       [`pollutionRose()`](https://openair-project.github.io/openair/reference/pollutionRose.html).
 
+  `annotate`
+
+  :   If `TRUE` then the percentage calm and mean values are printed in
+      each panel together with a description of the statistic below the
+      plot. If `FALSE` then only the statistic will be printed.
+
   `angle.scale`
 
   :   In radial plots (e.g.,
@@ -504,6 +514,14 @@ windroseMap(
   `border`
 
   :   Border colour for shaded areas. Default is no border.
+
+  `plot`
+
+  :   When `openair` plots are created they are automatically printed to
+      the active graphics device. `plot = FALSE` deactivates this
+      behaviour. This may be useful when the plot *data* is of more
+      interest, or the plot is required to appear later (e.g., later in
+      a Quarto document, or to be saved to a file).
 
   `key`
 

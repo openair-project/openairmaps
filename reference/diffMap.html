@@ -352,7 +352,13 @@ off, if desired.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Arguments passed on to <code><a href="https://openair-project.github.io/openair/reference/polarPlot.html" class="external-link">openair::polarPlot</a></code></p><dl><dt><code>wd</code></dt>
+<dd><p>Arguments passed on to <code><a href="https://openair-project.github.io/openair/reference/polarPlot.html" class="external-link">openair::polarPlot</a></code></p><dl><dt><code>mydata</code></dt>
+<dd><p>A data frame minimally containing <code>wd</code>, another variable to
+plot in polar coordinates (the default is a column “ws” — wind
+speed) and a pollutant. Should also contain <code>date</code> if plots by time period
+are required.</p></dd>
+
+    <dt><code>wd</code></dt>
 <dd><p>Name of wind direction field.</p></dd>
 
     <dt><code>statistic</code></dt>
@@ -478,6 +484,17 @@ removed on the plots. This is done by shading the missing data in
 only a relatively few data points at very high wind speeds and plotting all
 of them can reduce the useful information in the plot.</p></dd>
 
+    <dt><code>angle.scale</code></dt>
+<dd><p>In radial plots (e.g., <code><a href="https://openair-project.github.io/openair/reference/polarPlot.html" class="external-link">polarPlot()</a></code>), the radial scale is
+drawn directly on the plot itself. While suitable defaults have been
+chosen, sometimes the placement of the scale may interfere with an
+interesting feature. <code>angle.scale</code> can take any value between <code>0</code> and <code>360</code>
+to place the scale at a different angle, or <code>FALSE</code> to move it to the side
+of the plots.</p></dd>
+
+    <dt><code>units</code></dt>
+<dd><p>The units shown on the polar axis scale.</p></dd>
+
     <dt><code>force.positive</code></dt>
 <dd><p>The default is <code>TRUE</code>. Sometimes if smoothing data with
 steep gradients it is possible for predicted values to be negative.
@@ -510,6 +527,10 @@ mean value. This is done <em>after</em> fitting the smooth surface. This option 
 particularly useful if one is interested in the patterns of concentrations
 for several pollutants on different scales e.g. NOx and CO. Often useful if
 more than one <code>pollutant</code> is chosen.</p></dd>
+
+    <dt><code>key.title</code></dt>
+<dd><p>Used to set the title of the legend. The legend title is
+passed to <code><a href="https://openair-project.github.io/openair/reference/quickText.html" class="external-link">quickText()</a></code> if <code>auto.text = TRUE</code>.</p></dd>
 
     <dt><code>strip.position</code></dt>
 <dd><p>Location where the facet 'strips' are located when
@@ -562,6 +583,10 @@ to the active graphics device. <code>plot = FALSE</code> deactivates this behavi
 This may be useful when the plot <em>data</em> is of more interest, or the plot is
 required to appear later (e.g., later in a Quarto document, or to be saved
 to a file).</p></dd>
+
+    <dt><code>key</code></dt>
+<dd><p>Deprecated; please use <code>key.position</code>. If <code>FALSE</code>, sets
+<code>key.position</code> to <code>"none"</code>.</p></dd>
 
 
 </dl></dd>

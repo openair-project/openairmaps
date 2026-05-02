@@ -355,7 +355,10 @@ off, if desired.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Arguments passed on to <code><a href="https://openair-project.github.io/openair/reference/polarFreq.html" class="external-link">openair::polarFreq</a></code></p><dl><dt><code>ws.int</code></dt>
+<dd><p>Arguments passed on to <code><a href="https://openair-project.github.io/openair/reference/polarFreq.html" class="external-link">openair::polarFreq</a></code></p><dl><dt><code>mydata</code></dt>
+<dd><p>A data frame minimally containing <code>ws</code>, <code>wd</code> and <code>date</code>.</p></dd>
+
+    <dt><code>ws.int</code></dt>
 <dd><p>Wind speed interval assumed. In some cases e.g. a low met mast,
 an interval of 0.5 may be more appropriate.</p></dd>
 
@@ -364,6 +367,17 @@ an interval of 0.5 may be more appropriate.</p></dd>
 
     <dt><code>grid.line</code></dt>
 <dd><p>Radial spacing of grid lines.</p></dd>
+
+    <dt><code>breaks,labels</code></dt>
+<dd><p>If a categorical colour scale is required then <code>breaks</code>
+should be specified. These should be provided as a numeric vector, e.g.,
+<code>breaks = c(0, 50, 100, 1000)</code>. Users should set the maximum value of
+<code>breaks</code> to exceed the maximum data value to ensure it is within the
+maximum final range, e.g., 100–1000 in this case. Labels will
+automatically be generated, but can be customised by passing a character
+vector to <code>labels</code>, e.g., <code>labels = c("good", "bad", "very bad")</code>. In this
+example, <code>0 - 50</code> will be <code>"good"</code> and so on. Note there is one less label
+than break.</p></dd>
 
     <dt><code>trans</code></dt>
 <dd><p>Should a transformation be applied? Sometimes when producing
@@ -411,6 +425,17 @@ locations to the bottom of the plot.</p></dd>
 <dd><p>Either <code>TRUE</code> (default) or <code>FALSE</code>. If <code>TRUE</code> titles and
 axis labels will automatically try and format pollutant names and units
 properly, e.g., by subscripting the "2" in "NO2". Passed to <code><a href="https://openair-project.github.io/openair/reference/quickText.html" class="external-link">quickText()</a></code>.</p></dd>
+
+    <dt><code>plot</code></dt>
+<dd><p>When <code>openair</code> plots are created they are automatically printed
+to the active graphics device. <code>plot = FALSE</code> deactivates this behaviour.
+This may be useful when the plot <em>data</em> is of more interest, or the plot is
+required to appear later (e.g., later in a Quarto document, or to be saved
+to a file).</p></dd>
+
+    <dt><code>key</code></dt>
+<dd><p>Deprecated; please use <code>key.position</code>. If <code>FALSE</code>, sets
+<code>key.position</code> to <code>"none"</code>.</p></dd>
 
 
 </dl></dd>

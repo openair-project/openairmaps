@@ -366,6 +366,103 @@ legend, the plot title, or the plot margins.</p></dd>
 their respective directions. <code>"xy"</code> can be used to reverse both
 directions.</p></dd>
 
+    <dt><code>mapping</code></dt>
+<dd><p>Set of aesthetic mappings created by <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code>. If specified and
+<code>inherit.aes = TRUE</code> (the default), it is combined with the default mapping
+at the top level of the plot. You must supply <code>mapping</code> if there is no plot
+mapping.</p></dd>
+
+    <dt><code>stat</code></dt>
+<dd><p>The statistical transformation to use on the data for this layer.
+When using a <code>geom_*()</code> function to construct a layer, the <code>stat</code>
+argument can be used to override the default coupling between geoms and
+stats. The <code>stat</code> argument accepts the following:</p><ul><li><p>A <code>Stat</code> ggproto subclass, for example <code>StatCount</code>.</p></li>
+<li><p>A string naming the stat. To give the stat as a string, strip the
+function name of the <code>stat_</code> prefix. For example, to use <code>stat_count()</code>,
+give the stat as <code>"count"</code>.</p></li>
+<li><p>For more information and other ways to specify the stat, see the
+<a href="https://ggplot2.tidyverse.org/reference/layer_stats.html" class="external-link">layer stat</a> documentation.</p></li>
+</ul></dd>
+
+    <dt><code>position</code></dt>
+<dd><p>A position adjustment to use on the data for this layer. This
+can be used in various ways, including to prevent overplotting and
+improving the display. The <code>position</code> argument accepts the following:</p><ul><li><p>The result of calling a position function, such as <code>position_jitter()</code>.
+This method allows for passing extra arguments to the position.</p></li>
+<li><p>A string naming the position adjustment. To give the position as a
+string, strip the function name of the <code>position_</code> prefix. For example,
+to use <code>position_jitter()</code>, give the position as <code>"jitter"</code>.</p></li>
+<li><p>For more information and other ways to specify the position, see the
+<a href="https://ggplot2.tidyverse.org/reference/layer_positions.html" class="external-link">layer position</a> documentation.</p></li>
+</ul></dd>
+
+    <dt><code>na.rm</code></dt>
+<dd><p>If <code>FALSE</code>, the default, missing values are removed with
+a warning. If <code>TRUE</code>, missing values are silently removed.</p></dd>
+
+    <dt><code>show.legend</code></dt>
+<dd><p>logical. Should this layer be included in the legends?
+<code>NA</code>, the default, includes if any aesthetics are mapped.
+<code>FALSE</code> never includes, and <code>TRUE</code> always includes.</p>
+<p>You can also set this to one of "polygon", "line", and "point" to
+override the default legend.</p></dd>
+
+    <dt><code>inherit.aes</code></dt>
+<dd><p>If <code>FALSE</code>, overrides the default aesthetics,
+rather than combining with them. This is most useful for helper functions
+that define both data and aesthetics and shouldn't inherit behaviour from
+the default plot specification, e.g. <code><a href="https://ggplot2.tidyverse.org/reference/annotation_borders.html" class="external-link">annotation_borders()</a></code>.</p></dd>
+
+    <dt><code>parse</code></dt>
+<dd><p>If <code>TRUE</code>, the labels will be parsed into expressions and
+displayed as described in <code><a href="https://rdrr.io/r/grDevices/plotmath.html" class="external-link">?plotmath</a></code>.</p></dd>
+
+    <dt><code>label.padding</code></dt>
+<dd><p>Amount of padding around label. Defaults to 0.25 lines.</p></dd>
+
+    <dt><code>label.r</code></dt>
+<dd><p>Radius of rounded corners. Defaults to 0.15 lines.</p></dd>
+
+    <dt><code>label.size</code></dt>
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Replaced by the
+<code>linewidth</code> aesthetic. Size of label border, in mm.</p></dd>
+
+    <dt><code>border.colour,border.color</code></dt>
+<dd><p>Colour of label border. When <code>NULL</code>
+(default), the <code>colour</code> aesthetic determines the colour of the label border.
+<code>border.color</code> is an alias for <code>border.colour</code>.</p></dd>
+
+    <dt><code>text.colour,text.color</code></dt>
+<dd><p>Colour of the text. When <code>NULL</code> (default), the
+<code>colour</code> aesthetic determines the colour of the text. <code>text.color</code> is an
+alias for <code>text.colour</code>.</p></dd>
+
+    <dt><code>fun.geometry</code></dt>
+<dd><p>A function that takes a <code>sfc</code> object and returns a <code>sfc_POINT</code> with the
+same length as the input. If <code>NULL</code>, <code>function(x) sf::st_point_on_surface(sf::st_zm(x))</code>
+will be used. Note that the function may warn about the incorrectness of
+the result if the data is not projected, but you can ignore this except
+when you really care about the exact locations.</p></dd>
+
+    <dt><code>check_overlap</code></dt>
+<dd><p>If <code>TRUE</code>, text that overlaps previous text in the
+same layer will not be plotted. <code>check_overlap</code> happens at draw time and in
+the order of the data. Therefore data should be arranged by the label
+column before calling <code>geom_text()</code>. Note that this argument is not
+supported by <code>geom_label()</code>.</p></dd>
+
+    <dt><code>geom</code></dt>
+<dd><p>The geometric object to use to display the data for this layer.
+When using a <code>stat_*()</code> function to construct a layer, the <code>geom</code> argument
+can be used to override the default coupling between stats and geoms. The
+<code>geom</code> argument accepts the following:</p><ul><li><p>A <code>Geom</code> ggproto subclass, for example <code>GeomPoint</code>.</p></li>
+<li><p>A string naming the geom. To give the geom as a string, strip the
+function name of the <code>geom_</code> prefix. For example, to use <code>geom_point()</code>,
+give the geom as <code>"point"</code>.</p></li>
+<li><p>For more information and other ways to specify the geom, see the
+<a href="https://ggplot2.tidyverse.org/reference/layer_geoms.html" class="external-link">layer geom</a> documentation.</p></li>
+</ul></dd>
+
     <dt><code>names</code></dt>
 <dd><p>By default, the columns created by <code><a href="https://openair-project.github.io/openair/reference/cutData.html" class="external-link">cutData()</a></code> are named after
 their <code>type</code> option. Specifying <code>names</code> defines other names for the

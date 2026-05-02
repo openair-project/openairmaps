@@ -400,6 +400,13 @@ polarMap(
   Arguments passed on to
   [`openair::polarPlot`](https://openair-project.github.io/openair/reference/polarPlot.html)
 
+  `mydata`
+
+  :   A data frame minimally containing `wd`, another variable to plot
+      in polar coordinates (the default is a column “ws” — wind speed)
+      and a pollutant. Should also contain `date` if plots by time
+      period are required.
+
   `wd`
 
   :   Name of wind direction field.
@@ -659,6 +666,14 @@ polarMap(
   :   The quantile to be estimated when `statistic` is set to
       `"quantile.slope"`. Default is `0.5` which is equal to the median
       and will be ignored if `"quantile.slope"` is not used.
+
+  `plot`
+
+  :   When `openair` plots are created they are automatically printed to
+      the active graphics device. `plot = FALSE` deactivates this
+      behaviour. This may be useful when the plot *data* is of more
+      interest, or the plot is required to appear later (e.g., later in
+      a Quarto document, or to be saved to a file).
 
   `key`
 

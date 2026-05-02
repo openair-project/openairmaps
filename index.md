@@ -68,6 +68,7 @@ All **openairmaps** functions are fully documented; access documentation
 using R in your IDE of choice.
 
 ``` r
+
 ?openairmaps::polarMap
 ```
 
@@ -88,6 +89,7 @@ and ideas for the application of **openair**’s various functions.
 **openairmaps** can be installed from **CRAN** with:
 
 ``` r
+
 install.packages("openairmaps")
 ```
 
@@ -95,6 +97,7 @@ You can also install the development version of **openairmaps** from
 GitHub using [pak](https://pak.r-lib.org/):
 
 ``` r
+
 # install.packages("pak")
 pak::pak("openair-project/openairmaps")
 ```

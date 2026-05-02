@@ -382,6 +382,13 @@ diffMap(
   Arguments passed on to
   [`openair::polarPlot`](https://openair-project.github.io/openair/reference/polarPlot.html)
 
+  `mydata`
+
+  :   A data frame minimally containing `wd`, another variable to plot
+      in polar coordinates (the default is a column “ws” — wind speed)
+      and a pollutant. Should also contain `date` if plots by time
+      period are required.
+
   `wd`
 
   :   Name of wind direction field.
@@ -536,6 +543,20 @@ diffMap(
       plotting all of them can reduce the useful information in the
       plot.
 
+  `angle.scale`
+
+  :   In radial plots (e.g.,
+      [`polarPlot()`](https://openair-project.github.io/openair/reference/polarPlot.html)),
+      the radial scale is drawn directly on the plot itself. While
+      suitable defaults have been chosen, sometimes the placement of the
+      scale may interfere with an interesting feature. `angle.scale` can
+      take any value between `0` and `360` to place the scale at a
+      different angle, or `FALSE` to move it to the side of the plots.
+
+  `units`
+
+  :   The units shown on the polar axis scale.
+
   `force.positive`
 
   :   The default is `TRUE`. Sometimes if smoothing data with steep
@@ -573,6 +594,12 @@ diffMap(
       option is particularly useful if one is interested in the patterns
       of concentrations for several pollutants on different scales e.g.
       NOx and CO. Often useful if more than one `pollutant` is chosen.
+
+  `key.title`
+
+  :   Used to set the title of the legend. The legend title is passed to
+      [`quickText()`](https://openair-project.github.io/openair/reference/quickText.html)
+      if `auto.text = TRUE`.
 
   `strip.position`
 
@@ -636,6 +663,11 @@ diffMap(
       behaviour. This may be useful when the plot *data* is of more
       interest, or the plot is required to appear later (e.g., later in
       a Quarto document, or to be saved to a file).
+
+  `key`
+
+  :   Deprecated; please use `key.position`. If `FALSE`, sets
+      `key.position` to `"none"`.
 
 - control:
 

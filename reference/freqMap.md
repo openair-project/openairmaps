@@ -395,6 +395,10 @@ freqMap(
   Arguments passed on to
   [`openair::polarFreq`](https://openair-project.github.io/openair/reference/polarFreq.html)
 
+  `mydata`
+
+  :   A data frame minimally containing `ws`, `wd` and `date`.
+
   `ws.int`
 
   :   Wind speed interval assumed. In some cases e.g. a low met mast, an
@@ -407,6 +411,19 @@ freqMap(
   `grid.line`
 
   :   Radial spacing of grid lines.
+
+  `breaks,labels`
+
+  :   If a categorical colour scale is required then `breaks` should be
+      specified. These should be provided as a numeric vector, e.g.,
+      `breaks = c(0, 50, 100, 1000)`. Users should set the maximum value
+      of `breaks` to exceed the maximum data value to ensure it is
+      within the maximum final range, e.g., 100–1000 in this case.
+      Labels will automatically be generated, but can be customised by
+      passing a character vector to `labels`, e.g.,
+      `labels = c("good", "bad", "very bad")`. In this example, `0 - 50`
+      will be `"good"` and so on. Note there is one less label than
+      break.
 
   `trans`
 
@@ -467,6 +484,19 @@ freqMap(
       labels will automatically try and format pollutant names and units
       properly, e.g., by subscripting the "2" in "NO2". Passed to
       [`quickText()`](https://openair-project.github.io/openair/reference/quickText.html).
+
+  `plot`
+
+  :   When `openair` plots are created they are automatically printed to
+      the active graphics device. `plot = FALSE` deactivates this
+      behaviour. This may be useful when the plot *data* is of more
+      interest, or the plot is required to appear later (e.g., later in
+      a Quarto document, or to be saved to a file).
+
+  `key`
+
+  :   Deprecated; please use `key.position`. If `FALSE`, sets
+      `key.position` to `"none"`.
 
 - control:
 

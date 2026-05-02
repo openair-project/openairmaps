@@ -325,7 +325,10 @@ off, if desired.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Arguments passed on to <code><a href="https://openair-project.github.io/openair/reference/windRose.html" class="external-link">openair::windRose</a></code></p><dl><dt><code>ws</code></dt>
+<dd><p>Arguments passed on to <code><a href="https://openair-project.github.io/openair/reference/windRose.html" class="external-link">openair::windRose</a></code></p><dl><dt><code>mydata</code></dt>
+<dd><p>A data frame containing fields <code>ws</code> and <code>wd</code></p></dd>
+
+    <dt><code>ws</code></dt>
 <dd><p>Name of the column representing wind speed.</p></dd>
 
     <dt><code>wd</code></dt>
@@ -432,6 +435,11 @@ each bin.</p></dd>
 The <code><a href="https://openair-project.github.io/openair/reference/windRose.html" class="external-link">windRose()</a></code> default NULL is equivalent to <code>pollutant = "ws"</code>. Use in
 <code><a href="https://openair-project.github.io/openair/reference/pollutionRose.html" class="external-link">pollutionRose()</a></code>.</p></dd>
 
+    <dt><code>annotate</code></dt>
+<dd><p>If <code>TRUE</code> then the percentage calm and mean values are
+printed in each panel together with a description of the statistic below
+the plot. If <code>FALSE</code> then only the statistic will be printed.</p></dd>
+
     <dt><code>angle.scale</code></dt>
 <dd><p>In radial plots (e.g., <code><a href="https://openair-project.github.io/openair/reference/polarPlot.html" class="external-link">polarPlot()</a></code>), the radial scale is
 drawn directly on the plot itself. While suitable defaults have been
@@ -442,6 +450,13 @@ of the plots.</p></dd>
 
     <dt><code>border</code></dt>
 <dd><p>Border colour for shaded areas. Default is no border.</p></dd>
+
+    <dt><code>plot</code></dt>
+<dd><p>When <code>openair</code> plots are created they are automatically printed
+to the active graphics device. <code>plot = FALSE</code> deactivates this behaviour.
+This may be useful when the plot <em>data</em> is of more interest, or the plot is
+required to appear later (e.g., later in a Quarto document, or to be saved
+to a file).</p></dd>
 
     <dt><code>key</code></dt>
 <dd><p>Deprecated; please use <code>key.position</code>. If <code>FALSE</code>, sets

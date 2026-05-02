@@ -58,5 +58,8 @@ in-depth documentation of `openair` and `openairmaps`.
 
 Authors:
 
+- Jack Davison <jack.davison@ricardo.com>
+  ([ORCID](https://orcid.org/0000-0003-2653-6615))
+
 - David Carslaw <david.carslaw@york.ac.uk>
   ([ORCID](https://orcid.org/0000-0003-0991-950X))
