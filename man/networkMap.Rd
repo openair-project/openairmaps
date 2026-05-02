@@ -145,7 +145,7 @@ networkMap(source = c("aurn", "waqn", "saqn"), control = "network")
 
 }
 \seealso{
-Other uk air quality network mapping functions: 
-\code{\link{searchNetwork}()}
+Other uk air quality network mapping functions:
+\code{\link[=searchNetwork]{searchNetwork()}}
 }
 \concept{uk air quality network mapping functions}

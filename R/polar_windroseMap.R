@@ -37,8 +37,7 @@
 #'   be used to set specific break points. For example, the argument `breaks =
 #'   c(0, 1, 10, 100)`` breaks the data into segments <1, 1-10, 10-100, >100.
 #'
-#' @inheritDotParams openair::windRose -ws.int -breaks -mydata -plot -annotate
-#'   -pollutant -type -cols -key.position
+#' @inheritDotParams openair::windRose
 #' @returns Either:
 #'
 #'  - *Dynamic:* A leaflet object

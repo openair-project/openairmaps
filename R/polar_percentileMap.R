@@ -29,8 +29,7 @@
 #' - `"free"` which allows all of the markers to use different radial axis scales.
 #' - A numeric vector defining a sequence of numbers to use as the intervals, e.g., `intervals = c(0, 10, 30, 50)`.
 #'
-#' @inheritDotParams openair::percentileRose -mydata -pollutant -percentile
-#'   -type -cols -key -plot -intervals
+#' @inheritDotParams openair::percentileRose
 #' @returns Either:
 #'
 #'  - *Dynamic:* A leaflet object

@@ -175,7 +175,7 @@ A value between 0 (fully transparent) and 1 (fully opaque).}
 
 A custom \code{ggplot2} theme to add to the polar markers. This should ideally
 be a partial theme (i.e., \code{\link[ggplot2:theme]{ggplot2::theme()}}) over a complete theme (e.g.,
-\code{\link[ggplot2:ggtheme]{ggplot2::theme_bw()}}) as other arguments like \code{key} interact with the plot
+\code{\link[ggplot2:theme_bw]{ggplot2::theme_bw()}}) as other arguments like \code{key} interact with the plot
 theme \emph{before} custom themes are set, so would be overriden by a complete
 theme.}
 
@@ -309,7 +309,7 @@ wind directions is from a particular wind sector is also shown.}
 Either:
 \itemize{
 \item \emph{Dynamic:} A leaflet object
-\item \emph{Static:} A \code{ggplot2} object using \code{\link[ggplot2:ggsf]{ggplot2::coord_sf()}} coordinates with a \code{ggspatial} basemap
+\item \emph{Static:} A \code{ggplot2} object using \code{\link[ggplot2:coord_sf]{ggplot2::coord_sf()}} coordinates with a \code{ggspatial} basemap
 }
 }
 \description{
@@ -354,7 +354,7 @@ Legends can be removed using \code{ggplot2::theme(legend.position = "none")}, or
 further customised using \code{\link[ggplot2:guides]{ggplot2::guides()}} and either \code{color = ggplot2::guide_colourbar()} for continuous legends or \code{color = ggplot2::guide_legend()} for discrete legends.
 
 The extent of a map can be adjusted using the \code{xlim} and \code{ylim} arguments
-of \code{\link[ggplot2:ggsf]{ggplot2::coord_sf()}}.
+of \code{\link[ggplot2:coord_sf]{ggplot2::coord_sf()}}.
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{polarMap(polar_data, "no2", static = TRUE) +
     ggplot2::coord_sf(
@@ -376,12 +376,12 @@ pollroseMap(polar_data,
 \seealso{
 \code{\link[openair:pollutionRose]{openair::pollutionRose()}}
 
-Other directional analysis maps: 
-\code{\link{annulusMap}()},
-\code{\link{diffMap}()},
-\code{\link{freqMap}()},
-\code{\link{percentileMap}()},
-\code{\link{polarMap}()},
-\code{\link{windroseMap}()}
+Other directional analysis maps:
+\code{\link[=annulusMap]{annulusMap()}},
+\code{\link[=diffMap]{diffMap()}},
+\code{\link[=freqMap]{freqMap()}},
+\code{\link[=percentileMap]{percentileMap()}},
+\code{\link[=polarMap]{polarMap()}},
+\code{\link[=windroseMap]{windroseMap()}}
 }
 \concept{directional analysis maps}

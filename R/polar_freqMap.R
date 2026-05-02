@@ -42,8 +42,7 @@
 #'   100, 10)` - a scale from 0-10 in intervals of 10, or a more flexible
 #'   sequence, e.g., `breaks = c(0, 1, 5, 7, 10)`, which may be useful for some
 #'   situations.
-#' @inheritDotParams openair::polarFreq -mydata -pollutant -statistic -breaks
-#'   -type -cols -key -plot
+#' @inheritDotParams openair::polarFreq
 #' @returns Either:
 #'
 #'  - *Dynamic:* A leaflet object

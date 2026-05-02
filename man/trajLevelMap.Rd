@@ -175,7 +175,7 @@ trajLevelMap(traj_data, pollutant = "pm2.5", statistic = "pscf", min.bin = 10)
 \code{\link[=trajLevelMapStatic]{trajLevelMapStatic()}} for the static \code{ggplot2} equivalent of
 \code{\link[=trajLevelMap]{trajLevelMap()}}
 
-Other interactive trajectory maps: 
-\code{\link{trajMap}()}
+Other interactive trajectory maps:
+\code{\link[=trajMap]{trajMap()}}
 }
 \concept{interactive trajectory maps}

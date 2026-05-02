@@ -36,9 +36,7 @@
 #'   recommended to use a "diverging" colour palette (along with a symmetrical
 #'   `limit` scale) for effective visualisation.
 #'
-#' @inheritDotParams openair::polarPlot -mydata -pollutant -x -limits -type
-#'   -cols -key -key.title -key.position -units -angle.scale
-#'   -plot
+#' @inheritDotParams openair::polarPlot
 #' @returns Either:
 #'
 #'  - *Dynamic:* A leaflet object

@@ -131,7 +131,7 @@ searchNetwork(lat = palace$lat, lng = palace$lng, max_dist = 20, year = 2020)
 }
 }
 \seealso{
-Other uk air quality network mapping functions: 
-\code{\link{networkMap}()}
+Other uk air quality network mapping functions:
+\code{\link[=networkMap]{networkMap()}}
 }
 \concept{uk air quality network mapping functions}

@@ -9,7 +9,7 @@ An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) w
 }
 \source{
 \code{polar_data} was compiled from data using the
-\code{\link[openair:importUKAQ-wrapper]{openair::importAURN()}} function from the \code{openair} package with
+\code{\link[openair:importAURN]{openair::importAURN()}} function from the \code{openair} package with
 meteorological data from the \code{worldmet} package.
 }
 \usage{

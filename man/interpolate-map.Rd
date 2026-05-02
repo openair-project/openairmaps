@@ -257,7 +257,7 @@ to pass to spatial interpolation functions for \code{\link[=krigingMap]{krigingM
 
 \emph{scope:} dynamic & static
 
-Extra arguments passed to \code{\link[gstat:krige]{gstat::idw()}}, \code{\link[gstat:vgm]{gstat::vgm()}},
+Extra arguments passed to \code{\link[gstat:idw]{gstat::idw()}}, \code{\link[gstat:vgm]{gstat::vgm()}},
 \code{\link[gstat:fit.variogram]{gstat::fit.variogram()}}, and \code{\link[gstat:krige]{gstat::krige()}}.}
 
 \item{args.voronoi}{\emph{Extra arguments to pass to spatial interpolation
@@ -272,7 +272,7 @@ which is dealt with by \code{\link[=voronoiMap]{voronoiMap()}}.}
 Either:
 \itemize{
 \item \emph{Dynamic:} A leaflet object
-\item \emph{Static:} A \code{ggplot2} object using \code{\link[ggplot2:ggsf]{ggplot2::coord_sf()}} coordinates with a \code{ggspatial} basemap
+\item \emph{Static:} A \code{ggplot2} object using \code{\link[ggplot2:coord_sf]{ggplot2::coord_sf()}} coordinates with a \code{ggspatial} basemap
 }
 }
 \description{
@@ -302,7 +302,7 @@ Legends can be removed using \code{ggplot2::theme(legend.position = "none")}, or
 further customised using \code{\link[ggplot2:guides]{ggplot2::guides()}} and either \code{color = ggplot2::guide_colourbar()} for continuous legends or \code{color = ggplot2::guide_legend()} for discrete legends.
 
 The extent of a map can be adjusted using the \code{xlim} and \code{ylim} arguments
-of \code{\link[ggplot2:ggsf]{ggplot2::coord_sf()}}.
+of \code{\link[ggplot2:coord_sf]{ggplot2::coord_sf()}}.
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{polarMap(polar_data, "no2", static = TRUE) +
     ggplot2::coord_sf(

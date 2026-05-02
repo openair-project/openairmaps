@@ -316,8 +316,7 @@
 #'
 #' @param control **Deprecated.** Please use `type`.
 #'
-#' @inheritDotParams openair::polarPlot -mydata -pollutant -x -limits -type
-#'   -cols -key.position -plot
+#' @inheritDotParams openair::polarPlot
 #'
 #' @returns Either:
 #'

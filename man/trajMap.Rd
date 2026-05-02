@@ -44,7 +44,7 @@ Column names representing the decimal latitude and longitude.}
 
 This column may be numeric, character, factor or date(time). This will
 commonly be a pollutant concentration which has been joined (e.g., by
-\code{\link[dplyr:mutate-joins]{dplyr::left_join()}}) to the trajectory data by "date".}
+\code{\link[dplyr:left_join]{dplyr::left_join()}}) to the trajectory data by "date".}
 
 \item{type}{\emph{A method to condition the \code{data} for separate plotting.}
 
@@ -197,7 +197,7 @@ trajMap(traj_data, colour = "pm10")
 
 \code{\link[=trajMapStatic]{trajMapStatic()}} for the static \code{ggplot2} equivalent of \code{\link[=trajMap]{trajMap()}}
 
-Other interactive trajectory maps: 
-\code{\link{trajLevelMap}()}
+Other interactive trajectory maps:
+\code{\link[=trajLevelMap]{trajLevelMap()}}
 }
 \concept{interactive trajectory maps}

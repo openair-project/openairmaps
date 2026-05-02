@@ -133,8 +133,8 @@ default, both \code{before} and \code{after} are the data object provided to
 A leaflet object.
 }
 \description{
-This function is similar (but not identical to) the \code{\link[leaflet:map-layers]{leaflet::addMarkers()}}
-and \code{\link[leaflet:map-layers]{leaflet::addCircleMarkers()}} functions in \code{leaflet}, which allows users
+This function is similar (but not identical to) the \code{\link[leaflet:addMarkers]{leaflet::addMarkers()}}
+and \code{\link[leaflet:addCircleMarkers]{leaflet::addCircleMarkers()}} functions in \code{leaflet}, which allows users
 to add \code{openair} directional analysis plots to any leaflet map and have more
 control over groups and layerIds than in "all-in-one" functions like
 \code{\link[=polarMap]{polarMap()}}.

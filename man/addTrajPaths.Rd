@@ -28,7 +28,7 @@ for points. For example, the first point of the first trajectory path will
 be "layerId-1-1".}
 
 \item{group}{the name of the group the newly created layers should belong to
-(for \code{\link[leaflet:remove]{leaflet::clearGroup()}} and \code{\link[leaflet:addLayersControl]{leaflet::addLayersControl()}} purposes).
+(for \code{\link[leaflet:clearGroup]{leaflet::clearGroup()}} and \code{\link[leaflet:addLayersControl]{leaflet::addLayersControl()}} purposes).
 Human-friendly group names are permitted–they need not be short,
 identifier-style names. Any number of layers and even different types of
 layers (e.g. markers and polygons) can share the same group name.}
@@ -43,10 +43,10 @@ helps to understand where the air masses were at particular times and get a
 feel for the speed of the air (points closer together correspond to slower
 moving air masses). Defaults to \code{12}.}
 
-\item{...}{Other arguments to pass to both \code{\link[leaflet:map-layers]{leaflet::addCircleMarkers()}} and
-\code{\link[leaflet:map-layers]{leaflet::addPolylines()}}. If you use the \code{color} argument, it is important
+\item{...}{Other arguments to pass to both \code{\link[leaflet:addCircleMarkers]{leaflet::addCircleMarkers()}} and
+\code{\link[leaflet:addPolylines]{leaflet::addPolylines()}}. If you use the \code{color} argument, it is important
 to ensure the vector you supply is of length one to avoid issues with
-\code{\link[leaflet:map-layers]{leaflet::addPolylines()}} (i.e., use \code{color = ~ pal(nox)[1]}). Note that
+\code{\link[leaflet:addPolylines]{leaflet::addPolylines()}} (i.e., use \code{color = ~ pal(nox)[1]}). Note that
 \code{opacity} controls the opacity of the lines and \code{fillOpacity} the opacity
 of the markers.}
 }
@@ -54,7 +54,7 @@ of the markers.}
 A leaflet object.
 }
 \description{
-This function is similar (but not identical to) the \code{\link[leaflet:map-layers]{leaflet::addMarkers()}}
+This function is similar (but not identical to) the \code{\link[leaflet:addMarkers]{leaflet::addMarkers()}}
 function in \code{leaflet}, which allows users to add trajectory paths to any
 leaflet map and have more control over groups and layerIds than in
 "all-in-one" functions like \code{\link[=trajMap]{trajMap()}}.
@@ -62,8 +62,8 @@ leaflet map and have more control over groups and layerIds than in
 \details{
 \code{\link[=addTrajPaths]{addTrajPaths()}} can be a powerful way of quickly plotting
 trajectories on a leaflet map, but users should take some care due to any
-additional arguments being passed to both \code{\link[leaflet:map-layers]{leaflet::addCircleMarkers()}} and
-\code{\link[leaflet:map-layers]{leaflet::addPolylines()}}. In particular, users should be weary of the use
+additional arguments being passed to both \code{\link[leaflet:addCircleMarkers]{leaflet::addCircleMarkers()}} and
+\code{\link[leaflet:addPolylines]{leaflet::addPolylines()}}. In particular, users should be weary of the use
 of the \code{color} argument. Specifically, if \code{color} is passed a vector of
 length greater than one, multiple polylines will be drawn on top of one
 another. At best this will affect opacity, but at worst this will

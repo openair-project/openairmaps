@@ -173,7 +173,7 @@ A value between 0 (fully transparent) and 1 (fully opaque).}
 
 A custom \code{ggplot2} theme to add to the polar markers. This should ideally
 be a partial theme (i.e., \code{\link[ggplot2:theme]{ggplot2::theme()}}) over a complete theme (e.g.,
-\code{\link[ggplot2:ggtheme]{ggplot2::theme_bw()}}) as other arguments like \code{key} interact with the plot
+\code{\link[ggplot2:theme_bw]{ggplot2::theme_bw()}}) as other arguments like \code{key} interact with the plot
 theme \emph{before} custom themes are set, so would be overriden by a complete
 theme.}
 
@@ -287,6 +287,10 @@ off, if desired.}
 \item{...}{
   Arguments passed on to \code{\link[openair:polarPlot]{openair::polarPlot}}
   \describe{
+    \item{\code{mydata}}{A data frame minimally containing \code{wd}, another variable to
+plot in polar coordinates (the default is a column \dQuote{ws} --- wind
+speed) and a pollutant. Should also contain \code{date} if plots by time period
+are required.}
     \item{\code{wd}}{Name of wind direction field.}
     \item{\code{statistic}}{The statistic that should be applied to each wind
 speed/direction bin. Because of the smoothing involved, the colour scale
@@ -403,6 +407,13 @@ removed on the plots. This is done by shading the missing data in
     \item{\code{upper}}{This sets the upper limit wind speed to be used. Often there are
 only a relatively few data points at very high wind speeds and plotting all
 of them can reduce the useful information in the plot.}
+    \item{\code{angle.scale}}{In radial plots (e.g., \code{\link[openair:polarPlot]{polarPlot()}}), the radial scale is
+drawn directly on the plot itself. While suitable defaults have been
+chosen, sometimes the placement of the scale may interfere with an
+interesting feature. \code{angle.scale} can take any value between \code{0} and \code{360}
+to place the scale at a different angle, or \code{FALSE} to move it to the side
+of the plots.}
+    \item{\code{units}}{The units shown on the polar axis scale.}
     \item{\code{force.positive}}{The default is \code{TRUE}. Sometimes if smoothing data with
 steep gradients it is possible for predicted values to be negative.
 \code{force.positive = TRUE} ensures that predictions remain positive. This is
@@ -430,6 +441,8 @@ mean value. This is done \emph{after} fitting the smooth surface. This option is
 particularly useful if one is interested in the patterns of concentrations
 for several pollutants on different scales e.g. NOx and CO. Often useful if
 more than one \code{pollutant} is chosen.}
+    \item{\code{key.title}}{Used to set the title of the legend. The legend title is
+passed to \code{\link[openair:quickText]{quickText()}} if \code{auto.text = TRUE}.}
     \item{\code{strip.position}}{Location where the facet 'strips' are located when
 using \code{type}. When one \code{type} is provided, can be one of \code{"left"},
 \code{"right"}, \code{"bottom"} or \code{"top"}. When two \code{type}s are provided, this
@@ -462,6 +475,8 @@ to the active graphics device. \code{plot = FALSE} deactivates this behaviour.
 This may be useful when the plot \emph{data} is of more interest, or the plot is
 required to appear later (e.g., later in a Quarto document, or to be saved
 to a file).}
+    \item{\code{key}}{Deprecated; please use \code{key.position}. If \code{FALSE}, sets
+\code{key.position} to \code{"none"}.}
   }}
 
 \item{control}{\strong{Deprecated.} Please use \code{type}.}
@@ -470,7 +485,7 @@ to a file).}
 Either:
 \itemize{
 \item \emph{Dynamic:} A leaflet object
-\item \emph{Static:} A \code{ggplot2} object using \code{\link[ggplot2:ggsf]{ggplot2::coord_sf()}} coordinates with a \code{ggspatial} basemap
+\item \emph{Static:} A \code{ggplot2} object using \code{\link[ggplot2:coord_sf]{ggplot2::coord_sf()}} coordinates with a \code{ggspatial} basemap
 }
 }
 \description{
@@ -516,7 +531,7 @@ Legends can be removed using \code{ggplot2::theme(legend.position = "none")}, or
 further customised using \code{\link[ggplot2:guides]{ggplot2::guides()}} and either \code{color = ggplot2::guide_colourbar()} for continuous legends or \code{color = ggplot2::guide_legend()} for discrete legends.
 
 The extent of a map can be adjusted using the \code{xlim} and \code{ylim} arguments
-of \code{\link[ggplot2:ggsf]{ggplot2::coord_sf()}}.
+of \code{\link[ggplot2:coord_sf]{ggplot2::coord_sf()}}.
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{polarMap(polar_data, "no2", static = TRUE) +
     ggplot2::coord_sf(
@@ -539,12 +554,12 @@ diffMap(
 \seealso{
 \code{\link[openair:polarDiff]{openair::polarDiff()}}
 
-Other directional analysis maps: 
-\code{\link{annulusMap}()},
-\code{\link{freqMap}()},
-\code{\link{percentileMap}()},
-\code{\link{polarMap}()},
-\code{\link{pollroseMap}()},
-\code{\link{windroseMap}()}
+Other directional analysis maps:
+\code{\link[=annulusMap]{annulusMap()}},
+\code{\link[=freqMap]{freqMap()}},
+\code{\link[=percentileMap]{percentileMap()}},
+\code{\link[=polarMap]{polarMap()}},
+\code{\link[=pollroseMap]{pollroseMap()}},
+\code{\link[=windroseMap]{windroseMap()}}
 }
 \concept{directional analysis maps}

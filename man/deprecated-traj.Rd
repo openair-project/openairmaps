@@ -139,7 +139,7 @@ much noise.}
 \emph{default:} \code{NULL}
 
 A numeric vector of length two defining the x-/y-limits of the map, passed
-to \code{\link[ggplot2:ggsf]{ggplot2::coord_sf()}}. If \code{NULL}, limits will be estimated based on the
+to \code{\link[ggplot2:coord_sf]{ggplot2::coord_sf()}}. If \code{NULL}, limits will be estimated based on the
 lat/lon ranges of the input data.}
 
 \item{crs}{\emph{The coordinate reference system (CRS) into which all data should
@@ -149,7 +149,7 @@ be projected before plotting.}
 
 This argument defaults to the Lambert projection, but can take any
 coordinate reference system to pass to the \code{crs} argument of
-\code{\link[ggplot2:ggsf]{ggplot2::coord_sf()}}. Alternatively, \code{crs} can be set to \code{NULL}, which
+\code{\link[ggplot2:coord_sf]{ggplot2::coord_sf()}}. Alternatively, \code{crs} can be set to \code{NULL}, which
 will typically render the map quicker but may cause countries far from the
 equator or large areas to appear distorted.}
 
@@ -195,7 +195,7 @@ draws solid lines.}
 \item{facet}{Deprecated. Please use \code{type}.}
 
 \item{...}{
-  Arguments passed on to \code{\link[ggplot2:ggsf]{ggplot2::coord_sf}}, \code{\link[openair:cutData]{openair::cutData}}
+  Arguments passed on to \code{\link[ggplot2:coord_sf]{ggplot2::coord_sf}}, \code{\link[openair:cutData]{openair::cutData}}
   \describe{
     \item{\code{expand}}{If \code{TRUE}, the default, adds a small expansion factor to
 the limits to ensure that data and axes don't overlap. If \code{FALSE},
@@ -263,6 +263,80 @@ legend, the plot title, or the plot margins.}
 (default) keeps directions as is. \code{"x"} and \code{"y"} can be used to reverse
 their respective directions. \code{"xy"} can be used to reverse both
 directions.}
+    \item{\code{mapping}}{Set of aesthetic mappings created by \code{\link[ggplot2:aes]{aes()}}. If specified and
+\code{inherit.aes = TRUE} (the default), it is combined with the default mapping
+at the top level of the plot. You must supply \code{mapping} if there is no plot
+mapping.}
+    \item{\code{stat}}{The statistical transformation to use on the data for this layer.
+When using a \verb{geom_*()} function to construct a layer, the \code{stat}
+argument can be used to override the default coupling between geoms and
+stats. The \code{stat} argument accepts the following:
+\itemize{
+\item A \code{Stat} ggproto subclass, for example \code{StatCount}.
+\item A string naming the stat. To give the stat as a string, strip the
+function name of the \code{stat_} prefix. For example, to use \code{stat_count()},
+give the stat as \code{"count"}.
+\item For more information and other ways to specify the stat, see the
+\link[ggplot2:layer_stats]{layer stat} documentation.
+}}
+    \item{\code{position}}{A position adjustment to use on the data for this layer. This
+can be used in various ways, including to prevent overplotting and
+improving the display. The \code{position} argument accepts the following:
+\itemize{
+\item The result of calling a position function, such as \code{position_jitter()}.
+This method allows for passing extra arguments to the position.
+\item A string naming the position adjustment. To give the position as a
+string, strip the function name of the \code{position_} prefix. For example,
+to use \code{position_jitter()}, give the position as \code{"jitter"}.
+\item For more information and other ways to specify the position, see the
+\link[ggplot2:layer_positions]{layer position} documentation.
+}}
+    \item{\code{na.rm}}{If \code{FALSE}, the default, missing values are removed with
+a warning. If \code{TRUE}, missing values are silently removed.}
+    \item{\code{show.legend}}{logical. Should this layer be included in the legends?
+\code{NA}, the default, includes if any aesthetics are mapped.
+\code{FALSE} never includes, and \code{TRUE} always includes.
+
+You can also set this to one of "polygon", "line", and "point" to
+override the default legend.}
+    \item{\code{inherit.aes}}{If \code{FALSE}, overrides the default aesthetics,
+rather than combining with them. This is most useful for helper functions
+that define both data and aesthetics and shouldn't inherit behaviour from
+the default plot specification, e.g. \code{\link[ggplot2:annotation_borders]{annotation_borders()}}.}
+    \item{\code{parse}}{If \code{TRUE}, the labels will be parsed into expressions and
+displayed as described in \code{?plotmath}.}
+    \item{\code{label.padding}}{Amount of padding around label. Defaults to 0.25 lines.}
+    \item{\code{label.r}}{Radius of rounded corners. Defaults to 0.15 lines.}
+    \item{\code{label.size}}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Replaced by the
+\code{linewidth} aesthetic. Size of label border, in mm.}
+    \item{\code{border.colour,border.color}}{Colour of label border. When \code{NULL}
+(default), the \code{colour} aesthetic determines the colour of the label border.
+\code{border.color} is an alias for \code{border.colour}.}
+    \item{\code{text.colour,text.color}}{Colour of the text. When \code{NULL} (default), the
+\code{colour} aesthetic determines the colour of the text. \code{text.color} is an
+alias for \code{text.colour}.}
+    \item{\code{fun.geometry}}{A function that takes a \code{sfc} object and returns a \code{sfc_POINT} with the
+same length as the input. If \code{NULL}, \code{function(x) sf::st_point_on_surface(sf::st_zm(x))}
+will be used. Note that the function may warn about the incorrectness of
+the result if the data is not projected, but you can ignore this except
+when you really care about the exact locations.}
+    \item{\code{check_overlap}}{If \code{TRUE}, text that overlaps previous text in the
+same layer will not be plotted. \code{check_overlap} happens at draw time and in
+the order of the data. Therefore data should be arranged by the label
+column before calling \code{geom_text()}. Note that this argument is not
+supported by \code{geom_label()}.}
+    \item{\code{geom}}{The geometric object to use to display the data for this layer.
+When using a \verb{stat_*()} function to construct a layer, the \code{geom} argument
+can be used to override the default coupling between stats and geoms. The
+\code{geom} argument accepts the following:
+\itemize{
+\item A \code{Geom} ggproto subclass, for example \code{GeomPoint}.
+\item A string naming the geom. To give the geom as a string, strip the
+function name of the \code{geom_} prefix. For example, to use \code{geom_point()},
+give the geom as \code{"point"}.
+\item For more information and other ways to specify the geom, see the
+\link[ggplot2:layer_geoms]{layer geom} documentation.
+}}
     \item{\code{names}}{By default, the columns created by \code{\link[openair:cutData]{cutData()}} are named after
 their \code{type} option. Specifying \code{names} defines other names for the
 columns, which map onto the \code{type} options in the same order they are
@@ -316,8 +390,8 @@ fixed range of years to use in the \code{"none"} case.}
 
 This column may be numeric, character, factor or date(time). This will
 commonly be a pollutant concentration which has been joined (e.g., by
-\code{\link[dplyr:mutate-joins]{dplyr::left_join()}}) to the trajectory data by "date". The scale can be
-edited after the fact using \code{\link[ggplot2:scale_colour_continuous]{ggplot2::scale_color_continuous()}} or similar.}
+\code{\link[dplyr:left_join]{dplyr::left_join()}}) to the trajectory data by "date". The scale can be
+edited after the fact using \code{\link[ggplot2:scale_color_continuous]{ggplot2::scale_color_continuous()}} or similar.}
 
 \item{group}{\emph{Column to use to distinguish different trajectory paths.}
 
@@ -334,8 +408,8 @@ marker/paths, or absolute size value.}
 
 Similar to the \code{colour} argument, this defines a column to map to the size
 of the circular markers or the width of the paths. These scales can be
-edited after the fact using \code{\link[ggplot2:scale_size]{ggplot2::scale_size_continuous()}},
-\code{\link[ggplot2:scale_linewidth]{ggplot2::scale_linewidth_continuous()}}, or similar. If numeric, the value
+edited after the fact using \code{\link[ggplot2:scale_size_continuous]{ggplot2::scale_size_continuous()}},
+\code{\link[ggplot2:scale_linewidth_continuous]{ggplot2::scale_linewidth_continuous()}}, or similar. If numeric, the value
 will be directly provided to \code{ggplot2::geom_point(size = )} or
 \code{ggplot2::geom_path(linewidth = )}.}
 

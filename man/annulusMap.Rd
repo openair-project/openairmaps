@@ -176,7 +176,7 @@ A value between 0 (fully transparent) and 1 (fully opaque).}
 
 A custom \code{ggplot2} theme to add to the polar markers. This should ideally
 be a partial theme (i.e., \code{\link[ggplot2:theme]{ggplot2::theme()}}) over a complete theme (e.g.,
-\code{\link[ggplot2:ggtheme]{ggplot2::theme_bw()}}) as other arguments like \code{key} interact with the plot
+\code{\link[ggplot2:theme_bw]{ggplot2::theme_bw()}}) as other arguments like \code{key} interact with the plot
 theme \emph{before} custom themes are set, so would be overriden by a complete
 theme.}
 
@@ -290,6 +290,8 @@ off, if desired.}
 \item{...}{
   Arguments passed on to \code{\link[openair:polarAnnulus]{openair::polarAnnulus}}
   \describe{
+    \item{\code{mydata}}{A data frame minimally containing \code{date}, \code{wd} and a
+pollutant.}
     \item{\code{resolution}}{Two plot resolutions can be set: \dQuote{normal} and
 \dQuote{fine} (the default).}
     \item{\code{local.tz}}{Should the results be calculated in local time that includes
@@ -382,6 +384,11 @@ passed to \code{\link[openair:quickText]{quickText()}} if \code{auto.text = TRUE
     \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE} titles and
 axis labels will automatically try and format pollutant names and units
 properly, e.g., by subscripting the "2" in "NO2". Passed to \code{\link[openair:quickText]{quickText()}}.}
+    \item{\code{plot}}{When \code{openair} plots are created they are automatically printed
+to the active graphics device. \code{plot = FALSE} deactivates this behaviour.
+This may be useful when the plot \emph{data} is of more interest, or the plot is
+required to appear later (e.g., later in a Quarto document, or to be saved
+to a file).}
     \item{\code{key}}{Deprecated; please use \code{key.position}. If \code{FALSE}, sets
 \code{key.position} to \code{"none"}.}
   }}
@@ -392,7 +399,7 @@ properly, e.g., by subscripting the "2" in "NO2". Passed to \code{\link[openair:
 Either:
 \itemize{
 \item \emph{Dynamic:} A leaflet object
-\item \emph{Static:} A \code{ggplot2} object using \code{\link[ggplot2:ggsf]{ggplot2::coord_sf()}} coordinates with a \code{ggspatial} basemap
+\item \emph{Static:} A \code{ggplot2} object using \code{\link[ggplot2:coord_sf]{ggplot2::coord_sf()}} coordinates with a \code{ggspatial} basemap
 }
 }
 \description{
@@ -438,7 +445,7 @@ Legends can be removed using \code{ggplot2::theme(legend.position = "none")}, or
 further customised using \code{\link[ggplot2:guides]{ggplot2::guides()}} and either \code{color = ggplot2::guide_colourbar()} for continuous legends or \code{color = ggplot2::guide_legend()} for discrete legends.
 
 The extent of a map can be adjusted using the \code{xlim} and \code{ylim} arguments
-of \code{\link[ggplot2:ggsf]{ggplot2::coord_sf()}}.
+of \code{\link[ggplot2:coord_sf]{ggplot2::coord_sf()}}.
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{polarMap(polar_data, "no2", static = TRUE) +
     ggplot2::coord_sf(
@@ -460,12 +467,12 @@ annulusMap(polar_data,
 \seealso{
 \code{\link[openair:polarAnnulus]{openair::polarAnnulus()}}
 
-Other directional analysis maps: 
-\code{\link{diffMap}()},
-\code{\link{freqMap}()},
-\code{\link{percentileMap}()},
-\code{\link{polarMap}()},
-\code{\link{pollroseMap}()},
-\code{\link{windroseMap}()}
+Other directional analysis maps:
+\code{\link[=diffMap]{diffMap()}},
+\code{\link[=freqMap]{freqMap()}},
+\code{\link[=percentileMap]{percentileMap()}},
+\code{\link[=polarMap]{polarMap()}},
+\code{\link[=pollroseMap]{pollroseMap()}},
+\code{\link[=windroseMap]{windroseMap()}}
 }
 \concept{directional analysis maps}
