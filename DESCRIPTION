@@ -49,12 +49,13 @@ Suggests:
     terra,
     testthat (>= 3.0.0),
     withr
-Config/Needs/website: openair-project/openairpkgdown, rnaturalearth
+Remotes: 
+    openair-project/openair
+Config/Needs/website: openair-project/openairpkgdown, rnaturalearth,
+    rnaturalearthdata
+Config/roxygen2/version: 8.0.0
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-GB
 LazyData: true
 Roxygen: list(markdown = TRUE)
-Config/roxygen2/version: 8.0.0
-Remotes:  
-    openair-project/openair
