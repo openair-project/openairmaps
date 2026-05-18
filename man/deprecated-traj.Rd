@@ -349,6 +349,8 @@ rather than overwriting \code{nox}.}
     \item{\code{hemisphere}}{Can be \code{"northern"} or \code{"southern"}, used to split data
 into seasons.}
     \item{\code{n.levels}}{Number of quantiles to split numeric data into.}
+    \item{\code{wd.res}}{The number of wind direction bins; one of \code{4} (N/E/S/W), \code{8}
+(N/NE/E/SE/etc., the default) or \code{16} (N/NNE/NE/ENE/etc.).}
     \item{\code{start.day}}{What day of the week should the \code{type = "weekday"} start on?
 The user can change the start day by supplying an integer between 0 and 6.
 Sunday = 0, Monday = 1, ... For example to start the weekday plots on a

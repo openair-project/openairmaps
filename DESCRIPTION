@@ -25,7 +25,7 @@ Imports:
     leaflet (>= 2.2.0),
     lifecycle,
     lubridate,
-    openair (>= 3.0.0),
+    openair (>= 3.0.0.9000),
     purrr (>= 1.1.0),
     rlang,
     sf,
@@ -56,3 +56,5 @@ Language: en-GB
 LazyData: true
 Roxygen: list(markdown = TRUE)
 Config/roxygen2/version: 8.0.0
+Remotes:  
+    openair-project/openair

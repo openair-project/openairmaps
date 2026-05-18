@@ -268,8 +268,11 @@ off, if desired.}
   Arguments passed on to \code{\link[openair:windRose]{openair::windRose}}
   \describe{
     \item{\code{mydata}}{A data frame containing fields \code{ws} and \code{wd}}
-    \item{\code{ws}}{Name of the column representing wind speed.}
-    \item{\code{wd}}{Name of the column representing wind direction.}
+    \item{\code{ws}}{The name of the column in \code{mydata} representing the wind speed.
+Defaults to \code{"ws"}.}
+    \item{\code{wd}}{The name of the column in \code{mydata} representing the decimal wind
+direction, 0 to 360 where 0/360 are North and 180 is South. Defaults to
+\code{"wd"}.}
     \item{\code{ws2,wd2}}{The user can supply a second set of wind speed and wind
 direction values with which the first can be compared. See
 \code{\link[openair:pollutionRose]{pollutionRose()}} for more details.}
@@ -313,12 +316,6 @@ radial limits.}
 style spokes. If \code{FALSE} plots rose using 'wedge' style spokes.}
     \item{\code{key.title}}{Used to set the title of the legend. The legend title is
 passed to \code{\link[openair:quickText]{quickText()}} if \code{auto.text = TRUE}.}
-    \item{\code{strip.position}}{Location where the facet 'strips' are located when
-using \code{type}. When one \code{type} is provided, can be one of \code{"left"},
-\code{"right"}, \code{"bottom"} or \code{"top"}. When two \code{type}s are provided, this
-argument defines whether the strips are "switched" and can take either
-\code{"x"}, \code{"y"}, or \code{"both"}. For example, \code{"x"} will switch the 'top' strip
-locations to the bottom of the plot.}
     \item{\code{dig.lab}}{The number of significant figures at which scientific number
 formatting is used in break point and key labelling. Default 5.}
     \item{\code{include.lowest}}{Logical. If \code{FALSE} (the default), the first interval

@@ -300,20 +300,18 @@ off, if desired.}
 \item{...}{
   Arguments passed on to \code{\link[openair:polarFreq]{openair::polarFreq}}
   \describe{
-    \item{\code{mydata}}{A data frame minimally containing \code{ws}, \code{wd} and \code{date}.}
+    \item{\code{mydata}}{A data frame minimally containing a wind speed, a decimal wind
+direction, and \code{date}.}
+    \item{\code{ws}}{The name of the column in \code{mydata} representing the wind speed.
+Defaults to \code{"ws"}.}
+    \item{\code{wd}}{The name of the column in \code{mydata} representing the decimal wind
+direction, 0 to 360 where 0/360 are North and 180 is South. Defaults to
+\code{"wd"}.}
     \item{\code{ws.int}}{Wind speed interval assumed. In some cases e.g. a low met mast,
 an interval of 0.5 may be more appropriate.}
     \item{\code{wd.nint}}{Number of intervals of wind direction.}
     \item{\code{grid.line}}{Radial spacing of grid lines.}
-    \item{\code{breaks,labels}}{If a categorical colour scale is required then \code{breaks}
-should be specified. These should be provided as a numeric vector, e.g.,
-\code{breaks = c(0, 50, 100, 1000)}. Users should set the maximum value of
-\code{breaks} to exceed the maximum data value to ensure it is within the
-maximum final range, e.g., 100--1000 in this case. Labels will
-automatically be generated, but can be customised by passing a character
-vector to \code{labels}, e.g., \code{labels = c("good", "bad", "very bad")}. In this
-example, \code{0 - 50} will be \code{"good"} and so on. Note there is one less label
-than break.}
+    \item{\code{limits}}{The limits of the colour bar (e.g., \code{c(0, 100)}).}
     \item{\code{trans}}{Should a transformation be applied? Sometimes when producing
 plots of this kind they can be dominated by a few high points. The default
 therefore is \code{TRUE} and a square-root transform is applied. This results in
@@ -328,6 +326,12 @@ care. Also, the \code{polarFreq} function can be of use in such circumstances.}
     \item{\code{ws.upper}}{A user-defined upper wind speed to use. This is useful for
 ensuring a consistent scale between different plots. For example, to always
 ensure that wind speeds are displayed between 1-10, set \code{ws.int = 10}.}
+    \item{\code{angle.scale}}{In radial plots (e.g., \code{\link[openair:polarPlot]{polarPlot()}}), the radial scale is
+drawn directly on the plot itself. While suitable defaults have been
+chosen, sometimes the placement of the scale may interfere with an
+interesting feature. \code{angle.scale} can take any value between \code{0} and \code{360}
+to place the scale at a different angle, or \code{FALSE} to move it to the side
+of the plots.}
     \item{\code{offset}}{\code{offset} controls the size of the 'hole' in the middle and is
 expressed on a scale of \code{0} to \code{100}, where \code{0} is no hole and \code{100} is a
 hole that takes up the entire plotting area.}
@@ -336,12 +340,6 @@ bin. The default is transparent. Another useful choice sometimes is
 "white".}
     \item{\code{key.title}}{Used to set the title of the legend. The legend title is
 passed to \code{\link[openair:quickText]{quickText()}} if \code{auto.text = TRUE}.}
-    \item{\code{strip.position}}{Location where the facet 'strips' are located when
-using \code{type}. When one \code{type} is provided, can be one of \code{"left"},
-\code{"right"}, \code{"bottom"} or \code{"top"}. When two \code{type}s are provided, this
-argument defines whether the strips are "switched" and can take either
-\code{"x"}, \code{"y"}, or \code{"both"}. For example, \code{"x"} will switch the 'top' strip
-locations to the bottom of the plot.}
     \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE} titles and
 axis labels will automatically try and format pollutant names and units
 properly, e.g., by subscripting the "2" in "NO2". Passed to \code{\link[openair:quickText]{quickText()}}.}

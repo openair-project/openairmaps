@@ -290,8 +290,11 @@ off, if desired.}
 \item{...}{
   Arguments passed on to \code{\link[openair:polarAnnulus]{openair::polarAnnulus}}
   \describe{
-    \item{\code{mydata}}{A data frame minimally containing \code{date}, \code{wd} and a
-pollutant.}
+    \item{\code{mydata}}{A data frame minimally containing \code{date}, a wind direction and
+a pollutant.}
+    \item{\code{wd}}{The name of the column in \code{mydata} representing the decimal wind
+direction, 0 to 360 where 0/360 are North and 180 is South. Defaults to
+\code{"wd"}.}
     \item{\code{resolution}}{Two plot resolutions can be set: \dQuote{normal} and
 \dQuote{fine} (the default).}
     \item{\code{local.tz}}{Should the results be calculated in local time that includes
@@ -373,12 +376,11 @@ mean value. This is done \emph{after} fitting the smooth surface. This option is
 particularly useful if one is interested in the patterns of concentrations
 for several pollutants on different scales e.g. NOx and CO. Often useful if
 more than one \code{pollutant} is chosen.}
-    \item{\code{strip.position}}{Location where the facet 'strips' are located when
-using \code{type}. When one \code{type} is provided, can be one of \code{"left"},
-\code{"right"}, \code{"bottom"} or \code{"top"}. When two \code{type}s are provided, this
-argument defines whether the strips are "switched" and can take either
-\code{"x"}, \code{"y"}, or \code{"both"}. For example, \code{"x"} will switch the 'top' strip
-locations to the bottom of the plot.}
+    \item{\code{breaks}}{\code{breaks} bins a continuous axis into discrete bins. It can
+either take a single number (e.g., \code{breaks = 5}) to split the scale into
+quantiles, a vector of numbers (e.g., \verb{breaks = c(0, 50, 100, 200, 500}) to
+define specific break-points, or a named list. See \code{\link[openair:breakOpts]{breakOpts()}} for more
+details.}
     \item{\code{key.title}}{Used to set the title of the legend. The legend title is
 passed to \code{\link[openair:quickText]{quickText()}} if \code{auto.text = TRUE}.}
     \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE} titles and

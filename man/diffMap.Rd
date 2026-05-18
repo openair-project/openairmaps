@@ -287,11 +287,13 @@ off, if desired.}
 \item{...}{
   Arguments passed on to \code{\link[openair:polarPlot]{openair::polarPlot}}
   \describe{
-    \item{\code{mydata}}{A data frame minimally containing \code{wd}, another variable to
-plot in polar coordinates (the default is a column \dQuote{ws} --- wind
-speed) and a pollutant. Should also contain \code{date} if plots by time period
-are required.}
-    \item{\code{wd}}{Name of wind direction field.}
+    \item{\code{mydata}}{A data frame minimally containing a decimal wind direction,
+another variable to plot in polar coordinates (the default is a column
+\code{"ws"} --- wind speed) and a pollutant. Should also contain \code{date} if plots
+by time period are required.}
+    \item{\code{wd}}{The name of the column in \code{mydata} representing the decimal wind
+direction, 0 to 360 where 0/360 are North and 180 is South. Defaults to
+\code{"wd"}.}
     \item{\code{statistic}}{The statistic that should be applied to each wind
 speed/direction bin. Because of the smoothing involved, the colour scale
 for some of these statistics is only to provide an indication of overall
@@ -401,9 +403,9 @@ records in each bin an so on; bins with less than 2 valid records are set
 to NA. Care should be taken when using a value > 1 because of the risk of
 removing real data points. It is recommended to consider your data with
 care. Also, the \code{polarFreq} function can be of use in such circumstances.}
-    \item{\code{mis.col}}{When \code{min.bin} is > 1 it can be useful to show where data are
-removed on the plots. This is done by shading the missing data in
-\code{mis.col}. To not highlight missing data when \code{min.bin} > 1 choose \code{mis.col = "transparent"}.}
+    \item{\code{col.na}}{When \code{min.bin} is > 1 it can be useful to show where data are
+removed on the plots. This is done by shading the missing data in \code{col.na}.
+To not highlight missing data when \code{min.bin} > 1 choose \code{col.na = "transparent"}.}
     \item{\code{upper}}{This sets the upper limit wind speed to be used. Often there are
 only a relatively few data points at very high wind speeds and plotting all
 of them can reduce the useful information in the plot.}
@@ -441,14 +443,13 @@ mean value. This is done \emph{after} fitting the smooth surface. This option is
 particularly useful if one is interested in the patterns of concentrations
 for several pollutants on different scales e.g. NOx and CO. Often useful if
 more than one \code{pollutant} is chosen.}
+    \item{\code{breaks}}{\code{breaks} bins a continuous axis into discrete bins. It can
+either take a single number (e.g., \code{breaks = 5}) to split the scale into
+quantiles, a vector of numbers (e.g., \verb{breaks = c(0, 50, 100, 200, 500}) to
+define specific break-points, or a named list. See \code{\link[openair:breakOpts]{breakOpts()}} for more
+details.}
     \item{\code{key.title}}{Used to set the title of the legend. The legend title is
 passed to \code{\link[openair:quickText]{quickText()}} if \code{auto.text = TRUE}.}
-    \item{\code{strip.position}}{Location where the facet 'strips' are located when
-using \code{type}. When one \code{type} is provided, can be one of \code{"left"},
-\code{"right"}, \code{"bottom"} or \code{"top"}. When two \code{type}s are provided, this
-argument defines whether the strips are "switched" and can take either
-\code{"x"}, \code{"y"}, or \code{"both"}. For example, \code{"x"} will switch the 'top' strip
-locations to the bottom of the plot.}
     \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE} titles and
 axis labels will automatically try and format pollutant names and units
 properly, e.g., by subscripting the "2" in "NO2". Passed to \code{\link[openair:quickText]{quickText()}}.}

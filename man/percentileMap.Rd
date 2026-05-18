@@ -287,9 +287,13 @@ off, if desired.}
 \item{...}{
   Arguments passed on to \code{\link[openair:percentileRose]{openair::percentileRose}}
   \describe{
-    \item{\code{mydata}}{A data frame minimally containing \code{wd} and a numeric field to
-plot --- \code{pollutant}.}
-    \item{\code{wd}}{Name of wind direction field.}
+    \item{\code{mydata}}{A data frame minimally containing a decimal wind direction and
+a numeric field to plot.}
+    \item{\code{ws}}{The name of the column in \code{mydata} representing the wind speed.
+Defaults to \code{"ws"}.}
+    \item{\code{wd}}{The name of the column in \code{mydata} representing the decimal wind
+direction, 0 to 360 where 0/360 are North and 180 is South. Defaults to
+\code{"wd"}.}
     \item{\code{smooth}}{Should the wind direction data be smoothed using a cyclic
 spline?}
     \item{\code{method}}{When \code{method = "default"} the supplied percentiles by wind
@@ -320,12 +324,6 @@ axis labels will automatically try and format pollutant names and units
 properly, e.g., by subscripting the "2" in "NO2". Passed to \code{\link[openair:quickText]{quickText()}}.}
     \item{\code{key.title}}{Used to set the title of the legend. The legend title is
 passed to \code{\link[openair:quickText]{quickText()}} if \code{auto.text = TRUE}.}
-    \item{\code{strip.position}}{Location where the facet 'strips' are located when
-using \code{type}. When one \code{type} is provided, can be one of \code{"left"},
-\code{"right"}, \code{"bottom"} or \code{"top"}. When two \code{type}s are provided, this
-argument defines whether the strips are "switched" and can take either
-\code{"x"}, \code{"y"}, or \code{"both"}. For example, \code{"x"} will switch the 'top' strip
-locations to the bottom of the plot.}
     \item{\code{plot}}{When \code{openair} plots are created they are automatically printed
 to the active graphics device. \code{plot = FALSE} deactivates this behaviour.
 This may be useful when the plot \emph{data} is of more interest, or the plot is

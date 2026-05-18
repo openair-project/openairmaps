@@ -39,6 +39,7 @@ trajLevelMap <-
     percentile = 90,
     lon.inc = 1,
     lat.inc = 1,
+    breaks = NULL,
     min.bin = 1,
     .combine = NULL,
     sigma = 1.5,
@@ -107,27 +108,45 @@ trajLevelMap <-
       )
     }
 
-    # run openair::trajLevel()
-    data <- openair::trajLevel(
-      mydata = data,
-      lon = longitude,
-      lat = latitude,
-      pollutant = pollutant,
-      statistic = statistic,
-      percentile = percentile,
-      lat.inc = lat.inc,
-      lon.inc = lon.inc,
-      min.bin = min.bin,
-      .combine = .combine,
-      sigma = sigma,
-      type = type %||% "default",
-      plot = FALSE
-    )$data
+    if (missing(breaks)) {
+      data <- openair::trajLevel(
+        mydata = data,
+        lon = longitude,
+        lat = latitude,
+        pollutant = pollutant,
+        statistic = statistic,
+        percentile = percentile,
+        lat.inc = lat.inc,
+        lon.inc = lon.inc,
+        min.bin = min.bin,
+        .combine = .combine,
+        sigma = sigma,
+        type = type %||% "default",
+        smooth = smooth,
+        plot = FALSE
+      )$data
+    } else {
+      data <- openair::trajLevel(
+        mydata = data,
+        lon = longitude,
+        lat = latitude,
+        pollutant = pollutant,
+        statistic = statistic,
+        percentile = percentile,
+        lat.inc = lat.inc,
+        lon.inc = lon.inc,
+        breaks = breaks,
+        min.bin = min.bin,
+        .combine = .combine,
+        sigma = sigma,
+        type = type %||% "default",
+        smooth = smooth,
+        plot = FALSE
+      )$data
+    }
 
     # smooth
     if (smooth) {
-      data <- smooth_trajgrid(data, pollutant)
-
       xtest <- dplyr::filter(data, .data$ygrid == .data$ygrid[[1]]) |>
         dplyr::arrange(.data$xgrid)
       xtest <- xtest$xgrid - dplyr::lag(xtest$xgrid)
@@ -141,26 +160,13 @@ trajLevelMap <-
 
     names(data)[names(data) == "height"] <- pollutant
 
-    if (statistic == "frequency" && !smooth) {
-      pal <- leaflet::colorBin(
-        palette = openair::openColours(scheme = cols),
-        domain = data[[pollutant]],
-        bins = c(0, 1, 5, 10, 25, 100)
-      )
-    } else if (statistic == "difference") {
-      pal <- leaflet::colorBin(
-        palette = openair::openColours(scheme = cols),
-        domain = data[[pollutant]],
-        bins = c(
-          floor(min(data[[pollutant]])),
-          -10,
-          -5,
-          -1,
-          1,
-          5,
-          10,
-          ceiling(max(data[[pollutant]]))
-        )
+    if (is.factor(data[[pollutant]])) {
+      pal <- leaflet::colorFactor(
+        palette = openair::openColors(
+          scheme = cols,
+          n = length(levels(data[[pollutant]]))
+        ),
+        domain = factor(unique(data[[pollutant]]), levels(data[[pollutant]]))
       )
     } else {
       pal <-
@@ -172,43 +178,31 @@ trajLevelMap <-
 
     # each statistic outputs a different name for "count"
     data$val <- data[[pollutant]]
-    if ("N" %in% names(data)) {
-      names(data)[names(data) == "N"] <- "gridcount"
-    } else if ("count" %in% names(data)) {
-      names(data)[names(data) == "count"] <- "gridcount"
-    } else if ("n" %in% names(data)) {
-      names(data)[names(data) == "n"] <- "gridcount"
-    } else if (tolower(statistic) == "sqtba" && !is.null(.combine)) {
-      data$gridcount <- NA
+    data$gridcount <- NA
+    if ("count" %in% names(data)) {
+      data$gridcount <- data$count
+    }
+
+    # make hover label & popups
+    data$label <- data$val
+    if (is.numeric(data$label)) {
+      data$label <- signif(data$label, 3)
     }
 
     # create label
     if (!smooth) {
       data <- dplyr::mutate(
         data,
-        lab = stringr::str_glue(
+        popup = stringr::str_glue(
           "<b>Lat:</b> {ygrid} | <b>Lon:</b> {xgrid}<br>
-       <b>Count:</b> {gridcount}<br>
-       <b>Value:</b> {signif(val, 3)}"
+          <b>Count:</b> {gridcount}<br>
+          <b>Value:</b> {label}"
         ),
         coord = stringr::str_glue("({ygrid}, {xgrid})")
       )
-
-      if (statistic %in% c("difference", "frequency")) {
-        data$lab <- paste0(data$lab, "%")
-      }
-    }
-
-    # make hover label & popups
-    data$label <- signif(data$val, 3)
-    if (statistic %in% c("difference", "frequency")) {
-      data$label <- paste0(data$label, "%")
-    }
-
-    if (smooth) {
-      popup <- NA
+      popup <- data$popup
     } else {
-      popup <- data[["lab"]]
+      popup <- NA
     }
 
     # make map
@@ -227,14 +221,28 @@ trajLevelMap <-
         popup = popup,
         label = data[["label"]],
         group = data[[type %||% "default"]]
-      ) |>
-      leaflet::addLegend(
+      )
+
+    if (is.factor(data[[pollutant]])) {
+      map <- leaflet::addLegend(
+        map,
+        title = legend.title,
+        position = legend.position,
+        colors = pal(rev(levels(data[[pollutant]]))),
+        labels = rev(levels(data[[pollutant]])),
+        labFormat = style,
+        values = NULL
+      )
+    } else {
+      map <- leaflet::addLegend(
+        map,
         title = legend.title,
         position = legend.position,
         pal = pal,
         values = data[[pollutant]],
         labFormat = style
       )
+    }
 
     # control menu
     if (length(unique(provider)) > 1 && is.null(type)) {
@@ -260,47 +268,3 @@ trajLevelMap <-
     # return map
     return(map)
   }
-
-#' Smooth grid for trajectories
-#' @noRd
-smooth_trajgrid <- function(mydata, z, k = 50, dist = 0.05) {
-  rlang::check_installed("mgcv")
-  myform <-
-    stats::formula(stringr::str_glue("{z}^0.5 ~ s(xgrid, ygrid, k = {k})"))
-
-  res <- 101
-  Mgam <- mgcv::gam(myform, data = mydata)
-
-  new.data <- expand.grid(
-    xgrid = seq(min(mydata$xgrid), max(mydata$xgrid), length = res),
-    ygrid = seq(min(mydata$ygrid), max(mydata$ygrid), length = res)
-  )
-
-  pred <- mgcv::predict.gam(Mgam, newdata = new.data)
-  pred <- as.vector(pred)^2
-
-  new.data[, z] <- pred
-
-  ## exlcude too far
-  ## exclude predictions too far from data (from mgcv)
-  x <- seq(min(mydata$xgrid), max(mydata$xgrid), length = res)
-  y <- seq(min(mydata$ygrid), max(mydata$ygrid), length = res)
-
-  wsp <- rep(x, res)
-  wdp <- rep(y, rep(res, res))
-
-  ## data with gaps caused by min.bin
-  all.data <-
-    stats::na.omit(data.frame(xgrid = mydata$xgrid, ygrid = mydata$ygrid, z))
-
-  ind <- with(
-    all.data,
-    mgcv::exclude.too.far(wsp, wdp, mydata$xgrid, mydata$ygrid, dist = dist)
-  )
-
-  new.data[ind, z] <- NA
-
-  new.data <- tidyr::drop_na(new.data)
-
-  dplyr::tibble(new.data)
-}
