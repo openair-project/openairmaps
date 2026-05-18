@@ -397,7 +397,19 @@ freqMap(
 
   `mydata`
 
-  :   A data frame minimally containing `ws`, `wd` and `date`.
+  :   A data frame minimally containing a wind speed, a decimal wind
+      direction, and `date`.
+
+  `ws`
+
+  :   The name of the column in `mydata` representing the wind speed.
+      Defaults to `"ws"`.
+
+  `wd`
+
+  :   The name of the column in `mydata` representing the decimal wind
+      direction, 0 to 360 where 0/360 are North and 180 is South.
+      Defaults to `"wd"`.
 
   `ws.int`
 
@@ -412,18 +424,9 @@ freqMap(
 
   :   Radial spacing of grid lines.
 
-  `breaks,labels`
+  `limits`
 
-  :   If a categorical colour scale is required then `breaks` should be
-      specified. These should be provided as a numeric vector, e.g.,
-      `breaks = c(0, 50, 100, 1000)`. Users should set the maximum value
-      of `breaks` to exceed the maximum data value to ensure it is
-      within the maximum final range, e.g., 100–1000 in this case.
-      Labels will automatically be generated, but can be customised by
-      passing a character vector to `labels`, e.g.,
-      `labels = c("good", "bad", "very bad")`. In this example, `0 - 50`
-      will be `"good"` and so on. Note there is one less label than
-      break.
+  :   The limits of the colour bar (e.g., `c(0, 100)`).
 
   `trans`
 
@@ -451,6 +454,16 @@ freqMap(
       to always ensure that wind speeds are displayed between 1-10, set
       `ws.int = 10`.
 
+  `angle.scale`
+
+  :   In radial plots (e.g.,
+      [`polarPlot()`](https://openair-project.github.io/openair/reference/polarPlot.html)),
+      the radial scale is drawn directly on the plot itself. While
+      suitable defaults have been chosen, sometimes the placement of the
+      scale may interfere with an interesting feature. `angle.scale` can
+      take any value between `0` and `360` to place the scale at a
+      different angle, or `FALSE` to move it to the side of the plots.
+
   `offset`
 
   :   `offset` controls the size of the 'hole' in the middle and is
@@ -468,15 +481,6 @@ freqMap(
   :   Used to set the title of the legend. The legend title is passed to
       [`quickText()`](https://openair-project.github.io/openair/reference/quickText.html)
       if `auto.text = TRUE`.
-
-  `strip.position`
-
-  :   Location where the facet 'strips' are located when using `type`.
-      When one `type` is provided, can be one of `"left"`, `"right"`,
-      `"bottom"` or `"top"`. When two `type`s are provided, this
-      argument defines whether the strips are "switched" and can take
-      either `"x"`, `"y"`, or `"both"`. For example, `"x"` will switch
-      the 'top' strip locations to the bottom of the plot.
 
   `auto.text`
 

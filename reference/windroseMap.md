@@ -361,11 +361,14 @@ windroseMap(
 
   `ws`
 
-  :   Name of the column representing wind speed.
+  :   The name of the column in `mydata` representing the wind speed.
+      Defaults to `"ws"`.
 
   `wd`
 
-  :   Name of the column representing wind direction.
+  :   The name of the column in `mydata` representing the decimal wind
+      direction, 0 to 360 where 0/360 are North and 180 is South.
+      Defaults to `"wd"`.
 
   `ws2,wd2`
 
@@ -456,15 +459,6 @@ windroseMap(
   :   Used to set the title of the legend. The legend title is passed to
       [`quickText()`](https://openair-project.github.io/openair/reference/quickText.html)
       if `auto.text = TRUE`.
-
-  `strip.position`
-
-  :   Location where the facet 'strips' are located when using `type`.
-      When one `type` is provided, can be one of `"left"`, `"right"`,
-      `"bottom"` or `"top"`. When two `type`s are provided, this
-      argument defines whether the strips are "switched" and can take
-      either `"x"`, `"y"`, or `"both"`. For example, `"x"` will switch
-      the 'top' strip locations to the bottom of the plot.
 
   `dig.lab`
 

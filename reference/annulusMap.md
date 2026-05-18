@@ -384,7 +384,14 @@ annulusMap(
 
   `mydata`
 
-  :   A data frame minimally containing `date`, `wd` and a pollutant.
+  :   A data frame minimally containing `date`, a wind direction and a
+      pollutant.
+
+  `wd`
+
+  :   The name of the column in `mydata` representing the decimal wind
+      direction, 0 to 360 where 0/360 are North and 180 is South.
+      Defaults to `"wd"`.
 
   `resolution`
 
@@ -516,14 +523,15 @@ annulusMap(
       of concentrations for several pollutants on different scales e.g.
       NOx and CO. Often useful if more than one `pollutant` is chosen.
 
-  `strip.position`
+  `breaks`
 
-  :   Location where the facet 'strips' are located when using `type`.
-      When one `type` is provided, can be one of `"left"`, `"right"`,
-      `"bottom"` or `"top"`. When two `type`s are provided, this
-      argument defines whether the strips are "switched" and can take
-      either `"x"`, `"y"`, or `"both"`. For example, `"x"` will switch
-      the 'top' strip locations to the bottom of the plot.
+  :   `breaks` bins a continuous axis into discrete bins. It can either
+      take a single number (e.g., `breaks = 5`) to split the scale into
+      quantiles, a vector of numbers (e.g.,
+      `breaks = c(0, 50, 100, 200, 500`) to define specific
+      break-points, or a named list. See
+      [`breakOpts()`](https://openair-project.github.io/openair/reference/breakOpts.html)
+      for more details.
 
   `key.title`
 

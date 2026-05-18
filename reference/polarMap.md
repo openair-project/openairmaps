@@ -402,14 +402,16 @@ polarMap(
 
   `mydata`
 
-  :   A data frame minimally containing `wd`, another variable to plot
-      in polar coordinates (the default is a column “ws” — wind speed)
-      and a pollutant. Should also contain `date` if plots by time
-      period are required.
+  :   A data frame minimally containing a decimal wind direction,
+      another variable to plot in polar coordinates (the default is a
+      column `"ws"` — wind speed) and a pollutant. Should also contain
+      `date` if plots by time period are required.
 
   `wd`
 
-  :   Name of wind direction field.
+  :   The name of the column in `mydata` representing the decimal wind
+      direction, 0 to 360 where 0/360 are North and 180 is South.
+      Defaults to `"wd"`.
 
   `statistic`
 
@@ -547,12 +549,12 @@ polarMap(
       recommended to consider your data with care. Also, the `polarFreq`
       function can be of use in such circumstances.
 
-  `mis.col`
+  `col.na`
 
   :   When `min.bin` is \> 1 it can be useful to show where data are
       removed on the plots. This is done by shading the missing data in
-      `mis.col`. To not highlight missing data when `min.bin` \> 1
-      choose `mis.col = "transparent"`.
+      `col.na`. To not highlight missing data when `min.bin` \> 1 choose
+      `col.na = "transparent"`.
 
   `angle.scale`
 
@@ -606,20 +608,21 @@ polarMap(
       of concentrations for several pollutants on different scales e.g.
       NOx and CO. Often useful if more than one `pollutant` is chosen.
 
+  `breaks`
+
+  :   `breaks` bins a continuous axis into discrete bins. It can either
+      take a single number (e.g., `breaks = 5`) to split the scale into
+      quantiles, a vector of numbers (e.g.,
+      `breaks = c(0, 50, 100, 200, 500`) to define specific
+      break-points, or a named list. See
+      [`breakOpts()`](https://openair-project.github.io/openair/reference/breakOpts.html)
+      for more details.
+
   `key.title`
 
   :   Used to set the title of the legend. The legend title is passed to
       [`quickText()`](https://openair-project.github.io/openair/reference/quickText.html)
       if `auto.text = TRUE`.
-
-  `strip.position`
-
-  :   Location where the facet 'strips' are located when using `type`.
-      When one `type` is provided, can be one of `"left"`, `"right"`,
-      `"bottom"` or `"top"`. When two `type`s are provided, this
-      argument defines whether the strips are "switched" and can take
-      either `"x"`, `"y"`, or `"both"`. For example, `"x"` will switch
-      the 'top' strip locations to the bottom of the plot.
 
   `auto.text`
 

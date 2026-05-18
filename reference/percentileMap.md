@@ -384,12 +384,19 @@ percentileMap(
 
   `mydata`
 
-  :   A data frame minimally containing `wd` and a numeric field to plot
-      — `pollutant`.
+  :   A data frame minimally containing a decimal wind direction and a
+      numeric field to plot.
+
+  `ws`
+
+  :   The name of the column in `mydata` representing the wind speed.
+      Defaults to `"ws"`.
 
   `wd`
 
-  :   Name of wind direction field.
+  :   The name of the column in `mydata` representing the decimal wind
+      direction, 0 to 360 where 0/360 are North and 180 is South.
+      Defaults to `"wd"`.
 
   `smooth`
 
@@ -459,15 +466,6 @@ percentileMap(
   :   Used to set the title of the legend. The legend title is passed to
       [`quickText()`](https://openair-project.github.io/openair/reference/quickText.html)
       if `auto.text = TRUE`.
-
-  `strip.position`
-
-  :   Location where the facet 'strips' are located when using `type`.
-      When one `type` is provided, can be one of `"left"`, `"right"`,
-      `"bottom"` or `"top"`. When two `type`s are provided, this
-      argument defines whether the strips are "switched" and can take
-      either `"x"`, `"y"`, or `"both"`. For example, `"x"` will switch
-      the 'top' strip locations to the bottom of the plot.
 
   `plot`
 

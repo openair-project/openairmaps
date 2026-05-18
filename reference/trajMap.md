@@ -199,6 +199,11 @@ trajMap(
 
   :   Number of quantiles to split numeric data into.
 
+  `wd.res`
+
+  :   The number of wind direction bins; one of `4` (N/E/S/W), `8`
+      (N/NE/E/SE/etc., the default) or `16` (N/NNE/NE/ENE/etc.).
+
   `start.day`
 
   :   What day of the week should the `type = "weekday"` start on? The

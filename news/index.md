@@ -11,6 +11,10 @@
   [openair](https://openair-project.github.io/openair/) v.3.1.0. These
   can be restored by passing `annotate = TRUE` to `...`.
 
+- [`trajLevelMap()`](https://openair-project.github.io/openairmaps/reference/trajLevelMap.md)
+  has gained `breaks` in line with
+  [`openair::trajLevel()`](https://openair-project.github.io/openair/reference/trajLevel.html).
+
 ## openairmaps 0.10.0
 
 CRAN release: 2026-04-04
