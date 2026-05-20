@@ -49,8 +49,6 @@ Suggests:
     terra,
     testthat (>= 3.0.0),
     withr
-Remotes: 
-    openair-project/openair
 Config/Needs/website: openair-project/openairpkgdown, rnaturalearth,
     rnaturalearthdata
 Config/roxygen2/version: 8.0.0
