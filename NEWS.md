@@ -6,6 +6,8 @@
 
 * `trajLevelMap()` has gained `breaks` in line with `openair::trajLevel()`.
 
+* `trajMapStatic()` and `trajLevelMapStatic()` now call `openair::trajMap()` and `openair::trajLevel()`, respectively. This is an advancement towards complete removal, which will happen in a future version of `openairmaps`.
+
 # openairmaps 0.10.0
 
 ## Breaking Changes
