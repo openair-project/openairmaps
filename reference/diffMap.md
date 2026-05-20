@@ -459,6 +459,35 @@ diffMap(
         determination of the slope. The uncertainties are provided by
         `x_error` and `y_error` — see below.
 
+  `breaks`
+
+  :   `breaks` bins a continuous axis into discrete bins. It can either
+      take a single number (e.g., `breaks = 5`) to split the scale into
+      quantiles, a vector of numbers (e.g.,
+      `breaks = c(0, 50, 100, 200, 500`) to define specific
+      break-points, or a named list. See
+      [`breakOpts()`](https://openair-project.github.io/openair/reference/breakOpts.html)
+      for more details.
+
+  `trans`
+
+  :   Should a transformation be applied to the colour scale? If the
+      distribution of data is skewed, the default scale may be dominated
+      by a few high values, so a log or square-root transform may mean
+      the whole colour scale is better presented on the plot. Can be:
+
+      - `FALSE`, which performs no transform.
+
+      - `TRUE`, which uses an appropriate transform for the plot type
+        (usually `"log10"`).
+
+      - A `scales` 'transform' object (e.g.,
+        [`scales::transform_log10()`](https://scales.r-lib.org/reference/transform_log.html)).
+
+      - A character string corresponding to a `scales` transform
+        function. Useful options include `"sqrt"`, `"log10"`, `"log2"`,
+        `"log1p"`, `"pseudo_log"` and `"reverse"`.
+
   `exclude.missing`
 
   :   Setting this option to `TRUE` (the default) removes points from
@@ -596,16 +625,6 @@ diffMap(
       option is particularly useful if one is interested in the patterns
       of concentrations for several pollutants on different scales e.g.
       NOx and CO. Often useful if more than one `pollutant` is chosen.
-
-  `breaks`
-
-  :   `breaks` bins a continuous axis into discrete bins. It can either
-      take a single number (e.g., `breaks = 5`) to split the scale into
-      quantiles, a vector of numbers (e.g.,
-      `breaks = c(0, 50, 100, 200, 500`) to define specific
-      break-points, or a named list. See
-      [`breakOpts()`](https://openair-project.github.io/openair/reference/breakOpts.html)
-      for more details.
 
   `key.title`
 

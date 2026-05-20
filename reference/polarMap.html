@@ -17,7 +17,7 @@ produced instead."><meta property="og:image" content="https://openair-project.gi
 
     <a class="navbar-brand me-2" href="../index.html">openairmaps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -421,6 +421,26 @@ determination of the slope. The uncertainties are provided by
 <code>x_error</code> and <code>y_error</code> — see below.</p></li>
 </ul></dd>
 
+    <dt><code>breaks</code></dt>
+<dd><p><code>breaks</code> bins a continuous axis into discrete bins. It can
+either take a single number (e.g., <code>breaks = 5</code>) to split the scale into
+quantiles, a vector of numbers (e.g., <code>breaks = c(0, 50, 100, 200, 500</code>) to
+define specific break-points, or a named list. See <code><a href="https://openair-project.github.io/openair/reference/breakOpts.html" class="external-link">breakOpts()</a></code> for more
+details.</p></dd>
+
+    <dt><code>trans</code></dt>
+<dd><p>Should a transformation be applied to the colour scale? If the
+distribution of data is skewed, the default scale may be dominated by a few
+high values, so a log or square-root transform may mean the whole colour
+scale is better presented on the plot. Can be:</p><ul><li><p><code>FALSE</code>, which performs no transform.</p></li>
+<li><p><code>TRUE</code>, which uses an appropriate transform for the plot type (usually
+<code>"log10"</code>).</p></li>
+<li><p>A <code>scales</code> 'transform' object (e.g., <code><a href="https://scales.r-lib.org/reference/transform_log.html" class="external-link">scales::transform_log10()</a></code>).</p></li>
+<li><p>A character string corresponding to a <code>scales</code> transform function. Useful
+options include <code>"sqrt"</code>, <code>"log10"</code>, <code>"log2"</code>, <code>"log1p"</code>, <code>"pseudo_log"</code>
+and <code>"reverse"</code>.</p></li>
+</ul></dd>
+
     <dt><code>exclude.missing</code></dt>
 <dd><p>Setting this option to <code>TRUE</code> (the default) removes
 points from the plot that are too far from the original data. The smoothing
@@ -528,13 +548,6 @@ mean value. This is done <em>after</em> fitting the smooth surface. This option 
 particularly useful if one is interested in the patterns of concentrations
 for several pollutants on different scales e.g. NOx and CO. Often useful if
 more than one <code>pollutant</code> is chosen.</p></dd>
-
-    <dt><code>breaks</code></dt>
-<dd><p><code>breaks</code> bins a continuous axis into discrete bins. It can
-either take a single number (e.g., <code>breaks = 5</code>) to split the scale into
-quantiles, a vector of numbers (e.g., <code>breaks = c(0, 50, 100, 200, 500</code>) to
-define specific break-points, or a named list. See <code><a href="https://openair-project.github.io/openair/reference/breakOpts.html" class="external-link">breakOpts()</a></code> for more
-details.</p></dd>
 
     <dt><code>key.title</code></dt>
 <dd><p>Used to set the title of the legend. The legend title is
