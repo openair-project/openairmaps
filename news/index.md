@@ -15,6 +15,14 @@
   has gained `breaks` in line with
   [`openair::trajLevel()`](https://openair-project.github.io/openair/reference/trajLevel.html).
 
+- [`trajMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
+  and
+  [`trajLevelMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
+  now call `openair::trajMap()` and
+  [`openair::trajLevel()`](https://openair-project.github.io/openair/reference/trajLevel.html),
+  respectively. This is an advancement towards complete removal, which
+  will happen in a future version of `openairmaps`.
+
 ## openairmaps 0.10.0
 
 CRAN release: 2026-04-04
