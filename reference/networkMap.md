@@ -3,19 +3,21 @@
 This function uses
 [`openair::importMeta()`](https://openair-project.github.io/openair/reference/importMeta.html)
 to obtain metadata for measurement sites and uses it to create an
-attractive `leaflet` map. By default a map will be created in which
+interactive `leaflet` map. By default a map will be created in which
 readers may toggle between a vector base map and a satellite/aerial
 image, although users can further customise the control menu using the
-`provider` and `control` parameters.
+`provider` and `control` parameters. Any argument which can be passed to
+[`openair::importMeta()`](https://openair-project.github.io/openair/reference/importMeta.html)
+can be passed via `...`, with the exception of `all` and `duplicate`.
 
 ## Usage
 
 ``` r
 networkMap(
   source = "aurn",
+  ...,
   control = NULL,
-  year = NULL,
-  cluster = TRUE,
+  cluster = NULL,
   provider = c(Default = "OpenStreetMap", Satellite = "Esri.WorldImagery"),
   legend = TRUE,
   legend.position = "topright",
@@ -61,6 +63,68 @@ networkMap(
   - `"all"` will import all available metadata (i.e., "ukaq" plus "kcl"
     and "europe").
 
+- ...:
+
+  Arguments passed on to
+  [`openair::importMeta`](https://openair-project.github.io/openair/reference/importMeta.html)
+
+  `year`
+
+  :   If a single year is selected, only sites that were open at some
+      point in that year are returned. If `all = TRUE` only sites that
+      measured a particular pollutant in that year are returned. Year
+      can also be a sequence e.g. `year = 2010:2020` or of length 2 e.g.
+      `year = c(2010, 2020)`, which will return only sites that were
+      open over the duration.
+
+  `pollutant`
+
+  :   Character vectors used to search the metadata for the specified
+      `source`s. `pollutant` is case-insensitive. For example,
+      `pollutant = c("nox", "o3")` will return sites which measure
+      *either* NOx *or* O3. Can also take the shorthand `"hc"`, will
+      returns all hydrocarbons. Similar to `code`, values are matched
+      exactly (e.g., `pollutant = "no"` will only return NO and not NO2
+      or NOx). Note that `pollutant` only applies to networks available
+      through
+      [`importUKAQ()`](https://openair-project.github.io/openair/reference/importUKAQ.html).
+
+  `site,code,site_type`
+
+  :   Character vectors used to search the metadata for the specified
+      `source`s. All of `code`, `site` and `site_type` are
+      case-insensitive. `code` and `site_type` are matched exactly, but
+      `site` is 'pattern matched' - e.g., `site = "Sunderland"` and
+      `source = "aurn"` will return data for `"Sunderland"`,
+      `"Sunderland Silksworth"` and `"Sunderland Wessington Way"` (plus
+      any future sites with the string `"Sunderland"` in their name).
+
+  `lat,lng`
+
+  :   Decimal latitude (`lat`) and longitude (`lng`) (or other Y/X
+      coordinate if using a different `crs`). If provided, the data will
+      be returned with a `distance_km` column displaying the distance of
+      each station from the target coordinate. The data will also be
+      automatically sorted by this column.
+
+  `crs`
+
+  :   The coordinate reference system (CRS) of the data, passed to
+      [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html).
+      By default this is [EPSG:4326](https://epsg.io/4326), the CRS
+      associated with the commonly used latitude and longitude
+      coordinates. Different coordinate systems can be specified using
+      `crs` (e.g., `crs = 27700` for the British National Grid). Note
+      that non-lat/lng coordinate systems will be re-projected to
+      EPSG:4326 for comparison with the site metadata.
+
+  `max_dist,max_n`
+
+  :   If `lat` and `lng` are provided, `max_dist` and `max_n` further
+      filter the metadata. `max_dist` defines a maximum distance from
+      the target coordinate in kilometers, and `max_n` a maximum number
+      of sites to be returned. `max_n` is applied after `max_dist`.
+
 - control:
 
   *Option to create a 'layer control' menu.*
@@ -70,6 +134,8 @@ networkMap(
   A string to specify categories in a "layer control" menu, to allow
   readers to select between different site categories. Choices include:
 
+  - `"source"` to toggle between different networks
+
   - `"variable"` to toggle between different pollutants
 
   - `"site_type"` for different site classifications
@@ -77,31 +143,16 @@ networkMap(
   - `"agglomeration"`, `"zone"` or `"local_authority"` for different
     regions of the UK
 
-  - `"network"` for different monitoring networks, if more than one
-    `source` is provided.
-
-- year:
-
-  *A year, or range of years, with which to filter data.*
-
-  *default*: `NULL`
-
-  By default, `networkMap()` visualises sites which are currently
-  operational. `year` allows users to show sites open in a specific
-  year, or over a range of years. See
-  [`openair::importMeta()`](https://openair-project.github.io/openair/reference/importMeta.html)
-  for more information.
-
 - cluster:
 
   *Cluster markers together when zoomed out?*
 
-  *default:* `TRUE`
+  *default:* `NULL`
 
   When `cluster = TRUE`, markers are clustered together. This may be
   useful for sources like `"imperial"` where there are many markers very
-  close together. Defaults to `TRUE`, and is forced to be `TRUE` when
-  `source = "europe"` due to the large number of sites.
+  close together. Defaults to `NULL`, which is `TRUE` if there are more
+  than 25 sites mapped and `FALSE` if there are fewer.
 
 - provider:
 
@@ -162,28 +213,6 @@ networkMap(
 ## Value
 
 A leaflet object.
-
-## Details
-
-When selecting multiple data sources using `source`, please be mindful
-that there can be overlap between the different networks. For example,
-an air quality site in Scotland may be part of the AURN *and* the SAQN.
-`networkMap()` will only show one marker for such sites, and uses the
-order in which `source` arguments are provided as the hierarchy by which
-to assign sites to networks. The aforementioned AURN & SAQN site will
-therefore have its SAQN code displayed if `source = c("saqn", "aurn")`,
-and its AURN code displayed if `source = c("aurn", "saqn")`.
-
-This hierarchy is also reflected when `control = "network"` is used. As
-`leaflet` markers cannot be part of multiple groups, the AURN & SAQN
-site will be part of the "SAQN" layer control group when
-`source = c("saqn", "aurn")` and the "AURN" layer control group when
-`source = c("aurn", "saqn")`.
-
-## See also
-
-Other uk air quality network mapping functions:
-[`searchNetwork()`](https://openair-project.github.io/openairmaps/reference/searchNetwork.md)
 
 ## Examples
 

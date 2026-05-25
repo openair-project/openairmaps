@@ -21,9 +21,7 @@ ensure that your data has coordinate data appended in a similar way.
 ``` r
 
 london_data <-
-  openair::importUKAQ(site = c("my1", "hors", "cll2"),
-                      year = 2020,
-                      meta = TRUE)
+  openair::importUKAQ(site = c("my1", "hors", "cll2"), year = 2020, meta = TRUE)
 
 london_data
 #> # A tibble: 26,352 × 22
@@ -51,18 +49,13 @@ names(london_data)
 #> [19] "co"        "site_type" "latitude"  "longitude"
 ```
 
-To find sites to import data from, you can visualise UK monitoring
-networks using
+To find sites to import data from, you can visualise and search UK
+monitoring networks using
 [`networkMap()`](https://openair-project.github.io/openairmaps/reference/networkMap.md).
-Alternatively,
-[`searchNetwork()`](https://openair-project.github.io/openairmaps/reference/searchNetwork.md)
-will allow you to target a specific region.
 
 ``` r
 
-networkMap(source = c("aurn", "aqe"),
-           year = 2020,
-           control = "variable")
+networkMap(source = c("aurn", "aqe"), year = 2020, control = "variable")
 ```
 
 ## Polar Plot Maps
@@ -82,10 +75,12 @@ and all work similarly to create interactive air quality maps:
 
 ``` r
 
-polarMap(london_data,
-         c("no2", "pm10"),
-         popup = c("site", "site_type"),
-         label = "site")
+polarMap(
+  london_data,
+  c("no2", "pm10"),
+  popup = c("site", "site_type"),
+  label = "site"
+)
 ```
 
 By setting `static` to `TRUE` you will receive a static version of the
@@ -93,10 +88,7 @@ map, which may be more useful for academic articles.
 
 ``` r
 
-polarMap(london_data,
-         c("no2", "pm10"),
-         static = TRUE,
-         d.icon = 100)
+polarMap(london_data, c("no2", "pm10"), static = TRUE, d.icon = 100)
 ```
 
 ![A static polar plot

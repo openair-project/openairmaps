@@ -4,6 +4,20 @@
 
 ### New features
 
+- [`networkMap()`](https://openair-project.github.io/openairmaps/reference/networkMap.md)
+  can now take any option passed to
+  [`openair::importMeta()`](https://openair-project.github.io/openair/reference/importMeta.html).
+  This behaviour supersedes all of the functionality within
+  `searchNetwork()`, which has been removed. It also no longer
+  overwrites the default `year` argument, and so behaves identically to
+  [`openair::importMeta()`](https://openair-project.github.io/openair/reference/importMeta.html).
+
+## openairmaps 0.10.1
+
+CRAN release: 2026-05-20
+
+### New features
+
 - The entire
   [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
   family now defaults to `annotate = FALSE`, which removes many of the
@@ -251,9 +265,8 @@ CRAN release: 2024-05-19
 
 - The `crs` argument has been added to the
   [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
-  and `polarMapStatic()` families and to
-  [`searchNetwork()`](https://openair-project.github.io/openairmaps/reference/searchNetwork.md).
-  This argument allows for users to specify that their data is using an
+  and `polarMapStatic()` families and to `searchNetwork()`. This
+  argument allows for users to specify that their data is using an
   alternative coordinate system to the standard longitude/latitude
   (e.g., the British National Grid CRS). Alternate CRS will be
   re-projected to longitude/latitude for plotting as this is expected by
@@ -369,18 +382,15 @@ also adding some new functionality for polar marker maps.
   - [`percentileMap()`](https://openair-project.github.io/openairmaps/reference/percentileMap.md):
     `intervals` (fixed)
 
-- Added
-  [`searchNetwork()`](https://openair-project.github.io/openairmaps/reference/searchNetwork.md),
-  which allows users to find local air quality monitoring sites by
-  specifying a target latitude and longitude. Function arguments allow
-  the site metadata to be subset (for example, by site type, pollutants
-  measured, or distance from the target).
+- Added `searchNetwork()`, which allows users to find local air quality
+  monitoring sites by specifying a target latitude and longitude.
+  Function arguments allow the site metadata to be subset (for example,
+  by site type, pollutants measured, or distance from the target).
 
 - Added
   [`convertPostcode()`](https://openair-project.github.io/openairmaps/reference/convertPostcode.md),
   which converts a valid UK postcode to a latitude/longitude pair. This
-  is intended to be used with
-  [`searchNetwork()`](https://openair-project.github.io/openairmaps/reference/searchNetwork.md).
+  is intended to be used with `searchNetwork()`.
 
 - The “data” argument of
   [`addPolarMarkers()`](https://openair-project.github.io/openairmaps/reference/addPolarMarkers.md)

@@ -35,9 +35,7 @@ into traditional reports and academic articles.
 modern geospatial ecosystem.
 
 - **Network visualisation** of many UK-based monitoring networks through
-  [`networkMap()`](https://openair-project.github.io/openairmaps/reference/networkMap.md),
-  all of which can also be searched using
-  [`searchNetwork()`](https://openair-project.github.io/openairmaps/reference/searchNetwork.md).
+  [`networkMap()`](https://openair-project.github.io/openairmaps/reference/networkMap.md).
 
 - **Directional analysis maps** to place
   [`openair::polarPlot()`](https://openair-project.github.io/openair/reference/polarPlot.html)

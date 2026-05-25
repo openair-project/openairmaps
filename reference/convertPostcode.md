@@ -2,7 +2,7 @@
 
 This is a much simpler implementation of the tools found in the
 `PostcodesioR` R package, intended for use with the
-[`searchNetwork()`](https://openair-project.github.io/openairmaps/reference/searchNetwork.md)
+[`networkMap()`](https://openair-project.github.io/openairmaps/reference/networkMap.md)
 function.
 
 ## Usage
@@ -50,8 +50,8 @@ convertPostcode("SW1A1AA")
 #> 
 
 if (FALSE) { # \dontrun{
-# use with `searchNetwork()`
+# use with `networkMap()`
 palace <- convertPostcode("SW1A1AA")
-searchNetwork(lat = palace$lat, lng = palace$lng, max_dist = 10)
+networkMap("aurn", lat = palace$lat, lng = palace$lng, max_dist = 10)
 } # }
 ```

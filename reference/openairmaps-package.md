@@ -53,12 +53,12 @@ in-depth documentation of `openair` and `openairmaps`.
 
 ## Author
 
-**Maintainer**: Jack Davison <jack.davison@ricardo.com>
+**Maintainer**: Jack Davison <jack.davison@wsp.com>
 ([ORCID](https://orcid.org/0000-0003-2653-6615))
 
 Authors:
 
-- Jack Davison <jack.davison@ricardo.com>
+- Jack Davison <jack.davison@wsp.com>
   ([ORCID](https://orcid.org/0000-0003-2653-6615))
 
 - David Carslaw <david.carslaw@york.ac.uk>

@@ -35,9 +35,7 @@ into traditional reports and academic articles.
 modern geospatial ecosystem.
 
 - **Network visualisation** of many UK-based monitoring networks through
-  [`networkMap()`](https://openair-project.github.io/openairmaps/reference/networkMap.md),
-  all of which can also be searched using
-  [`searchNetwork()`](https://openair-project.github.io/openairmaps/reference/searchNetwork.md).
+  [`networkMap()`](https://openair-project.github.io/openairmaps/reference/networkMap.md).
 
 - **Directional analysis maps** to place
   [`openair::polarPlot()`](https://openair-project.github.io/openair/reference/polarPlot.html)
@@ -134,12 +132,6 @@ Quickly visualise UK air quality networks.
 
 - [`networkMap()`](https://openair-project.github.io/openairmaps/reference/networkMap.md)
   : Create a leaflet map of air quality measurement network sites
-
-- [`searchNetwork()`](https://openair-project.github.io/openairmaps/reference/searchNetwork.md)
-  :
-
-  Geographically search the air quality networks made available by
-  [`openair::importMeta()`](https://openair-project.github.io/openair/reference/importMeta.html)
 
 ## Directional Analysis
 

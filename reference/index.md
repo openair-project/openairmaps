@@ -16,12 +16,6 @@ Quickly visualise UK air quality networks.
 - [`networkMap()`](https://openair-project.github.io/openairmaps/reference/networkMap.md)
   : Create a leaflet map of air quality measurement network sites
 
-- [`searchNetwork()`](https://openair-project.github.io/openairmaps/reference/searchNetwork.md)
-  :
-
-  Geographically search the air quality networks made available by
-  [`openair::importMeta()`](https://openair-project.github.io/openair/reference/importMeta.html)
-
 ## Directional Analysis
 
 Create HTML `leaflet` and static `ggplot2` maps with polar plot markers.
