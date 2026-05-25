@@ -2,7 +2,7 @@
 
 ## New features
 
-* `networkMap()` can now take any option passed to `openair::importMeta()`. This behaviour supersedes all of the functionality within `searchNetwork()`, which has been removed.
+* `networkMap()` can now take any option passed to `openair::importMeta()`. This behaviour supersedes all of the functionality within `searchNetwork()`, which has been removed. It also no longer overwrites the default `year` argument, and so behaves identically to `openair::importMeta()`.
 
 # openairmaps 0.10.1
 
