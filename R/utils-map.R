@@ -602,9 +602,7 @@ create_static_map <-
     check_installed_static()
 
     # silence R CMD check
-    if (FALSE) {
-      prettymapr::makebbox(1, 1, 1, 1)
-    }
+    makebbox <- prettymapr::makebbox(1, 1, 1, 1)
 
     # work out width/height
     if (length(d.icon) == 1) {

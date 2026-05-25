@@ -62,7 +62,7 @@
 #' map <- leaflet() |>
 #'   addTiles()
 #'
-#' for (i in seq(length(unique(traj_data$date)))) {
+#' for (i in seq_along(unique(traj_data$date))) {
 #'   data <- dplyr::filter(traj_data, date == unique(traj_data$date)[i])
 #'
 #'   map <- map |>
@@ -136,23 +136,23 @@ addTrajPaths <-
           ...
         )
 
-      for (i in seq_len(nrow(pdata))) {
+      for (j in seq_len(nrow(pdata))) {
         if (!is.null(layerId)) {
-          layeridp <- paste(layerid, i, sep = "-")
+          layeridp <- paste(layerid, j, sep = "-")
         } else {
           layeridp <- NULL
         }
         map <-
           leaflet::addCircleMarkers(
             map = map,
-            data = pdata[i, ],
+            data = pdata[j, ],
             radius = 3,
             stroke = FALSE,
-            lng = pdata[i, ][[lng]],
-            lat = pdata[i, ][[lat]],
+            lng = pdata[j, ][[lng]],
+            lat = pdata[j, ][[lat]],
             group = group,
             layerId = layeridp,
-            popup = pdata[i, ][["lab"]],
+            popup = pdata[j, ][["lab"]],
             ...
           )
       }
