@@ -164,7 +164,7 @@ trajLevelMap <-
       pal <- leaflet::colorFactor(
         palette = openair::openColors(
           scheme = cols,
-          n = length(levels(data[[pollutant]]))
+          n = nlevels(data[[pollutant]])
         ),
         domain = factor(unique(data[[pollutant]]), levels(data[[pollutant]]))
       )

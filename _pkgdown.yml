@@ -14,7 +14,7 @@ reference:
   desc: |
     Quickly visualise UK air quality networks.
   contents:
-  - has_concept("uk air quality network mapping functions")
+  - networkMap
 
 - title: Directional Analysis
   desc: |

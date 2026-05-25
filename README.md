@@ -38,7 +38,7 @@ status](https://www.r-pkg.org/badges/version/openairmaps)](https://CRAN.R-projec
 
 **openairmaps** has developed at pace to align **openair** with R's modern geospatial ecosystem.
 
-- **Network visualisation** of many UK-based monitoring networks through `networkMap()`, all of which can also be searched using `searchNetwork()`.
+- **Network visualisation** of many UK-based monitoring networks through `networkMap()`.
 
 - **Directional analysis maps** to place `openair::polarPlot()` and other "polar coordinate" plots on maps.
 
