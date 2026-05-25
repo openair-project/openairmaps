@@ -184,7 +184,8 @@ networkMap <-
       "agglomeration",
       "local_authority",
       "provider",
-      "pcode"
+      "pcode",
+      "distance_km"
     )) {
       if (!i %in% names(meta)) {
         meta[[i]] <- NA
@@ -247,25 +248,37 @@ networkMap <-
             iconColor = "black"
           ),
           popup = paste0(
-            "<div style='font-family: Arial, sans-serif; min-width: 200px; max-width: 260px;'>",
+            "<div style='font-family:sans-serif; font-size:13px; max-height:320px;
+             overflow-y:auto; width:200px; padding-right:4px;'>",
 
-            # Header
-            "<div style='background: black; color: white; padding: 8px 12px; margin: -10px -10px 10px; border-radius: 4px 4px 0 0;'>",
-            "<div style='font-size: 14px; font-weight: bold;'>Search Location</div>",
+            "<div style='display:flex; align-items:center; gap:8px; margin-bottom:10px;
+               padding-bottom:8px; border-bottom:2px solid #ddd;'>",
+            "<div style='width:14px; height:14px; border-radius:50%; flex-shrink:0; background:black;'></div>",
+            "<div style='flex:1;'>",
+            "<div style='font-size:15px; font-weight:700; color:#222; line-height:1.2;'>Search Location</div>",
+            "<div style='font-size:12px; font-weight:600; color:#303030; letter-spacing:0.03em; margin-top:2px;'>TARGET</div>",
+            "</div>",
             "</div>",
 
-            # Coordinates section
-            "<div style='margin-bottom: 8px;'>",
-            "<div style='font-size: 11px; font-weight: bold; text-transform: uppercase; color: #888; margin-bottom: 4px; border-bottom: 1px solid #eee; padding-bottom: 2px;'>Coordinates</div>",
-            "<div style='display: flex; justify-content: space-between; font-size: 12px; padding: 2px 0;'><span style='color: #555; font-weight: bold;'>Latitude</span><span style='font-family: monospace;'>",
+            "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
+            "<span style='color:#888; min-width:100px;'>Latitude</span>",
+            "<span style='font-weight:500; text-align:right;'>",
             target$lat,
-            "</span></div>",
-            "<div style='display: flex; justify-content: space-between; font-size: 12px; padding: 2px 0;'><span style='color: #555; font-weight: bold;'>Longitude</span><span style='font-family: monospace;'>",
+            "</span>",
+            "</div>",
+
+            "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
+            "<span style='color:#888; min-width:100px;'>Longitude</span>",
+            "<span style='font-weight:500; text-align:right;'>",
             target$lng,
-            "</span></div>",
-            "<div style='display: flex; justify-content: space-between; font-size: 12px; padding: 2px 0;'><span style='color: #555; font-weight: bold;'>CRS</span><span style='font-family: monospace;'>EPSG:",
+            "</span>",
+            "</div>",
+
+            "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
+            "<span style='color:#888; min-width:100px;'>CRS</span>",
+            "<span style='font-weight:500; text-align:right;'>EPSG:",
             target$crs,
-            "</span></div>",
+            "</span>",
             "</div>",
 
             "</div>"
@@ -490,7 +503,8 @@ summarise_network_popup <- function(meta, control = NULL) {
     "provider",
     "colour",
     "colour2",
-    "realcolour"
+    "realcolour",
+    "distance_km"
   )
 
   meta <- meta |>
@@ -528,7 +542,7 @@ summarise_network_popup <- function(meta, control = NULL) {
     )
 
   # Always compute full per-site var_date_block and date range,
-  # regardless of control — this goes into the popup
+  # regardless of control - this goes into the popup
   site_summary <- meta |>
     dplyr::summarise(
       var_date_block = {
@@ -608,6 +622,20 @@ summarise_network_popup <- function(meta, control = NULL) {
         "</div>",
         "</div>",
 
+        dplyr::if_else(
+          !is.na(.data$distance_km),
+          paste0(
+            "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
+            "<b><span style='color:black; min-width:100px;'>Distance from Target</span></b>",
+            "<span style='font-weight:500; text-align:right;'><b>",
+            signif(.data$distance_km, 4),
+            " km",
+            "</b></span>",
+            "</div>"
+          ),
+          ""
+        ),
+
         "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
         "<span style='color:#888; min-width:100px;'>Site type</span>",
         "<span style='font-weight:500; text-align:right;'>",
@@ -632,28 +660,28 @@ summarise_network_popup <- function(meta, control = NULL) {
         "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
         "<span style='color:#888; min-width:100px;'>Zone</span>",
         "<span style='font-weight:500; text-align:right;'>",
-        ifelse(is.na(.data$zone), "—", .data$zone),
+        ifelse(is.na(.data$zone), "-", .data$zone),
         "</span>",
         "</div>",
 
         "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
         "<span style='color:#888; min-width:100px;'>Agglomeration</span>",
         "<span style='font-weight:500; text-align:right;'>",
-        ifelse(is.na(.data$agglomeration), "—", .data$agglomeration),
+        ifelse(is.na(.data$agglomeration), "-", .data$agglomeration),
         "</span>",
         "</div>",
 
         "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
         "<span style='color:#888; min-width:100px;'>Local authority</span>",
         "<span style='font-weight:500; text-align:right;'>",
-        ifelse(is.na(.data$local_authority), "—", .data$local_authority),
+        ifelse(is.na(.data$local_authority), "-", .data$local_authority),
         "</span>",
         "</div>",
 
         "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
         "<span style='color:#888; min-width:100px;'>LMAM Provider</span>",
         "<span style='font-weight:500; text-align:right;'>",
-        ifelse(is.na(.data$provider), "—", .data$provider),
+        ifelse(is.na(.data$provider), "-", .data$provider),
         "</span>",
         "</div>",
 
