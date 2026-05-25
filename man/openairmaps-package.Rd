@@ -51,11 +51,11 @@ The \href{https://openair-project.github.io/book/}{openair book} for
 more in-depth documentation of \code{openair} and \code{openairmaps}.
 }
 \author{
-\strong{Maintainer}: Jack Davison \email{jack.davison@ricardo.com} (\href{https://orcid.org/0000-0003-2653-6615}{ORCID})
+\strong{Maintainer}: Jack Davison \email{jack.davison@wsp.com} (\href{https://orcid.org/0000-0003-2653-6615}{ORCID})
 
 Authors:
 \itemize{
-  \item Jack Davison \email{jack.davison@ricardo.com} (\href{https://orcid.org/0000-0003-2653-6615}{ORCID})
+  \item Jack Davison \email{jack.davison@wsp.com} (\href{https://orcid.org/0000-0003-2653-6615}{ORCID})
   \item David Carslaw \email{david.carslaw@york.ac.uk} (\href{https://orcid.org/0000-0003-0991-950X}{ORCID})
 }
 

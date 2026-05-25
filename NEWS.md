@@ -2,6 +2,12 @@
 
 ## New features
 
+* `networkMap()` can now take any option passed to `openair::importMeta()`. This behaviour supersedes all of the functionality within `searchNetwork()`, which has been removed.
+
+# openairmaps 0.10.1
+
+## New features
+
 * The entire `polarMap()` family now defaults to `annotate = FALSE`, which removes many of the "captions" added automatically since `{openair}` v.3.1.0. These can be restored by passing `annotate = TRUE` to `...`.
 
 * `trajLevelMap()` has gained `breaks` in line with `openair::trajLevel()`.

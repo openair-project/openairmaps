@@ -21,7 +21,7 @@ A list containing the latitude, longitude, and input postcode.
 }
 \description{
 This is a much simpler implementation of the tools found in the
-\code{PostcodesioR} R package, intended for use with the \code{\link[=searchNetwork]{searchNetwork()}}
+\code{PostcodesioR} R package, intended for use with the \code{\link[=networkMap]{networkMap()}}
 function.
 }
 \examples{
@@ -29,9 +29,9 @@ function.
 convertPostcode("SW1A1AA")
 
 \dontrun{
-# use with `searchNetwork()`
+# use with `networkMap()`
 palace <- convertPostcode("SW1A1AA")
-searchNetwork(lat = palace$lat, lng = palace$lng, max_dist = 10)
+networkMap("aurn", lat = palace$lat, lng = palace$lng, max_dist = 10)
 }
 
 }
