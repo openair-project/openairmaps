@@ -914,7 +914,6 @@ create_legend_title <- function(
 #' @noRd
 check_installed_static <- function() {
   rlang::check_installed(c(
-    "ggplot2",
     "ggspatial",
     "prettymapr",
     "ggtext",

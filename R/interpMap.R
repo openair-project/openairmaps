@@ -532,7 +532,7 @@ make_static_interp_map <- function(
   legend.title.autotext,
   show.markers
 ) {
-  rlang::check_installed(c("ggplot2", "ggspatial", "prettymapr", "stars"))
+  rlang::check_installed(c("ggspatial", "prettymapr", "stars"))
 
   map <- ggplot2::ggplot() +
     ggspatial::annotation_map_tile(zoomin = 0, cachedir = tempdir())
