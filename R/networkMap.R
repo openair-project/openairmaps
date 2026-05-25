@@ -337,7 +337,8 @@ networkMap <-
               "overall_end",
               "overall_start",
               "latitude",
-              "longitude"
+              "longitude",
+              "distance_km"
             )
         ]
       )
@@ -401,6 +402,9 @@ networkMap <-
     if (has_target && control != "variable") {
       control_vars <- c(control_vars, "Target")
     }
+    if ("Other" %in% control_vars) {
+      control_vars <- c(control_vars[control_vars != "Other"], "Other")
+    }
     if (control == "variable") {
       overlayGroups <- names(provider)
       baseGroups <- control_vars
@@ -421,7 +425,7 @@ networkMap <-
     )
 
     # multiple sources - add legend
-    if (length(source) > 1 && legend) {
+    if (dplyr::n_distinct(meta$source) > 1 && legend) {
       map <-
         leaflet::addLegend(
           map,
@@ -431,7 +435,7 @@ networkMap <-
           colors = cols$realcolour,
           labels = paste0(
             "<span style='line-height:1.6'>",
-            cols$source,
+            toupper(cols$source),
             "</span>"
           )
         )
@@ -549,7 +553,7 @@ summarise_network_popup <- function(meta, control = NULL) {
         valid <- .data$var_date[!is.na(.data$var_date)]
         if (length(valid) > 0) paste(valid, collapse = "") else NA_character_
       },
-      overall_start = min(.data$start_date, na.rm = TRUE),
+      overall_start = min(.data$start_date),
       overall_end = {
         non_missing <- .data$end_date[!is.na(.data$end_date)]
         if (length(non_missing) == 0) as.POSIXct(NA) else max(non_missing)
