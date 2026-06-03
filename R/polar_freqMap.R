@@ -73,7 +73,7 @@ freqMap <- function(
   provider = "OpenStreetMap",
   cols = "turbo",
   alpha = 1,
-  theme = NULL,
+  theme = "classic",
   key.position = "none",
   legend = TRUE,
   legend.position = NULL,
@@ -206,6 +206,7 @@ freqMap <- function(
       plot = FALSE,
       statistic = statistic,
       cols = cols,
+      theme = theme,
       key.position = key.position
     ),
     dots
@@ -234,7 +235,6 @@ freqMap <- function(
       d.fig = d.fig,
       popup = popup,
       label = label,
-      theme = theme,
       progress = progress
     )
 

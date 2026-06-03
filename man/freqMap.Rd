@@ -18,7 +18,7 @@ freqMap(
   provider = "OpenStreetMap",
   cols = "turbo",
   alpha = 1,
-  theme = NULL,
+  theme = "classic",
   key.position = "none",
   legend = TRUE,
   legend.position = NULL,
@@ -182,12 +182,12 @@ A value between 0 (fully transparent) and 1 (fully opaque).}
 
 \item{theme}{\emph{Custom ggplot2 theme for the polar markers.}
 
-\emph{default:} \code{NULL} | \emph{scope:} dynamic & static
+\emph{default:} \code{"classic"} | \emph{scope:} dynamic & static
 
 A custom \code{ggplot2} theme to add to the polar markers. This should ideally
 be a partial theme (i.e., \code{\link[ggplot2:theme]{ggplot2::theme()}}) over a complete theme (e.g.,
 \code{\link[ggplot2:theme_bw]{ggplot2::theme_bw()}}) as other arguments like \code{key} interact with the plot
-theme \emph{before} custom themes are set, so would be overriden by a complete
+theme \emph{before} custom themes are set, so would be overridden by a complete
 theme.}
 
 \item{key.position}{\emph{Legend position for individual marker legends.}

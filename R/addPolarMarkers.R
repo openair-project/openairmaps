@@ -35,8 +35,6 @@
 #'   inches. This will affect the resolution of the markers on the map.
 #'   Alternatively, a vector in the form `c(width, height)` can be provided if a
 #'   non-circular marker is desired.
-#' @param theme Optional [ggplot2::theme()] elements to add to the polar marker
-#'   before it is saved.
 #' @param alpha The desired opacity of the polar markers. Can also be set via
 #'   `options` but is provided here for convenience.
 #' @param ... Other arguments for the plotting function (e.g. `period` for
@@ -91,7 +89,6 @@ addPolarMarkers <-
     options = leaflet::markerOptions(),
     clusterOptions = NULL,
     clusterId = NULL,
-    theme = NULL,
     key.position = "none",
     d.icon = 200,
     d.fig = 3.5,
@@ -147,7 +144,6 @@ addPolarMarkers <-
         popup = popup,
         label = label,
         dropcol = "no2",
-        theme = theme,
         progress = TRUE,
         polar_fun = polar_fun
       )
@@ -240,7 +236,6 @@ addPolarDiffMarkers <-
     options = leaflet::markerOptions(),
     clusterOptions = NULL,
     clusterId = NULL,
-    theme = NULL,
     key.position = "none",
     d.icon = 200,
     d.fig = 3.5,
@@ -289,7 +284,6 @@ addPolarDiffMarkers <-
         popup = popup,
         label = label,
         dropcol = pollutant,
-        theme = theme,
         progress = TRUE
       )
 
