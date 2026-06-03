@@ -19,7 +19,7 @@ diffMap(
   provider = "OpenStreetMap",
   cols = rev(openair::openColours("RdBu", 10)),
   alpha = 1,
-  theme = "classic",
+  theme = "default",
   key.position = "none",
   legend = TRUE,
   legend.position = NULL,
@@ -169,7 +169,7 @@ A value between 0 (fully transparent) and 1 (fully opaque).}
 
 \item{theme}{\emph{Custom ggplot2 theme for the polar markers.}
 
-\emph{default:} \code{"classic"} | \emph{scope:} dynamic & static
+\emph{default:} \code{"default"} | \emph{scope:} dynamic & static
 
 A custom \code{ggplot2} theme to add to the polar markers. This should ideally
 be a partial theme (i.e., \code{\link[ggplot2:theme]{ggplot2::theme()}}) over a complete theme (e.g.,

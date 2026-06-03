@@ -66,7 +66,7 @@ windroseMap <- function(
   provider = "OpenStreetMap",
   cols = "turbo",
   alpha = 1,
-  theme = "classic",
+  theme = "default",
   key.position = "none",
   legend = TRUE,
   legend.position = NULL,

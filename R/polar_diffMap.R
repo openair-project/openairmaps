@@ -69,7 +69,7 @@ diffMap <- function(
   provider = "OpenStreetMap",
   cols = rev(openair::openColours("RdBu", 10)),
   alpha = 1,
-  theme = "classic",
+  theme = "default",
   key.position = "none",
   legend = TRUE,
   legend.position = NULL,
