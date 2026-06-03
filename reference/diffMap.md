@@ -25,7 +25,7 @@ diffMap(
   provider = "OpenStreetMap",
   cols = rev(openair::openColours("RdBu", 10)),
   alpha = 1,
-  theme = "classic",
+  theme = "default",
   key.position = "none",
   legend = TRUE,
   legend.position = NULL,
@@ -222,7 +222,7 @@ diffMap(
 
   *Custom ggplot2 theme for the polar markers.*
 
-  *default:* `"classic"` \| *scope:* dynamic & static
+  *default:* `"default"` \| *scope:* dynamic & static
 
   A custom `ggplot2` theme to add to the polar markers. This should
   ideally be a partial theme (i.e.,
