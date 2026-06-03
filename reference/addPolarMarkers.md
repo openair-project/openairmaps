@@ -27,7 +27,6 @@ addPolarMarkers(
   options = leaflet::markerOptions(),
   clusterOptions = NULL,
   clusterId = NULL,
-  theme = NULL,
   key.position = "none",
   d.icon = 200,
   d.fig = 3.5,
@@ -52,7 +51,6 @@ addPolarDiffMarkers(
   options = leaflet::markerOptions(),
   clusterOptions = NULL,
   clusterId = NULL,
-  theme = NULL,
   key.position = "none",
   d.icon = 200,
   d.fig = 3.5,
@@ -148,12 +146,6 @@ addPolarDiffMarkers(
 - clusterId:
 
   the id for the marker cluster layer
-
-- theme:
-
-  Optional
-  [`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html)
-  elements to add to the polar marker before it is saved.
 
 - key.position:
 
