@@ -20,7 +20,6 @@ addPolarMarkers(
   options = leaflet::markerOptions(),
   clusterOptions = NULL,
   clusterId = NULL,
-  theme = NULL,
   key.position = "none",
   d.icon = 200,
   d.fig = 3.5,
@@ -45,7 +44,6 @@ addPolarDiffMarkers(
   options = leaflet::markerOptions(),
   clusterOptions = NULL,
   clusterId = NULL,
-  theme = NULL,
   key.position = "none",
   d.icon = 200,
   d.fig = 3.5,
@@ -95,9 +93,6 @@ you can use \code{\link[leaflet:markerClusterOptions]{markerClusterOptions()}} t
 options}
 
 \item{clusterId}{the id for the marker cluster layer}
-
-\item{theme}{Optional \code{\link[ggplot2:theme]{ggplot2::theme()}} elements to add to the polar marker
-before it is saved.}
 
 \item{key.position}{Passed to \code{key.position} for the relevant \code{fun}.}
 

@@ -199,12 +199,12 @@
 #'
 #' @param theme *Custom ggplot2 theme for the polar markers.*
 #'
-#'  *default:* `NULL` | *scope:* dynamic & static
+#'  *default:* `"default"` | *scope:* dynamic & static
 #'
 #'   A custom `ggplot2` theme to add to the polar markers. This should ideally
 #'   be a partial theme (i.e., [ggplot2::theme()]) over a complete theme (e.g.,
 #'   [ggplot2::theme_bw()]) as other arguments like `key` interact with the plot
-#'   theme *before* custom themes are set, so would be overriden by a complete
+#'   theme *before* custom themes are set, so would be overridden by a complete
 #'   theme.
 #'
 #' @param key.position *Legend position for individual marker legends.*
@@ -350,7 +350,7 @@ polarMap <- function(
   provider = "OpenStreetMap",
   cols = "turbo",
   alpha = 1,
-  theme = NULL,
+  theme = "default",
   key.position = "none",
   legend = TRUE,
   legend.position = NULL,
@@ -511,6 +511,7 @@ polarMap <- function(
       limits = theLimits,
       upper = upper,
       cols = cols,
+      theme = theme,
       key.position = key.position
     ),
     dots
@@ -540,7 +541,6 @@ polarMap <- function(
       popup = popup,
       label = label,
       dropcol = funpoll,
-      theme = theme,
       progress = progress
     )
 

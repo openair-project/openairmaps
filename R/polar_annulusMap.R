@@ -50,7 +50,7 @@ annulusMap <- function(
   provider = "OpenStreetMap",
   cols = "turbo",
   alpha = 1,
-  theme = NULL,
+  theme = "default",
   key.position = "none",
   legend = TRUE,
   legend.position = NULL,
@@ -173,6 +173,7 @@ annulusMap <- function(
       plot = FALSE,
       limits = theLimits,
       cols = cols,
+      theme = theme,
       key.position = key.position
     ),
     dots
@@ -201,7 +202,6 @@ annulusMap <- function(
       d.fig = d.fig,
       popup = popup,
       label = label,
-      theme = theme,
       progress = progress
     )
 

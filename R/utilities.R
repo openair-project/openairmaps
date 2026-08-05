@@ -35,6 +35,12 @@ quickTextHTML <- function(text) {
       ...
     )
   }
+
+  # meteo
+  text <- gsubic("wd", "wind dir.", text)
+  text <- gsubic("ws", "wind spd.", text)
+  text <- gsubic("temp", "temperature", text)
+
   # gaseous
   text <- gsubic("no2", "NO<sub>2</sub>", text)
   text <- gsubic("no", "NO", text)
@@ -263,7 +269,7 @@ buildPopup <-
 #' Convert a UK postcode to a latitude/longitude pair
 #'
 #' This is a much simpler implementation of the tools found in the
-#' `PostcodesioR` R package, intended for use with the [searchNetwork()]
+#' `PostcodesioR` R package, intended for use with the [networkMap()]
 #' function.
 #'
 #' @param postcode *A valid UK postcode.*
@@ -279,9 +285,9 @@ buildPopup <-
 #' convertPostcode("SW1A1AA")
 #'
 #' \dontrun{
-#' # use with `searchNetwork()`
+#' # use with `networkMap()`
 #' palace <- convertPostcode("SW1A1AA")
-#' searchNetwork(lat = palace$lat, lng = palace$lng, max_dist = 10)
+#' networkMap("aurn", lat = palace$lat, lng = palace$lng, max_dist = 10)
 #' }
 #'
 #' @seealso The `PostcodesioR` package at

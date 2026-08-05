@@ -443,7 +443,6 @@ create_polar_markers <-
     label = NULL,
     d.fig,
     dropcol = "conc",
-    theme,
     polar_fun = NULL,
     progress = TRUE
   ) {
@@ -538,11 +537,11 @@ create_polar_markers <-
               ggplot2::ggsave(
                 plot = openair_obj$plot +
                   ggplot2::theme(
+                    plot.background = ggplot2::element_blank(),
                     plot.margin = ggplot2::unit(rep(0, 4), "cm"),
                     legend.background = ggplot2::element_blank(),
                     legend.title = ggplot2::element_blank()
-                  ) +
-                  theme,
+                  ),
                 filename = url,
                 width = width * 0.75,
                 height = height * 0.75,
@@ -556,8 +555,7 @@ create_polar_markers <-
           fun_args = fun_args,
           width = width,
           height = height,
-          polar_fun = polar_fun,
-          theme = theme
+          polar_fun = polar_fun
         ),
         .progress = progress
       )
@@ -602,9 +600,7 @@ create_static_map <-
     check_installed_static()
 
     # silence R CMD check
-    if (FALSE) {
-      prettymapr::makebbox(1, 1, 1, 1)
-    }
+    makebbox <- prettymapr::makebbox(1, 1, 1, 1)
 
     # work out width/height
     if (length(d.icon) == 1) {
@@ -916,7 +912,6 @@ create_legend_title <- function(
 #' @noRd
 check_installed_static <- function() {
   rlang::check_installed(c(
-    "ggplot2",
     "ggspatial",
     "prettymapr",
     "ggtext",
