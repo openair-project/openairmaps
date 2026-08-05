@@ -103,7 +103,7 @@ voronoiMap(
   controls how this is achieved. Possible statistics include:
 
   - `"mean"`: the arithmetic mean (using
-    [`mean()`](https://rdrr.io/r/base/mean.html))
+    [`base::mean()`](https://rdrr.io/r/base/mean.html))
 
   - `"median"`: the median (middle) value (using
     [`stats::median()`](https://rdrr.io/r/stats/median.html))
