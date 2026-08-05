@@ -23,6 +23,8 @@ export(voronoiMap)
 export(windroseMap)
 importFrom(dplyr,tibble)
 importFrom(lifecycle,deprecated)
-importFrom(rlang,"%||%")
-importFrom(rlang,":=")
-importFrom(rlang,.data)
+importFrom(rlang,
+  "%||%",
+  ":=",
+  .data
+)

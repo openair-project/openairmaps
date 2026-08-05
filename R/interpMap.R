@@ -54,7 +54,7 @@
 #'   Pollutant data will be aggregated by latitude & longitude; `statistic`
 #'   controls how this is achieved. Possible statistics include:
 #'
-#'   - `"mean"`: the arithmetic mean (using [mean()])
+#'   - `"mean"`: the arithmetic mean (using [base::mean()])
 #'   - `"median"`: the median (middle) value (using [stats::median()])
 #'   - `"max"`: the maximum value (using [max()])
 #'   - `"min"`: the maximum value (using [min()])

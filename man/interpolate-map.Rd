@@ -84,7 +84,7 @@ prohibited by this function.}
 Pollutant data will be aggregated by latitude & longitude; \code{statistic}
 controls how this is achieved. Possible statistics include:
 \itemize{
-\item \code{"mean"}: the arithmetic mean (using \code{\link[=mean]{mean()}})
+\item \code{"mean"}: the arithmetic mean (using \code{\link[base:mean]{base::mean()}})
 \item \code{"median"}: the median (middle) value (using \code{\link[stats:median]{stats::median()}})
 \item \code{"max"}: the maximum value (using \code{\link[=max]{max()}})
 \item \code{"min"}: the maximum value (using \code{\link[=min]{min()}})

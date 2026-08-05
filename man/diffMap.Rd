@@ -352,6 +352,24 @@ uses the \emph{York regression method} to estimate the slope. In this
 method the uncertainties in \code{x} and \code{y} are used in the
 determination of the slope. The uncertainties are provided by
 \code{x_error} and \code{y_error} --- see below.}}
+    \item{\code{breaks}}{\code{breaks} bins a continuous axis into discrete bins. It can
+either take a single number (e.g., \code{breaks = 5}) to split the scale into
+quantiles, a vector of numbers (e.g., \verb{breaks = c(0, 50, 100, 200, 500}) to
+define specific break-points, or a named list. See \code{\link[openair:breakOpts]{breakOpts()}} for more
+details.}
+    \item{\code{trans}}{Should a transformation be applied to the colour scale? If the
+distribution of data is skewed, the default scale may be dominated by a few
+high values, so a log or square-root transform may mean the whole colour
+scale is better presented on the plot. Can be:
+\itemize{
+\item \code{FALSE}, which performs no transform.
+\item \code{TRUE}, which uses an appropriate transform for the plot type (usually
+\code{"log10"}).
+\item A \code{scales} 'transform' object (e.g., \code{\link[scales:transform_log10]{scales::transform_log10()}}).
+\item A character string corresponding to a \code{scales} transform function. Useful
+options include \code{"sqrt"}, \code{"log10"}, \code{"log2"}, \code{"log1p"}, \code{"pseudo_log"}
+and \code{"reverse"}.
+}}
     \item{\code{exclude.missing}}{Setting this option to \code{TRUE} (the default) removes
 points from the plot that are too far from the original data. The smoothing
 routines will produce predictions at points where no data exist i.e. they
@@ -443,11 +461,6 @@ mean value. This is done \emph{after} fitting the smooth surface. This option is
 particularly useful if one is interested in the patterns of concentrations
 for several pollutants on different scales e.g. NOx and CO. Often useful if
 more than one \code{pollutant} is chosen.}
-    \item{\code{breaks}}{\code{breaks} bins a continuous axis into discrete bins. It can
-either take a single number (e.g., \code{breaks = 5}) to split the scale into
-quantiles, a vector of numbers (e.g., \verb{breaks = c(0, 50, 100, 200, 500}) to
-define specific break-points, or a named list. See \code{\link[openair:breakOpts]{breakOpts()}} for more
-details.}
     \item{\code{key.title}}{Used to set the title of the legend. The legend title is
 passed to \code{\link[openair:quickText]{quickText()}} if \code{auto.text = TRUE}.}
     \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE} titles and
