@@ -96,6 +96,7 @@ produced instead.</p>
 <span>  d.fig <span class="op">=</span> <span class="fl">3.5</span>,</span>
 <span>  static <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  static.nrow <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  control <span class="op">=</span> <span class="cn">NULL</span></span>
@@ -314,6 +315,13 @@ for DOCX or PDF outputs (e.g., academic papers).</p></dd>
 <code>pollutant</code>s or <code>type</code> are specified; passed to the <code>nrow</code> argument of
 <code><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">ggplot2::facet_wrap()</a></code>. The default, <code>NULL</code>, results in a roughly square
 grid of panels.</p></dd>
+
+
+<dt id="arg-api-key">api_key<a class="anchor" aria-label="anchor" href="#arg-api-key"></a></dt>
+<dd><p><em>API key for certain 'static' base map providers.</em></p>
+<p><em>default:</em> <code>NULL</code> | <em>scope:</em> static</p>
+<p>Passed to the <code>api_key</code> argument of <code><a href="https://paleolimbot.github.io/ggspatial/reference/annotation_map_tile.html" class="external-link">ggspatial::annotation_map_tile()</a></code>.
+Needed for certain <code>providers</code> (e.g., <code>"cartolight"</code>).</p></dd>
 
 
 <dt id="arg-progress">progress<a class="anchor" aria-label="anchor" href="#arg-progress"></a></dt>

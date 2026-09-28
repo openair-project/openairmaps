@@ -12,6 +12,10 @@
   overwrites the default `year` argument, and so behaves identically to
   [`openair::importMeta()`](https://openair-project.github.io/openair/reference/importMeta.html).
 
+- Static maps gain the `api_key` argument, passed to the equivalent
+  argument in
+  [`ggspatial::annotation_map_tile()`](https://paleolimbot.github.io/ggspatial/reference/annotation_map_tile.html).
+
 ## openairmaps 0.10.1
 
 CRAN release: 2026-05-20

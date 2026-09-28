@@ -38,6 +38,7 @@ polarMap(
   d.fig = 3.5,
   static = FALSE,
   static.nrow = NULL,
+  api_key = NULL,
   progress = TRUE,
   ...,
   control = NULL
@@ -384,6 +385,16 @@ polarMap(
   `pollutant`s or `type` are specified; passed to the `nrow` argument of
   [`ggplot2::facet_wrap()`](https://ggplot2.tidyverse.org/reference/facet_wrap.html).
   The default, `NULL`, results in a roughly square grid of panels.
+
+- api_key:
+
+  *API key for certain 'static' base map providers.*
+
+  *default:* `NULL` \| *scope:* static
+
+  Passed to the `api_key` argument of
+  [`ggspatial::annotation_map_tile()`](https://paleolimbot.github.io/ggspatial/reference/annotation_map_tile.html).
+  Needed for certain `providers` (e.g., `"cartolight"`).
 
 - progress:
 

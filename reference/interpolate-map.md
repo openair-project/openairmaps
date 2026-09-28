@@ -38,6 +38,7 @@ krigingMap(
   legend.title = NULL,
   legend.title.autotext = TRUE,
   static = FALSE,
+  api_key = NULL,
   vgm = gstat::vgm(psill = 1, model = "Exp", range = 50000, nugget = 1),
   args.idw = list(),
   args.variogram = list(),
@@ -325,6 +326,16 @@ voronoiMap(
   This controls whether a *dynamic* or *static* map is produced. The
   former is the default and is broadly more useful, but the latter may
   be preferable for DOCX or PDF outputs (e.g., academic papers).
+
+- api_key:
+
+  *API key for certain 'static' base map providers.*
+
+  *default:* `NULL` \| *scope:* static
+
+  Passed to the `api_key` argument of
+  [`ggspatial::annotation_map_tile()`](https://paleolimbot.github.io/ggspatial/reference/annotation_map_tile.html).
+  Needed for certain `providers` (e.g., `"cartolight"`).
 
 - vgm:
 
