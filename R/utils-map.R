@@ -595,6 +595,7 @@ create_static_map <-
     d.icon,
     facet,
     facet.nrow,
+    api_key,
     alpha
   ) {
     check_installed_static()
@@ -664,7 +665,8 @@ create_static_map <-
         zoomin = 0,
         cachedir = tempdir(),
         type = provider,
-        progress = "none"
+        progress = "none",
+        api_key = api_key
       ) +
       geom_sf_richtext(
         data = plots_sf,

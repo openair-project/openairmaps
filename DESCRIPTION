@@ -34,7 +34,7 @@ Imports:
 Suggests:
     carrier,
     curl,
-    ggspatial,
+    ggspatial (>= 1.1.11),
     ggtext,
     gstat,
     jsonlite,

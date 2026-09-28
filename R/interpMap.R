@@ -200,6 +200,7 @@ krigingMap <- function(
   legend.title = NULL,
   legend.title.autotext = TRUE,
   static = FALSE,
+  api_key = NULL,
   vgm = gstat::vgm(psill = 1, model = "Exp", range = 50000, nugget = 1),
   args.idw = list(),
   args.variogram = list(),
@@ -447,6 +448,7 @@ voronoiMap <- function(
       legend.title = legend.title,
       legend.position = legend.position,
       legend.title.autotext = legend.title.autotext,
+      api_key = api_key,
       show.markers = show.markers
     )
 
@@ -530,12 +532,17 @@ make_static_interp_map <- function(
   legend.title,
   legend.position,
   legend.title.autotext,
+  api_key,
   show.markers
 ) {
   rlang::check_installed(c("ggspatial", "prettymapr", "stars"))
 
   map <- ggplot2::ggplot() +
-    ggspatial::annotation_map_tile(zoomin = 0, cachedir = tempdir())
+    ggspatial::annotation_map_tile(
+      zoomin = 0,
+      cachedir = tempdir(),
+      api_key = api_key
+    )
 
   if (type == "rast") {
     map <- map +
@@ -633,6 +640,7 @@ make_dynamic_interp_map <- function(
   legend.title,
   legend.position,
   legend.title.autotext,
+  api_key,
   show.markers
 ) {
   vec <-

@@ -31,6 +31,7 @@ pollroseMap(
   d.fig = 3.5,
   static = FALSE,
   static.nrow = NULL,
+  api_key = NULL,
   progress = TRUE,
   ...,
   control = NULL
@@ -277,6 +278,13 @@ Controls the number of rows of panels on a static map when multiple
 \code{pollutant}s or \code{type} are specified; passed to the \code{nrow} argument of
 \code{\link[ggplot2:facet_wrap]{ggplot2::facet_wrap()}}. The default, \code{NULL}, results in a roughly square
 grid of panels.}
+
+\item{api_key}{\emph{API key for certain 'static' base map providers.}
+
+\emph{default:} \code{NULL} | \emph{scope:} static
+
+Passed to the \code{api_key} argument of \code{\link[ggspatial:annotation_map_tile]{ggspatial::annotation_map_tile()}}.
+Needed for certain \code{providers} (e.g., \code{"cartolight"}).}
 
 \item{progress}{\emph{Show a progress bar?}
 

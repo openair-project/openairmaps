@@ -4,6 +4,8 @@
 
 * `networkMap()` can now take any option passed to `openair::importMeta()`. This behaviour supersedes all of the functionality within `searchNetwork()`, which has been removed. It also no longer overwrites the default `year` argument, and so behaves identically to `openair::importMeta()`.
 
+* Static maps gain the `api_key` argument, passed to the equivalent argument in `ggspatial::annotation_map_tile()`.
+
 # openairmaps 0.10.1
 
 ## New features

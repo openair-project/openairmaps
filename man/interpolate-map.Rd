@@ -28,6 +28,7 @@ krigingMap(
   legend.title = NULL,
   legend.title.autotext = TRUE,
   static = FALSE,
+  api_key = NULL,
   vgm = gstat::vgm(psill = 1, model = "Exp", range = 50000, nugget = 1),
   args.idw = list(),
   args.variogram = list(),
@@ -244,6 +245,13 @@ through \code{\link[=quickTextHTML]{quickTextHTML()}} (\emph{dynamic}) or \code{
 This controls whether a \emph{dynamic} or \emph{static} map is produced. The former
 is the default and is broadly more useful, but the latter may be preferable
 for DOCX or PDF outputs (e.g., academic papers).}
+
+\item{api_key}{\emph{API key for certain 'static' base map providers.}
+
+\emph{default:} \code{NULL} | \emph{scope:} static
+
+Passed to the \code{api_key} argument of \code{\link[ggspatial:annotation_map_tile]{ggspatial::annotation_map_tile()}}.
+Needed for certain \code{providers} (e.g., \code{"cartolight"}).}
 
 \item{vgm}{\emph{A variogram model}
 

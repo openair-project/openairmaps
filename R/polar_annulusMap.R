@@ -63,6 +63,7 @@ annulusMap <- function(
   d.fig = 3.5,
   static = FALSE,
   static.nrow = NULL,
+  api_key = NULL,
   progress = TRUE,
   ...,
   control = NULL
@@ -216,6 +217,7 @@ annulusMap <- function(
         pollutant = pollutant,
         facet = type,
         facet.nrow = static.nrow,
+        api_key = api_key,
         d.icon = d.icon,
         crs = crs,
         provider = provider,

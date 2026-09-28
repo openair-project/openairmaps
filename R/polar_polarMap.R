@@ -306,6 +306,13 @@
 #'   [ggplot2::facet_wrap()]. The default, `NULL`, results in a roughly square
 #'   grid of panels.
 #'
+#' @param api_key *API key for certain 'static' base map providers.*
+#'
+#'  *default:* `NULL` | *scope:* static
+#'
+#'   Passed to the `api_key` argument of [ggspatial::annotation_map_tile()].
+#'   Needed for certain `providers` (e.g., `"cartolight"`).
+#'
 #' @param progress *Show a progress bar?*
 #'
 #'  *default:* `TRUE` | *scope:* dynamic & static
@@ -363,6 +370,7 @@ polarMap <- function(
   d.fig = 3.5,
   static = FALSE,
   static.nrow = NULL,
+  api_key = NULL,
   progress = TRUE,
   ...,
   control = NULL
@@ -598,6 +606,7 @@ polarMap <- function(
         pollutant = pollutant,
         facet = type,
         facet.nrow = static.nrow,
+        api_key = api_key,
         d.icon = d.icon,
         crs = crs,
         provider = provider,
