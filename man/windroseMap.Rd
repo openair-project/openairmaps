@@ -170,8 +170,17 @@ limited use otherwise.}
 
 \emph{default:} \code{TRUE} | \emph{scope:} dynamic & static
 
-When all markers share the same colour scale (e.g., when \code{limits != "free"}
-in \code{\link[=polarMap]{polarMap()}}), should a shared legend be created at the side of the map?}
+When all markers share the same colour scale, should a shared legend be
+created at the side of the map? This is the case for:
+\itemize{
+\item \emph{Continuous} colour scales, when all markers share the same \code{limits}
+(e.g., when \code{limits != "free"} in \code{\link[=polarMap]{polarMap()}}), which are shown as a
+colour bar.
+\item \emph{Discrete} colour scales, when all markers are binned into the same
+intervals (e.g., when numeric \code{breaks} are passed to \code{\link[=polarMap]{polarMap()}} via
+\code{...}, or in \code{\link[=windroseMap]{windroseMap()}}), which are shown as a set of labelled
+colours.
+}}
 
 \item{legend.position}{\emph{Position of the shared legend.}
 

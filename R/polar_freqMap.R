@@ -256,51 +256,6 @@ freqMap <- function(
         provider = provider,
         alpha = alpha
       )
-
-    # create legend
-    if (!all(is.na(theBreaks)) && legend) {
-      intervals <-
-        stringr::str_c(theBreaks, dplyr::lead(theBreaks), sep = " - ")
-      intervals <- intervals[!is.na(intervals)]
-      intervals <- factor(intervals, intervals)
-      pal <-
-        openair::openColours(scheme = cols, n = length(intervals)) |>
-        stats::setNames(intervals)
-
-      # create dummy df for creating legend
-      dummy <-
-        dplyr::distinct(plots_df, .data[[longitude]], .data[[latitude]]) |>
-        tidyr::crossing(intervals)
-
-      legend.title <-
-        create_legend_title(
-          static = static,
-          legend.title.autotext = legend.title.autotext,
-          legend.title = legend.title,
-          str = paste(lab, collapse = ", ")
-        )
-
-      map <-
-        map +
-        ggplot2::geom_point(
-          data = dummy,
-          ggplot2::aes(
-            .data[[longitude]],
-            .data[[latitude]],
-            color = .data[["intervals"]],
-            fill = .data[["intervals"]]
-          ),
-          size = 0,
-          key_glyph = ggplot2::draw_key_rect
-        ) +
-        ggplot2::scale_color_manual(
-          values = pal,
-          drop = FALSE,
-          aesthetics = c("color", "fill")
-        ) +
-        ggplot2::labs(color = legend.title, fill = legend.title) +
-        ggplot2::theme(legend.position = legend.position)
-    }
   }
 
   if (!static) {
@@ -321,30 +276,31 @@ freqMap <- function(
         control.autotext,
         alpha
       )
+  }
 
-    # add legends if breaks are set
-    if (!all(is.na(theBreaks)) && legend) {
-      legend.title <-
-        create_legend_title(
-          static = static,
-          legend.title.autotext = legend.title.autotext,
-          legend.title = legend.title,
-          str = paste(lab, collapse = ",<br>")
-        )
-
-      map <-
-        leaflet::addLegend(
-          map,
-          position = legend.position,
-          pal = leaflet::colorBin(
-            palette = openair::openColours(scheme = cols),
-            domain = theBreaks,
-            bins = theBreaks
-          ),
-          values = theBreaks,
-          title = legend.title
-        )
-    }
+  # add shared legend
+  if (legend) {
+    map <- add_polar_legend(
+      map,
+      spec = legend_from_markers(
+        plots_df,
+        values = \(x) x$weights,
+        limits = fun_args$limits,
+        cols = cols
+      ),
+      static = static,
+      title = create_legend_title(
+        static = static,
+        legend.title.autotext = legend.title.autotext,
+        legend.title = legend.title,
+        str = paste(lab, collapse = if (static) ", " else ",<br>")
+      ),
+      position = legend.position,
+      alpha = alpha,
+      plots_df = plots_df,
+      latitude = latitude,
+      longitude = longitude
+    )
   }
 
   map

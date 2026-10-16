@@ -41,6 +41,7 @@ annulusMap <- function(
   pollutant = NULL,
   period = "hour",
   limits = "free",
+  breaks = NULL,
   latitude = NULL,
   longitude = NULL,
   crs = 4326,
@@ -91,7 +92,10 @@ annulusMap <- function(
   # auto limits
   limits <- check_multipoll(limits, pollutant)
 
-  if ("fixed" %in% limits) {
+  if (!is.null(breaks)) {
+    # `breaks` override `limits`
+    theLimits <- NA
+  } else if ("fixed" %in% limits) {
     data <-
       dplyr::mutate(data, latlng = paste(.data[[latitude]], .data[[longitude]]))
 
@@ -191,6 +195,20 @@ annulusMap <- function(
     )
   }
 
+  # work out one set of breaks for all markers, so they share a legend
+  if (!is.null(breaks)) {
+    fun_args$breaks <- resolve_shared_breaks(
+      fun = openair::polarAnnulus,
+      fun_args = fun_args,
+      data = data,
+      breaks = breaks,
+      values = \(x) x$pred,
+      latitude = latitude,
+      longitude = longitude,
+      split_col = split_col
+    )
+  }
+
   # plot and save static markers
   plots_df <-
     create_polar_markers(
@@ -223,31 +241,6 @@ annulusMap <- function(
         provider = provider,
         alpha = alpha
       )
-
-    # create colorbar if limits specified
-    if (!all(is.na(theLimits)) && legend) {
-      legend.title <-
-        create_legend_title(
-          static = static,
-          legend.title.autotext = legend.title.autotext,
-          legend.title = legend.title,
-          str = paste(pollutant, collapse = ", ")
-        )
-
-      map <-
-        map +
-        ggplot2::geom_point(
-          data = plots_df,
-          ggplot2::aes(.data[[longitude]], .data[[latitude]], color = 0),
-          alpha = 0
-        ) +
-        ggplot2::scale_color_gradientn(
-          limits = theLimits,
-          colours = openair::openColours(scheme = cols)
-        ) +
-        ggplot2::labs(color = legend.title) +
-        ggplot2::theme(legend.position = legend.position)
-    }
   }
 
   if (!static) {
@@ -268,29 +261,31 @@ annulusMap <- function(
         control.autotext,
         alpha
       )
+  }
 
-    # add legend if limits are set
-    if (!all(is.na(theLimits)) && legend) {
-      legend.title <-
-        create_legend_title(
-          static = static,
-          legend.title.autotext = legend.title.autotext,
-          legend.title = legend.title,
-          str = paste(pollutant, collapse = ",<br>")
-        )
-
-      map <-
-        leaflet::addLegend(
-          map,
-          title = legend.title,
-          pal = leaflet::colorNumeric(
-            palette = openair::openColours(scheme = cols),
-            domain = theLimits
-          ),
-          position = legend.position,
-          values = theLimits
-        )
-    }
+  # add shared legend
+  if (legend) {
+    map <- add_polar_legend(
+      map,
+      spec = legend_from_markers(
+        plots_df,
+        values = \(x) x$pred,
+        limits = theLimits,
+        cols = cols
+      ),
+      static = static,
+      title = create_legend_title(
+        static = static,
+        legend.title.autotext = legend.title.autotext,
+        legend.title = legend.title,
+        str = paste(pollutant, collapse = if (static) ", " else ",<br>")
+      ),
+      position = legend.position,
+      alpha = alpha,
+      plots_df = plots_df,
+      latitude = latitude,
+      longitude = longitude
+    )
   }
 
   # return map

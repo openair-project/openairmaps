@@ -16,9 +16,21 @@
 
 * The "layer control" menu is now built the same way across all interactive maps. In particular, only the first basemap is shown when multiple are provided, and a single basemap is no longer listed in the menu as there is nothing to switch to.
 
+* `polarMap()` and `annulusMap()` gain the `breaks` argument, in line with the `breaks` argument now in `openair::polarPlot()` and `openair::polarAnnulus()`. This bins the markers' colour scale into discrete intervals, and can take a numeric vector of breakpoints, a single number of intervals, or a list created using `openair::breakOpts()`. In all cases, a single set of breakpoints is calculated across *all* of the markers so that they can share a legend. `breaks` overrides `limits` if both are provided.
+
+* Shared legends in the `polarMap()` family have been standardised, and now reflect the colour scale `{openair}` actually used to draw the markers:
+
+    * Markers with a *discrete* colour scale now get a shared legend of labelled colours, as long as all markers are binned into the same intervals. `limits` (now supported by `openair::polarFreq()`) can also be passed to `freqMap()` via `...` to get a shared continuous legend.
+    
+    * Legend labels and colours now exactly match those used by `{openair}`, and are the same for dynamic and static maps (e.g., `"0 to 50"` rather than `"0 – 50"` in dynamic `freqMap()`, `pollroseMap()` and `windroseMap()` legends).
+    
+    * Dynamic legends now consistently use `alpha` for their opacity.
+
 ## Bug fixes
 
 * `diffMap()` no longer errors when multiple columns are passed to `popup`.
+
+* The colours in the dynamic `percentileMap()` legend now match those of the markers.
 
 * `trajLevelMap()` now respects the `control.collapsed` and `control.position` arguments, which were previously ignored. Note that this means the layer control is now expanded by default (`control.collapsed = FALSE`), in line with `trajMap()`.
 

@@ -209,53 +209,6 @@ pollroseMap <- function(
         provider = provider,
         alpha = alpha
       )
-
-    # create legend
-    if (!is.null(breaks) && legend) {
-      intervals <- attr(plots_df$plot[[1]], "intervals")
-      intervals <- factor(intervals, intervals)
-      pal <-
-        openair::openColours(scheme = cols, n = length(intervals)) |>
-        stats::setNames(intervals)
-
-      # create dummy df for creating legend
-      dummy <-
-        dplyr::distinct(plots_df, .data[[longitude]], .data[[latitude]]) |>
-        tidyr::crossing(intervals)
-
-      legend.title <-
-        create_legend_title(
-          static = static,
-          legend.title.autotext = legend.title.autotext,
-          legend.title = legend.title,
-          str = paste(pollutant, collapse = ", ")
-        )
-
-      # add legend
-      map <-
-        map +
-        ggplot2::geom_tile(
-          data = dummy,
-          ggplot2::aes(
-            .data[[longitude]],
-            .data[[latitude]],
-            color = .data[["intervals"]],
-            fill = .data[["intervals"]]
-          ),
-          show.legend = TRUE,
-          alpha = 0
-        ) +
-        ggplot2::scale_fill_manual(
-          values = pal,
-          drop = FALSE,
-          aesthetics = c("fill", "color")
-        ) +
-        ggplot2::labs(color = legend.title, fill = legend.title) +
-        ggplot2::theme(legend.position = legend.position) +
-        ggplot2::guides(
-          color = ggplot2::guide_legend(override.aes = list(alpha = 1))
-        )
-    }
   }
 
   if (!static) {
@@ -276,30 +229,30 @@ pollroseMap <- function(
         control.autotext,
         alpha
       )
+  }
 
-    # add legend if breaks are defined
-    if (!is.null(breaks) && legend) {
-      legend.title <-
-        create_legend_title(
-          static = static,
-          legend.title.autotext = legend.title.autotext,
-          legend.title = legend.title,
-          str = paste(pollutant, collapse = ",<br>")
-        )
-
-      map <-
-        leaflet::addLegend(
-          map,
-          position = legend.position,
-          pal = leaflet::colorBin(
-            palette = openair::openColours(cols),
-            domain = theBreaks,
-            bins = theBreaks
-          ),
-          values = theBreaks,
-          title = legend.title
-        )
-    }
+  # add shared legend
+  if (legend) {
+    map <- add_polar_legend(
+      map,
+      spec = legend_from_markers(
+        plots_df,
+        values = rose_intervals,
+        cols = cols
+      ),
+      static = static,
+      title = create_legend_title(
+        static = static,
+        legend.title.autotext = legend.title.autotext,
+        legend.title = legend.title,
+        str = paste(pollutant, collapse = if (static) ", " else ",<br>")
+      ),
+      position = legend.position,
+      alpha = alpha,
+      plots_df = plots_df,
+      latitude = latitude,
+      longitude = longitude
+    )
   }
 
   # return map

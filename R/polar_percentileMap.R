@@ -238,47 +238,6 @@ percentileMap <- function(
         provider = provider,
         alpha = alpha
       )
-
-    # create legend
-    percs <- unique(c(0, percentile))
-    intervals <-
-      stringr::str_c(percs, dplyr::lead(percs), sep = " - ")
-    intervals <- intervals[!is.na(intervals)]
-    intervals <- factor(intervals, intervals)
-    pal <-
-      openair::openColours(scheme = cols, n = length(intervals)) |>
-      stats::setNames(intervals)
-
-    # create dummy df for creating legend
-    dummy <-
-      dplyr::distinct(plots_df, .data[[longitude]], .data[[latitude]]) |>
-      tidyr::crossing(intervals)
-
-    if (legend) {
-      legend.title <-
-        create_legend_title(
-          static = static,
-          legend.title.autotext = legend.title.autotext,
-          legend.title = legend.title,
-          str = "Percentile"
-        )
-
-      map <-
-        map +
-        ggplot2::geom_point(
-          data = dummy,
-          ggplot2::aes(
-            .data[[longitude]],
-            .data[[latitude]],
-            color = .data[["intervals"]]
-          ),
-          size = 0,
-          key_glyph = ggplot2::draw_key_rect
-        ) +
-        ggplot2::scale_color_manual(values = pal, drop = FALSE) +
-        ggplot2::labs(color = legend.title) +
-        ggplot2::theme(legend.position = legend.position)
-    }
   }
 
   if (!static) {
@@ -299,33 +258,38 @@ percentileMap <- function(
         control.autotext,
         alpha
       )
+  }
 
-    legend.title <-
-      create_legend_title(
+  # add shared legend
+  if (legend) {
+    map <- add_polar_legend(
+      map,
+      # (percentile = NA only draws the mean, so there are no bands to show)
+      spec = if (!anyNA(percentile)) {
+        legend_discrete(labels = percentile_labels(percentile), cols = cols)
+      },
+      static = static,
+      title = create_legend_title(
         static = static,
         legend.title.autotext = legend.title.autotext,
         legend.title = legend.title,
         str = "Percentile"
-      )
-
-    # add legend
-    if (!anyNA(percentile) && legend) {
-      percs <- unique(c(0, percentile))
-      map <-
-        leaflet::addLegend(
-          map,
-          title = legend.title,
-          position = legend.position,
-          pal = leaflet::colorBin(
-            palette = openair::openColours(scheme = cols, n = length(percs)),
-            bins = percs,
-            domain = 0:100
-          ),
-          values = 0:100
-        )
-    }
+      ),
+      position = legend.position,
+      alpha = alpha,
+      plots_df = plots_df,
+      latitude = latitude,
+      longitude = longitude
+    )
   }
 
   # return map
   return(map)
+}
+
+#' Labels for the bands drawn by openair::percentileRose()
+#' @noRd
+percentile_labels <- function(percentile) {
+  percs <- sort(unique(c(0, percentile)))
+  paste(utils::head(percs, -1), percs[-1], sep = " - ")
 }

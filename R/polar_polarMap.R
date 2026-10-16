@@ -101,6 +101,28 @@
 #'   scale. For example, `limits = c(0, 100)` would force the plot limits to
 #'   span 0-100.
 #'
+#'   `limits` is ignored if `breaks` is also provided.
+#'
+#' @param breaks *Specifier for a binned colour scale.*
+#'
+#'  *default:* `NULL` | *scope:* dynamic & static
+#'
+#'   By default, markers use a continuous colour scale (see `limits`). If
+#'   `breaks` is provided, the colour scale is instead binned into discrete
+#'   intervals. One of:
+#'  - A numeric vector of breakpoints. For example, `breaks = c(0, 50, 100,
+#'   1000)` would bin the colour scale into three intervals.
+#'  - A single number, which is the number of intervals to bin the colour
+#'   scale into.
+#'  - A list created using [openair::breakOpts()], which provides finer control
+#'   over the binning method and allows custom `labels` to be defined.
+#'
+#'   In all cases, a single set of breakpoints is calculated across *all* of
+#'   the markers, so that they share the same intervals and a shared legend can
+#'   be drawn. If any of the markers' data fall outside of the given
+#'   breakpoints, the lowest and/or highest breakpoints are extended to cover
+#'   them. If `breaks` is provided, `limits` is ignored.
+#'
 #' @param upper *Specifier for the polar plot radial axis upper boundary.*
 #'
 #'  *default:* `"fixed"` | *scope:* dynamic & static
@@ -219,8 +241,17 @@
 #'
 #'  *default:* `TRUE` | *scope:* dynamic & static
 #'
-#'   When all markers share the same colour scale (e.g., when `limits != "free"`
-#'   in [polarMap()]), should a shared legend be created at the side of the map?
+#'   When all markers share the same colour scale, should a shared legend be
+#'   created at the side of the map? This is the case for:
+#'
+#'  - *Continuous* colour scales, when all markers share the same `limits`
+#'   (e.g., when `limits != "free"` in [polarMap()]), which are shown as a
+#'   colour bar.
+#'
+#'  - *Discrete* colour scales, when all markers are binned into the same
+#'   intervals (e.g., when numeric `breaks` are passed to [polarMap()] via
+#'   `...`, or in [windroseMap()]), which are shown as a set of labelled
+#'   colours.
 #'
 #' @param legend.position *Position of the shared legend.*
 #'
@@ -347,6 +378,7 @@ polarMap <- function(
   pollutant = NULL,
   x = "ws",
   limits = "free",
+  breaks = NULL,
   upper = "fixed",
   latitude = NULL,
   longitude = NULL,
@@ -416,7 +448,10 @@ polarMap <- function(
     limits <- check_multipoll(limits, pollutant)
   }
 
-  if ("fixed" %in% limits) {
+  if (!is.null(breaks)) {
+    # `breaks` override `limits`
+    theLimits <- NA
+  } else if ("fixed" %in% limits) {
     data <-
       dplyr::mutate(data, latlng = paste(.data[[latitude]], .data[[longitude]]))
 
@@ -536,6 +571,20 @@ polarMap <- function(
     )
   }
 
+  # work out one set of breaks for all markers, so they share a legend
+  if (!is.null(breaks)) {
+    fun_args$breaks <- resolve_shared_breaks(
+      fun = openair::polarPlot,
+      fun_args = fun_args,
+      data = data,
+      breaks = breaks,
+      values = \(x) x$z,
+      latitude = latitude,
+      longitude = longitude,
+      split_col = split_col
+    )
+  }
+
   # plot and save static markers
   plots_df <-
     create_polar_markers(
@@ -570,30 +619,6 @@ polarMap <- function(
         control.autotext,
         alpha
       )
-
-    # add legend if limits are set
-    if (!all(is.na(theLimits)) && legend) {
-      legend.title <-
-        create_legend_title(
-          static = static,
-          legend.title.autotext = legend.title.autotext,
-          legend.title = legend.title,
-          str = paste(pollutant, collapse = ",<br>")
-        )
-
-      map <-
-        leaflet::addLegend(
-          map,
-          opacity = alpha,
-          title = legend.title,
-          pal = leaflet::colorNumeric(
-            palette = openair::openColours(scheme = cols),
-            domain = theLimits
-          ),
-          position = legend.position,
-          values = theLimits
-        )
-    }
   }
 
   if (static) {
@@ -612,30 +637,31 @@ polarMap <- function(
         provider = provider,
         alpha = alpha
       )
+  }
 
-    if (!all(is.na(theLimits)) && legend) {
-      legend.title <-
-        create_legend_title(
-          static = static,
-          legend.title.autotext = legend.title.autotext,
-          legend.title = legend.title,
-          str = paste(pollutant, collapse = ", ")
-        )
-
-      map <-
-        map +
-        ggplot2::geom_point(
-          data = plots_df,
-          ggplot2::aes(.data[[longitude]], .data[[latitude]], color = 0),
-          alpha = 0
-        ) +
-        ggplot2::scale_color_gradientn(
-          limits = theLimits,
-          colours = openair::openColours(scheme = cols)
-        ) +
-        ggplot2::labs(color = legend.title) +
-        ggplot2::theme(legend.position = legend.position)
-    }
+  # add shared legend
+  if (legend) {
+    map <- add_polar_legend(
+      map,
+      spec = legend_from_markers(
+        plots_df,
+        values = \(x) x$z,
+        limits = theLimits,
+        cols = cols
+      ),
+      static = static,
+      title = create_legend_title(
+        static = static,
+        legend.title.autotext = legend.title.autotext,
+        legend.title = legend.title,
+        str = paste(pollutant, collapse = if (static) ", " else ",<br>")
+      ),
+      position = legend.position,
+      alpha = alpha,
+      plots_df = plots_df,
+      latitude = latitude,
+      longitude = longitude
+    )
   }
 
   # return map

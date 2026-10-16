@@ -226,31 +226,6 @@ diffMap <- function(
         provider = provider,
         alpha = alpha
       )
-
-    # create colorbar if limits specified
-    if (!all(is.na(theLimits)) && legend) {
-      legend.title <-
-        create_legend_title(
-          static = static,
-          legend.title.autotext = legend.title.autotext,
-          legend.title = legend.title,
-          str = paste(pollutant, collapse = ", ")
-        )
-
-      map <-
-        map +
-        ggplot2::geom_point(
-          data = plots_df,
-          ggplot2::aes(.data[[longitude]], .data[[latitude]], color = 0),
-          alpha = 0
-        ) +
-        ggplot2::scale_color_gradientn(
-          limits = theLimits,
-          colours = openair::openColours(scheme = cols)
-        ) +
-        ggplot2::labs(color = legend.title) +
-        ggplot2::theme(legend.position = legend.position)
-    }
   }
 
   if (!static) {
@@ -271,29 +246,26 @@ diffMap <- function(
         control.autotext,
         alpha
       )
+  }
 
-    # add legend if limits are set
-    if (!all(is.na(theLimits)) && legend) {
-      legend.title <-
-        create_legend_title(
-          static = static,
-          legend.title.autotext = legend.title.autotext,
-          legend.title = legend.title,
-          str = paste(pollutant, collapse = ",<br>")
-        )
-
-      map <-
-        leaflet::addLegend(
-          map,
-          title = legend.title,
-          position = legend.position,
-          pal = leaflet::colorNumeric(
-            palette = openair::openColours(scheme = cols),
-            domain = theLimits
-          ),
-          values = theLimits
-        )
-    }
+  # add shared legend
+  if (legend) {
+    map <- add_polar_legend(
+      map,
+      spec = if (!anyNA(theLimits)) legend_continuous(theLimits, cols),
+      static = static,
+      title = create_legend_title(
+        static = static,
+        legend.title.autotext = legend.title.autotext,
+        legend.title = legend.title,
+        str = paste(pollutant, collapse = if (static) ", " else ",<br>")
+      ),
+      position = legend.position,
+      alpha = alpha,
+      plots_df = plots_df,
+      latitude = latitude,
+      longitude = longitude
+    )
   }
 
   # return map

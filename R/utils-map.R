@@ -684,6 +684,79 @@ rm_illegal_chars <- function(x) {
   return(x)
 }
 
+#' Resolve colour `breaks` once, across all polar markers
+#'
+#' openair works out binned colour scales from each plot's own modelled
+#' surface, so markers given e.g. `breaks = 5` would each end up with different
+#' intervals and no shared legend could be drawn. This mirrors the approach of
+#' `limits = "fixed"`: the openair function is run once on all of the data,
+#' with one panel per marker, so that a single set of breakpoints is calculated.
+#' These are then returned (alongside any user-defined labels) to be passed to
+#' each individual marker, so all markers share identical intervals.
+#'
+#' openair doesn't return the numeric breakpoints it calculates, so they are
+#' parsed from its default interval labels (e.g., `"15 to 64"`). This is why
+#' any user-defined labels are left out of the initial run.
+#'
+#' @param fun The openair function (e.g., `openair::polarPlot`).
+#' @param fun_args The arguments used to draw each marker.
+#' @param data The prepped data (i.e., the output of `prepMapData()`).
+#' @param breaks The user-provided `breaks`; a numeric vector, a single number,
+#'   or a list from `openair::breakOpts()`.
+#' @param values A function to extract the colour variable from the data
+#'   returned by `fun` (e.g., `\(x) x$z`).
+#' @returns A list to pass to the `breaks` argument of `fun`.
+#' @noRd
+resolve_shared_breaks <- function(
+  fun,
+  fun_args,
+  data,
+  breaks,
+  values,
+  latitude,
+  longitude,
+  split_col
+) {
+  opts <- if (is.list(breaks)) breaks else list(breaks = breaks)
+  labels <- opts$labels
+
+  # one panel per marker, with default labels so they can be parsed
+  data$.marker <- paste(data[[latitude]], data[[longitude]], data[[split_col]])
+  args <- fun_args
+  args$type <- ".marker"
+  args$labels <- NULL
+  args$breaks <- utils::modifyList(opts, list(labels = NULL), keep.null = TRUE)
+
+  pooled <- rlang::exec(fun, mydata = data, !!!args)$data
+  intervals <- levels(values(pooled))
+
+  bounds <- strsplit(intervals, " to ", fixed = TRUE)
+  lower <- suppressWarnings(as.numeric(vapply(bounds, `[`, "", 1)))
+  upper <- suppressWarnings(as.numeric(vapply(bounds, `[`, "", 2)))
+
+  if (
+    is.null(intervals) ||
+      anyNA(lower) ||
+      anyNA(upper) ||
+      any(lengths(bounds) != 2)
+  ) {
+    cli::cli_abort(
+      c(
+        "x" = "Could not work out a shared set of {.arg breaks} for all polar markers.",
+        "i" = "Try providing a numeric vector of {.arg breaks} instead."
+      )
+    )
+  }
+
+  # the outer breaks are open-ended so that openair never extends them to
+  # cover an individual marker's data (which would change that marker's
+  # labels), and so the precision of the parsed labels doesn't matter. The
+  # labels from the initial run are kept so the true range is still shown.
+  opts$breaks <- c(-Inf, lower[-1], Inf)
+  opts$labels <- labels %||% intervals
+  opts
+}
+
 
 # Interactive maps -------------------------------------------------------------
 
@@ -1069,6 +1142,171 @@ create_legend_title <- function(
   legend.title <- legend.title %||% str
   legend.title <- textfun(legend.title)
   return(legend.title)
+}
+
+#' Legend specifications for polar marker maps
+#'
+#' openair polar plots are either *continuous* (a numeric colour scale between
+#' `limits`) or *discrete* (binned into labelled intervals using `breaks`).
+#' These describe the shared legend for a map of many markers, which
+#' `add_polar_legend()` then draws on a leaflet or ggplot2 map.
+#'
+#' Colours match those openair uses: `openColours(cols)` stretched between the
+#' limits for continuous scales, and `openColours(cols, n = <n intervals>)` for
+#' discrete ones.
+#' @noRd
+legend_continuous <- function(limits, cols) {
+  list(type = "continuous", limits = limits, cols = cols)
+}
+
+#' @rdname legend_continuous
+#' @noRd
+legend_discrete <- function(labels, cols) {
+  list(
+    type = "discrete",
+    labels = labels,
+    colours = openair::openColours(scheme = cols, n = length(labels))
+  )
+}
+
+#' Work out the shared legend from the markers themselves
+#'
+#' `values` extracts the colour variable from the data returned by the openair
+#' function for each marker (e.g., `z` for `polarPlot()`). If this is a factor,
+#' the scale is discrete and a legend can be drawn as long as every marker
+#' shares the same intervals. If it is numeric, a legend can only be drawn if a
+#' shared set of `limits` has been used. Otherwise, each marker has its own
+#' scale so there's no shared legend to draw, and `NULL` is returned.
+#' @noRd
+legend_from_markers <- function(plots_df, values, limits = NULL, cols) {
+  vals <- lapply(Filter(Negate(is.null), plots_df$plot), values)
+  if (length(vals) == 0) {
+    return(NULL)
+  }
+
+  if (all(vapply(vals, is.factor, logical(1)))) {
+    lvls <- unique(lapply(vals, levels))
+    if (length(lvls) > 1) {
+      return(NULL)
+    }
+    return(legend_discrete(lvls[[1]], cols))
+  }
+
+  if (!is.null(limits) && length(limits) == 2 && !anyNA(limits)) {
+    return(legend_continuous(limits, cols))
+  }
+
+  NULL
+}
+
+#' Get the colour intervals of an openair wind/pollution rose
+#'
+#' `windRose()` and `pollutionRose()` return their intervals as an attribute
+#' of their data, rather than a column. For use with `legend_from_markers()`.
+#' @noRd
+rose_intervals <- function(data) {
+  intervals <- attr(data, "intervals")
+  factor(intervals, intervals)
+}
+
+#' Add a polar marker legend to a leaflet or ggplot2 map
+#'
+#' The one place shared polar marker legends are drawn, so they look the same
+#' across `polarMap()`, `annulusMap()`, etc.
+#' @param spec A legend specification, from `legend_continuous()`,
+#'   `legend_discrete()` or `legend_from_markers()`. If `NULL`, no legend is
+#'   drawn.
+#' @param plots_df,latitude,longitude Only needed for static maps, which need
+#'   some (invisible) data to attach a legend to.
+#' @noRd
+add_polar_legend <- function(
+  map,
+  spec,
+  static,
+  title,
+  position,
+  alpha = 1,
+  plots_df = NULL,
+  latitude = NULL,
+  longitude = NULL
+) {
+  if (is.null(spec)) {
+    return(map)
+  }
+
+  if (!static) {
+    if (spec$type == "continuous") {
+      return(leaflet::addLegend(
+        map,
+        title = title,
+        position = position,
+        opacity = alpha,
+        pal = leaflet::colorNumeric(
+          palette = openair::openColours(scheme = spec$cols),
+          domain = spec$limits
+        ),
+        values = spec$limits
+      ))
+    }
+
+    # leaflet legends don't understand 8-digit (transparent) hex codes
+    colours <- grDevices::rgb(
+      t(grDevices::col2rgb(spec$colours)),
+      maxColorValue = 255
+    )
+    return(leaflet::addLegend(
+      map,
+      title = title,
+      position = position,
+      opacity = alpha,
+      colors = colours,
+      labels = spec$labels
+    ))
+  }
+
+  # static maps need a layer for the legend to belong to - use invisible points
+  # at the marker locations
+  points <- dplyr::distinct(plots_df, .data[[longitude]], .data[[latitude]])
+
+  if (spec$type == "continuous") {
+    return(
+      map +
+        ggplot2::geom_point(
+          data = points,
+          ggplot2::aes(.data[[longitude]], .data[[latitude]], color = 0),
+          alpha = 0
+        ) +
+        ggplot2::scale_color_gradientn(
+          limits = spec$limits,
+          colours = openair::openColours(scheme = spec$cols)
+        ) +
+        ggplot2::labs(color = title) +
+        ggplot2::theme(legend.position = position)
+    )
+  }
+
+  intervals <- factor(spec$labels, spec$labels)
+  dummy <- tidyr::crossing(points, intervals)
+
+  map +
+    ggplot2::geom_point(
+      data = dummy,
+      ggplot2::aes(
+        .data[[longitude]],
+        .data[[latitude]],
+        color = .data[["intervals"]],
+        fill = .data[["intervals"]]
+      ),
+      size = 0,
+      key_glyph = ggplot2::draw_key_rect
+    ) +
+    ggplot2::scale_color_manual(
+      values = stats::setNames(spec$colours, spec$labels),
+      drop = FALSE,
+      aesthetics = c("color", "fill")
+    ) +
+    ggplot2::labs(color = title, fill = title) +
+    ggplot2::theme(legend.position = position)
 }
 
 
