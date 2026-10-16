@@ -115,8 +115,8 @@ addTrajPaths <-
       }
     }
 
-    # get factor version of date
-    data$datef <- factor(data$date)
+    # identify individual trajectories
+    data$trajid <- traj_id(data)
 
     # attach per-row marker colours (if supplied) before any filtering, so
     # they are correctly subset alongside the rest of `data`
@@ -130,7 +130,7 @@ addTrajPaths <-
       data <- build_traj_labels(data)
     }
 
-    for (i in seq_along(unique(data$datef))) {
+    for (i in seq_along(unique(data$trajid))) {
       if (!is.null(layerId)) {
         layerid <- paste(layerId, i, sep = "-")
       } else {
@@ -138,7 +138,7 @@ addTrajPaths <-
       }
 
       # get line/points data
-      ldata <- dplyr::filter(data, .data$datef == unique(data$datef)[[i]])
+      ldata <- dplyr::filter(data, .data$trajid == unique(data$trajid)[[i]])
       pdata <- dplyr::filter(ldata, .data$hour.inc %% npoints == 0)
 
       # add line to plot

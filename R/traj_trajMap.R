@@ -166,6 +166,9 @@ trajMap <-
     # get factor version of date to reorder by "colour"
     data$datef <- factor(data$date)
 
+    # identify individual trajectories
+    data$trajid <- traj_id(data)
+
     # if no "type", get a fake column
     type <- type %||% "default"
     data <- openair::cutData(x = data, type = type, ...)
@@ -224,12 +227,13 @@ trajMap <-
       data2 <-
         dplyr::filter(data, .data[[type]] == unique(data[[type]])[[j]])
 
-      # iterate over different arrival dates to plot separate trajectories
-      for (i in seq_along(unique(data2$datef))) {
+      # iterate over individual trajectories (i.e., each arrival date and
+      # receptor) to plot them separately
+      for (i in seq_along(unique(data2$trajid))) {
         # get line data (addTrajPaths() does its own npoints-based filtering
         # for the points)
         ldata <-
-          dplyr::filter(data2, .data$datef == unique(data2$datef)[[i]])
+          dplyr::filter(data2, .data$trajid == unique(data2$trajid)[[i]])
 
         lcolors <- fixedcol
         pcolors <- fixedcol

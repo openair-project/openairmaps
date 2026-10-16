@@ -46,6 +46,8 @@
 
 * `polarMap(limits = "fixed")` now uses the same `upper` as the markers when calculating the shared limits, so the limits better cover the markers' colour scales.
 
+* `trajMap()` and `addTrajPaths()` now support data with multiple receptors, as returned by `openair::importTraj()`. Previously, trajectories arriving at different receptors at the same time were joined into a single path.
+
 # openairmaps 0.10.1
 
 ## New features

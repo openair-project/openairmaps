@@ -201,7 +201,7 @@ checkMapPrep <-
     ## sometimes ratios are considered which can results in infinite values
     ## make sure all infinite values are set to NA
     mydata[] <- lapply(mydata, function(x) {
-      replace(x, x == Inf | x == -Inf, NA)
+      if (is.numeric(x)) replace(x, is.infinite(x), NA) else x
     })
 
     if ("ws" %in% Names) {
@@ -222,7 +222,8 @@ checkMapPrep <-
     ## data not rounded will be rounded to nearest 10 degrees
     ## assumes 10 is average of 5-15 etc
     if (wd %in% Names) {
-      if (wd %in% Names && is.numeric(mydata[, wd])) {
+      # use `[[` so this works for tibbles, which don't drop to a vector
+      if (wd %in% Names && is.numeric(mydata[[wd]])) {
         ## check for wd <0 or > 360
         if (
           any(
@@ -638,13 +639,8 @@ attach_marker_icons <-
     # handle alpha
     options$opacity <- alpha
 
-    # drop data where no plot was created - any per-row vectors need dropping
-    # too, otherwise leaflet recycles them and they become misaligned
-    keep <- purrr::map_vec(data$plot, \(x) !is.null(x))
-    data <- data[keep, ]
-    if (length(layerId) > 1) {
-      layerId <- layerId[keep]
-    }
+    # drop data where no plot was created
+    data <- data[purrr::map_vec(data$plot, \(x) !is.null(x)), ]
 
     if (nrow(data) == 0L) {
       cli::cli_warn("No valid polar markers were created.")
@@ -1062,7 +1058,7 @@ create_static_map <-
         # RGB image, add alpha channel
         img_alpha <- array(dim = c(dim(img)[1], dim(img)[2], 4))
         img_alpha[,, 1:3] <- img
-        img_alpha[,, 4] <- 0.5 # Set alpha to 0.5 (50% transparent)
+        img_alpha[,, 4] <- alpha
       } else if (dim(img)[3] == 4) {
         # Already has alpha, multiply it
         img_alpha <- img
@@ -1381,6 +1377,19 @@ add_polar_legend <- function(
     ggplot2::theme(legend.position = position)
 }
 
+
+# Trajectories -----------------------------------------------------------------
+
+#' Identify individual trajectories
+#'
+#' Trajectories are identified by their arrival `date` and, if present, their
+#' `receptor` (as returned by `openair::importTraj()`), so that trajectories
+#' arriving at different receptors at the same time aren't joined together.
+#' @noRd
+traj_id <- function(data) {
+  cols <- intersect(c("date", "receptor"), names(data))
+  interaction(data[cols], drop = TRUE, lex.order = TRUE)
+}
 
 # Trajectory popups ------------------------------------------------------------
 
