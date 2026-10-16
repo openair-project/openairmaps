@@ -26,6 +26,8 @@
     
     * Dynamic legends now consistently use `alpha` for their opacity.
 
+* `{openairmaps}` now re-exports `breakOpts()` and `colourOpts()` from `{openair}`.
+
 ## Bug fixes
 
 * `diffMap()` no longer errors when multiple columns are passed to `popup`.

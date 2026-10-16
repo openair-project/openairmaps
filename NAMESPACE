@@ -5,7 +5,10 @@ export(addPolarMarkers)
 export(addTrajLevel)
 export(addTrajPaths)
 export(annulusMap)
+export(breakOpts)
 export(buildPopup)
+export(colorOpts)
+export(colourOpts)
 export(convertPostcode)
 export(diffMap)
 export(freqMap)
@@ -23,6 +26,11 @@ export(voronoiMap)
 export(windroseMap)
 importFrom(dplyr,tibble)
 importFrom(lifecycle,deprecated)
+importFrom(openair,
+  breakOpts,
+  colorOpts,
+  colourOpts
+)
 importFrom(rlang,
   "%||%",
   ":=",
