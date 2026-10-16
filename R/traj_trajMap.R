@@ -173,6 +173,9 @@ trajMap <-
     type <- type %||% "default"
     data <- openair::cutData(x = data, type = type, ...)
 
+    # check basemap providers are valid
+    provider <- check_providers(provider, static = FALSE)
+
     # initialise map
     map <- leaflet::leaflet() |>
       add_basemaps(provider)

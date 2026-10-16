@@ -60,6 +60,8 @@
 
 * `trajLevelMap()` and `addTrajLevel()` now use the correct ordinal suffix in their legend titles and popups when `statistic = "difference"` (e.g., `"11th"` rather than `"11st"`, and `"1st"` rather than `"1th"`).
 
+* `trajMap()`, `trajLevelMap()` and `networkMap()` now validate `provider` in the same way as the `polarMap()` family, giving an informative error for unrecognised basemaps and accepting the same shorthand names (e.g., `"cartolight"`).
+
 # openairmaps 0.10.1
 
 ## New features

@@ -47,6 +47,9 @@ trajLevelMap <-
     control.collapsed = FALSE,
     control.position = "topright"
   ) {
+    # check basemap providers are valid
+    provider <- check_providers(provider, static = FALSE)
+
     # start map
     map <- leaflet::leaflet() |>
       add_basemaps(provider)

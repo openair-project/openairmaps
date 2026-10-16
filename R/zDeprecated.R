@@ -78,7 +78,7 @@ trajMapStatic <-
       user_env = rlang::caller_env(2),
       when = "0.10.1",
       what = "openairmaps::trajMapStatic()",
-      with = "openair::trajMap()",
+      with = "openair::trajPlot()",
       details = "This change has been made as the `openair` function is now written in `ggplot2`."
     )
     openair::trajPlot(...)$plot

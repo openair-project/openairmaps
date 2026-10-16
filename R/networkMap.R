@@ -207,6 +207,9 @@ networkMap <-
     cols <- dplyr::filter(cols, .data$source %in% meta$source)
 
     # build maps
+    # check basemap providers are valid
+    provider <- check_providers(provider, static = FALSE)
+
     # initialise map
     map <- leaflet::leaflet() |>
       add_basemaps(provider)
