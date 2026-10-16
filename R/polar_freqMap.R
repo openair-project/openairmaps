@@ -286,7 +286,8 @@ freqMap <- function(
         plots_df,
         values = \(x) x$weights,
         limits = fun_args$limits,
-        cols = cols
+        cols = cols,
+        trans = fun_args$trans %||% formals(openair::polarFreq)$trans
       ),
       static = static,
       title = create_legend_title(

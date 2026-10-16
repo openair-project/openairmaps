@@ -1177,8 +1177,19 @@ legend_discrete <- function(labels, cols) {
 #' shares the same intervals. If it is numeric, a legend can only be drawn if a
 #' shared set of `limits` has been used. Otherwise, each marker has its own
 #' scale so there's no shared legend to draw, and `NULL` is returned.
+#'
+#' `trans` is the colour scale transform used by openair (e.g., `"log10"`).
+#' Continuous legends are drawn on a linear scale, so would be misleading for
+#' transformed markers and aren't drawn. Discrete legends are unaffected, as
+#' openair bins the untransformed values.
 #' @noRd
-legend_from_markers <- function(plots_df, values, limits = NULL, cols) {
+legend_from_markers <- function(
+  plots_df,
+  values,
+  limits = NULL,
+  cols,
+  trans = FALSE
+) {
   vals <- lapply(Filter(Negate(is.null), plots_df$plot), values)
   if (length(vals) == 0) {
     return(NULL)
@@ -1193,6 +1204,15 @@ legend_from_markers <- function(plots_df, values, limits = NULL, cols) {
   }
 
   if (!is.null(limits) && length(limits) == 2 && !anyNA(limits)) {
+    if (!isFALSE(trans)) {
+      cli::cli_inform(
+        c(
+          "i" = "No shared legend has been drawn as the colour scale has been transformed using {.arg trans}.",
+          "i" = "Set {.code trans = FALSE} or provide {.arg breaks} to draw a shared legend."
+        )
+      )
+      return(NULL)
+    }
     return(legend_continuous(limits, cols))
   }
 

@@ -117,11 +117,11 @@
 #'  - A list created using [openair::breakOpts()], which provides finer control
 #'   over the binning method and allows custom `labels` to be defined.
 #'
-#'   In all cases, a single set of breakpoints is calculated across *all* of
-#'   the markers, so that they share the same intervals and a shared legend can
-#'   be drawn. If any of the markers' data fall outside of the given
-#'   breakpoints, the lowest and/or highest breakpoints are extended to cover
-#'   them. If `breaks` is provided, `limits` is ignored.
+#'   In all cases, a single set of breakpoints is calculated across *all* of the
+#'   markers, so that they share the same intervals and a shared legend can be
+#'   drawn. If any of the markers' data fall outside of the given breakpoints,
+#'   the lowest and/or highest breakpoints are extended to cover them. If
+#'   `breaks` is provided, `limits` is ignored.
 #'
 #' @param upper *Specifier for the polar plot radial axis upper boundary.*
 #'
@@ -246,7 +246,9 @@
 #'
 #'  - *Continuous* colour scales, when all markers share the same `limits`
 #'   (e.g., when `limits != "free"` in [polarMap()]), which are shown as a
-#'   colour bar.
+#'   colour bar. This legend is not drawn if the colour scale has been
+#'   transformed using `trans` (e.g., `trans = "log10"`), as it would be
+#'   misleading.
 #'
 #'  - *Discrete* colour scales, when all markers are binned into the same
 #'   intervals (e.g., when numeric `breaks` are passed to [polarMap()] via
@@ -647,7 +649,8 @@ polarMap <- function(
         plots_df,
         values = \(x) x$z,
         limits = theLimits,
-        cols = cols
+        cols = cols,
+        trans = fun_args$trans %||% formals(openair::polarPlot)$trans
       ),
       static = static,
       title = create_legend_title(

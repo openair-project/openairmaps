@@ -25,6 +25,8 @@
     * Legend labels and colours now exactly match those used by `{openair}`, and are the same for dynamic and static maps (e.g., `"0 to 50"` rather than `"0 – 50"` in dynamic `freqMap()`, `pollroseMap()` and `windroseMap()` legends).
     
     * Dynamic legends now consistently use `alpha` for their opacity.
+    
+    * Continuous legends are no longer drawn if the colour scale has been transformed using `trans` (e.g., `polarMap(trans = "log10")`), as they would be misleading. This includes `freqMap()` by default, as `openair::polarFreq()` uses `trans = "sqrt"`. Discrete legends are unaffected, as `{openair}` bins the untransformed values.
 
 * `{openairmaps}` now re-exports `breakOpts()` and `colourOpts()` from `{openair}`.
 

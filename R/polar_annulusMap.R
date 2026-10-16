@@ -271,7 +271,8 @@ annulusMap <- function(
         plots_df,
         values = \(x) x$pred,
         limits = theLimits,
-        cols = cols
+        cols = cols,
+        trans = fun_args$trans %||% formals(openair::polarAnnulus)$trans
       ),
       static = static,
       title = create_legend_title(

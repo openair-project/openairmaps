@@ -175,7 +175,9 @@ created at the side of the map? This is the case for:
 \itemize{
 \item \emph{Continuous} colour scales, when all markers share the same \code{limits}
 (e.g., when \code{limits != "free"} in \code{\link[=polarMap]{polarMap()}}), which are shown as a
-colour bar.
+colour bar. This legend is not drawn if the colour scale has been
+transformed using \code{trans} (e.g., \code{trans = "log10"}), as it would be
+misleading.
 \item \emph{Discrete} colour scales, when all markers are binned into the same
 intervals (e.g., when numeric \code{breaks} are passed to \code{\link[=polarMap]{polarMap()}} via
 \code{...}, or in \code{\link[=windroseMap]{windroseMap()}}), which are shown as a set of labelled
