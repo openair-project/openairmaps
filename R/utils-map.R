@@ -299,6 +299,99 @@ getBreaks <- function(breaks, ws.int, vec, polrose) {
   breaks
 }
 
+#' Attach rendered marker icons to a leaflet map
+#'
+#' This is the single implementation of "what an openair marker looks like on
+#' a leaflet map" (icon sizing, anchoring, popups/labels, alpha, dropping rows
+#' where no plot could be rendered). `addPolarMarkers()`/`addPolarDiffMarkers()`
+#' (the low-level, user-facing entry point) and `make_leaflet_map()` (used
+#' internally by the high-level `*Map()` family) both call this rather than
+#' each re-implementing marker assembly - keeping a single source of truth so
+#' the two public entry points can't drift apart.
+#'
+#' @param data A data frame as produced by `create_polar_markers()`/
+#'   `create_polar_diffmarkers()` - must contain a `url` column (and `plot`,
+#'   used to drop rows where rendering failed).
+#' @param latitude,longitude,d.icon,group,layerId,popup,popupOptions,label,
+#'   labelOptions,options,clusterOptions,clusterId,alpha as in
+#'   `addPolarMarkers()`/[leaflet::addMarkers()].
+#' @noRd
+attach_marker_icons <-
+  function(
+    map,
+    data,
+    latitude,
+    longitude,
+    d.icon,
+    group = NULL,
+    layerId = NULL,
+    popup = NULL,
+    popupOptions = NULL,
+    label = NULL,
+    labelOptions = NULL,
+    options = leaflet::markerOptions(),
+    clusterOptions = NULL,
+    clusterId = NULL,
+    alpha = 1
+  ) {
+    # work out width/height
+    if (length(d.icon) == 1) {
+      width <- height <- d.icon
+    }
+    if (length(d.icon) == 2) {
+      width <- d.icon[[1]]
+      height <- d.icon[[2]]
+    }
+
+    # handle alpha
+    options$opacity <- alpha
+
+    # drop data where no plot was created
+    data <- dplyr::filter(
+      data,
+      purrr::map_vec(.data$plot, \(x) !is.null(x))
+    )
+
+    if (nrow(data) == 0L) {
+      cli::cli_warn("No valid polar markers were created.")
+      return(map)
+    }
+
+    # get marker arguments
+    marker_arg <- list(
+      map = map,
+      lat = data[[latitude]],
+      lng = data[[longitude]],
+      icon = leaflet::makeIcon(
+        iconUrl = data$url,
+        iconHeight = height,
+        iconWidth = width,
+        iconAnchorX = width / 2,
+        iconAnchorY = height / 2,
+        popupAnchorX = -.Machine$double.eps,
+        popupAnchorY = -(height / 2) * 0.7
+      ),
+      group = group,
+      layerId = layerId,
+      popupOptions = popupOptions,
+      labelOptions = labelOptions,
+      options = options,
+      clusterOptions = clusterOptions,
+      clusterId = clusterId
+    )
+
+    # deal w/ popups/labels
+    if (!is.null(popup)) {
+      marker_arg <- append(marker_arg, list(popup = data[[popup]]))
+    }
+    if (!is.null(label)) {
+      marker_arg <- append(marker_arg, list(label = data[[label]]))
+    }
+
+    # add markers to map
+    rlang::exec(leaflet::addMarkers, !!!marker_arg)
+  }
+
 #' make leaflet map from scratch
 #' @noRd
 make_leaflet_map <-
@@ -326,6 +419,13 @@ make_leaflet_map <-
     data <- sf::st_as_sf(data, coords = c(longitude, latitude), crs = crs) |>
       sf::st_transform(crs = 4326)
 
+    # pull the reprojected (lng/lat) coordinates back out as plain columns,
+    # since attach_marker_icons() expects explicit lat/lng columns rather
+    # than relying on sf geometry
+    coords <- sf::st_coordinates(data)
+    data[[longitude]] <- coords[, "X"]
+    data[[latitude]] <- coords[, "Y"]
+
     # create map
     map <- leaflet::leaflet(data)
 
@@ -341,39 +441,18 @@ make_leaflet_map <-
       )
     }
 
-    # work out width/height
-    if (length(d.icon) == 1) {
-      width <- height <- d.icon
-    }
-    if (length(d.icon) == 2) {
-      width <- d.icon[[1]]
-      height <- d.icon[[2]]
-    }
-
     # add markers
-    marker_arg <- list(
+    map <- attach_marker_icons(
       map = map,
-      icon = leaflet::makeIcon(
-        iconUrl = data$url,
-        iconHeight = height,
-        iconWidth = width,
-        iconAnchorX = width / 2,
-        iconAnchorY = height / 2,
-        popupAnchorX = -.Machine$double.eps,
-        popupAnchorY = -(height / 2) * 0.7
-      ),
+      data = data,
+      latitude = latitude,
+      longitude = longitude,
+      d.icon = d.icon,
       group = textfun(data[[split_col]]),
-      options = leaflet::markerOptions(opacity = alpha)
+      popup = popup,
+      label = label,
+      alpha = alpha
     )
-
-    if (!is.null(popup)) {
-      marker_arg <- append(marker_arg, list(popup = data[[popup]]))
-    }
-    if (!is.null(label)) {
-      marker_arg <- append(marker_arg, list(label = data[[label]]))
-    }
-
-    map <- rlang::exec(leaflet::addMarkers, !!!marker_arg)
 
     # add layer control menu
     flag_provider <- dplyr::n_distinct(provider) > 1

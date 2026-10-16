@@ -148,64 +148,24 @@ addPolarMarkers <-
         polar_fun = polar_fun
       )
 
-    # work out width/height
-    if (length(d.icon) == 1) {
-      width <- height <- d.icon
-    }
-    if (length(d.icon) == 2) {
-      width <- d.icon[[1]]
-      height <- d.icon[[2]]
-    }
-
-    # handle alpha
-    if (!missing(alpha)) {
-      options$opacity <- alpha
-    }
-
-    # drop data where no plot was created
-    plots_df <- dplyr::filter(
-      plots_df,
-      purrr::map_vec(.data$plot, \(x) !is.null(x))
-    )
-
-    if (nrow(plots_df) == 0L) {
-      cli::cli_warn("No valid polar markers were created.")
-      return(map)
-    }
-
-    # get marker arguments
-    marker_arg <- list(
+    # add markers to map
+    out_map <- attach_marker_icons(
       map = map,
-      lat = plots_df[[latitude]],
-      lng = plots_df[[longitude]],
-      icon = leaflet::makeIcon(
-        iconUrl = plots_df$url,
-        iconHeight = height,
-        iconWidth = width,
-        iconAnchorX = width / 2,
-        iconAnchorY = height / 2,
-        popupAnchorX = -.Machine$double.eps,
-        popupAnchorY = -(height / 2) * 0.7
-      ),
+      data = plots_df,
+      latitude = latitude,
+      longitude = longitude,
+      d.icon = d.icon,
       group = group,
       layerId = layerId,
+      popup = popup,
       popupOptions = popupOptions,
+      label = label,
       labelOptions = labelOptions,
       options = options,
       clusterOptions = clusterOptions,
-      clusterId = clusterId
+      clusterId = clusterId,
+      alpha = alpha
     )
-
-    # deal w/ popups/labels
-    if (!is.null(popup)) {
-      marker_arg <- append(marker_arg, list(popup = plots_df[[popup]]))
-    }
-    if (!is.null(label)) {
-      marker_arg <- append(marker_arg, list(label = plots_df[[label]]))
-    }
-
-    # add markers to map
-    out_map <- rlang::exec(leaflet::addMarkers, !!!marker_arg)
 
     # return map
     return(out_map)
@@ -287,64 +247,24 @@ addPolarDiffMarkers <-
         progress = TRUE
       )
 
-    # work out width/height
-    if (length(d.icon) == 1) {
-      width <- height <- d.icon
-    }
-    if (length(d.icon) == 2) {
-      width <- d.icon[[1]]
-      height <- d.icon[[2]]
-    }
-
-    # handle alpha
-    if (!missing(alpha)) {
-      options$opacity <- alpha
-    }
-
-    # drop data where no plot was created
-    plots_df <- dplyr::filter(
-      plots_df,
-      purrr::map_vec(.data$plot, \(x) !is.null(x))
-    )
-
-    if (nrow(plots_df) == 0L) {
-      cli::cli_warn("No valid polar markers were created.")
-      return(map)
-    }
-
-    # get marker arguments
-    marker_arg <- list(
+    # add markers to map
+    map <- attach_marker_icons(
       map = map,
-      lat = plots_df[[latitude]],
-      lng = plots_df[[longitude]],
-      icon = leaflet::makeIcon(
-        iconUrl = plots_df$url,
-        iconHeight = height,
-        iconWidth = width,
-        iconAnchorX = width / 2,
-        iconAnchorY = height / 2,
-        popupAnchorX = -.Machine$double.eps,
-        popupAnchorY = -(height / 2) * 0.7
-      ),
+      data = plots_df,
+      latitude = latitude,
+      longitude = longitude,
+      d.icon = d.icon,
       group = group,
       layerId = layerId,
+      popup = popup,
       popupOptions = popupOptions,
+      label = label,
       labelOptions = labelOptions,
       options = options,
       clusterOptions = clusterOptions,
-      clusterId = clusterId
+      clusterId = clusterId,
+      alpha = alpha
     )
-
-    # deal w/ popups/labels
-    if (!is.null(popup)) {
-      marker_arg <- append(marker_arg, list(popup = plots_df[[popup]]))
-    }
-    if (!is.null(label)) {
-      marker_arg <- append(marker_arg, list(label = plots_df[[label]]))
-    }
-
-    # add markers to map
-    map <- rlang::exec(leaflet::addMarkers, !!!marker_arg)
 
     # return map
     return(map)
