@@ -51,6 +51,22 @@ test_that("check_multipoll() warns about fixed scales for many pollutants", {
   expect_equal(out, "free")
 })
 
+test_that("resolve_scale() handles fixed, free and numeric scales", {
+  expect_equal(resolve_scale("fixed", "limits", fixed = 1:2), 1:2)
+  expect_null(resolve_scale("free", "limits", fixed = 1:2))
+  expect_equal(resolve_scale("free", "limits", fixed = 1:2, free = NA), NA)
+  expect_equal(resolve_scale(c(0, 10), "limits", fixed = 1:2), c(0, 10))
+
+  # "fixed" is only computed when it's needed
+  expect_no_error(resolve_scale("free", "limits", fixed = stop("oops")))
+
+  expect_error(resolve_scale("foo", "limits", fixed = 1:2), "limits")
+  expect_error(
+    resolve_scale("foo", "limits", fixed = 1:2, n = 2),
+    "length 2"
+  )
+})
+
 test_that("check_installed_static() passes when packages are installed", {
   skip_if_not_installed("ggspatial")
   skip_if_not_installed("prettymapr")

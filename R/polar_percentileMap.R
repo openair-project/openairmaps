@@ -100,46 +100,21 @@ percentileMap <- function(
   # auto limits
   intervals <- check_multipoll(intervals, pollutant)
 
-  if ("fixed" %in% intervals) {
-    if (is.null(pollutant)) {
-      cli::cli_abort(
-        c(
-          "x" = "{.code pollutant} is missing with no default.",
-          "i" = "Please provide a column of {.code data} which represents the pollutant(s) of interest."
-        )
-      )
-    }
-
-    data <-
-      dplyr::mutate(data, latlng = paste(.data[[latitude]], .data[[longitude]]))
-
-    fixed_type <- type
-    if (is.null(type)) {
-      fixed_type <- "default"
-    }
-
-    testplots <-
-      openair::percentileRose(
+  theIntervals <- resolve_scale(
+    intervals,
+    "intervals",
+    fixed = pretty(
+      fixed_scale_data(
+        openair::percentileRose,
         data,
         pollutant = pollutant,
-        type = c("latlng", fixed_type),
-        plot = FALSE,
+        latitude = latitude,
+        longitude = longitude,
+        type = type,
         ...
-      )$data
-
-    theIntervals <- pretty(testplots[[pollutant]])
-  } else if ("free" %in% intervals) {
-    theIntervals <- NULL
-  } else if (is.numeric(intervals)) {
-    theIntervals <- intervals
-  } else {
-    cli::cli_abort(
-      c(
-        "!" = "Do not recognise {.field intervals} value of {.code {intervals}}",
-        "i" = "{.field intervals} should be one of {.code 'fixed'}, {.code 'free'} or a numeric vector."
-      )
+      )[[pollutant]]
     )
-  }
+  )
 
   # cut data
   data <- openair::cutData(x = data, type = type %||% "default", ...)

@@ -123,39 +123,24 @@ freqMap <- function(
   # auto limits
   breaks <- check_multipoll(breaks, pollutant)
 
-  if ("fixed" %in% breaks) {
-    data <-
-      dplyr::mutate(data, latlng = paste(.data[[latitude]], .data[[longitude]]))
-
-    type_fixed <- type
-    if (is.null(type)) {
-      type_fixed <- "default"
-    }
-
-    testplots <-
-      openair::polarFreq(
+  theBreaks <- resolve_scale(
+    breaks,
+    "breaks",
+    fixed = pretty(
+      fixed_scale_data(
+        openair::polarFreq,
         data,
         pollutant = pollutant,
+        latitude = latitude,
+        longitude = longitude,
+        type = type,
         statistic = statistic,
         trans = FALSE,
-        type = c("latlng", type_fixed),
-        plot = FALSE,
         ...
-      )$data
-
-    theBreaks <- pretty(testplots$weights, n = 10)
-  } else if ("free" %in% breaks) {
-    theBreaks <- NULL
-  } else if (is.numeric(breaks)) {
-    theBreaks <- breaks
-  } else {
-    cli::cli_abort(
-      c(
-        "!" = "Do not recognise {.field breaks} value of {.code {breaks}}",
-        "i" = "{.field breaks} should be one of {.code 'fixed'}, {.code 'free'} or a numeric vector."
-      )
+      )$weights,
+      n = 10
     )
-  }
+  )
 
   # cut data
   data <- openair::cutData(x = data, type = type %||% "default", ...)

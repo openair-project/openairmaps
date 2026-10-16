@@ -92,39 +92,27 @@ annulusMap <- function(
   # auto limits
   limits <- check_multipoll(limits, pollutant)
 
+  # `breaks` override `limits`
   if (!is.null(breaks)) {
-    # `breaks` override `limits`
     theLimits <- NA
-  } else if ("fixed" %in% limits) {
-    data <-
-      dplyr::mutate(data, latlng = paste(.data[[latitude]], .data[[longitude]]))
-
-    type_fixed <- type
-    if (is.null(type)) {
-      type_fixed <- "default"
-    }
-
-    testplots <-
-      openair::polarAnnulus(
-        data,
-        pollutant = pollutant,
-        period = period,
-        type = c("latlng", type_fixed),
-        plot = FALSE,
-        ...
-      )$data
-
-    theLimits <- range(testplots$pred, na.rm = TRUE)
-  } else if ("free" %in% limits) {
-    theLimits <- NULL
-  } else if (is.numeric(limits)) {
-    theLimits <- limits
   } else {
-    cli::cli_abort(
-      c(
-        "!" = "Do not recognise {.field limits} value of {.code {limits}}",
-        "i" = "{.field limits} should be one of {.code 'fixed'}, {.code 'free'} or a numeric vector of length 2."
-      )
+    theLimits <- resolve_scale(
+      limits,
+      "limits",
+      fixed = range(
+        fixed_scale_data(
+          openair::polarAnnulus,
+          data,
+          pollutant = pollutant,
+          latitude = latitude,
+          longitude = longitude,
+          type = type,
+          period = period,
+          ...
+        )$pred,
+        na.rm = TRUE
+      ),
+      n = 2
     )
   }
 

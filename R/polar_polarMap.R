@@ -458,40 +458,29 @@ polarMap <- function(
     limits <- check_multipoll(limits, pollutant)
   }
 
+  # `breaks` override `limits`
   if (!is.null(breaks)) {
-    # `breaks` override `limits`
     theLimits <- NA
-  } else if ("fixed" %in% limits) {
-    data <-
-      dplyr::mutate(data, latlng = paste(.data[[latitude]], .data[[longitude]]))
-
-    type_fixed <- type
-    if (is.null(type)) {
-      type_fixed <- "default"
-    }
-
-    testplots <-
-      openair::polarPlot(
-        data,
-        pollutant = pollutant,
-        x = x,
-        upper = upper,
-        type = c("latlng", type_fixed),
-        plot = FALSE,
-        ...
-      )$data
-
-    theLimits <- range(testplots$z, na.rm = TRUE)
-  } else if ("free" %in% limits) {
-    theLimits <- NA
-  } else if (is.numeric(limits)) {
-    theLimits <- limits
   } else {
-    cli::cli_abort(
-      c(
-        "!" = "Do not recognise {.field limits} value of {.code {limits}}",
-        "i" = "{.field limits} should be one of {.code 'fixed'}, {.code 'free'} or a numeric vector of length 2."
-      )
+    theLimits <- resolve_scale(
+      limits,
+      "limits",
+      fixed = range(
+        fixed_scale_data(
+          openair::polarPlot,
+          data,
+          pollutant = pollutant,
+          latitude = latitude,
+          longitude = longitude,
+          type = type,
+          x = x,
+          upper = upper,
+          ...
+        )$z,
+        na.rm = TRUE
+      ),
+      free = NA,
+      n = 2
     )
   }
 

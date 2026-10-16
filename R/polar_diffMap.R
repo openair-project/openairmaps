@@ -112,18 +112,8 @@ diffMap <- function(
     cli::cli_abort(
       "{.code limits = 'fixed'} is currently not supported for {.fun diffMap}."
     )
-  } else if ("free" %in% limits) {
-    theLimits <- NA
-  } else if (is.numeric(limits)) {
-    theLimits <- limits
-  } else {
-    cli::cli_abort(
-      c(
-        "!" = "Do not recognise {.field limits} value of {.code {limits}}",
-        "i" = "{.field limits} should be one of {.code 'fixed'}, {.code 'free'} or a numeric vector of length 2."
-      )
-    )
   }
+  theLimits <- resolve_scale(limits, "limits", free = NA, n = 2)
 
   # cut data
   before <- openair::cutData(x = before, type = type %||% "default", ...)

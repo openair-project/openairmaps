@@ -76,6 +76,88 @@ check_multipoll <- function(vec, pollutant) {
   }
 }
 
+#' Resolve a "fixed"/"free"/numeric colour or axis scale argument
+#'
+#' Several `*Map()` functions take an argument (e.g., `limits`, `breaks`,
+#' `intervals`) which is either `"fixed"` (shared across all markers),
+#' `"free"` (each marker has its own) or user-defined numeric values.
+#' @param x The user-provided value.
+#' @param arg The name of the argument, for error messages.
+#' @param fixed The value to use for `"fixed"`. Only evaluated if needed, so
+#'   can be an expensive computation (e.g., using `fixed_scale_data()`).
+#' @param free The value to use for `"free"`.
+#' @param n If the numeric vector must be a certain length, used in error
+#'   messages.
+#' @noRd
+resolve_scale <- function(
+  x,
+  arg,
+  fixed,
+  free = NULL,
+  n = NULL,
+  call = rlang::caller_env()
+) {
+  if ("fixed" %in% x) {
+    fixed
+  } else if ("free" %in% x) {
+    free
+  } else if (is.numeric(x)) {
+    x
+  } else {
+    vec <- if (is.null(n)) "a numeric vector" else "a numeric vector of length {n}"
+    cli::cli_abort(
+      c(
+        "!" = "Do not recognise {.field {arg}} value of {.code {x}}",
+        "i" = paste(
+          "{.field {arg}} should be one of {.code 'fixed'}, {.code 'free'} or",
+          vec
+        )
+      ),
+      call = call
+    )
+  }
+}
+
+#' Run an openair function once over all markers' data
+#'
+#' Used to work out "fixed" scales: each marker becomes one panel, so the
+#' returned data covers every marker and a shared scale can be calculated
+#' from it.
+#' @param fun An openair function (e.g., `openair::polarPlot`).
+#' @param ... Passed to `fun`.
+#' @returns The `$data` returned by `fun`.
+#' @noRd
+fixed_scale_data <- function(
+  fun,
+  data,
+  pollutant,
+  latitude,
+  longitude,
+  type,
+  ...,
+  call = rlang::caller_env()
+) {
+  if (is.null(pollutant)) {
+    cli::cli_abort(
+      c(
+        "x" = "{.code pollutant} is missing with no default.",
+        "i" = "Please provide a column of {.code data} which represents the pollutant(s) of interest."
+      ),
+      call = call
+    )
+  }
+
+  data$latlng <- paste(data[[latitude]], data[[longitude]])
+
+  fun(
+    data,
+    pollutant = pollutant,
+    type = c("latlng", type %||% "default"),
+    plot = FALSE,
+    ...
+  )$data
+}
+
 #' Check packages are installed for static mapping
 #' @noRd
 check_installed_static <- function() {
