@@ -634,11 +634,16 @@ attach_marker_icons <-
     # handle alpha
     options$opacity <- alpha
 
-    # drop data where no plot was created
-    data <- dplyr::filter(
-      data,
-      purrr::map_vec(.data$plot, \(x) !is.null(x))
-    )
+    # drop data where no plot was created - any per-row vectors need dropping
+    # too, otherwise leaflet recycles them and they become misaligned
+    keep <- purrr::map_vec(data$plot, \(x) !is.null(x))
+    data <- data[keep, ]
+    if (length(group) > 1) {
+      group <- group[keep]
+    }
+    if (length(layerId) > 1) {
+      layerId <- layerId[keep]
+    }
 
     if (nrow(data) == 0L) {
       cli::cli_warn("No valid polar markers were created.")
@@ -848,11 +853,12 @@ make_leaflet_map <-
       alpha = alpha
     )
 
-    # add layer control menu
+    # add layer control menu - only for groups where a plot was created
+    created <- purrr::map_vec(data$plot, \(x) !is.null(x))
     map <- add_layer_control(
       map,
       provider = provider,
-      groups = textfun(unique(data[[split_col]])),
+      groups = textfun(unique(data[[split_col]][created])),
       position = control.position,
       collapsed = control.collapsed
     )
