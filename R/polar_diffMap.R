@@ -125,9 +125,13 @@ diffMap <- function(
     )
   }
 
-  # deal with popups
+  # cut data
+  before <- openair::cutData(x = before, type = type %||% "default", ...)
+  after <- openair::cutData(x = after, type = type %||% "default", ...)
+
+  # deal with popups - only `before` is used for popups/labels
   if (length(popup) > 1) {
-    data <-
+    before <-
       quick_popup(
         data = before,
         popup = popup,
@@ -137,10 +141,6 @@ diffMap <- function(
       )
     popup <- "popup"
   }
-
-  # cut data
-  before <- openair::cutData(x = before, type = type %||% "default", ...)
-  after <- openair::cutData(x = after, type = type %||% "default", ...)
 
   # prep data
   before <-
@@ -314,7 +314,6 @@ create_polar_diffmarkers <-
     label = NULL,
     d.fig,
     dropcol = "conc",
-    theme,
     progress = TRUE
   ) {
     # make temp directory
@@ -449,11 +448,11 @@ create_polar_diffmarkers <-
         ggplot2::ggsave(
           plot = ..4 +
             ggplot2::theme(
+              plot.background = ggplot2::element_blank(),
               plot.margin = ggplot2::unit(rep(0, 4), "cm"),
               legend.background = ggplot2::element_blank(),
               legend.title = ggplot2::element_blank()
-            ) +
-            theme,
+            ),
           filename = paste0(dir, "/", ..1, "_", ..2, "_", ..3, "_", id, ".png"),
           width = width * 0.75,
           height = height * 0.75,

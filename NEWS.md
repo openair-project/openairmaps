@@ -18,6 +18,8 @@
 
 ## Bug fixes
 
+* `diffMap()` no longer errors when multiple columns are passed to `popup`.
+
 * `trajLevelMap()` now respects the `control.collapsed` and `control.position` arguments, which were previously ignored. Note that this means the layer control is now expanded by default (`control.collapsed = FALSE`), in line with `trajMap()`.
 
 # openairmaps 0.10.1
