@@ -29,6 +29,7 @@ reference:
   contents:
   - has_concept("interactive trajectory maps")
   - addTrajPaths
+  - addTrajLevel
   - trajMapStatic
 
 - title: Spatial Interpolation

@@ -6,49 +6,103 @@
 #'   pollutant used to colour the trajectories).
 #' @noRd
 build_traj_labels <- function(data, extra = NULL) {
-  row <- function(label, value) {
-    paste0(
-      "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
-      "<span style='color:#888; min-width:100px;'>",
-      label,
-      "</span>",
-      "<span style='font-weight:500; text-align:right;'>",
-      value,
-      "</span>",
-      "</div>"
-    )
-  }
-
   extra_row <- ""
   if (!is.null(extra)) {
-    extra_row <- paste0(
-      "<div style='margin-top:6px; padding-top:6px; border-top:1px solid #eee;'>",
-      row(quickTextHTML(extra), data[[extra]]),
-      "</div>"
-    )
+    extra_row <- popup_section(popup_row(quickTextHTML(extra), data[[extra]]))
   }
 
-  data$lab <- paste0(
+  data$lab <- popup_card(
+    title = format(data$date, "%Y-%m-%d %H:%M"),
+    subtitle = "ARRIVAL DATE",
+    popup_row("Trajectory date", format(data$date2, "%Y-%m-%d %H:%M")),
+    popup_row("Latitude", data$lat),
+    popup_row("Longitude", data$lon),
+    popup_row("Height", paste(data$height, "m")),
+    popup_row("Pressure", paste(data$pressure, "hPa")),
+    extra_row
+  )
+
+  data
+}
+
+#' Build the default gridded trajectory popup label
+#'
+#' Used by [addTrajLevel()]. Styled to match [build_traj_labels()].
+#' @param data The output of `openair::trajLevel()`, with `label` (the
+#'   formatted value) and `gridcount` columns.
+#' @param subtitle Description of the statistic shown under the value.
+#' @param type Optional name of the conditioning column to show.
+#' @noRd
+build_traj_level_labels <- function(data, subtitle, type = NULL) {
+  count_row <- ifelse(
+    is.na(data$gridcount),
+    "",
+    popup_row("Count", data$gridcount)
+  )
+
+  type_row <- ""
+  if (!is.null(type)) {
+    type_row <- popup_section(popup_row(quickTextHTML(type), data[[type]]))
+  }
+
+  popup_card(
+    title = data$label,
+    subtitle = subtitle,
+    popup_row("Latitude", data$ygrid),
+    popup_row("Longitude", data$xgrid),
+    count_row,
+    type_row
+  )
+}
+
+#' Shared building blocks for the trajectory popups
+#'
+#' `popup_card()` wraps rows in a bold title + caption header, `popup_row()`
+#' is a single grey-label/value row, and `popup_section()` separates rows from
+#' those above with a thin divider. All are vectorised.
+#' @noRd
+popup_card <- function(title, subtitle, ...) {
+  paste0(
     "<div style='font-family:sans-serif; font-size:13px; width:220px;'>",
 
     "<div style='margin-bottom:8px; padding-bottom:6px; border-bottom:2px solid #ddd;'>",
     "<div style='font-size:15px; font-weight:700; color:#222; line-height:1.2;'>",
-    format(data$date, "%Y-%m-%d %H:%M"),
+    title,
     "</div>",
-    "<div style='font-size:12px; font-weight:600; color:#303030; letter-spacing:0.03em; margin-top:2px;'>ARRIVAL DATE</div>",
+    "<div style='font-size:12px; font-weight:600; color:#303030; letter-spacing:0.03em; margin-top:2px;'>",
+    subtitle,
+    "</div>",
     "</div>",
 
-    row("Trajectory date", format(data$date2, "%Y-%m-%d %H:%M")),
-    row("Latitude", data$lat),
-    row("Longitude", data$lon),
-    row("Height", paste(data$height, "m")),
-    row("Pressure", paste(data$pressure, "hPa")),
-    extra_row,
+    ...,
 
     "</div>"
   )
+}
 
-  data
+#' @rdname popup_card
+#' @noRd
+popup_row <- function(label, value) {
+  paste0(
+    "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
+    "<span style='color:#888; min-width:100px;'>",
+    label,
+    "</span>",
+    "<span style='font-weight:500; text-align:right;'>",
+    value,
+    "</span>",
+    "</div>"
+  )
+}
+
+#' @rdname popup_card
+#' @noRd
+popup_section <- function(...) {
+  paste0(
+    "<div style='margin-top:6px; padding-top:6px; border-top:1px solid #eee;'>",
+    ...,
+    "</div>"
+  )
 }
 
 #' Check input & prep data

@@ -4,11 +4,17 @@
 
 * `networkMap()` can now take any option passed to `openair::importMeta()`. This behaviour supersedes all of the functionality within `searchNetwork()`, which has been removed. It also no longer overwrites the default `year` argument, and so behaves identically to `openair::importMeta()`.
 
-* Static maps gain the `api_key` argument, passed to the equivalent argument in `ggspatial::annotation_map_tile()`.
+* Added `addTrajLevel()`, which allows users to add gridded trajectory statistics (calculated using `openair::trajLevel()`) to any `leaflet` map, much like `addTrajPaths()` does for individual trajectories. This offers more control over groups and layerIds than `trajLevelMap()`, which now uses `addTrajLevel()` internally.
 
 * `addTrajPaths()` gains a `markerColor` argument, allowing the point markers along a trajectory to be coloured independently of the trajectory line itself (e.g., by a continuously-varying pollutant). `trajMap()` now uses this internally instead of duplicating `addTrajPaths()`'s marker/line-drawing logic.
 
-* The popups in `trajMap()` and `addTrajPaths()` have been restyled to match those in `networkMap()`. Arrival and trajectory dates now always show the time, and the `colour` variable in `trajMap()` (e.g., a pollutant) is shown in its own row at the bottom of the popup.
+* Static maps gain the `api_key` argument, passed to the equivalent argument in `ggspatial::annotation_map_tile()`.
+
+* The popups in `trajMap()`, `addTrajPaths()`, `trajLevelMap()` and `addTrajLevel()` have been restyled to match those in `networkMap()`. For trajectory paths, arrival and trajectory dates now always show the time, and the `colour` variable in `trajMap()` (e.g., a pollutant) is shown in its own row at the bottom of the popup. For gridded trajectories, the popup leads with the value and a description of the statistic, followed by the grid cell location, count and (if used) the `type` level.
+
+## Bug fixes
+
+* `trajLevelMap()` now respects the `control.collapsed` and `control.position` arguments, which were previously ignored. Note that this means the layer control is now expanded by default (`control.collapsed = FALSE`), in line with `trajMap()`.
 
 # openairmaps 0.10.1
 

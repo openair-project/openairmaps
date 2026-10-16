@@ -45,8 +45,7 @@ obtained using \code{\link[openair:importTraj]{openair::importTraj()}}.}
 
 Column names representing the decimal latitude and longitude.}
 
-\item{pollutant}{Pollutant (or any numeric column) to be plotted, if any.
-Alternatively, use \code{group}.}
+\item{pollutant}{The pollutant of interest. Not required when \code{statistic = "frequency"}.}
 
 \item{type}{\emph{A method to condition the \code{data} for separate plotting.}
 
@@ -109,11 +108,17 @@ literature suggest 5.4 km after one hour. However, testing suggests lower
 values reveal source regions more effectively while not introducing too
 much noise.}
 
-\item{cols}{The colours used for plotting, passed to
-\code{\link[openair:openColours]{openair::openColours()}}. The default, \code{"turbo"}, is a rainbow palette with
-relatively perceptually uniform colours.}
+\item{cols}{\emph{Colours to use for plotting.}
 
-\item{alpha}{Opacity of the tiles. Must be between \code{0} and \code{1}.}
+\emph{default:} \code{"default"}
+
+The colours used for plotting, passed to \code{\link[openair:openColours]{openair::openColours()}}.}
+
+\item{alpha}{\emph{Transparency value for trajectories.}
+
+\emph{default:} \code{1}
+
+A value between \code{0} (fully transparent) and \code{1} (fully opaque).}
 
 \item{tile.border}{Colour to use for the border of binned tiles. Defaults to
 \code{NA}, which draws no border.}
@@ -180,6 +185,9 @@ trajLevelMap(traj_data, pollutant = "pm2.5", statistic = "pscf", min.bin = 10)
 }
 \seealso{
 \code{\link[openair:trajLevel]{openair::trajLevel()}}
+
+\code{\link[=addTrajLevel]{addTrajLevel()}} to add gridded trajectory statistics to any
+leaflet map
 
 \code{\link[=trajLevelMapStatic]{trajLevelMapStatic()}} for the static \code{ggplot2} equivalent of
 \code{\link[=trajLevelMap]{trajLevelMap()}}

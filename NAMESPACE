@@ -2,6 +2,7 @@
 
 export(addPolarDiffMarkers)
 export(addPolarMarkers)
+export(addTrajLevel)
 export(addTrajPaths)
 export(annulusMap)
 export(buildPopup)
