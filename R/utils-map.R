@@ -600,6 +600,9 @@ create_polar_markers <-
 #' @param data A data frame as produced by `create_polar_markers()` - must
 #'   contain a `url` column (and `plot`, used to drop rows where rendering
 #'   failed).
+#' @param group_col Optionally, a column of `data` giving each marker's group,
+#'   used instead of `group`. Unlike a vector passed to `group`, this stays
+#'   aligned with the markers when rows without a plot are dropped.
 #' @param latitude,longitude,d.icon,group,layerId,popup,popupOptions,label,
 #'   labelOptions,options,clusterOptions,clusterId,alpha as in
 #'   `addPolarMarkers()`/[leaflet::addMarkers()].
@@ -612,6 +615,7 @@ attach_marker_icons <-
     longitude,
     d.icon,
     group = NULL,
+    group_col = NULL,
     layerId = NULL,
     popup = NULL,
     popupOptions = NULL,
@@ -638,9 +642,6 @@ attach_marker_icons <-
     # too, otherwise leaflet recycles them and they become misaligned
     keep <- purrr::map_vec(data$plot, \(x) !is.null(x))
     data <- data[keep, ]
-    if (length(group) > 1) {
-      group <- group[keep]
-    }
     if (length(layerId) > 1) {
       layerId <- layerId[keep]
     }
@@ -664,7 +665,7 @@ attach_marker_icons <-
         popupAnchorX = -.Machine$double.eps,
         popupAnchorY = -(height / 2) * 0.7
       ),
-      group = group,
+      group = if (!is.null(group_col)) data[[group_col]] else group,
       layerId = layerId,
       popupOptions = popupOptions,
       labelOptions = labelOptions,
@@ -841,13 +842,14 @@ make_leaflet_map <-
       add_basemaps(provider)
 
     # add markers
+    data$.group <- textfun(data[[split_col]])
     map <- attach_marker_icons(
       map = map,
       data = data,
       latitude = latitude,
       longitude = longitude,
       d.icon = d.icon,
-      group = textfun(data[[split_col]]),
+      group_col = ".group",
       popup = popup,
       label = label,
       alpha = alpha
