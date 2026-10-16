@@ -21,6 +21,13 @@
 #'   another iterative approach (e.g. the `purrr` package) to add one path per
 #'   arrival date. An example of this is provided in the Examples.
 #'
+#'   If you only need to vary the colour of the *markers* rather than the
+#'   lines - for example, colouring the points by a pollutant that changes
+#'   over time - use `markerColor` instead, which is not subject to the same
+#'   length-one restriction as `color` and can vary across every trajectory
+#'   in `data`, not just within one. This often avoids the need for a loop
+#'   entirely; see the Examples.
+#'
 #' @param map a map widget object created from [leaflet::leaflet()].
 #' @param lng The decimal longitude.
 #' @param lat The decimal latitude.
@@ -41,12 +48,19 @@
 #'   helps to understand where the air masses were at particular times and get a
 #'   feel for the speed of the air (points closer together correspond to slower
 #'   moving air masses). Defaults to `12`.
-#' @param ... Other arguments to pass to both [leaflet::addCircleMarkers()] and
+#' @param markerColor An optional colour (or vector of colours, one per row of
+#'   `data`) to use for the point markers, overriding whatever `color` is
+#'   passed via `...`. Unlike `color`/`fillColor`, this is permitted to vary
+#'   per point - useful for colouring the markers along a single trajectory by
+#'   a continuous variable (e.g. a pollutant) while keeping the trajectory
+#'   line itself a single colour, as required by [leaflet::addPolylines()].
+#' @param ... Other arguments o pass to both [leaflet::addCircleMarkers()] and
 #'   [leaflet::addPolylines()]. If you use the `color` argument, it is important
 #'   to ensure the vector you supply is of length one to avoid issues with
-#'   [leaflet::addPolylines()] (i.e., use `color = ~ pal(nox)[1]`). Note that
-#'   `opacity` controls the opacity of the lines and `fillOpacity` the opacity
-#'   of the markers.
+#'   [leaflet::addPolylines()] (i.e., use `color = ~ pal(nox)[1]`), unless you use
+#'   `markerColor` to separately control the colour of the point markers. Note
+#'   that `opacity` controls the opacity of the lines and `fillOpacity` the
+#'   opacity of the markers.
 #' @returns A leaflet object.
 #' @seealso `shiny::runExample(package = "openairmaps")` to see examples of this
 #'   function used in a [shiny::shinyApp()]
@@ -55,9 +69,8 @@
 #' @examples
 #' \dontrun{
 #' library(leaflet)
-#' library(openairmaps)
 #'
-#' pal <- colorNumeric(palette = "viridis", domain = traj_data$nox)
+#' pal <- colorNumeric(palette = "viridis", domain = traj_data$height)
 #'
 #' map <- leaflet() |>
 #'   addTiles()
@@ -68,7 +81,10 @@
 #'   map <- map |>
 #'     addTrajPaths(
 #'       data = data,
-#'       color = pal(data$nox)[1]
+#'       color = pal(data$height)[1],
+#'       markerColor = pal(data$height),
+#'       opacity = 0.5,
+#'       fillOpacity = 0.8
 #'     )
 #' }
 #'
@@ -83,6 +99,7 @@ addTrajPaths <-
     group = NULL,
     data = leaflet::getMapData(map),
     npoints = 12,
+    markerColor = NULL,
     ...
   ) {
     # check opts
@@ -101,16 +118,17 @@ addTrajPaths <-
     # get factor version of date
     data$datef <- factor(data$date)
 
-    # labels
-    data <- dplyr::mutate(
-      data,
-      lab = stringr::str_glue(
-        "<b>Arrival Date:</b> {date}<br>
-                             <b>Trajectory Date:</b> {date2}<br>
-                             <b>Lat:</b> {lat} | <b>Lon:</b> {lon}<br>
-                             <b>Height:</b> {height} m | <b>Pressure:</b> {pressure} Pa"
-      )
-    )
+    # attach per-row marker colours (if supplied) before any filtering, so
+    # they are correctly subset alongside the rest of `data`
+    if (!is.null(markerColor)) {
+      data$markerColor <- markerColor
+    }
+
+    # labels (skip if the caller has already supplied one - e.g. trajMap()
+    # adds a pollutant-specific line to the default label)
+    if (!"lab" %in% names(data)) {
+      data <- build_traj_labels(data)
+    }
 
     for (i in seq_along(unique(data$datef))) {
       if (!is.null(layerId)) {
@@ -123,7 +141,7 @@ addTrajPaths <-
       ldata <- dplyr::filter(data, .data$datef == unique(data$datef)[[i]])
       pdata <- dplyr::filter(ldata, .data$hour.inc %% npoints == 0)
 
-      # add points/lines to plot
+      # add line to plot
       map <-
         leaflet::addPolylines(
           map = map,
@@ -136,25 +154,52 @@ addTrajPaths <-
           ...
         )
 
-      for (j in seq_len(nrow(pdata))) {
-        if (!is.null(layerId)) {
-          layeridp <- paste(layerid, j, sep = "-")
-        } else {
-          layeridp <- NULL
-        }
-        map <-
-          leaflet::addCircleMarkers(
+      # marker-specific colour overrides the line's colour, if supplied
+      marker_opts <- opts
+      if (!is.null(markerColor)) {
+        marker_opts$color <- pdata$markerColor
+      }
+
+      if (is.null(layerId)) {
+        # no per-point layer ids needed - add all points in one vectorised call
+        marker_arg <- append(
+          list(
             map = map,
-            data = pdata[j, ],
+            data = pdata,
             radius = 3,
             stroke = FALSE,
-            lng = pdata[j, ][[lng]],
-            lat = pdata[j, ][[lat]],
+            lng = pdata[[lng]],
+            lat = pdata[[lat]],
             group = group,
-            layerId = layeridp,
-            popup = pdata[j, ][["lab"]],
-            ...
+            popup = pdata[["lab"]]
+          ),
+          marker_opts
+        )
+        map <- rlang::exec(leaflet::addCircleMarkers, !!!marker_arg)
+      } else {
+        # per-point layer ids requested - markers must be added one at a time
+        for (j in seq_len(nrow(pdata))) {
+          layeridp <- paste(layerid, j, sep = "-")
+          row_opts <- marker_opts
+          if (!is.null(markerColor)) {
+            row_opts$color <- marker_opts$color[[j]]
+          }
+          marker_arg <- append(
+            list(
+              map = map,
+              data = pdata[j, ],
+              radius = 3,
+              stroke = FALSE,
+              lng = pdata[j, ][[lng]],
+              lat = pdata[j, ][[lat]],
+              group = group,
+              layerId = layeridp,
+              popup = pdata[j, ][["lab"]]
+            ),
+            row_opts
           )
+          map <- rlang::exec(leaflet::addCircleMarkers, !!!marker_arg)
+        }
       }
     }
 

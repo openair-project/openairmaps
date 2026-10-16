@@ -1,3 +1,56 @@
+#' Build the default trajectory popup label
+#'
+#' Shared by [addTrajPaths()] and [trajMap()] so the two don't drift apart.
+#' Styled to match the [networkMap()] popups.
+#' @param extra Optional name of an additional column to show (e.g., the
+#'   pollutant used to colour the trajectories).
+#' @noRd
+build_traj_labels <- function(data, extra = NULL) {
+  row <- function(label, value) {
+    paste0(
+      "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
+      "<span style='color:#888; min-width:100px;'>",
+      label,
+      "</span>",
+      "<span style='font-weight:500; text-align:right;'>",
+      value,
+      "</span>",
+      "</div>"
+    )
+  }
+
+  extra_row <- ""
+  if (!is.null(extra)) {
+    extra_row <- paste0(
+      "<div style='margin-top:6px; padding-top:6px; border-top:1px solid #eee;'>",
+      row(quickTextHTML(extra), data[[extra]]),
+      "</div>"
+    )
+  }
+
+  data$lab <- paste0(
+    "<div style='font-family:sans-serif; font-size:13px; width:220px;'>",
+
+    "<div style='margin-bottom:8px; padding-bottom:6px; border-bottom:2px solid #ddd;'>",
+    "<div style='font-size:15px; font-weight:700; color:#222; line-height:1.2;'>",
+    format(data$date, "%Y-%m-%d %H:%M"),
+    "</div>",
+    "<div style='font-size:12px; font-weight:600; color:#303030; letter-spacing:0.03em; margin-top:2px;'>ARRIVAL DATE</div>",
+    "</div>",
+
+    row("Trajectory date", format(data$date2, "%Y-%m-%d %H:%M")),
+    row("Latitude", data$lat),
+    row("Longitude", data$lon),
+    row("Height", paste(data$height, "m")),
+    row("Pressure", paste(data$pressure, "hPa")),
+    extra_row,
+
+    "</div>"
+  )
+
+  data
+}
+
 #' Check input & prep data
 #' @author David Carslaw
 #' @noRd

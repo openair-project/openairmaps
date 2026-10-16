@@ -6,6 +6,10 @@
 
 * Static maps gain the `api_key` argument, passed to the equivalent argument in `ggspatial::annotation_map_tile()`.
 
+* `addTrajPaths()` gains a `markerColor` argument, allowing the point markers along a trajectory to be coloured independently of the trajectory line itself (e.g., by a continuously-varying pollutant). `trajMap()` now uses this internally instead of duplicating `addTrajPaths()`'s marker/line-drawing logic.
+
+* The popups in `trajMap()` and `addTrajPaths()` have been restyled to match those in `networkMap()`. Arrival and trajectory dates now always show the time, and the `colour` variable in `trajMap()` (e.g., a pollutant) is shown in its own row at the bottom of the popup.
+
 # openairmaps 0.10.1
 
 ## New features

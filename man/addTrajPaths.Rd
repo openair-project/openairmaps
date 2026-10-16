@@ -12,6 +12,7 @@ addTrajPaths(
   group = NULL,
   data = leaflet::getMapData(map),
   npoints = 12,
+  markerColor = NULL,
   ...
 )
 }
@@ -43,12 +44,20 @@ helps to understand where the air masses were at particular times and get a
 feel for the speed of the air (points closer together correspond to slower
 moving air masses). Defaults to \code{12}.}
 
-\item{...}{Other arguments to pass to both \code{\link[leaflet:addCircleMarkers]{leaflet::addCircleMarkers()}} and
+\item{markerColor}{An optional colour (or vector of colours, one per row of
+\code{data}) to use for the point markers, overriding whatever \code{color} is
+passed via \code{...}. Unlike \code{color}/\code{fillColor}, this is permitted to vary
+per point - useful for colouring the markers along a single trajectory by
+a continuous variable (e.g. a pollutant) while keeping the trajectory
+line itself a single colour, as required by \code{\link[leaflet:addPolylines]{leaflet::addPolylines()}}.}
+
+\item{...}{Other arguments o pass to both \code{\link[leaflet:addCircleMarkers]{leaflet::addCircleMarkers()}} and
 \code{\link[leaflet:addPolylines]{leaflet::addPolylines()}}. If you use the \code{color} argument, it is important
 to ensure the vector you supply is of length one to avoid issues with
-\code{\link[leaflet:addPolylines]{leaflet::addPolylines()}} (i.e., use \code{color = ~ pal(nox)[1]}). Note that
-\code{opacity} controls the opacity of the lines and \code{fillOpacity} the opacity
-of the markers.}
+\code{\link[leaflet:addPolylines]{leaflet::addPolylines()}} (i.e., use \code{color = ~ pal(nox)[1]}), unless you use
+\code{markerColor} to separately control the colour of the point markers. Note
+that \code{opacity} controls the opacity of the lines and \code{fillOpacity} the
+opacity of the markers.}
 }
 \value{
 A leaflet object.
@@ -75,13 +84,19 @@ colour, but more difficult if you want to colour by a pollutant, for
 example. The easiest way to achieve this is to write a for loop or use
 another iterative approach (e.g. the \code{purrr} package) to add one path per
 arrival date. An example of this is provided in the Examples.
+
+If you only need to vary the colour of the \emph{markers} rather than the
+lines - for example, colouring the points by a pollutant that changes
+over time - use \code{markerColor} instead, which is not subject to the same
+length-one restriction as \code{color} and can vary across every trajectory
+in \code{data}, not just within one. This often avoids the need for a loop
+entirely; see the Examples.
 }
 \examples{
 \dontrun{
 library(leaflet)
-library(openairmaps)
 
-pal <- colorNumeric(palette = "viridis", domain = traj_data$nox)
+pal <- colorNumeric(palette = "viridis", domain = traj_data$height)
 
 map <- leaflet() |>
   addTiles()
@@ -92,7 +107,10 @@ for (i in seq_along(unique(traj_data$date))) {
   map <- map |>
     addTrajPaths(
       data = data,
-      color = pal(data$nox)[1]
+      color = pal(data$height)[1],
+      markerColor = pal(data$height),
+      opacity = 0.5,
+      fillOpacity = 0.8
     )
 }
 

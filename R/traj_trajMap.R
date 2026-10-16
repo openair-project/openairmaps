@@ -203,29 +203,16 @@ trajMap <-
     }
 
     # make labels
-    data <- dplyr::mutate(
-      data,
-      lab = stringr::str_glue(
-        "<b>Arrival Date:</b> {date}<br>
-                             <b>Trajectory Date:</b> {date2}<br>
-                             <b>Lat:</b> {lat} | <b>Lon:</b> {lon}<br>
-                             <b>Height:</b> {height} m | <b>Pressure:</b> {pressure} Pa"
-      )
-    )
-
-    if (!is.null(colour)) {
-      if (
-        colour %in%
-          names(data) &&
-          !colour %in% c("date", "date2", "lat", "lon", "height", "pressure")
-      ) {
-        data$lab <- paste(
-          data$lab,
-          paste0("<b>", quickTextHTML(colour), ":</b> ", data[[colour]]),
-          sep = "<br>"
-        )
-      }
+    # (add the "colour" column too, unless it's already in the label)
+    extra <- NULL
+    if (
+      !is.null(colour) &&
+        colour %in% names(data) &&
+        !colour %in% c("date", "date2", "lat", "lon", "height", "pressure")
+    ) {
+      extra <- colour
     }
+    data <- build_traj_labels(data, extra = extra)
 
     # iterate over columns in "type" column
     for (j in seq_along(unique(data[[type]]))) {
@@ -235,11 +222,10 @@ trajMap <-
 
       # iterate over different arrival dates to plot separate trajectories
       for (i in seq_along(unique(data2$datef))) {
-        # get line/points data
+        # get line data (addTrajPaths() does its own npoints-based filtering
+        # for the points)
         ldata <-
           dplyr::filter(data2, .data$datef == unique(data2$datef)[[i]])
-        pdata <-
-          dplyr::filter(ldata, .data$hour.inc %% npoints == 0)
 
         lcolors <- fixedcol
         pcolors <- fixedcol
@@ -247,32 +233,21 @@ trajMap <-
         if (!is.null(colour)) {
           if (colour %in% names(data)) {
             lcolors <- pal(ldata[[colour]])[1]
-            pcolors <- pal(pdata[[colour]])
+            pcolors <- pal(ldata[[colour]])
           }
         }
 
-        # add points/lines to plot
+        # add line + points to plot
         map <-
-          leaflet::addPolylines(
-            map = map,
+          addTrajPaths(
+            map,
             data = ldata,
-            lng = ldata$lon,
-            lat = ldata$lat,
-            opacity = alpha,
-            weight = 2,
-            color = lcolors,
-            group = as.character(unique(data[[type]])[[j]])
-          ) |>
-          leaflet::addCircleMarkers(
-            data = pdata,
-            radius = 3,
-            stroke = FALSE,
-            lng = pdata$lon,
-            lat = pdata$lat,
-            fillOpacity = alpha,
-            color = pcolors,
+            npoints = npoints,
             group = as.character(unique(data[[type]])[[j]]),
-            popup = pdata$lab
+            color = lcolors,
+            markerColor = pcolors,
+            opacity = alpha,
+            fillOpacity = alpha
           )
       }
     }
