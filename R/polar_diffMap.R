@@ -178,27 +178,37 @@ diffMap <- function(
     split_col <- "pollutant_name"
   }
 
-  # define function
-  fun <- function(before, after) {
-    openair::polarDiff(
-      before = before,
-      after = after,
+  # arguments for function
+  fun_args <- append(
+    list(
       pollutant = "conc",
       x = x,
       limits = theLimits,
       cols = cols,
       theme = theme,
       key.position = key.position,
-      plot = FALSE,
-      ...
-    )$plot
+      plot = FALSE
+    ),
+    rlang::list2(...)
+  )
+
+  # define function
+  fun <- function(before, after) {
+    rlang::exec(
+      openair::polarDiff,
+      !!!append(
+        list(before = before, after = after),
+        fun_args
+      )
+    )
   }
 
   # plot and save static markers
   plots_df <-
-    create_polar_diffmarkers(
+    create_polar_markers(
       fun = fun,
-      before = before,
+      fun_args = fun_args,
+      data = before,
       after = after,
       latitude = latitude,
       longitude = longitude,
@@ -271,168 +281,3 @@ diffMap <- function(
   # return map
   return(map)
 }
-
-#' create diff markers
-#' @noRd
-create_polar_diffmarkers <-
-  function(
-    fun,
-    before = before,
-    after = after,
-    latitude = latitude,
-    longitude = longitude,
-    split_col = split_col,
-    popup = NULL,
-    label = NULL,
-    d.fig,
-    dropcol = "conc",
-    progress = TRUE
-  ) {
-    # make temp directory
-    dir <- tempdir()
-
-    # unique id
-    id <- gsub(" |:|-", "", as.character(Sys.time()))
-
-    # sort out popups/labels
-    if (is.null(popup)) {
-      before$popup <- "NA"
-      popup <- "popup"
-    }
-    if (is.null(label)) {
-      before$label <- "NA"
-      label <- "label"
-    }
-
-    # drop missing data
-    before <- tidyr::drop_na(before, dplyr::all_of(dropcol))
-    after <- tidyr::drop_na(after, dplyr::all_of(dropcol))
-
-    # get number of rows
-    valid_rows <-
-      nrow(dplyr::distinct(
-        before,
-        .data[[latitude]],
-        .data[[longitude]],
-        .data[[split_col]]
-      ))
-
-    # nest data
-    nested_before <- before |>
-      tidyr::nest(
-        before = -dplyr::all_of(c(
-          latitude,
-          longitude,
-          split_col,
-          popup,
-          label
-        ))
-      )
-    nested_after <- after |>
-      tidyr::nest(after = -dplyr::all_of(c(latitude, longitude, split_col)))
-
-    # warn if missing
-    if (nrow(nested_before) != nrow(nested_after)) {
-      warn_df <-
-        dplyr::bind_rows(
-          dplyr::anti_join(
-            nested_before,
-            nested_after,
-            by = c(latitude, longitude, split_col)
-          ),
-          dplyr::anti_join(
-            nested_after,
-            nested_before,
-            by = c(latitude, longitude, split_col)
-          )
-        ) |>
-        tidyr::unite(
-          "warning",
-          dplyr::any_of(c(latitude, longitude, split_col)),
-          sep = "/"
-        ) |>
-        dplyr::distinct(.data$warning)
-
-      cli::cli_warn(
-        c(
-          "!" = "Not all {.code latitude}/{.code longitude}/{.code control} combinations in {.code before} matched in {.code after}.",
-          "i" = "Not matched: {.field {warn_df$warning}}"
-        )
-      )
-    }
-
-    # check for popup issues
-    if (nrow(nested_before) > valid_rows) {
-      cli::cli_abort(
-        c(
-          "x" = "Multiple popups/labels per {.code latitude}/{.code longitude}/{.code control} combination.",
-          "i" = "Have you used a numeric column, e.g., a pollutant concentration?",
-          "i" = "Consider using {.fun buildPopup} to easily create distinct popups per marker."
-        )
-      )
-    }
-
-    # create plots
-    plots_df <-
-      dplyr::inner_join(
-        nested_before,
-        nested_after,
-        by = c(latitude, longitude, split_col)
-      ) |>
-      dplyr::mutate(
-        plot = purrr::map2(
-          before,
-          after,
-          fun,
-          .progress = ifelse(progress, "Creating Polar Markers", FALSE)
-        ),
-        url = paste0(
-          dir,
-          "/",
-          .data[[latitude]],
-          "_",
-          .data[[longitude]],
-          "_",
-          .data[[split_col]],
-          "_",
-          id,
-          ".png"
-        )
-      )
-
-    # work out w/h
-    if (length(d.fig) == 1) {
-      width <- height <- d.fig
-    }
-    if (length(d.fig) == 2) {
-      width <- d.fig[[1]]
-      height <- d.fig[[2]]
-    }
-
-    purrr::pwalk(
-      list(
-        plots_df[[latitude]],
-        plots_df[[longitude]],
-        plots_df[[split_col]],
-        plots_df$plot
-      ),
-      .f = ~ {
-        ggplot2::ggsave(
-          plot = ..4 +
-            ggplot2::theme(
-              plot.background = ggplot2::element_blank(),
-              plot.margin = ggplot2::unit(rep(0, 4), "cm"),
-              legend.background = ggplot2::element_blank(),
-              legend.title = ggplot2::element_blank()
-            ),
-          filename = paste0(dir, "/", ..1, "_", ..2, "_", ..3, "_", id, ".png"),
-          width = width * 0.75,
-          height = height * 0.75,
-          dpi = 72,
-          bg = "transparent"
-        )
-      }
-    )
-
-    return(plots_df)
-  }

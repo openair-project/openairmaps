@@ -415,7 +415,11 @@ quick_popup <- function(data, popup, latitude, longitude, control) {
 # Polar markers ----------------------------------------------------------------
 
 #' Create markers for the static plots
-#' @param fun function of "data" to create plot
+#' @param fun function of "data" to create plot - or of "data" and "after" if
+#'   `after` is provided - which returns an openair object
+#' @param after optionally, a second data frame for two-table plots (i.e.,
+#'   `polarDiff()`). `data` is then the "before" case, and provides any
+#'   popups/labels.
 #' @param latitude,longitude,split_col,d.fig inherited from parent
 #' @noRd
 create_polar_markers <-
@@ -431,6 +435,7 @@ create_polar_markers <-
     d.fig,
     dropcol = "conc",
     polar_fun = NULL,
+    after = NULL,
     progress = TRUE
   ) {
     # make temp directory
@@ -484,6 +489,35 @@ create_polar_markers <-
       )
     }
 
+    # pair up with "after" data for two-table plots
+    if (!is.null(after)) {
+      keys <- c(latitude, longitude, split_col)
+
+      after <- tidyr::drop_na(after, dplyr::all_of(dropcol))
+      nested_after <- tidyr::nest(after, after = -dplyr::all_of(keys))
+
+      # warn if missing
+      unmatched <-
+        dplyr::bind_rows(
+          dplyr::anti_join(nested_df, nested_after, by = keys),
+          dplyr::anti_join(nested_after, nested_df, by = keys)
+        )
+      if (nrow(unmatched) > 0) {
+        warn_df <- unmatched |>
+          tidyr::unite("warning", dplyr::all_of(keys), sep = "/") |>
+          dplyr::distinct(.data$warning)
+
+        cli::cli_warn(
+          c(
+            "!" = "Not all {.code latitude}/{.code longitude}/{.code control} combinations in {.code before} matched in {.code after}.",
+            "i" = "Not matched: {.field {warn_df$warning}}"
+          )
+        )
+      }
+
+      nested_df <- dplyr::inner_join(nested_df, nested_after, by = keys)
+    }
+
     # create plots
     plots_df <-
       dplyr::mutate(
@@ -514,10 +548,13 @@ create_polar_markers <-
     # create and save plots
     plots_df$plot <-
       purrr::pmap(
-        .l = dplyr::select(plots_df, "data", "url"),
+        .l = dplyr::select(plots_df, dplyr::any_of(c("data", "after", "url"))),
         .f = purrr::in_parallel(
-          function(data, url) {
-            openair_obj <- tryCatch(error = function(cnd) {}, fun(data))
+          function(data, url, after = NULL) {
+            openair_obj <- tryCatch(
+              error = function(cnd) {},
+              if (is.null(after)) fun(data) else fun(data, after)
+            )
 
             if (!is.null(openair_obj)) {
               # save plot
@@ -560,9 +597,9 @@ create_polar_markers <-
 #' each re-implementing marker assembly - keeping a single source of truth so
 #' the two public entry points can't drift apart.
 #'
-#' @param data A data frame as produced by `create_polar_markers()`/
-#'   `create_polar_diffmarkers()` - must contain a `url` column (and `plot`,
-#'   used to drop rows where rendering failed).
+#' @param data A data frame as produced by `create_polar_markers()` - must
+#'   contain a `url` column (and `plot`, used to drop rows where rendering
+#'   failed).
 #' @param latitude,longitude,d.icon,group,layerId,popup,popupOptions,label,
 #'   labelOptions,options,clusterOptions,clusterId,alpha as in
 #'   `addPolarMarkers()`/[leaflet::addMarkers()].

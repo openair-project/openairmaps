@@ -143,7 +143,7 @@ addPolarMarkers <-
         d.fig = d.fig,
         popup = popup,
         label = label,
-        dropcol = "no2",
+        dropcol = pollutant,
         progress = TRUE,
         polar_fun = polar_fun
       )
@@ -212,18 +212,22 @@ addPolarDiffMarkers <-
     longitude <- latlon$longitude
 
     # define plotting function
-    theargs <- list(...)
-    thefun <- function(before, after, args = theargs) {
-      plt <- rlang::exec(
-        openair::polarDiff,
-        before = before,
-        after = after,
+    fun_args <- append(
+      list(
         pollutant = pollutant,
         key.position = key.position,
-        plot = FALSE,
-        !!!args
+        plot = FALSE
+      ),
+      rlang::list2(...)
+    )
+    fun <- function(before, after) {
+      rlang::exec(
+        openair::polarDiff,
+        !!!append(
+          list(before = before, after = after),
+          fun_args
+        )
       )
-      plt$plot
     }
 
     # create dummy split_col
@@ -233,9 +237,10 @@ addPolarDiffMarkers <-
 
     # plot and save static markers
     plots_df <-
-      create_polar_diffmarkers(
-        fun = thefun,
-        before = before,
+      create_polar_markers(
+        fun = fun,
+        fun_args = fun_args,
+        data = before,
         after = after,
         latitude = latitude,
         longitude = longitude,

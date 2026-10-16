@@ -34,6 +34,8 @@
 
 * `diffMap()` no longer errors when multiple columns are passed to `popup`.
 
+* `addPolarMarkers()` now drops rows where the chosen `pollutant` is missing, rather than where `no2` is missing. Previously, it would error if `data` did not contain a `no2` column.
+
 * The colours in the dynamic `percentileMap()` legend now match those of the markers.
 
 * `trajLevelMap()` now respects the `control.collapsed` and `control.position` arguments, which were previously ignored. Note that this means the layer control is now expanded by default (`control.collapsed = FALSE`), in line with `trajMap()`.
