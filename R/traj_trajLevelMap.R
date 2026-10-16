@@ -48,16 +48,8 @@ trajLevelMap <-
     control.position = "topright"
   ) {
     # start map
-    map <- leaflet::leaflet()
-
-    # set provider tiles
-    for (i in seq_along(unique(provider))) {
-      map <- leaflet::addProviderTiles(
-        map,
-        provider = unique(provider)[[i]],
-        group = unique(provider)[[i]]
-      )
-    }
+    map <- leaflet::leaflet() |>
+      add_basemaps(provider)
 
     # add gridded trajectory statistics
     map <- addTrajLevel(
@@ -84,30 +76,21 @@ trajLevelMap <-
       legend.title.autotext = legend.title.autotext
     )
 
-    # control menu - "type" levels are the base groups if present, otherwise
-    # the providers are
-    provider <- unique(provider)
-    if (length(provider) > 1 || !is.null(type)) {
-      base_groups <- provider
-      overlay_groups <- character(0)
-      if (!is.null(type)) {
-        # (suppress warnings already given by addTrajLevel())
-        type_levels <- suppressWarnings(openair::cutData(data, type = type))
-        base_groups <- as.character(sort(unique(type_levels[[type]])))
-        if (length(provider) > 1) {
-          overlay_groups <- provider
-        }
-      }
-
-      map <-
-        leaflet::addLayersControl(
-          map,
-          baseGroups = base_groups,
-          overlayGroups = overlay_groups,
-          position = control.position,
-          options = leaflet::layersControlOptions(collapsed = control.collapsed)
-        )
+    # control menu - "type" levels (if any) are the base groups
+    type_levels <- NULL
+    if (!is.null(type)) {
+      # (suppress warnings already given by addTrajLevel())
+      type_levels <- suppressWarnings(openair::cutData(data, type = type))
+      type_levels <- sort(unique(type_levels[[type]]))
     }
+
+    map <- add_layer_control(
+      map,
+      provider = provider,
+      groups = type_levels,
+      position = control.position,
+      collapsed = control.collapsed
+    )
 
     # return map
     return(map)

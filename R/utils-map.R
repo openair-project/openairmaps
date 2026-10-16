@@ -1,109 +1,148 @@
-#' Build the default trajectory popup label
-#'
-#' Shared by [addTrajPaths()] and [trajMap()] so the two don't drift apart.
-#' Styled to match the [networkMap()] popups.
-#' @param extra Optional name of an additional column to show (e.g., the
-#'   pollutant used to colour the trajectories).
+# Input checks -----------------------------------------------------------------
+
+#' Check providers are valid
 #' @noRd
-build_traj_labels <- function(data, extra = NULL) {
-  extra_row <- ""
-  if (!is.null(extra)) {
-    extra_row <- popup_section(popup_row(quickTextHTML(extra), data[[extra]]))
+check_providers <- function(provider, static) {
+  providers_dict <- c(
+    "OpenStreetMap" = "osm",
+    "CyclOSM" = "opencycle",
+    "OpenStreetMap.HOT" = "hotstyle",
+    "WaymarkedTrails.hiking" = "loviniahike",
+    "WaymarkedTrails.cycling" = "loviniacycle",
+    "Stadia.StamenToner" = "stamenbw",
+    "Stadia.StamenWatercolor" = "stamenwatercolor",
+    "Thunderforest.OpenCycleMap" = "osmtransport",
+    "Thunderforest.Landscape" = "thunderforestlandscape",
+    "Thunderforest.Outdoors" = "thunderforestoutdoors",
+    "CartoDB.DarkMatter" = "cartodark",
+    "CartoDB.Positron" = "cartolight"
+  )
+
+  if (static) {
+    provider <- provider %||% "osm"
+    if (provider %in% names(providers_dict)) {
+      provider <- providers_dict[provider]
+    }
+    rlang::arg_match(provider, unname(providers_dict), multiple = FALSE)
+  } else {
+    provider <- provider %||% "OpenStreetMap"
+    if (any(provider %in% providers_dict)) {
+      for (i in seq_along(provider)) {
+        if (provider[i] %in% providers_dict) {
+          provider[i] <- unname(names(providers_dict)[
+            providers_dict == provider[i]
+          ])
+        }
+      }
+    }
+    rlang::arg_match(provider, names(leaflet::providers), multiple = TRUE)
+  }
+  return(provider)
+}
+
+#' Check legend positions are valid
+#' @noRd
+check_legendposition <- function(position, static) {
+  if (static) {
+    settheme <- ggplot2::theme_get()
+    setposition <- settheme$legend.position %||% "right"
+    position <- position %||% setposition
+    rlang::arg_match(
+      position,
+      c("top", "right", "bottom", "left"),
+      multiple = FALSE
+    )
+  } else {
+    position <- position %||% "topright"
+    rlang::arg_match(
+      position,
+      c("topright", "topleft", "bottomright", "bottomleft"),
+      multiple = TRUE
+    )
+  }
+  return(position)
+}
+
+#' checks if multiple pollutants have been provided with a "fixed" scale
+#' @noRd
+check_multipoll <- function(vec, pollutant) {
+  if ("fixed" %in% vec && length(pollutant) > 1) {
+    cli::cli_warn(
+      "{.code 'fixed'} limits only work with a single given {.field pollutant}"
+    )
+    "free"
+  } else {
+    vec
+  }
+}
+
+#' Check packages are installed for static mapping
+#' @noRd
+check_installed_static <- function() {
+  rlang::check_installed(c(
+    "ggspatial",
+    "prettymapr",
+    "ggtext",
+    "png",
+    "rosm"
+  ))
+}
+
+#' guess latlon
+#' @param quiet Used to silence cli informs
+#' @noRd
+assume_latlon <- function(data, latitude, longitude, quiet = FALSE) {
+  guess_latlon <- function(data, latlon = c("lat", "lon")) {
+    x <- names(data)
+    if (latlon == "lat") {
+      name <- "latitude"
+      str <- c("latitude", "latitud", "lat")
+    } else if (latlon == "lon") {
+      name <- "longitude"
+      str <- c("longitude", "longitud", "lon", "long", "lng")
+    }
+    str <-
+      c(str, toupper(str), tolower(str), stringr::str_to_title(str))
+    id <- x %in% str
+    out <- x[id]
+    len <- length(out)
+    if (len > 1) {
+      cli::cli_abort(
+        "Cannot identify {name}: Multiple possible matches ({out})",
+        call = NULL
+      )
+    } else if (len == 0) {
+      cli::cli_abort("Cannot identify {name}: No clear match.", call = NULL)
+    } else {
+      if (!quiet) {
+        cli::cli_alert_info("Assuming {name} is '{out}'")
+      }
+      return(out)
+    }
   }
 
-  data$lab <- popup_card(
-    title = format(data$date, "%Y-%m-%d %H:%M"),
-    subtitle = "ARRIVAL DATE",
-    popup_row("Trajectory date", format(data$date2, "%Y-%m-%d %H:%M")),
-    popup_row("Latitude", data$lat),
-    popup_row("Longitude", data$lon),
-    popup_row("Height", paste(data$height, "m")),
-    popup_row("Pressure", paste(data$pressure, "hPa")),
-    extra_row
-  )
-
-  data
-}
-
-#' Build the default gridded trajectory popup label
-#'
-#' Used by [addTrajLevel()]. Styled to match [build_traj_labels()].
-#' @param data The output of `openair::trajLevel()`, with `label` (the
-#'   formatted value) and `gridcount` columns.
-#' @param subtitle Description of the statistic shown under the value.
-#' @param type Optional name of the conditioning column to show.
-#' @noRd
-build_traj_level_labels <- function(data, subtitle, type = NULL) {
-  count_row <- ifelse(
-    is.na(data$gridcount),
-    "",
-    popup_row("Count", data$gridcount)
-  )
-
-  type_row <- ""
-  if (!is.null(type)) {
-    type_row <- popup_section(popup_row(quickTextHTML(type), data[[type]]))
+  if (is.null(latitude) || is.null(longitude)) {
+    if (is.null(latitude)) {
+      latitude <- guess_latlon(data, "lat")
+    } else {
+      if (!quiet) {
+        cli::cli_alert_success("Latitude provided as '{latitude}'")
+      }
+    }
+    if (is.null(longitude)) {
+      longitude <- guess_latlon(data, "lon")
+    } else {
+      if (!quiet) {
+        cli::cli_alert_success("Longitude provided as '{longitude}'")
+      }
+    }
   }
 
-  popup_card(
-    title = data$label,
-    subtitle = subtitle,
-    popup_row("Latitude", data$ygrid),
-    popup_row("Longitude", data$xgrid),
-    count_row,
-    type_row
-  )
+  out <- list(latitude = latitude, longitude = longitude)
 }
 
-#' Shared building blocks for the trajectory popups
-#'
-#' `popup_card()` wraps rows in a bold title + caption header, `popup_row()`
-#' is a single grey-label/value row, and `popup_section()` separates rows from
-#' those above with a thin divider. All are vectorised.
-#' @noRd
-popup_card <- function(title, subtitle, ...) {
-  paste0(
-    "<div style='font-family:sans-serif; font-size:13px; width:220px;'>",
 
-    "<div style='margin-bottom:8px; padding-bottom:6px; border-bottom:2px solid #ddd;'>",
-    "<div style='font-size:15px; font-weight:700; color:#222; line-height:1.2;'>",
-    title,
-    "</div>",
-    "<div style='font-size:12px; font-weight:600; color:#303030; letter-spacing:0.03em; margin-top:2px;'>",
-    subtitle,
-    "</div>",
-    "</div>",
-
-    ...,
-
-    "</div>"
-  )
-}
-
-#' @rdname popup_card
-#' @noRd
-popup_row <- function(label, value) {
-  paste0(
-    "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
-    "<span style='color:#888; min-width:100px;'>",
-    label,
-    "</span>",
-    "<span style='font-weight:500; text-align:right;'>",
-    value,
-    "</span>",
-    "</div>"
-  )
-}
-
-#' @rdname popup_card
-#' @noRd
-popup_section <- function(...) {
-  paste0(
-    "<div style='margin-top:6px; padding-top:6px; border-top:1px solid #eee;'>",
-    ...,
-    "</div>"
-  )
-}
+# Data preparation -------------------------------------------------------------
 
 #' Check input & prep data
 #' @author David Carslaw
@@ -326,59 +365,6 @@ prepMapData <-
     return(data)
   }
 
-#' guess latlon
-#' @param quiet Used to silence cli informs
-#' @noRd
-assume_latlon <- function(data, latitude, longitude, quiet = FALSE) {
-  guess_latlon <- function(data, latlon = c("lat", "lon")) {
-    x <- names(data)
-    if (latlon == "lat") {
-      name <- "latitude"
-      str <- c("latitude", "latitud", "lat")
-    } else if (latlon == "lon") {
-      name <- "longitude"
-      str <- c("longitude", "longitud", "lon", "long", "lng")
-    }
-    str <-
-      c(str, toupper(str), tolower(str), stringr::str_to_title(str))
-    id <- x %in% str
-    out <- x[id]
-    len <- length(out)
-    if (len > 1) {
-      cli::cli_abort(
-        "Cannot identify {name}: Multiple possible matches ({out})",
-        call = NULL
-      )
-    } else if (len == 0) {
-      cli::cli_abort("Cannot identify {name}: No clear match.", call = NULL)
-    } else {
-      if (!quiet) {
-        cli::cli_alert_info("Assuming {name} is '{out}'")
-      }
-      return(out)
-    }
-  }
-
-  if (is.null(latitude) || is.null(longitude)) {
-    if (is.null(latitude)) {
-      latitude <- guess_latlon(data, "lat")
-    } else {
-      if (!quiet) {
-        cli::cli_alert_success("Latitude provided as '{latitude}'")
-      }
-    }
-    if (is.null(longitude)) {
-      longitude <- guess_latlon(data, "lon")
-    } else {
-      if (!quiet) {
-        cli::cli_alert_success("Longitude provided as '{longitude}'")
-      }
-    }
-  }
-
-  out <- list(latitude = latitude, longitude = longitude)
-}
-
 #' get breaks for the "rose" functions
 #' @param breaks as given by windrose
 #' @param ws.int as given by windrose
@@ -406,212 +392,27 @@ getBreaks <- function(breaks, ws.int, vec, polrose) {
   breaks
 }
 
-#' Attach rendered marker icons to a leaflet map
-#'
-#' This is the single implementation of "what an openair marker looks like on
-#' a leaflet map" (icon sizing, anchoring, popups/labels, alpha, dropping rows
-#' where no plot could be rendered). `addPolarMarkers()`/`addPolarDiffMarkers()`
-#' (the low-level, user-facing entry point) and `make_leaflet_map()` (used
-#' internally by the high-level `*Map()` family) both call this rather than
-#' each re-implementing marker assembly - keeping a single source of truth so
-#' the two public entry points can't drift apart.
-#'
-#' @param data A data frame as produced by `create_polar_markers()`/
-#'   `create_polar_diffmarkers()` - must contain a `url` column (and `plot`,
-#'   used to drop rows where rendering failed).
-#' @param latitude,longitude,d.icon,group,layerId,popup,popupOptions,label,
-#'   labelOptions,options,clusterOptions,clusterId,alpha as in
-#'   `addPolarMarkers()`/[leaflet::addMarkers()].
+#' function to quickly combine multiple popups together
+#' @param data,popup,latitude,longitude,control inherited from parent
 #' @noRd
-attach_marker_icons <-
-  function(
-    map,
+quick_popup <- function(data, popup, latitude, longitude, control) {
+  nice_popup <-
+    stringr::str_replace_all(popup, "\\_|\\.|\\-", " ") |>
+    stringr::str_to_title()
+
+  names <- stats::setNames(popup, nice_popup)
+
+  buildPopup(
     data,
-    latitude,
-    longitude,
-    d.icon,
-    group = NULL,
-    layerId = NULL,
-    popup = NULL,
-    popupOptions = NULL,
-    label = NULL,
-    labelOptions = NULL,
-    options = leaflet::markerOptions(),
-    clusterOptions = NULL,
-    clusterId = NULL,
-    alpha = 1
-  ) {
-    # work out width/height
-    if (length(d.icon) == 1) {
-      width <- height <- d.icon
-    }
-    if (length(d.icon) == 2) {
-      width <- d.icon[[1]]
-      height <- d.icon[[2]]
-    }
-
-    # handle alpha
-    options$opacity <- alpha
-
-    # drop data where no plot was created
-    data <- dplyr::filter(
-      data,
-      purrr::map_vec(.data$plot, \(x) !is.null(x))
-    )
-
-    if (nrow(data) == 0L) {
-      cli::cli_warn("No valid polar markers were created.")
-      return(map)
-    }
-
-    # get marker arguments
-    marker_arg <- list(
-      map = map,
-      lat = data[[latitude]],
-      lng = data[[longitude]],
-      icon = leaflet::makeIcon(
-        iconUrl = data$url,
-        iconHeight = height,
-        iconWidth = width,
-        iconAnchorX = width / 2,
-        iconAnchorY = height / 2,
-        popupAnchorX = -.Machine$double.eps,
-        popupAnchorY = -(height / 2) * 0.7
-      ),
-      group = group,
-      layerId = layerId,
-      popupOptions = popupOptions,
-      labelOptions = labelOptions,
-      options = options,
-      clusterOptions = clusterOptions,
-      clusterId = clusterId
-    )
-
-    # deal w/ popups/labels
-    if (!is.null(popup)) {
-      marker_arg <- append(marker_arg, list(popup = data[[popup]]))
-    }
-    if (!is.null(label)) {
-      marker_arg <- append(marker_arg, list(label = data[[label]]))
-    }
-
-    # add markers to map
-    rlang::exec(leaflet::addMarkers, !!!marker_arg)
-  }
-
-#' make leaflet map from scratch
-#' @noRd
-make_leaflet_map <-
-  function(
-    data,
-    latitude,
-    longitude,
-    crs,
-    provider,
-    d.icon,
-    popup,
-    label,
-    split_col,
-    control.collapsed,
-    control.position,
-    control.autotext,
-    alpha
-  ) {
-    if (control.autotext) {
-      textfun <- quickTextHTML
-    } else {
-      textfun <- identity
-    }
-
-    data <- sf::st_as_sf(data, coords = c(longitude, latitude), crs = crs) |>
-      sf::st_transform(crs = 4326)
-
-    # pull the reprojected (lng/lat) coordinates back out as plain columns,
-    # since attach_marker_icons() expects explicit lat/lng columns rather
-    # than relying on sf geometry
-    coords <- sf::st_coordinates(data)
-    data[[longitude]] <- coords[, "X"]
-    data[[latitude]] <- coords[, "Y"]
-
-    # create map
-    map <- leaflet::leaflet(data)
-
-    # add provider tiles
-    if (is.null(names(provider)) || "" %in% names(provider)) {
-      names(provider) <- provider
-    }
-    for (i in seq_along(provider)) {
-      map <- leaflet::addProviderTiles(
-        map,
-        provider[[i]],
-        group = names(provider)[[i]]
-      )
-    }
-
-    # add markers
-    map <- attach_marker_icons(
-      map = map,
-      data = data,
-      latitude = latitude,
-      longitude = longitude,
-      d.icon = d.icon,
-      group = textfun(data[[split_col]]),
-      popup = popup,
-      label = label,
-      alpha = alpha
-    )
-
-    # add layer control menu
-    flag_provider <- dplyr::n_distinct(provider) > 1
-    flag_split <- dplyr::n_distinct(data[[split_col]]) > 1
-    opts <-
-      leaflet::layersControlOptions(
-        collapsed = control.collapsed,
-        autoZIndex = FALSE
-      )
-
-    if (flag_provider && flag_split) {
-      map <-
-        leaflet::addLayersControl(
-          map,
-          position = control.position,
-          baseGroups = textfun(unique(data[[split_col]])),
-          overlayGroups = names(provider),
-          options = opts
-        ) |>
-        leaflet::hideGroup(group = names(provider)[-1])
-    } else if (flag_provider && !flag_split) {
-      map <-
-        leaflet::addLayersControl(
-          map,
-          position = control.position,
-          baseGroups = names(provider),
-          options = opts
-        ) |>
-        leaflet::hideGroup(group = names(provider)[-1])
-    } else if (!flag_provider && flag_split) {
-      map <-
-        leaflet::addLayersControl(
-          map,
-          position = control.position,
-          baseGroups = textfun(unique(data[[split_col]])),
-          options = opts
-        )
-    }
-
-    return(map)
-  }
-
-#' theme for static maps
-#' @noRd
-theme_static <- function() {
-  ggplot2::`%+replace%`(
-    ggplot2::theme_minimal(),
-    ggplot2::theme(
-      panel.border = ggplot2::element_rect(fill = NA, color = "black")
-    )
+    columns = names,
+    latitude = latitude,
+    longitude = longitude,
+    type = control %||% "default"
   )
 }
+
+
+# Polar markers ----------------------------------------------------------------
 
 #' Create markers for the static plots
 #' @param fun function of "data" to create plot
@@ -749,6 +550,313 @@ create_polar_markers <-
     return(plots_df)
   }
 
+#' Attach rendered marker icons to a leaflet map
+#'
+#' This is the single implementation of "what an openair marker looks like on
+#' a leaflet map" (icon sizing, anchoring, popups/labels, alpha, dropping rows
+#' where no plot could be rendered). `addPolarMarkers()`/`addPolarDiffMarkers()`
+#' (the low-level, user-facing entry point) and `make_leaflet_map()` (used
+#' internally by the high-level `*Map()` family) both call this rather than
+#' each re-implementing marker assembly - keeping a single source of truth so
+#' the two public entry points can't drift apart.
+#'
+#' @param data A data frame as produced by `create_polar_markers()`/
+#'   `create_polar_diffmarkers()` - must contain a `url` column (and `plot`,
+#'   used to drop rows where rendering failed).
+#' @param latitude,longitude,d.icon,group,layerId,popup,popupOptions,label,
+#'   labelOptions,options,clusterOptions,clusterId,alpha as in
+#'   `addPolarMarkers()`/[leaflet::addMarkers()].
+#' @noRd
+attach_marker_icons <-
+  function(
+    map,
+    data,
+    latitude,
+    longitude,
+    d.icon,
+    group = NULL,
+    layerId = NULL,
+    popup = NULL,
+    popupOptions = NULL,
+    label = NULL,
+    labelOptions = NULL,
+    options = leaflet::markerOptions(),
+    clusterOptions = NULL,
+    clusterId = NULL,
+    alpha = 1
+  ) {
+    # work out width/height
+    if (length(d.icon) == 1) {
+      width <- height <- d.icon
+    }
+    if (length(d.icon) == 2) {
+      width <- d.icon[[1]]
+      height <- d.icon[[2]]
+    }
+
+    # handle alpha
+    options$opacity <- alpha
+
+    # drop data where no plot was created
+    data <- dplyr::filter(
+      data,
+      purrr::map_vec(.data$plot, \(x) !is.null(x))
+    )
+
+    if (nrow(data) == 0L) {
+      cli::cli_warn("No valid polar markers were created.")
+      return(map)
+    }
+
+    # get marker arguments
+    marker_arg <- list(
+      map = map,
+      lat = data[[latitude]],
+      lng = data[[longitude]],
+      icon = leaflet::makeIcon(
+        iconUrl = data$url,
+        iconHeight = height,
+        iconWidth = width,
+        iconAnchorX = width / 2,
+        iconAnchorY = height / 2,
+        popupAnchorX = -.Machine$double.eps,
+        popupAnchorY = -(height / 2) * 0.7
+      ),
+      group = group,
+      layerId = layerId,
+      popupOptions = popupOptions,
+      labelOptions = labelOptions,
+      options = options,
+      clusterOptions = clusterOptions,
+      clusterId = clusterId
+    )
+
+    # deal w/ popups/labels
+    if (!is.null(popup)) {
+      marker_arg <- append(marker_arg, list(popup = data[[popup]]))
+    }
+    if (!is.null(label)) {
+      marker_arg <- append(marker_arg, list(label = data[[label]]))
+    }
+
+    # add markers to map
+    rlang::exec(leaflet::addMarkers, !!!marker_arg)
+  }
+
+#' strip away illegal characters in path
+#'
+#' This removes illegal characters from a path and replaces them with something
+#' unique. This allows for openairmaps to save files when `type` includes, for
+#' example, user-defined HTML tags.
+#'
+#' @noRd
+rm_illegal_chars <- function(x) {
+  dict <-
+    list(
+      "#" = "hash",
+      "\\%" = "percent",
+      "\\&" = "and",
+      "\\{" = "leftbracket",
+      "\\}" = "rightbracket",
+      "\\\\" = "backslash",
+      "<" = "leftchevron",
+      ">" = "rightchevron",
+      "\\*" = "asterisk",
+      "\\?" = "question",
+      "\\/" = "forwardslash",
+      " " = "space",
+      "\\$" = "dollar",
+      "\\!" = "exclame",
+      "\\'" = "singletick",
+      '\\"' = "doubletick",
+      "\\:" = "colon",
+      "\\@" = "at",
+      "\\+" = "plus",
+      "\\`" = "backtick",
+      "\\|" = "pipe",
+      "\\=" = "equals"
+    )
+
+  for (i in seq_along(dict)) {
+    x <- gsub(names(dict[i]), dict[[i]], x)
+  }
+
+  return(x)
+}
+
+
+# Interactive maps -------------------------------------------------------------
+
+#' make leaflet map from scratch
+#' @noRd
+make_leaflet_map <-
+  function(
+    data,
+    latitude,
+    longitude,
+    crs,
+    provider,
+    d.icon,
+    popup,
+    label,
+    split_col,
+    control.collapsed,
+    control.position,
+    control.autotext,
+    alpha
+  ) {
+    if (control.autotext) {
+      textfun <- quickTextHTML
+    } else {
+      textfun <- identity
+    }
+
+    data <- sf::st_as_sf(data, coords = c(longitude, latitude), crs = crs) |>
+      sf::st_transform(crs = 4326)
+
+    # pull the reprojected (lng/lat) coordinates back out as plain columns,
+    # since attach_marker_icons() expects explicit lat/lng columns rather
+    # than relying on sf geometry
+    coords <- sf::st_coordinates(data)
+    data[[longitude]] <- coords[, "X"]
+    data[[latitude]] <- coords[, "Y"]
+
+    # create map
+    map <- leaflet::leaflet(data) |>
+      add_basemaps(provider)
+
+    # add markers
+    map <- attach_marker_icons(
+      map = map,
+      data = data,
+      latitude = latitude,
+      longitude = longitude,
+      d.icon = d.icon,
+      group = textfun(data[[split_col]]),
+      popup = popup,
+      label = label,
+      alpha = alpha
+    )
+
+    # add layer control menu
+    map <- add_layer_control(
+      map,
+      provider = provider,
+      groups = textfun(unique(data[[split_col]])),
+      position = control.position,
+      collapsed = control.collapsed
+    )
+
+    return(map)
+  }
+
+#' Name a vector of leaflet providers
+#'
+#' Any unnamed providers are named after themselves, so users can (partially)
+#' label their basemaps, e.g., `c("Default" = "OpenStreetMap", "CartoDB.Positron")`.
+#' @noRd
+name_providers <- function(provider) {
+  provider <- provider[!duplicated(provider)]
+  nms <- names(provider) %||% rep("", length(provider))
+  nms[is.na(nms) | nms == ""] <- provider[is.na(nms) | nms == ""]
+  stats::setNames(provider, nms)
+}
+
+#' Add one or more provider tiles to a leaflet map
+#'
+#' Each provider is added as its own group (named via `name_providers()`), so
+#' that `add_layer_control()` can switch between them.
+#' @noRd
+add_basemaps <- function(map, provider) {
+  provider <- name_providers(provider)
+  for (i in seq_along(provider)) {
+    map <- leaflet::addProviderTiles(
+      map,
+      provider = provider[[i]],
+      group = names(provider)[[i]]
+    )
+  }
+  map
+}
+
+#' Add a layer control menu to a leaflet map
+#'
+#' The one place the "layer control" menu is built, so that all openairmaps
+#' functions behave the same:
+#'
+#' - `groups` are the map's own layers (e.g., `type` levels or pollutants).
+#'   They are base groups (radio buttons) when `groups_as = "base"`, or overlay
+#'   groups (checkboxes) when `groups_as = "overlay"`.
+#' - Multiple providers are base groups unless `groups` already are, in which
+#'   case they become overlays. Only the first provider is shown initially.
+#' - A single base group is never shown, as there is nothing to switch to. If
+#'   there is nothing to show at all, no menu is added.
+#' @noRd
+add_layer_control <- function(
+  map,
+  provider,
+  groups = NULL,
+  groups_as = c("base", "overlay"),
+  position = "topright",
+  collapsed = FALSE
+) {
+  groups_as <- rlang::arg_match(groups_as)
+  provider <- names(name_providers(provider))
+  groups <- as.character(groups)
+
+  base_groups <- character(0)
+  overlay_groups <- character(0)
+
+  if (groups_as == "base" && length(groups) > 1) {
+    base_groups <- groups
+    if (length(provider) > 1) {
+      overlay_groups <- provider
+    }
+  } else {
+    if (groups_as == "overlay") {
+      overlay_groups <- groups
+    }
+    if (length(provider) > 1) {
+      base_groups <- provider
+    }
+  }
+
+  if (length(base_groups) == 0 && length(overlay_groups) == 0) {
+    return(map)
+  }
+
+  map <- leaflet::addLayersControl(
+    map,
+    position = position,
+    baseGroups = base_groups,
+    overlayGroups = overlay_groups,
+    options = leaflet::layersControlOptions(
+      collapsed = collapsed,
+      autoZIndex = FALSE
+    )
+  )
+
+  if (length(provider) > 1) {
+    map <- leaflet::hideGroup(map, provider[-1])
+  }
+
+  map
+}
+
+
+# Static maps ------------------------------------------------------------------
+
+#' theme for static maps
+#' @noRd
+theme_static <- function() {
+  ggplot2::`%+replace%`(
+    ggplot2::theme_minimal(),
+    ggplot2::theme(
+      panel.border = ggplot2::element_rect(fill = NA, color = "black")
+    )
+  )
+}
+
 #' if ggmap is not provided, have a guess
 #' @param data `plots_sf` input
 #' @noRd
@@ -883,38 +991,6 @@ create_static_map <-
     return(plt)
   }
 
-#' function to quickly combine multiple popups together
-#' @param data,popup,latitude,longitude,control inherited from parent
-#' @noRd
-quick_popup <- function(data, popup, latitude, longitude, control) {
-  nice_popup <-
-    stringr::str_replace_all(popup, "\\_|\\.|\\-", " ") |>
-    stringr::str_to_title()
-
-  names <- stats::setNames(popup, nice_popup)
-
-  buildPopup(
-    data,
-    columns = names,
-    latitude = latitude,
-    longitude = longitude,
-    type = control %||% "default"
-  )
-}
-
-#' checks if multiple pollutants have been provided with a "fixed" scale
-#' @noRd
-check_multipoll <- function(vec, pollutant) {
-  if ("fixed" %in% vec && length(pollutant) > 1) {
-    cli::cli_warn(
-      "{.code 'fixed'} limits only work with a single given {.field pollutant}"
-    )
-    "free"
-  } else {
-    vec
-  }
-}
-
 #' a combination of geom_sf and geom_richtext
 #'
 #' @author StuieT85 on GitHub
@@ -968,109 +1044,8 @@ geom_sf_richtext <-
     )
   }
 
-#' Check providers are valid
-#' @noRd
-check_providers <- function(provider, static) {
-  providers_dict <- c(
-    "OpenStreetMap" = "osm",
-    "CyclOSM" = "opencycle",
-    "OpenStreetMap.HOT" = "hotstyle",
-    "WaymarkedTrails.hiking" = "loviniahike",
-    "WaymarkedTrails.cycling" = "loviniacycle",
-    "Stadia.StamenToner" = "stamenbw",
-    "Stadia.StamenWatercolor" = "stamenwatercolor",
-    "Thunderforest.OpenCycleMap" = "osmtransport",
-    "Thunderforest.Landscape" = "thunderforestlandscape",
-    "Thunderforest.Outdoors" = "thunderforestoutdoors",
-    "CartoDB.DarkMatter" = "cartodark",
-    "CartoDB.Positron" = "cartolight"
-  )
 
-  if (static) {
-    provider <- provider %||% "osm"
-    if (provider %in% names(providers_dict)) {
-      provider <- providers_dict[provider]
-    }
-    rlang::arg_match(provider, unname(providers_dict), multiple = FALSE)
-  } else {
-    provider <- provider %||% "OpenStreetMap"
-    if (any(provider %in% providers_dict)) {
-      for (i in seq_along(provider)) {
-        if (provider[i] %in% providers_dict) {
-          provider[i] <- unname(names(providers_dict)[
-            providers_dict == provider[i]
-          ])
-        }
-      }
-    }
-    rlang::arg_match(provider, names(leaflet::providers), multiple = TRUE)
-  }
-  return(provider)
-}
-
-#' Check legend positions are valid
-#' @noRd
-check_legendposition <- function(position, static) {
-  if (static) {
-    settheme <- ggplot2::theme_get()
-    setposition <- settheme$legend.position %||% "right"
-    position <- position %||% setposition
-    rlang::arg_match(
-      position,
-      c("top", "right", "bottom", "left"),
-      multiple = FALSE
-    )
-  } else {
-    position <- position %||% "topright"
-    rlang::arg_match(
-      position,
-      c("topright", "topleft", "bottomright", "bottomleft"),
-      multiple = TRUE
-    )
-  }
-  return(position)
-}
-
-#' strip away illegal characters in path
-#'
-#' This removes illegal characters from a path and replaces them with something
-#' unique. This allows for openairmaps to save files when `type` includes, for
-#' example, user-defined HTML tags.
-#'
-#' @noRd
-rm_illegal_chars <- function(x) {
-  dict <-
-    list(
-      "#" = "hash",
-      "\\%" = "percent",
-      "\\&" = "and",
-      "\\{" = "leftbracket",
-      "\\}" = "rightbracket",
-      "\\\\" = "backslash",
-      "<" = "leftchevron",
-      ">" = "rightchevron",
-      "\\*" = "asterisk",
-      "\\?" = "question",
-      "\\/" = "forwardslash",
-      " " = "space",
-      "\\$" = "dollar",
-      "\\!" = "exclame",
-      "\\'" = "singletick",
-      '\\"' = "doubletick",
-      "\\:" = "colon",
-      "\\@" = "at",
-      "\\+" = "plus",
-      "\\`" = "backtick",
-      "\\|" = "pipe",
-      "\\=" = "equals"
-    )
-
-  for (i in seq_along(dict)) {
-    x <- gsub(names(dict[i]), dict[[i]], x)
-  }
-
-  return(x)
-}
+# Legends ----------------------------------------------------------------------
 
 #' Create a legend title
 #' @noRd
@@ -1096,14 +1071,112 @@ create_legend_title <- function(
   return(legend.title)
 }
 
-#' Check packages are installed for static mapping
+
+# Trajectory popups ------------------------------------------------------------
+
+#' Build the default trajectory popup label
+#'
+#' Shared by [addTrajPaths()] and [trajMap()] so the two don't drift apart.
+#' Styled to match the [networkMap()] popups.
+#' @param extra Optional name of an additional column to show (e.g., the
+#'   pollutant used to colour the trajectories).
 #' @noRd
-check_installed_static <- function() {
-  rlang::check_installed(c(
-    "ggspatial",
-    "prettymapr",
-    "ggtext",
-    "png",
-    "rosm"
-  ))
+build_traj_labels <- function(data, extra = NULL) {
+  extra_row <- ""
+  if (!is.null(extra)) {
+    extra_row <- popup_section(popup_row(quickTextHTML(extra), data[[extra]]))
+  }
+
+  data$lab <- popup_card(
+    title = format(data$date, "%Y-%m-%d %H:%M"),
+    subtitle = "ARRIVAL DATE",
+    popup_row("Trajectory date", format(data$date2, "%Y-%m-%d %H:%M")),
+    popup_row("Latitude", data$lat),
+    popup_row("Longitude", data$lon),
+    popup_row("Height", paste(data$height, "m")),
+    popup_row("Pressure", paste(data$pressure, "hPa")),
+    extra_row
+  )
+
+  data
+}
+
+#' Build the default gridded trajectory popup label
+#'
+#' Used by [addTrajLevel()]. Styled to match `build_traj_labels()`.
+#' @param data The output of `openair::trajLevel()`, with `label` (the
+#'   formatted value) and `gridcount` columns.
+#' @param subtitle Description of the statistic shown under the value.
+#' @param type Optional name of the conditioning column to show.
+#' @noRd
+build_traj_level_labels <- function(data, subtitle, type = NULL) {
+  count_row <- ifelse(
+    is.na(data$gridcount),
+    "",
+    popup_row("Count", data$gridcount)
+  )
+
+  type_row <- ""
+  if (!is.null(type)) {
+    type_row <- popup_section(popup_row(quickTextHTML(type), data[[type]]))
+  }
+
+  popup_card(
+    title = data$label,
+    subtitle = subtitle,
+    popup_row("Latitude", data$ygrid),
+    popup_row("Longitude", data$xgrid),
+    count_row,
+    type_row
+  )
+}
+
+#' Shared building blocks for the trajectory popups
+#'
+#' `popup_card()` wraps rows in a bold title + caption header, `popup_row()`
+#' is a single grey-label/value row, and `popup_section()` separates rows from
+#' those above with a thin divider. All are vectorised.
+#' @noRd
+popup_card <- function(title, subtitle, ...) {
+  paste0(
+    "<div style='font-family:sans-serif; font-size:13px; width:220px;'>",
+
+    "<div style='margin-bottom:8px; padding-bottom:6px; border-bottom:2px solid #ddd;'>",
+    "<div style='font-size:15px; font-weight:700; color:#222; line-height:1.2;'>",
+    title,
+    "</div>",
+    "<div style='font-size:12px; font-weight:600; color:#303030; letter-spacing:0.03em; margin-top:2px;'>",
+    subtitle,
+    "</div>",
+    "</div>",
+
+    ...,
+
+    "</div>"
+  )
+}
+
+#' @rdname popup_card
+#' @noRd
+popup_row <- function(label, value) {
+  paste0(
+    "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
+    "<span style='color:#888; min-width:100px;'>",
+    label,
+    "</span>",
+    "<span style='font-weight:500; text-align:right;'>",
+    value,
+    "</span>",
+    "</div>"
+  )
+}
+
+#' @rdname popup_card
+#' @noRd
+popup_section <- function(...) {
+  paste0(
+    "<div style='margin-top:6px; padding-top:6px; border-top:1px solid #eee;'>",
+    ...,
+    "</div>"
+  )
 }

@@ -671,7 +671,7 @@ make_dynamic_interp_map <- function(
 
   map <-
     leaflet::leaflet() |>
-    leaflet::addProviderTiles(provider = provider)
+    add_basemaps(provider)
 
   if (type == "rast") {
     terra_interp <- terra::rast(interp)
@@ -757,6 +757,9 @@ make_dynamic_interp_map <- function(
         )
     }
   }
+
+  # allow switching between multiple basemaps
+  map <- add_layer_control(map, provider = provider)
 
   return(map)
 }

@@ -12,6 +12,10 @@
 
 * The popups in `trajMap()`, `addTrajPaths()`, `trajLevelMap()` and `addTrajLevel()` have been restyled to match those in `networkMap()`. For trajectory paths, arrival and trajectory dates now always show the time, and the `colour` variable in `trajMap()` (e.g., a pollutant) is shown in its own row at the bottom of the popup. For gridded trajectories, the popup leads with the value and a description of the statistic, followed by the grid cell location, count and (if used) the `type` level.
 
+* `trajMap()`, `trajLevelMap()`, `krigingMap()` and `voronoiMap()` now accept any number of basemaps through `provider`, which can be named to customise their labels in the layer control menu (e.g., `c("Default" = "OpenStreetMap", "Satellite" = "Esri.WorldImagery")`), in line with `polarMap()` and `networkMap()`.
+
+* The "layer control" menu is now built the same way across all interactive maps. In particular, only the first basemap is shown when multiple are provided, and a single basemap is no longer listed in the menu as there is nothing to switch to.
+
 ## Bug fixes
 
 * `trajLevelMap()` now respects the `control.collapsed` and `control.position` arguments, which were previously ignored. Note that this means the layer control is now expanded by default (`control.collapsed = FALSE`), in line with `trajMap()`.

@@ -208,21 +208,8 @@ networkMap <-
 
     # build maps
     # initialise map
-    map <- leaflet::leaflet()
-
-    # add provider tiles
-    if (!rlang::is_named(provider)) {
-      names(provider) <- provider
-    }
-
-    for (i in seq_along(provider)) {
-      map <-
-        leaflet::addProviderTiles(
-          map,
-          provider = provider[[i]],
-          group = names(provider)[[i]]
-        )
-    }
+    map <- leaflet::leaflet() |>
+      add_basemaps(provider)
 
     # if target specified, add to map
     dots <- rlang::list2(...)
@@ -301,14 +288,11 @@ networkMap <-
 
     # if there's no metadata, return the map now
     if (nrow(meta) == 0L) {
-      return(leaflet::addLayersControl(
+      return(add_layer_control(
         map,
+        provider = provider,
         position = control.position,
-        options = leaflet::layersControlOptions(
-          collapsed = control.collapsed,
-          autoZIndex = FALSE
-        ),
-        baseGroups = names(provider)
+        collapsed = control.collapsed
       ))
     }
 
@@ -405,23 +389,15 @@ networkMap <-
     if ("Other" %in% control_vars) {
       control_vars <- c(control_vars[control_vars != "Other"], "Other")
     }
-    if (control == "variable") {
-      overlayGroups <- names(provider)
-      baseGroups <- control_vars
-    } else {
-      baseGroups <- names(provider)
-      overlayGroups <- control_vars
-    }
-
-    map <- leaflet::addLayersControl(
+    # pollutants are mutually exclusive (base groups); anything else (e.g.,
+    # site types) can be toggled on and off (overlay groups)
+    map <- add_layer_control(
       map,
+      provider = provider,
+      groups = control_vars,
+      groups_as = if (control == "variable") "base" else "overlay",
       position = control.position,
-      options = leaflet::layersControlOptions(
-        collapsed = control.collapsed,
-        autoZIndex = FALSE
-      ),
-      baseGroups = baseGroups,
-      overlayGroups = overlayGroups
+      collapsed = control.collapsed
     )
 
     # multiple sources - add legend
@@ -439,11 +415,6 @@ networkMap <-
             "</span>"
           )
         )
-    }
-
-    # hide multiple basemaps
-    if (length(provider) > 1) {
-      map <- leaflet::hideGroup(map, names(provider)[-1])
     }
 
     map

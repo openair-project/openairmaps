@@ -123,13 +123,16 @@ A value between \code{0} (fully transparent) and \code{1} (fully opaque).}
 \item{tile.border}{Colour to use for the border of binned tiles. Defaults to
 \code{NA}, which draws no border.}
 
-\item{provider}{\emph{The basemap to be used.}
+\item{provider}{\emph{The basemap(s) to be used.}
 
 \emph{default:} \code{"OpenStreetMap"}
 
-A single \link[leaflet:providers]{leaflet::providers}. See
+Any number of \link[leaflet:providers]{leaflet::providers}. See
 \url{http://leaflet-extras.github.io/leaflet-providers/preview/} for a list of
-all base maps that can be used.}
+all base maps that can be used. If multiple base maps are provided, they
+can be toggled between using a "layer control" interface. By default, the
+interface will use the provider names as labels, but users can define their
+own using a named vector (e.g., \code{c("Default" = "OpenStreetMap", "Satellite" = "Esri.WorldImagery")})}
 
 \item{legend.position}{\emph{Position of the shared legend.}
 

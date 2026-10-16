@@ -61,13 +61,17 @@
 #'   the speed of the air (points closer together correspond to slower moving
 #'   air masses). Defaults to `12`.
 #'
-#' @param provider *The basemap to be used.*
+#' @param provider *The basemap(s) to be used.*
 #'
 #'  *default:* `"OpenStreetMap"`
 #'
-#'   A single [leaflet::providers]. See
+#'   Any number of [leaflet::providers]. See
 #'   <http://leaflet-extras.github.io/leaflet-providers/preview/> for a list of
-#'   all base maps that can be used.
+#'   all base maps that can be used. If multiple base maps are provided, they
+#'   can be toggled between using a "layer control" interface. By default, the
+#'   interface will use the provider names as labels, but users can define their
+#'   own using a named vector (e.g., `c("Default" = "OpenStreetMap", "Satellite"
+#'   = "Esri.WorldImagery")`)
 #'
 #' @param legend.position *Position of the shared legend.*
 #'
@@ -168,7 +172,7 @@ trajMap <-
 
     # initialise map
     map <- leaflet::leaflet() |>
-      leaflet::addProviderTiles(provider = provider)
+      add_basemaps(provider)
 
     # if "colour", create colour palette
     if (!is.null(colour)) {
@@ -287,19 +291,15 @@ trajMap <-
       }
     }
 
-    # if "control" exists, add the layer control menu
-    if (type != "default") {
-      map <-
-        leaflet::addLayersControl(
-          map,
-          position = control.position,
-          options = leaflet::layersControlOptions(
-            collapsed = control.collapsed,
-            autoZIndex = FALSE
-          ),
-          overlayGroups = as.character(unique(data[[type]]))
-        )
-    }
+    # add the layer control menu - "type" levels can be toggled on and off
+    map <- add_layer_control(
+      map,
+      provider = provider,
+      groups = if (type != "default") unique(data[[type]]),
+      groups_as = "overlay",
+      position = control.position,
+      collapsed = control.collapsed
+    )
 
     map
   }
