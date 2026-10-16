@@ -220,7 +220,9 @@ buildPopup <-
             fun.dttm
           ),
           .groups = "drop"
-        )
+        ) |>
+        # keep the order of `columns`, not the order of the column types
+        dplyr::select(dplyr::all_of(c(latitude, longitude, as.vector(columns))))
 
       if (!is.null(names(columns))) {
         names(columns)[names(columns) == ""] <- columns[names(columns) == ""]

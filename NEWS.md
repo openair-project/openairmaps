@@ -56,6 +56,8 @@
 
 * `buildPopup()` now summarises `Date` columns (using `fun.dttm`) and logical columns (using `fun.character`). Previously, it would error if either was included in `columns`.
 
+* `buildPopup()` now shows columns in the order given in `columns`. Previously, character columns were always shown first, followed by numeric and then date columns.
+
 * `quickTextHTML()` now correctly formats `"m/s2"`.
 
 * `trajLevelMap()` and `addTrajLevel()` now use the correct ordinal suffix in their legend titles and popups when `statistic = "difference"` (e.g., `"11th"` rather than `"11st"`, and `"1st"` rather than `"1th"`).
