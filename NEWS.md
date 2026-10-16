@@ -40,6 +40,12 @@
 
 * `trajLevelMap()` now respects the `control.collapsed` and `control.position` arguments, which were previously ignored. Note that this means the layer control is now expanded by default (`control.collapsed = FALSE`), in line with `trajMap()`.
 
+* Markers which `{openair}` fails to draw (e.g., due to insufficient data at a site) are now consistently skipped by the `polarMap()` family. Previously, dynamic maps would show a broken image in their place (and list it in the layer control menu), and static maps would error.
+
+* `percentileMap(intervals = "fixed")` now passes `...` to `openair::percentileRose()` when calculating the shared intervals, so they reflect options such as `percentile`.
+
+* `polarMap(limits = "fixed")` now uses the same `upper` as the markers when calculating the shared limits, so the limits better cover the markers' colour scales.
+
 # openairmaps 0.10.1
 
 ## New features

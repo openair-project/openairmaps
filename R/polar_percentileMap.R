@@ -123,7 +123,8 @@ percentileMap <- function(
         data,
         pollutant = pollutant,
         type = c("latlng", fixed_type),
-        plot = FALSE
+        plot = FALSE,
+        ...
       )$data
 
     theIntervals <- pretty(testplots[[pollutant]])

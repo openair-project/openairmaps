@@ -1029,6 +1029,13 @@ create_static_map <-
       )
     }
 
+    # drop data where no plot was created
+    plots_df <- plots_df[purrr::map_vec(plots_df$plot, \(x) !is.null(x)), ]
+
+    if (nrow(plots_df) == 0L) {
+      cli::cli_abort("No valid polar markers were created.")
+    }
+
     # don't turn facet levels into chr, keep as fct
     if (length(pollutant) > 1 || !is.null(facet)) {
       levels(plots_df[[split_col]]) <- quickTextHTML(levels(plots_df[[

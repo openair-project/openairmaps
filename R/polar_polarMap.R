@@ -445,6 +445,14 @@ polarMap <- function(
   latitude <- latlon$latitude
   longitude <- latlon$longitude
 
+  # deal with upper - before limits, so "fixed" limits use the same surfaces
+  # as the markers
+  if (any(upper == "fixed")) {
+    upper <- max(data[[x]], na.rm = TRUE)
+  } else if (any(upper == "free")) {
+    upper <- NA
+  }
+
   # auto limits
   if (!pairwise_flag) {
     limits <- check_multipoll(limits, pollutant)
@@ -467,6 +475,7 @@ polarMap <- function(
         data,
         pollutant = pollutant,
         x = x,
+        upper = upper,
         type = c("latlng", type_fixed),
         plot = FALSE,
         ...
@@ -488,13 +497,6 @@ polarMap <- function(
 
   # cut data
   data <- openair::cutData(x = data, type = type %||% "default", ...)
-
-  # deal with upper
-  if (any(upper == "fixed")) {
-    upper <- max(data[[x]], na.rm = TRUE)
-  } else if (any(upper == "free")) {
-    upper <- NA
-  }
 
   # deal with popups
   if (length(popup) > 1) {
@@ -630,7 +632,9 @@ polarMap <- function(
         latitude = latitude,
         longitude = longitude,
         split_col = split_col,
-        pollutant = pollutant,
+        # pairwise statistics use two pollutants but only make one marker, so
+        # shouldn't be faceted by pollutant
+        pollutant = if (pairwise_flag) NULL else pollutant,
         facet = type,
         facet.nrow = static.nrow,
         api_key = api_key,
