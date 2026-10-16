@@ -59,6 +59,7 @@ voronoiMap(
   legend.title = NULL,
   legend.title.autotext = TRUE,
   static = FALSE,
+  api_key = NULL,
   args.voronoi = list()
 )
 }

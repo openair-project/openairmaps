@@ -79,8 +79,8 @@ quickTextHTML <- function(text) {
   text <- gsub("ug/m3", "\u00B5g&nbsp;m<sup>-3</sup>", text)
   text <- gsub("ng/m3", "ng&nbsp;m<sup>-3</sup>", text)
   text <- gsub("mg/m3", "mg&nbsp;m<sup>-3</sup>", text)
-  text <- gsub("m/s", "m&nbsp;s<sup>-1</sup>", text)
   text <- gsub("m/s2", "m&nbsp;s<sup>-2</sup>", text)
+  text <- gsub("m/s", "m&nbsp;s<sup>-1</sup>", text)
 
   return(text)
 }
@@ -123,7 +123,8 @@ quickTextHTML <- function(text) {
 #'   for the different map layers (for example, if you are calculating a mean
 #'   pollutant concentration).
 #'
-#' @param fun.character *A function to summarise character and factor columns.*
+#' @param fun.character *A function to summarise character, factor and logical
+#'   columns.*
 #'
 #'  *default:* `function(x) paste(unique(x), collapse = ", ")`
 #'
@@ -137,7 +138,7 @@ quickTextHTML <- function(text) {
 #'   summaries may be of interest, such as the maximum, minimum, standard
 #'   deviation, and so on.
 #'
-#' @param fun.dttm *A function to summarise date columns.*
+#' @param fun.dttm *A function to summarise date and date-time columns.*
 #'
 #'  *default:* `function(x) paste(lubridate::floor_date(range(x, na.rm = TRUE), "day"), collapse = " to ")`
 #'
@@ -208,11 +209,16 @@ buildPopup <-
         dplyr::summarise(
           dplyr::across(
             dplyr::where(is.character) |
-              dplyr::where(is.factor),
+              dplyr::where(is.factor) |
+              dplyr::where(is.logical),
             fun.character
           ),
           dplyr::across(dplyr::where(is.numeric), fun.numeric),
-          dplyr::across(dplyr::where(lubridate::is.POSIXct), fun.dttm),
+          dplyr::across(
+            dplyr::where(lubridate::is.POSIXct) |
+              dplyr::where(lubridate::is.Date),
+            fun.dttm
+          ),
           .groups = "drop"
         )
 

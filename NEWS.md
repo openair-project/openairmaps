@@ -48,6 +48,18 @@
 
 * `trajMap()` and `addTrajPaths()` now support data with multiple receptors, as returned by `openair::importTraj()`. Previously, trajectories arriving at different receptors at the same time were joined into a single path.
 
+* Static `krigingMap()` and `voronoiMap()` maps now respect `provider`, rather than always using OpenStreetMap. Both functions also now validate `provider` in the same way as the `polarMap()` family.
+
+* `krigingMap()` and `voronoiMap()` now give an informative error if `statistic` isn't recognised.
+
+* `krigingMap(statistic = "sd")` and `voronoiMap(statistic = "sd")` now treat the standard deviation of sites with a single measurement as missing, rather than using the measurement itself.
+
+* `buildPopup()` now summarises `Date` columns (using `fun.dttm`) and logical columns (using `fun.character`). Previously, it would error if either was included in `columns`.
+
+* `quickTextHTML()` now correctly formats `"m/s2"`.
+
+* `trajLevelMap()` and `addTrajLevel()` now use the correct ordinal suffix in their legend titles and popups when `statistic = "difference"` (e.g., `"11th"` rather than `"11st"`, and `"1st"` rather than `"1th"`).
+
 # openairmaps 0.10.1
 
 ## New features

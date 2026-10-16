@@ -209,6 +209,7 @@ krigingMap <- function(
 ) {
   rlang::check_installed(c("terra", "stars", "gstat"))
   method <- rlang::arg_match(method)
+  provider <- check_providers(provider, static)
 
   latlon <- assume_latlon(
     data,
@@ -324,6 +325,7 @@ krigingMap <- function(
       legend.title = legend.title,
       legend.position = legend.position,
       legend.title.autotext = legend.title.autotext,
+      api_key = api_key,
       show.markers = show.markers
     )
 
@@ -366,9 +368,11 @@ voronoiMap <- function(
   legend.title = NULL,
   legend.title.autotext = TRUE,
   static = FALSE,
+  api_key = NULL,
   args.voronoi = list()
 ) {
   rlang::check_installed(c("terra", "stars"))
+  provider <- check_providers(provider, static)
   latlon <- assume_latlon(
     data,
     latitude = latitude,
@@ -466,6 +470,12 @@ prepare_sf_data <- function(
   longitude,
   crs
 ) {
+  statistic <- rlang::arg_match(
+    statistic,
+    c("mean", "median", "max", "min", "sd", "percentile"),
+    error_call = rlang::caller_env()
+  )
+
   if (percentile < 0 || percentile > 100) {
     cli::cli_abort("{.arg percentile} must be between {0L} and {100L}.")
   }
@@ -477,7 +487,7 @@ prepare_sf_data <- function(
     "median" = \(x) stats::median(x, na.rm = TRUE),
     "max" = \(x) ifelse(all(is.na(x)), NA, max(x, na.rm = TRUE)),
     "min" = \(x) ifelse(all(is.na(x)), NA, min(x, na.rm = TRUE)),
-    "sd" = \(x) ifelse(length(x) == 1, x, stats::sd(x, na.rm = TRUE)),
+    "sd" = \(x) stats::sd(x, na.rm = TRUE),
     "percentile" = \(x) stats::quantile(x, percentile, na.rm = TRUE)
   )
 
@@ -539,8 +549,10 @@ make_static_interp_map <- function(
 
   map <- ggplot2::ggplot() +
     ggspatial::annotation_map_tile(
+      type = provider,
       zoomin = 0,
       cachedir = tempdir(),
+      progress = "none",
       api_key = api_key
     )
 

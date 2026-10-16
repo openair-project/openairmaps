@@ -103,16 +103,16 @@ addTrajLevel <-
       )
     }
     if (statistic == "difference") {
-      lastnum <- stringr::str_sub(percentile, 2, 2)
+      # ordinal suffix - 11th, 12th & 13th are exceptions to 1st, 2nd & 3rd
       suff <- "th"
-      if (lastnum == "1") {
-        suff <- "st"
-      }
-      if (lastnum == "2") {
-        suff <- "nd"
-      }
-      if (lastnum == "3") {
-        suff <- "rd"
+      if (!(percentile %% 100) %in% 11:13) {
+        suff <- switch(
+          as.character(percentile %% 10),
+          "1" = "st",
+          "2" = "nd",
+          "3" = "rd",
+          "th"
+        )
       }
       title <-
         stringr::str_glue(

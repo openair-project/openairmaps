@@ -59,7 +59,8 @@ functions. This only needs to be used if \code{type} is going to be used in
 for the different map layers (for example, if you are calculating a mean
 pollutant concentration).}
 
-\item{fun.character}{\emph{A function to summarise character and factor columns.}
+\item{fun.character}{\emph{A function to summarise character, factor and logical
+columns.}
 
 \emph{default:} \code{function(x) paste(unique(x), collapse = ", ")}
 
@@ -73,7 +74,7 @@ The default takes the mean to three significant figures. Other numeric
 summaries may be of interest, such as the maximum, minimum, standard
 deviation, and so on.}
 
-\item{fun.dttm}{\emph{A function to summarise date columns.}
+\item{fun.dttm}{\emph{A function to summarise date and date-time columns.}
 
 \emph{default:} \code{function(x) paste(lubridate::floor_date(range(x, na.rm = TRUE), "day"), collapse = " to ")}
 
