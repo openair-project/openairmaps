@@ -37,10 +37,18 @@ test_that("create_polar_markers() pairs up before and after data", {
   expect_setequal(out$grp, c("Group A", "Group B"))
 })
 
-test_that("rm_illegal_chars() makes strings safe for file paths", {
-  expect_equal(rm_illegal_chars("a b"), "aspaceb")
-  expect_equal(rm_illegal_chars("<b>1/2</b>"), "leftchevronbrightchevron1forwardslash2leftchevronforwardslashbrightchevron")
-  expect_equal(rm_illegal_chars("x:y?"), "xcolonyquestion")
+test_that("create_polar_markers() saves each marker to its own file", {
+  # groups which aren't valid in file paths
+  data <- fake_marker_data()
+  data$grp <- c(A = "<b>1/2</b>", B = "x:y?", C = "a b")[data$site]
+  out <- fake_markers(data)
+  expect_equal(anyDuplicated(out$url), 0)
+  expect_true(all(file.exists(out$url[has_plot(out)])))
+})
+
+test_that("marker_dims() expands sizes into width and height", {
+  expect_equal(marker_dims(50), list(width = 50, height = 50))
+  expect_equal(marker_dims(c(50, 60)), list(width = 50, height = 60))
 })
 
 test_that("attach_marker_icons() only adds markers that were plotted", {

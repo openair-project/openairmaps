@@ -96,7 +96,8 @@ addPolarMarkers <-
     data = leaflet::getMapData(map),
     ...
   ) {
-    # need to rename fun input - for carrier crating
+    # rename fun input, as `fun` is redefined below to wrap it. `polar_fun`
+    # must be passed to `create_polar_markers()` for carrier crating
     polar_fun <- fun
 
     # guess lat/lon

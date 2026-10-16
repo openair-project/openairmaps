@@ -503,16 +503,19 @@ quick_popup <- function(data, popup, latitude, longitude, control) {
 #' @param after optionally, a second data frame for two-table plots (i.e.,
 #'   `polarDiff()`). `data` is then the "before" case, and provides any
 #'   popups/labels.
+#' @param fun_args,polar_fun Objects used by `fun`. `purrr::in_parallel()`
+#'   crates `fun` too, replacing its environment, so anything it refers to
+#'   must be passed in explicitly - even if not running in parallel.
 #' @param latitude,longitude,split_col,d.fig inherited from parent
 #' @noRd
 create_polar_markers <-
   function(
     fun,
     fun_args,
-    data = data,
-    latitude = latitude,
-    longitude = longitude,
-    split_col = split_col,
+    data,
+    latitude,
+    longitude,
+    split_col,
     popup = NULL,
     label = NULL,
     d.fig,
@@ -521,12 +524,6 @@ create_polar_markers <-
     after = NULL,
     progress = TRUE
   ) {
-    # make temp directory
-    dir <- tempdir()
-
-    # unique id
-    id <- gsub(" |:|-", "", as.character(Sys.time()))
-
     # sort out popups/labels
     if (is.null(popup)) {
       data$popup <- "NA"
@@ -601,32 +598,15 @@ create_polar_markers <-
       nested_df <- dplyr::inner_join(nested_df, nested_after, by = keys)
     }
 
-    # create plots
-    plots_df <-
-      dplyr::mutate(
-        nested_df,
-        url = paste0(
-          dir,
-          "/",
-          .data[[latitude]],
-          "_",
-          .data[[longitude]],
-          "_",
-          rm_illegal_chars(.data[[split_col]]),
-          "_",
-          id,
-          ".png"
-        )
-      )
+    # unique file for each marker
+    plots_df <- nested_df
+    plots_df$url <- vapply(
+      seq_len(nrow(plots_df)),
+      \(i) tempfile("openairmaps_", fileext = ".png"),
+      character(1)
+    )
 
-    # work out w/h
-    if (length(d.fig) == 1) {
-      width <- height <- d.fig
-    }
-    if (length(d.fig) == 2) {
-      width <- d.fig[[1]]
-      height <- d.fig[[2]]
-    }
+    dims <- marker_dims(d.fig)
 
     # create and save plots
     plots_df$plot <-
@@ -650,8 +630,8 @@ create_polar_markers <-
                     legend.title = ggplot2::element_blank()
                   ),
                 filename = url,
-                width = width * 0.75,
-                height = height * 0.75,
+                width = dims$width * 0.75,
+                height = dims$height * 0.75,
                 dpi = 72,
                 bg = "transparent"
               )
@@ -660,9 +640,8 @@ create_polar_markers <-
           },
           fun = fun,
           fun_args = fun_args,
-          width = width,
-          height = height,
-          polar_fun = polar_fun
+          polar_fun = polar_fun,
+          dims = dims
         ),
         .progress = progress
       )
@@ -709,20 +688,13 @@ attach_marker_icons <-
     clusterId = NULL,
     alpha = 1
   ) {
-    # work out width/height
-    if (length(d.icon) == 1) {
-      width <- height <- d.icon
-    }
-    if (length(d.icon) == 2) {
-      width <- d.icon[[1]]
-      height <- d.icon[[2]]
-    }
+    dims <- marker_dims(d.icon)
 
     # handle alpha
     options$opacity <- alpha
 
     # drop data where no plot was created
-    data <- data[purrr::map_vec(data$plot, \(x) !is.null(x)), ]
+    data <- data[has_plot(data), ]
 
     if (nrow(data) == 0L) {
       cli::cli_warn("No valid polar markers were created.")
@@ -736,12 +708,12 @@ attach_marker_icons <-
       lng = data[[longitude]],
       icon = leaflet::makeIcon(
         iconUrl = data$url,
-        iconHeight = height,
-        iconWidth = width,
-        iconAnchorX = width / 2,
-        iconAnchorY = height / 2,
+        iconHeight = dims$height,
+        iconWidth = dims$width,
+        iconAnchorX = dims$width / 2,
+        iconAnchorY = dims$height / 2,
         popupAnchorX = -.Machine$double.eps,
-        popupAnchorY = -(height / 2) * 0.7
+        popupAnchorY = -(dims$height / 2) * 0.7
       ),
       group = if (!is.null(group_col)) data[[group_col]] else group,
       layerId = layerId,
@@ -764,45 +736,22 @@ attach_marker_icons <-
     rlang::exec(leaflet::addMarkers, !!!marker_arg)
   }
 
-#' strip away illegal characters in path
+#' Expand a `d.icon`/`d.fig` value into a width and height
 #'
-#' This removes illegal characters from a path and replaces them with something
-#' unique. This allows for openairmaps to save files when `type` includes, for
-#' example, user-defined HTML tags.
-#'
+#' A single value is used for both; otherwise, `c(width, height)`.
 #' @noRd
-rm_illegal_chars <- function(x) {
-  dict <-
-    list(
-      "#" = "hash",
-      "\\%" = "percent",
-      "\\&" = "and",
-      "\\{" = "leftbracket",
-      "\\}" = "rightbracket",
-      "\\\\" = "backslash",
-      "<" = "leftchevron",
-      ">" = "rightchevron",
-      "\\*" = "asterisk",
-      "\\?" = "question",
-      "\\/" = "forwardslash",
-      " " = "space",
-      "\\$" = "dollar",
-      "\\!" = "exclame",
-      "\\'" = "singletick",
-      '\\"' = "doubletick",
-      "\\:" = "colon",
-      "\\@" = "at",
-      "\\+" = "plus",
-      "\\`" = "backtick",
-      "\\|" = "pipe",
-      "\\=" = "equals"
-    )
+marker_dims <- function(d) {
+  d <- rep_len(d, 2)
+  list(width = d[[1]], height = d[[2]])
+}
 
-  for (i in seq_along(dict)) {
-    x <- gsub(names(dict[i]), dict[[i]], x)
-  }
-
-  return(x)
+#' Which markers were successfully plotted?
+#'
+#' `create_polar_markers()` leaves `plot` as `NULL` where openair couldn't draw
+#' a marker (e.g., there wasn't enough data).
+#' @noRd
+has_plot <- function(plots_df) {
+  !vapply(plots_df$plot, is.null, logical(1))
 }
 
 #' Resolve colour `breaks` once, across all polar markers
@@ -934,11 +883,10 @@ make_leaflet_map <-
     )
 
     # add layer control menu - only for groups where a plot was created
-    created <- purrr::map_vec(data$plot, \(x) !is.null(x))
     map <- add_layer_control(
       map,
       provider = provider,
-      groups = textfun(unique(data[[split_col]][created])),
+      groups = textfun(unique(data[[split_col]][has_plot(data)])),
       position = control.position,
       collapsed = control.collapsed
     )
@@ -1088,29 +1036,13 @@ create_static_map <-
     api_key,
     alpha
   ) {
-    check_installed_static()
-
     # silence R CMD check
     makebbox <- prettymapr::makebbox(1, 1, 1, 1)
 
-    # work out width/height
-    if (length(d.icon) == 1) {
-      width <- d.icon
-      height <- d.icon
-    }
-    if (length(d.icon) == 2) {
-      width <- d.icon[[1]]
-      height <- d.icon[[2]]
-    }
-
-    link_to_img <- function(x, width, height) {
-      stringr::str_glue(
-        "<img src='{x}' width='{width}' height='{height}'/>"
-      )
-    }
+    dims <- marker_dims(d.icon)
 
     # drop data where no plot was created
-    plots_df <- plots_df[purrr::map_vec(plots_df$plot, \(x) !is.null(x)), ]
+    plots_df <- plots_df[has_plot(plots_df), ]
 
     if (nrow(plots_df) == 0L) {
       cli::cli_abort("No valid polar markers were created.")
@@ -1150,7 +1082,9 @@ create_static_map <-
     }
 
     # create link to image
-    plots_sf$link <- link_to_img(plots_sf$url, width, height)
+    plots_sf$link <- stringr::str_glue(
+      "<img src='{plots_sf$url}' width='{dims$width}' height='{dims$height}'/>"
+    )
 
     # work out an approximate bounding box for the plot
     bbox <- estimate_bbox(plots_sf)
