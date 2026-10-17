@@ -236,161 +236,6 @@ assume_latlon <- function(data, latitude, longitude, quiet = FALSE) {
 
 # Data preparation -------------------------------------------------------------
 
-#' Check input & prep data
-#' @author David Carslaw
-#' @noRd
-checkMapPrep <-
-  function(mydata, Names, remove.calm = TRUE, remove.neg = TRUE, wd = "wd") {
-    ## deal with conditioning variable if present, if user-defined, must exist
-    ## in data pre-defined types existing conditioning variables that only
-    ## depend on date (which is checked)
-    conds <- c(
-      "default",
-      "year",
-      "hour",
-      "month",
-      "season",
-      "weekday",
-      "week",
-      "weekend",
-      "monthyear",
-      "gmtbst",
-      "bstgmt",
-      "dst",
-      "daylight",
-      "yearseason",
-      "seasonyear"
-    )
-    all.vars <- unique(c(names(mydata), conds))
-
-    varNames <- c(Names) ## names we want to be there
-    matching <- varNames %in% all.vars
-
-    if (!all(matching)) {
-      ## not all variables are present
-      stop(
-        "Can't find the variable(s): ",
-        paste(varNames[!matching], collapse = ", "),
-        "\n"
-      )
-    }
-
-    ## just select data needed
-    mydata <- mydata[, Names]
-
-    ## if site is in the data set, check none are missing
-    ## seems to be a problem for some KCL data...
-    if ("site" %in% names(mydata)) {
-      ## split by site
-
-      ## remove any NA sites
-      if (anyNA(mydata$site)) {
-        id <- which(is.na(mydata$site))
-        mydata <- mydata[-id, ]
-      }
-    }
-
-    ## sometimes ratios are considered which can results in infinite values
-    ## make sure all infinite values are set to NA
-    mydata[] <- lapply(mydata, function(x) {
-      if (is.numeric(x)) replace(x, is.infinite(x), NA) else x
-    })
-
-    if ("ws" %in% Names) {
-      if ("ws" %in% Names && is.numeric(mydata$ws)) {
-        ## check for negative wind speeds
-        if (any(sign(mydata$ws[!is.na(mydata$ws)]) == -1)) {
-          if (remove.neg) {
-            ## remove negative ws only if TRUE
-            warning("Wind speed <0; removing negative data")
-            mydata$ws[mydata$ws < 0] <- NA
-          }
-        }
-      }
-    }
-
-    ## round wd to make processing obvious
-    ## data already rounded to nearest 10 degress will not be affected
-    ## data not rounded will be rounded to nearest 10 degrees
-    ## assumes 10 is average of 5-15 etc
-    if (wd %in% Names) {
-      # use `[[` so this works for tibbles, which don't drop to a vector
-      if (wd %in% Names && is.numeric(mydata[[wd]])) {
-        ## check for wd <0 or > 360
-        if (
-          any(
-            sign(mydata[[wd]][!is.na(mydata[[wd]])]) == -1 |
-              mydata[[wd]][!is.na(mydata[[wd]])] > 360
-          )
-        ) {
-          warning("Wind direction < 0 or > 360; removing these data")
-          mydata[[wd]][mydata[[wd]] < 0] <- NA
-          mydata[[wd]][mydata[[wd]] > 360] <- NA
-        }
-
-        if (remove.calm) {
-          if ("ws" %in% names(mydata)) {
-            mydata[[wd]][mydata$ws == 0] <-
-              NA ## set wd to NA where there are calms
-            mydata$ws[mydata$ws == 0] <- NA ## remove calm ws
-          }
-          mydata[[wd]][mydata[[wd]] == 0] <-
-            360 ## set any legitimate wd to 360
-
-          ## round wd for use in functions - except windRose/pollutionRose
-          mydata[[wd]] <- 10 * ceiling(mydata[[wd]] / 10 - 0.5)
-          mydata[[wd]][mydata[[wd]] == 0] <-
-            360 # angles <5 should be in 360 bin
-        }
-        mydata[[wd]][mydata[[wd]] == 0] <-
-          360 ## set any legitimate wd to 360
-      }
-    }
-
-    ## make sure date is ordered in time if present
-    if ("date" %in% Names) {
-      if (inherits(mydata$date, "POSIXlt")) {
-        stop("date should be in POSIXct format not POSIXlt")
-      }
-
-      ## try and work with a factor date - but probably a problem in original data
-      if (is.factor(mydata$date)) {
-        warning("date field is a factor, check date format")
-        mydata$date <- as.POSIXct(mydata$date, "GMT")
-      }
-
-      mydata <- dplyr::arrange(mydata, date)
-
-      ## make sure date is the first field
-      if (names(mydata)[1] != "date") {
-        mydata <- mydata[c("date", setdiff(names(mydata), "date"))]
-      }
-
-      ## check to see if there are any missing dates, stop if there are
-      ids <- which(is.na(mydata$date))
-      if (length(ids) > 0) {
-        mydata <- mydata[-ids, ]
-        warning(
-          paste(
-            "Missing dates detected, removing",
-            length(ids),
-            "lines"
-          ),
-          call. = FALSE
-        )
-      }
-
-      ## daylight saving time can cause terrible problems - best avoided!!
-
-      if (any(lubridate::dst(mydata$date))) {
-        message("Detected data with Daylight Saving Time.")
-      }
-    }
-
-    ## return data frame
-    return(mydata)
-  }
-
 #' Prep data for mapping
 #' @noRd
 prepMapData <-
@@ -407,16 +252,20 @@ prepMapData <-
     ## extract variables of interest
     vars <- unique(c(pollutant, control, ...))
 
-    # check and select variables
-    data <- checkMapPrep(data, vars)
-
-    # check to see if variables exist in data
-    if (length(intersect(vars, names(data))) != length(vars)) {
-      stop(
-        paste(vars[which(!vars %in% names(data))], "not found in data"),
-        call. = FALSE
+    # check and select variables - other checks (e.g., of wind data) are done
+    # by openair when drawing each marker
+    missing <- setdiff(vars, names(data))
+    if (length(missing) > 0) {
+      cli::cli_abort(
+        "Can't find the variable{?s} {.field {missing}} in {.arg data}."
       )
     }
+    data <- data[vars]
+
+    # infinite values (e.g., from ratios) would break shared colour scales
+    data[pollutant] <- lapply(data[pollutant], \(x) {
+      replace(x, is.infinite(x), NA)
+    })
 
     # check if more than one pollutant & is.null split
     if (length(pollutant) > 1 && !is.null(control) && !.pairwise) {

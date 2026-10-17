@@ -5,73 +5,26 @@ wind_df <- data.frame(
   lab = c("Inf", "a", "b", "c")
 )
 
-test_that("checkMapPrep() treats data frames and tibbles identically", {
-  df <- quietly(checkMapPrep(wind_df, names(wind_df)))
-  tbl <- quietly(checkMapPrep(dplyr::as_tibble(wind_df), names(wind_df)))
-  expect_equal(as.data.frame(tbl), df)
-})
-
-test_that("checkMapPrep() cleans wind and pollutant data", {
-  expect_warning(
-    expect_warning(
-      out <- checkMapPrep(wind_df, names(wind_df)),
-      "Wind speed"
-    ),
-    "Wind direction"
+test_that("prepMapData() leaves wind data for openair to check", {
+  out <- expect_no_warning(
+    prepMapData(wind_df, "nox", NULL, "ws", "wd", "lab", .to_narrow = FALSE)
   )
-  # calms removed, wd rounded to 10 degrees with 0 as 360
-  expect_equal(out$ws, c(NA, 2, 3, NA))
-  expect_equal(out$wd, c(NA, 120, 360, NA))
-  # infinite numbers become NA, but text is left alone
+  # calms are kept, and wind directions aren't rounded
+  expect_equal(out$ws, wind_df$ws)
+  expect_equal(out$wd, wind_df$wd)
+  # infinite pollutant values become NA, but text is left alone
   expect_equal(out$nox, c(1, NA, 3, NA))
   expect_equal(out$lab, wind_df$lab)
-})
 
-test_that("checkMapPrep() can keep calms and negative wind speeds", {
-  out <- quietly(
-    checkMapPrep(
-      wind_df,
-      names(wind_df),
-      remove.calm = FALSE,
-      remove.neg = FALSE
-    )
+  # data frames and tibbles are treated identically
+  tbl <- prepMapData(
+    dplyr::as_tibble(wind_df),
+    "nox",
+    NULL,
+    "ws",
+    .to_narrow = FALSE
   )
-  expect_equal(out$ws, wind_df$ws)
-  expect_equal(out$wd, c(4, 123, 360, NA))
-})
-
-test_that("checkMapPrep() checks for missing variables", {
-  expect_error(checkMapPrep(wind_df, c("ws", "foo")), "foo")
-  # date-based types are allowed even if absent
-  expect_no_error(quietly(checkMapPrep(wind_df, c("ws", "nox"))))
-})
-
-test_that("checkMapPrep() handles sites and dates", {
-  df <- data.frame(
-    date = as.POSIXct(c("2020-01-02", NA, "2020-01-01"), tz = "GMT"),
-    site = c("a", "b", NA),
-    x = 1:3
-  )
-  expect_warning(out <- checkMapPrep(df, c("x", "date", "site")), "1 lines")
-  expect_equal(names(out)[1], "date")
-  expect_equal(nrow(out), 1)
-
-  # dates are sorted
-  df$site <- "a"
-  out <- quietly(checkMapPrep(df, c("date", "x", "site")))
-  expect_equal(out$x, c(3, 1))
-
-  df$date <- as.POSIXlt(df$date)
-  expect_error(checkMapPrep(df, c("date", "x")), "POSIXct")
-
-  df <- data.frame(date = factor("2020-01-01"), x = 1)
-  expect_warning(checkMapPrep(df, c("date", "x")), "factor")
-
-  df <- data.frame(
-    date = as.POSIXct("2020-06-01", tz = "Europe/London"),
-    x = 1
-  )
-  expect_message(checkMapPrep(df, c("date", "x")), "Daylight")
+  expect_equal(as.data.frame(tbl), as.data.frame(out[c("nox", "ws")]))
 })
 
 test_that("prepMapData() pivots pollutants into long format", {
