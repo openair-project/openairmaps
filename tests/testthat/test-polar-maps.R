@@ -17,6 +17,26 @@ test_that("polarMap() makes a dynamic map", {
   expect_length(leaflet_legends(map), 0)
 })
 
+test_that("polar maps show the mean pollutant in popups and labels", {
+  data <- small_polar()
+  map <- quietly(polarMap(data, "nox", popup = "nox", label = "nox", d.fig = 1))
+  call <- leaflet_calls(map, "addMarkers")[[1]]$args
+  means <- tapply(data$nox, data$site, mean, na.rm = TRUE)
+
+  expect_setequal(call[[11]], signif(unname(means), 3))
+  expect_match(call[[7]], "^<b>NO<sub>x</sub> \\(mean\\)</b>: [0-9.]+$")
+
+  # names are kept, and other pollutants are just like any other column
+  map <- quietly(polarMap(
+    data,
+    c("nox", "no2"),
+    popup = c("NOx conc." = "nox", "site"),
+    d.fig = 1
+  ))
+  popups <- leaflet_calls(map, "addMarkers")[[1]]$args[[7]]
+  expect_match(popups, "^<b>NO<sub>x</sub> conc.</b>: ")
+})
+
 test_that("polarMap() handles fixed limits, type and popups", {
   map <- quietly(polarMap(
     polar,

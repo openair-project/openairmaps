@@ -144,54 +144,191 @@ test_that("voronoiMap() makes static maps", {
   expect_length(map$layers, 3)
 })
 
+# a stand-in for a site average *Map() function
+fake_interp_map <- function(
+  data,
+  pollutant = "nox",
+  statistic = "mean",
+  percentile = 95,
+  breaks = NULL,
+  labels = NULL,
+  limits = NULL,
+  latitude = "lat",
+  longitude = "lon",
+  crs = 4326,
+  popup = NULL,
+  label = NULL,
+  provider = "OpenStreetMap",
+  cols = "turbo",
+  alpha = 0.5,
+  marker.border = "white",
+  legend = TRUE,
+  legend.position = NULL,
+  legend.title = NULL,
+  legend.title.autotext = TRUE,
+  static = FALSE,
+  api_key = NULL,
+  surface = NULL
+) {
+  interp_map_draw(interp_map_init(data), surface = surface)
+}
+
+test_that("site average maps have all of the shared arguments", {
+  for (fun in list(krigingMap, voronoiMap, pointMap)) {
+    expect_in(interp_map_args, names(formals(fun)))
+  }
+})
+
 test_that("raster interpolations can be mapped", {
   # krigingMap() returns a stars raster - this tests mapping one without
   # needing gstat
   data_sf <- prepare_sf_data(interp_data, "mean", 50, "nox", "lat", "lon", 4326)
-  interp <- stars::st_as_stars(sf::st_bbox(data_sf), nx = 5, ny = 5)
-  interp$var1.pred <- seq(10, 70, length.out = 25)
+  surface <- stars::st_as_stars(sf::st_bbox(data_sf), nx = 5, ny = 5)
+  names(surface) <- "nox"
+  surface$nox <- seq(10, 70, length.out = 25)
 
-  args <- list(
-    type = "rast",
-    interp = interp,
-    limits = NULL,
-    alpha = 0.5,
-    data_sf = data_sf,
-    pollutant = "nox",
-    provider = "OpenStreetMap",
-    marker.border = "white",
-    voronoi.border = NULL,
-    cols = "turbo",
-    legend = TRUE,
-    legend.title = NULL,
-    legend.position = NULL,
-    legend.title.autotext = TRUE,
-    api_key = NULL,
-    show.markers = TRUE
-  )
-
-  map <- quietly(rlang::exec(make_dynamic_interp_map, !!!args))
+  map <- quietly(fake_interp_map(interp_data, surface = surface))
   expect_length(leaflet_calls(map, "addRasterImage"), 1)
   expect_length(leaflet_legends(map), 1)
 
   # binned values
-  binned <- interp
-  binned$var1.pred <- cut(interp$var1.pred, c(0, 40, 80), c("lo", "hi"))
-  data_binned <- data_sf
-  data_binned$nox <- cut(data_sf$nox, c(0, 40, 80), c("lo", "hi"))
-  args_binned <- utils::modifyList(
-    args,
-    list(interp = binned, data_sf = data_binned)
-  )
-  map <- quietly(rlang::exec(make_dynamic_interp_map, !!!args_binned))
+  map <- quietly(fake_interp_map(
+    interp_data,
+    surface = surface,
+    breaks = c(0, 40, 80),
+    labels = c("lo", "hi")
+  ))
+  expect_length(leaflet_calls(map, "addRasterImage"), 1)
   expect_equal(as.character(leaflet_legends(map)[[1]]$labels), c("lo", "hi"))
 
   skip_if_not_installed("ggspatial")
-  args$provider <- args_binned$provider <- "osm"
-  map <- quietly(rlang::exec(make_static_interp_map, !!!args))
+  skip_if_not_installed("prettymapr")
+  map <- quietly(fake_interp_map(interp_data, surface = surface, static = TRUE))
   expect_s3_class(map, "ggplot")
-  map <- quietly(rlang::exec(make_static_interp_map, !!!args_binned))
+  map <- quietly(fake_interp_map(
+    interp_data,
+    surface = surface,
+    breaks = c(0, 40, 80),
+    static = TRUE
+  ))
   expect_s3_class(map, "ggplot")
+})
+
+test_that("pointMap() makes dynamic maps", {
+  map <- quietly(pointMap(interp_data, "nox"))
+  expect_s3_class(map, "leaflet")
+  expect_length(leaflet_calls(map, "addPolygons"), 0)
+  expect_length(leaflet_calls(map, "addRasterImage"), 0)
+
+  markers <- leaflet_calls(map, "addCircleMarkers")
+  expect_length(markers, 1)
+  # one larger marker per site
+  expect_length(markers[[1]]$args[[1]], 6)
+  expect_equal(markers[[1]]$args[[3]], 8)
+  expect_equal(leaflet_legends(map)[[1]]$title, "NO<sub>x</sub>")
+
+  map <- quietly(pointMap(
+    interp_data,
+    "nox",
+    statistic = "max",
+    breaks = c(0, 30, 70),
+    legend.title = "my legend"
+  ))
+  legend <- leaflet_legends(map)[[1]]
+  expect_equal(legend$title, "my legend")
+  expect_equal(as.character(legend$labels), c("0 - 30", "30 - 70"))
+
+  expect_length(
+    leaflet_legends(pointMap(interp_data, "nox", legend = FALSE)),
+    0
+  )
+  expect_error(pointMap(interp_data, "nox", statistic = "maen"), "statistic")
+})
+
+test_that("site average maps can have popups and labels", {
+  data <- dplyr::mutate(
+    interp_data,
+    name = paste("Site", .data$site),
+    site_type = ifelse(.data$site < 4, "Urban", "Rural")
+  )
+
+  map <- quietly(pointMap(data, "nox", popup = "name", label = "site_type"))
+  call <- leaflet_calls(map, "addCircleMarkers")[[1]]$args
+  expect_setequal(call[[9]], paste("Site", 1:6))
+  expect_setequal(call[[11]], c("Urban", "Rural"))
+
+  # multiple columns are combined using buildPopup()
+  map <- quietly(pointMap(data, "nox", popup = c("name", "site_type")))
+  popups <- leaflet_calls(map, "addCircleMarkers")[[1]]$args[[9]]
+  expect_length(popups, 6)
+  expect_match(
+    popups,
+    "<b>Name</b>: Site [0-9]<br><b>Site Type</b>: (Urban|Rural)"
+  )
+
+  # popups must be unique per site
+  expect_error(pointMap(data, "nox", popup = "rep"), "Multiple popups")
+
+  # the pollutant shows the site statistic, not the mean of the raw data
+  map <- quietly(pointMap(
+    data,
+    "nox",
+    statistic = "max",
+    popup = c("name", "nox"),
+    label = "nox"
+  ))
+  call <- leaflet_calls(map, "addCircleMarkers")[[1]]$args
+  expect_setequal(call[[11]], seq(13, 63, 10))
+  expect_match(call[[9]], "<b>NO<sub>x</sub> \\(max\\)</b>: [1-6]3$")
+
+  map <- quietly(pointMap(
+    data,
+    "nox",
+    statistic = "percentile",
+    percentile = 92,
+    popup = c("name", "Concentration" = "nox")
+  ))
+  popups <- leaflet_calls(map, "addCircleMarkers")[[1]]$args[[9]]
+  expect_match(popups, "<b>Concentration</b>")
+
+  expect_equal(
+    ordinal(c(1, 2, 3, 4, 11, 12, 13, 21, 92, 101, 111)),
+    c(
+      "1st",
+      "2nd",
+      "3rd",
+      "4th",
+      "11th",
+      "12th",
+      "13th",
+      "21st",
+      "92nd",
+      "101st",
+      "111th"
+    )
+  )
+
+  map <- local({
+    local_coarse_grid()
+    quietly(voronoiMap(data, "nox", label = "name"))
+  })
+  call <- leaflet_calls(map, "addCircleMarkers")[[1]]$args
+  expect_setequal(call[[11]], paste("Site", 1:6))
+})
+
+test_that("pointMap() makes static maps", {
+  skip_if_not_installed("ggspatial")
+  skip_if_not_installed("prettymapr")
+  map <- quietly(pointMap(
+    interp_data,
+    "nox",
+    static = TRUE,
+    legend.position = "bottom"
+  ))
+  expect_s3_class(map, "ggplot")
+  expect_equal(map$theme$legend.position, "bottom")
+  # the map is padded around the markers
+  expect_lt(map$coordinates$limits$x[[1]], min(interp_data$lon))
 })
 
 test_that("krigingMap() makes maps", {

@@ -18,6 +18,8 @@ krigingMap(
   latitude = NULL,
   longitude = NULL,
   crs = 4326,
+  popup = NULL,
+  label = NULL,
   provider = "OpenStreetMap",
   cols = "turbo",
   alpha = 0.8,
@@ -48,6 +50,8 @@ voronoiMap(
   latitude = NULL,
   longitude = NULL,
   crs = 4326,
+  popup = NULL,
+  label = NULL,
   provider = "OpenStreetMap",
   cols = "turbo",
   alpha = 0.8,
@@ -92,7 +96,10 @@ controls how this is achieved. Possible statistics include:
 \item \code{"min"}: the maximum value (using \code{\link[=min]{min()}})
 \item \code{"sd"}: the standard deviation (using \code{\link[stats:sd]{stats::sd()}})
 \item \code{"percentile"}: a percentile value, defined using the \code{percentile} argument (using \code{\link[stats:quantile]{stats::quantile()}})
-}}
+}
+
+To show this value in marker popups or labels, include \code{pollutant} in
+\code{popup} or \code{label} (e.g., \code{popup = c("site", "nox")}).}
 
 \item{percentile}{\emph{The percentile when `statistic = "percentile"}
 
@@ -157,6 +164,22 @@ Different coordinate systems can be specified using \code{crs} (e.g., \code{crs 
 non-lat/lng coordinate systems will be re-projected to EPSG:4326 for
 plotting on the map.}
 
+\item{popup}{\emph{Content for marker popups on dynamic maps.}
+
+\emph{default:} \code{NULL} | \emph{scope:} dynamic
+
+Columns to be used as the HTML content for marker popups on dynamic maps.
+Popups may be useful to show information about the individual sites (e.g.,
+site names, codes, types, etc.). If a vector of column names are provided
+they are passed to \code{\link[=buildPopup]{buildPopup()}} using its default values.}
+
+\item{label}{\emph{Content for marker hover-over on dynamic maps.}
+
+\emph{default:} \code{NULL} | \emph{scope:} dynamic
+
+Column to be used as the HTML content for hover-over labels. Labels are
+useful for the same reasons as popups, though are typically shorter.}
+
 \item{provider}{\emph{The basemap(s) to be used.}
 
 \emph{default:} \code{"OpenStreetMap"} | \emph{scope:} dynamic & static
@@ -198,7 +221,8 @@ A value between 0 (fully transparent) and 1 (fully opaque).}
 \emph{default:} \code{TRUE} | \emph{scope:} dynamic & static
 
 When \code{TRUE}, the coordinates in the input \code{data} will be shown as coloured
-markers.}
+markers. Any \code{popup} or \code{label} is attached to these markers, so neither
+is shown when \code{show.markers = FALSE}.}
 
 \item{marker.border, voronoi.border}{\emph{Border colour to use for markers and
 voronoi tiles.}

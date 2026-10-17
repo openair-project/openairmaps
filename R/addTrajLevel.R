@@ -103,24 +103,9 @@ addTrajLevel <-
       )
     }
     if (statistic == "difference") {
-      # ordinal suffix - 11th, 12th & 13th are exceptions to 1st, 2nd & 3rd
-      suff <- "th"
-      if (!(percentile %% 100) %in% 11:13) {
-        suff <- switch(
-          as.character(percentile %% 10),
-          "1" = "st",
-          "2" = "nd",
-          "3" = "rd",
-          "th"
-        )
-      }
-      title <-
-        stringr::str_glue(
-          "gridded<br>differences<br>({percentile}{suff} percentile)"
-        )
-      subtitle <- stringr::str_glue(
-        "% DIFFERENCE ({percentile}{toupper(suff)} PERCENTILE)"
-      )
+      pct <- ordinal(percentile)
+      title <- paste0("gridded<br>differences<br>(", pct, " percentile)")
+      subtitle <- paste0("% DIFFERENCE (", toupper(pct), " PERCENTILE)")
       style <- leaflet::labelFormat(between = " to ", suffix = "%")
     }
     if (statistic == "pscf") {

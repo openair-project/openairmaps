@@ -480,12 +480,16 @@ getBreaks <- function(breaks, ws.int, vec, polrose) {
 }
 
 #' function to quickly combine multiple popups together
-#' @param data,popup,latitude,longitude,control inherited from parent
+#' @param data,popup,latitude,longitude,control inherited from parent. Any
+#'   names of `popup` are used as-is; otherwise, they are tidied column names.
 #' @noRd
 quick_popup <- function(data, popup, latitude, longitude, control) {
   nice_popup <-
     stringr::str_replace_all(popup, "\\_|\\.|\\-", " ") |>
     stringr::str_to_title()
+  nms <- rlang::names2(popup)
+  has_name <- !is.na(nms) & nms != ""
+  nice_popup[has_name] <- nms[has_name]
 
   names <- stats::setNames(popup, nice_popup)
 
@@ -494,7 +498,37 @@ quick_popup <- function(data, popup, latitude, longitude, control) {
     columns = names,
     latitude = latitude,
     longitude = longitude,
-    type = control %||% "default"
+    type = control
+  )
+}
+
+#' Format a number as an ordinal, e.g., `"1st"`, `"12th"` or `"95th"`
+#' @noRd
+ordinal <- function(x) {
+  # 11th, 12th & 13th are exceptions to 1st, 2nd & 3rd
+  suffix <- ifelse(
+    x %% 100 %in% 11:13,
+    "th",
+    c("th", "st", "nd", "rd", rep("th", 6))[x %% 10 + 1]
+  )
+  paste0(x, suffix)
+}
+
+#' Error when markers have more than one popup/label
+#' @param by The arguments which define a single marker.
+#' @noRd
+abort_multiple_popups <- function(
+  by = c("latitude", "longitude"),
+  call = rlang::caller_env()
+) {
+  by <- paste(by, collapse = "/")
+  cli::cli_abort(
+    c(
+      "x" = "Multiple popups/labels per {.code {by}} combination.",
+      "i" = "Have you used a numeric column, e.g., a pollutant concentration?",
+      "i" = "Consider using {.fun buildPopup} to easily create distinct popups per marker."
+    ),
+    call = call
   )
 }
 
@@ -562,13 +596,7 @@ create_polar_markers <-
 
     # check for popup issues
     if (nrow(nested_df) > valid_rows) {
-      cli::cli_abort(
-        c(
-          "x" = "Multiple popups/labels per {.code latitude}/{.code longitude}/{.code control} combination.",
-          "i" = "Have you used a numeric column, e.g., a pollutant concentration?",
-          "i" = "Consider using {.fun buildPopup} to easily create distinct popups per marker."
-        )
-      )
+      abort_multiple_popups(by = c("latitude", "longitude", "type"))
     }
 
     # pair up with "after" data for two-table plots

@@ -130,17 +130,34 @@ polar_map_prep <- function(
   # cut data
   data <- cut(data)
 
-  # deal with popups
-  if (length(map$popup) > 1) {
+  # deal with popups & labels - the pollutant columns are reshaped by
+  # `prepMapData()`, so any shown in a popup/label are averaged at each marker
+  is_pollutant <- function(x) x %in% pollutant & rlang::names2(x) == ""
+
+  if (length(map$popup) > 1 || any(is_pollutant(map$popup))) {
+    popup <- rlang::set_names(map$popup, rlang::names2(map$popup))
+    names(popup)[is_pollutant(popup)] <- paste(
+      popup[is_pollutant(popup)],
+      "(mean)"
+    )
     data <-
       quick_popup(
         data = data,
-        popup = map$popup,
+        popup = popup,
         latitude = map$latitude,
         longitude = map$longitude,
         control = type
       )
     map$popup <- "popup"
+  }
+
+  if (any(is_pollutant(map$label))) {
+    data <- dplyr::mutate(
+      data,
+      .label = signif(mean(.data[[map$label]], na.rm = TRUE), 3),
+      .by = dplyr::all_of(c(map$latitude, map$longitude, type %||% "default"))
+    )
+    map$label <- ".label"
   }
 
   # prep data

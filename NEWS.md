@@ -6,6 +6,8 @@
 
 ## New features
 
+* Added `pointMap()`, which summarises pollutant data at each site (e.g., the mean concentration) and shows it as coloured circles on a dynamic or static map. It shares its arguments (`statistic`, `breaks`, `limits`, etc.) with `krigingMap()` and `voronoiMap()`, but draws no interpolated surface. All three functions also gain `popup` and `label` arguments, which work like those in `polarMap()` (e.g., to show site names or types when clicking on or hovering over a site marker).
+
 * `networkMap()` can now take any option passed to `openair::importMeta()`. This behaviour supersedes all of the functionality within `searchNetwork()`, which has been removed. It also no longer overwrites the default `year` argument, and so behaves identically to `openair::importMeta()`.
 
 * Added `addTrajLevel()`, which allows users to add gridded trajectory statistics (calculated using `openair::trajLevel()`) to any `leaflet` map, much like `addTrajPaths()` does for individual trajectories. This offers more control over groups and layerIds than `trajLevelMap()`, which now uses `addTrajLevel()` internally.
@@ -37,6 +39,8 @@
 ## Bug fixes
 
 * `diffMap()` no longer errors when multiple columns are passed to `popup`.
+
+* The `polarMap()` family no longer errors when a single `pollutant` is passed to `popup` or `label` (e.g., `polarMap(polar_data, "no2", popup = "no2")`). Pollutants in popups and labels now show their mean at each marker, labelled as such (e.g., "NO<sub>2</sub> (mean)"), whether one or several `popup` columns are given.
 
 * `addPolarMarkers()` now drops rows where the chosen `pollutant` is missing, rather than where `no2` is missing. Previously, it would error if `data` did not contain a `no2` column.
 

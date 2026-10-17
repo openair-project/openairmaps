@@ -32,11 +32,12 @@ reference:
   - addTrajLevel
   - trajMapStatic
 
-- title: Spatial Interpolation
+- title: Site Averages & Spatial Interpolation
   desc: |
-    Create HTML `leaflet` and static `ggplot2` maps of spatially interpolated
-    pollution data.
+    Create HTML `leaflet` and static `ggplot2` maps of pollution data averaged
+    at each site, either as points or spatially interpolated surfaces.
   contents:
+  - pointMap
   - has_concept("spatial interpolation maps")
 
 - title: Utilities
