@@ -1473,22 +1473,44 @@ build_traj_level_labels <- function(data, subtitle, type = NULL) {
   )
 }
 
-#' Shared building blocks for the trajectory popups
+#' Shared building blocks for popups
 #'
-#' `popup_card()` wraps rows in a bold title + caption header, `popup_row()`
-#' is a single grey-label/value row, and `popup_section()` separates rows from
-#' those above with a thin divider. All are vectorised.
+#' Used by the trajectory functions and [networkMap()] so their popups look
+#' the same. `popup_card()` wraps rows in a bold title + caption header,
+#' `popup_row()` is a single grey-label/value row, and `popup_section()`
+#' separates rows from those above with a thin divider. All are vectorised.
+#' @param width The width of the card, in pixels.
+#' @param colour Optionally, a colour used for a dot next to the title and for
+#'   the subtitle (e.g., to identify a monitoring network).
 #' @noRd
-popup_card <- function(title, subtitle, ...) {
-  paste0(
-    "<div style='font-family:sans-serif; font-size:13px; width:220px;'>",
+popup_card <- function(title, subtitle, ..., width = 220, colour = NULL) {
+  dot <- ""
+  subtitle_colour <- "#303030"
+  if (!is.null(colour)) {
+    dot <- paste0(
+      "<div style='width:14px; height:14px; border-radius:50%; flex-shrink:0; background:",
+      colour,
+      ";'></div>"
+    )
+    subtitle_colour <- colour
+  }
 
-    "<div style='margin-bottom:8px; padding-bottom:6px; border-bottom:2px solid #ddd;'>",
+  paste0(
+    "<div style='font-family:sans-serif; font-size:13px; max-height:320px; overflow-y:auto; width:",
+    width,
+    "px; padding-right:4px;'>",
+
+    "<div style='display:flex; align-items:center; gap:8px; margin-bottom:10px; padding-bottom:8px; border-bottom:2px solid #ddd;'>",
+    dot,
+    "<div style='flex:1;'>",
     "<div style='font-size:15px; font-weight:700; color:#222; line-height:1.2;'>",
     title,
     "</div>",
-    "<div style='font-size:12px; font-weight:600; color:#303030; letter-spacing:0.03em; margin-top:2px;'>",
+    "<div style='font-size:12px; font-weight:600; color:",
+    subtitle_colour,
+    "; letter-spacing:0.03em; margin-top:2px;'>",
     subtitle,
+    "</div>",
     "</div>",
     "</div>",
 
