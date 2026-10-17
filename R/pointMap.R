@@ -8,6 +8,10 @@
 #' dynamic and can be panned, zoomed, and otherwise interacted with. Using the
 #' `static` argument allows for static images to be produced instead.
 #'
+#' When `type` is used, the data are summarised separately for each `type`
+#' level, but all levels share the same colour scale so that they can be
+#' compared.
+#'
 #' @inheritSection polarMap Customisation of static maps using ggplot2
 #'
 #' @inheritParams krigingMap
@@ -23,6 +27,8 @@
 #'   *default:* `"white"` | *scope:* dynamic & static
 #'
 #'   Any valid HTML colour (e.g., a hex code). Use `NA` for no border.
+#'
+#' @inheritDotParams openair::cutData -x -type
 #'
 #' @returns Either:
 #'
@@ -67,6 +73,7 @@ pointMap <- function(
   latitude = NULL,
   longitude = NULL,
   crs = 4326,
+  type = NULL,
   popup = NULL,
   label = NULL,
   provider = "OpenStreetMap",
@@ -77,9 +84,14 @@ pointMap <- function(
   legend.position = NULL,
   legend.title = NULL,
   legend.title.autotext = TRUE,
+  control.collapsed = FALSE,
+  control.position = "topright",
+  control.autotext = TRUE,
   static = FALSE,
-  api_key = NULL
+  static.nrow = NULL,
+  api_key = NULL,
+  ...
 ) {
-  map <- interp_map_init(data)
+  map <- interp_map_init(data, ...)
   interp_map_draw(map)
 }

@@ -156,6 +156,7 @@ fake_interp_map <- function(
   latitude = "lat",
   longitude = "lon",
   crs = 4326,
+  type = NULL,
   popup = NULL,
   label = NULL,
   provider = "OpenStreetMap",
@@ -166,11 +167,16 @@ fake_interp_map <- function(
   legend.position = NULL,
   legend.title = NULL,
   legend.title.autotext = TRUE,
+  control.collapsed = FALSE,
+  control.position = "topright",
+  control.autotext = TRUE,
   static = FALSE,
+  static.nrow = NULL,
   api_key = NULL,
   surface = NULL
 ) {
-  interp_map_draw(interp_map_init(data), surface = surface)
+  surface_fun <- if (!is.null(surface)) \(sites) surface
+  interp_map_draw(interp_map_init(data), surface_fun = surface_fun)
 }
 
 test_that("site average maps have all of the shared arguments", {
@@ -314,6 +320,62 @@ test_that("site average maps can have popups and labels", {
   })
   call <- leaflet_calls(map, "addCircleMarkers")[[1]]$args
   expect_setequal(call[[11]], paste("Site", 1:6))
+})
+
+test_that("site average maps can be split using type", {
+  data <- dplyr::mutate(
+    interp_data,
+    period = factor(ifelse(.data$rep == 1, "before", "after"), c("before", "after"))
+  )
+
+  # each level is summarised separately, and becomes a layer
+  map <- quietly(pointMap(data, "nox", type = "period", label = "nox"))
+  markers <- leaflet_calls(map, "addCircleMarkers")
+  expect_length(markers, 2)
+  expect_equal(vapply(markers, \(x) x$args[[5]], ""), c("before", "after"))
+  expect_setequal(markers[[1]]$args[[11]], seq(11, 61, 10))
+  expect_setequal(markers[[2]]$args[[11]], seq(12.5, 62.5, 10))
+  expect_equal(layer_control(map)$base, c("before", "after"))
+  # ...with one shared legend
+  expect_length(leaflet_legends(map), 1)
+
+  # popups need to be unique per site and level
+  data$name <- paste("Site", data$site)
+  expect_no_error(quietly(pointMap(data, "nox", type = "period", popup = "name")))
+  expect_error(
+    pointMap(data, "nox", type = "period", popup = "rep"),
+    "latitude/longitude/type"
+  )
+
+  map <- local({
+    local_coarse_grid()
+    quietly(voronoiMap(data, "nox", type = "period", control.autotext = FALSE))
+  })
+  polygons <- leaflet_calls(map, "addPolygons")
+  expect_length(polygons, 2)
+  expect_equal(vapply(polygons, \(x) x$args[[3]], ""), c("before", "after"))
+
+  expect_error(pointMap(data, "nox", type = c("period", "site")), "single")
+
+  skip_if_not_installed("ggspatial")
+  skip_if_not_installed("prettymapr")
+  map <- quietly(pointMap(data, "nox", type = "period", static = TRUE))
+  expect_s3_class(map$facet, "FacetWrap")
+
+  # static rasters are faceted too
+  data_sf <- prepare_sf_data(interp_data, "mean", 50, "nox", "lat", "lon", 4326)
+  surface <- stars::st_as_stars(sf::st_bbox(data_sf), nx = 5, ny = 5)
+  names(surface) <- "nox"
+  surface$nox <- seq(10, 70, length.out = 25)
+  map <- quietly(fake_interp_map(
+    data,
+    type = "period",
+    surface = surface,
+    static = TRUE
+  ))
+  raster <- map$layers[[3]]$data
+  expect_equal(levels(raster$period), c("before", "after"))
+  expect_equal(nrow(raster), 50)
 })
 
 test_that("pointMap() makes static maps", {

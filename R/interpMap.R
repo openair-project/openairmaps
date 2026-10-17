@@ -11,6 +11,10 @@
 #'   observation' polygons. The kriging formula is currently always `pollutant ~
 #'   1`; [krigingMap()] does not currently support more complex models.
 #'
+#'   When `type` is used, each `type` level is summarised and interpolated
+#'   separately, but all levels share the same colour scale so that they can
+#'   be compared.
+#'
 #' @inheritSection polarMap Customisation of static maps using ggplot2
 #'
 #' @inheritParams polarMap
@@ -132,6 +136,8 @@
 #'   Extra arguments passed to [gstat::idw()], [gstat::vgm()],
 #'   [gstat::fit.variogram()], and [gstat::krige()].
 #'
+#' @inheritDotParams openair::cutData -x -type
+#'
 #' @returns Either:
 #'
 #'  - *Dynamic:* A leaflet object
@@ -194,6 +200,7 @@ krigingMap <- function(
   latitude = NULL,
   longitude = NULL,
   crs = 4326,
+  type = NULL,
   popup = NULL,
   label = NULL,
   provider = "OpenStreetMap",
@@ -205,65 +212,72 @@ krigingMap <- function(
   legend.position = NULL,
   legend.title = NULL,
   legend.title.autotext = TRUE,
+  control.collapsed = FALSE,
+  control.position = "topright",
+  control.autotext = TRUE,
   static = FALSE,
+  static.nrow = NULL,
   api_key = NULL,
   vgm = gstat::vgm(psill = 1, model = "Exp", range = 50000, nugget = 1),
   args.idw = list(),
   args.variogram = list(),
   args.fit.variogram = list(),
-  args.krige = list()
+  args.krige = list(),
+  ...
 ) {
   rlang::check_installed(c("terra", "stars", "gstat"))
   method <- rlang::arg_match(method)
-  map <- interp_map_init(data)
+  if (method == "kriging" && !inherits(vgm, "variogramModel")) {
+    cli::cli_abort(
+      "Please provide a {.fun gstat::vgm} output to {.arg vgm}. You have provided {.type {vgm}}."
+    )
+  }
 
+  map <- interp_map_init(data, ...)
+
+  # use the same grid for every `type` level
   stars_grid <- create_interp_grid(data_sf = map$data_sf, newdata = newdata)
   formula <- stats::as.formula(paste(pollutant, 1, sep = "~"))
 
-  if (method == "idw") {
-    interp <- rlang::exec(
-      gstat::idw,
-      !!!args.idw,
-      formula = formula,
-      locations = map$data_sf,
-      newdata = stars_grid
-    )
-  }
-
-  if (method == "kriging") {
-    if (!inherits(vgm, "variogramModel")) {
-      cli::cli_abort(
-        "Please provide a {.fun gstat::vgm} output to {.arg vgm}. You have provided {.type {vgm}}."
+  interpolate <- function(sites) {
+    if (method == "idw") {
+      interp <- rlang::exec(
+        gstat::idw,
+        !!!args.idw,
+        formula = formula,
+        locations = sites,
+        newdata = stars_grid
+      )
+    } else {
+      v <- rlang::exec(
+        gstat::variogram,
+        !!!args.variogram,
+        object = formula,
+        locations = sites
+      )
+      v.m <- rlang::exec(
+        gstat::fit.variogram,
+        !!!args.fit.variogram,
+        object = v,
+        model = vgm
+      )
+      interp <- rlang::exec(
+        gstat::krige,
+        !!!args.krige,
+        formula = formula,
+        locations = sites,
+        newdata = stars_grid,
+        model = v.m
       )
     }
 
-    v <- rlang::exec(
-      gstat::variogram,
-      !!!args.variogram,
-      object = formula,
-      locations = map$data_sf
-    )
-    v.m <- rlang::exec(
-      gstat::fit.variogram,
-      !!!args.fit.variogram,
-      object = v,
-      model = vgm
-    )
-    interp <- rlang::exec(
-      gstat::krige,
-      !!!args.krige,
-      formula = formula,
-      locations = map$data_sf,
-      newdata = stars_grid,
-      model = v.m
-    )
+    # keep only the predictions, named after the pollutant
+    surface <- interp["var1.pred"]
+    names(surface) <- pollutant
+    surface
   }
 
-  # keep only the predictions, named after the pollutant
-  surface <- interp["var1.pred"]
-  names(surface) <- pollutant
-
-  interp_map_draw(map, surface = surface, show.markers = show.markers)
+  interp_map_draw(map, surface_fun = interpolate, show.markers = show.markers)
 }
 
 #' @param args.voronoi *Extra arguments to pass to spatial interpolation
@@ -291,6 +305,7 @@ voronoiMap <- function(
   latitude = NULL,
   longitude = NULL,
   crs = 4326,
+  type = NULL,
   popup = NULL,
   label = NULL,
   provider = "OpenStreetMap",
@@ -303,27 +318,33 @@ voronoiMap <- function(
   legend.position = NULL,
   legend.title = NULL,
   legend.title.autotext = TRUE,
+  control.collapsed = FALSE,
+  control.position = "topright",
+  control.autotext = TRUE,
   static = FALSE,
+  static.nrow = NULL,
   api_key = NULL,
-  args.voronoi = list()
+  args.voronoi = list(),
+  ...
 ) {
   rlang::check_installed(c("terra", "stars"))
-  map <- interp_map_init(data)
+  map <- interp_map_init(data, ...)
 
-  stars_grid <- create_interp_grid(data_sf = map$data_sf, newdata = newdata)
-
-  surface <-
-    rlang::exec(
-      terra::voronoi,
-      !!!args.voronoi,
-      x = terra::vect(map$data_sf)
-    ) |>
+  # use the same boundary for every `type` level
+  boundary <-
+    create_interp_grid(data_sf = map$data_sf, newdata = newdata) |>
     sf::st_as_sf() |>
-    sf::st_intersection(sf::st_as_sf(stars_grid) |> dplyr::summarise())
+    dplyr::summarise()
+
+  tessellate <- function(sites) {
+    rlang::exec(terra::voronoi, !!!args.voronoi, x = terra::vect(sites)) |>
+      sf::st_as_sf() |>
+      sf::st_intersection(boundary)
+  }
 
   interp_map_draw(
     map,
-    surface = surface,
+    surface_fun = tessellate,
     show.markers = show.markers,
     voronoi.border = voronoi.border
   )

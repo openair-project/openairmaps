@@ -8,6 +8,8 @@
 
 * Added `pointMap()`, which summarises pollutant data at each site (e.g., the mean concentration) and shows it as coloured circles on a dynamic or static map. It shares its arguments (`statistic`, `breaks`, `limits`, etc.) with `krigingMap()` and `voronoiMap()`, but draws no interpolated surface. All three functions also gain `popup` and `label` arguments, which work like those in `polarMap()` (e.g., to show site names or types when clicking on or hovering over a site marker).
 
+* `pointMap()`, `krigingMap()` and `voronoiMap()` gain the `type` argument, in line with the `polarMap()` family. Each `type` level is summarised (and interpolated) separately, but all levels share one colour scale. In dynamic maps, `type` levels can be switched between using a "layer control" menu (customised using `control.collapsed`, `control.position` and `control.autotext`), and in static maps they appear in separate panels (arranged using `static.nrow`). Other arguments can be passed to `openair::cutData()` using `...`.
+
 * `networkMap()` can now take any option passed to `openair::importMeta()`. This behaviour supersedes all of the functionality within `searchNetwork()`, which has been removed. It also no longer overwrites the default `year` argument, and so behaves identically to `openair::importMeta()`.
 
 * Added `addTrajLevel()`, which allows users to add gridded trajectory statistics (calculated using `openair::trajLevel()`) to any `leaflet` map, much like `addTrajPaths()` does for individual trajectories. This offers more control over groups and layerIds than `trajLevelMap()`, which now uses `addTrajLevel()` internally.
