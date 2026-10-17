@@ -43,6 +43,8 @@ Suggests:
     png,
     prettymapr,
     rmarkdown,
+    rnaturalearth,
+    rnaturalearthdata,
     shiny (>= 1.9.0),
     stars,
     terra,
