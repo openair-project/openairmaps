@@ -1,7 +1,10 @@
 test_that("name_providers() names and de-duplicates providers", {
   expect_equal(
-    name_providers(c("OpenStreetMap", "CartoDB.Positron")),
-    c(OpenStreetMap = "OpenStreetMap", CartoDB.Positron = "CartoDB.Positron")
+    name_providers(c("OpenStreetMap", "Esri.WorldGrayCanvas")),
+    c(
+      OpenStreetMap = "OpenStreetMap",
+      Esri.WorldGrayCanvas = "Esri.WorldGrayCanvas"
+    )
   )
   expect_equal(
     name_providers(c(Default = "OpenStreetMap", "Esri", "OpenStreetMap")),
@@ -12,20 +15,23 @@ test_that("name_providers() names and de-duplicates providers", {
 test_that("add_basemaps() adds each provider as its own group", {
   map <- add_basemaps(
     leaflet::leaflet(),
-    c(Default = "OpenStreetMap", "CartoDB.Positron")
+    c(Default = "OpenStreetMap", "Esri.WorldGrayCanvas")
   )
   calls <- leaflet_calls(map, "addProviderTiles")
-  expect_equal(leaflet_providers(map), c("OpenStreetMap", "CartoDB.Positron"))
+  expect_equal(
+    leaflet_providers(map),
+    c("OpenStreetMap", "Esri.WorldGrayCanvas")
+  )
   expect_equal(
     vapply(calls, \(x) x$args[[3]], ""),
-    c("Default", "CartoDB.Positron")
+    c("Default", "Esri.WorldGrayCanvas")
   )
 })
 
 test_that("add_layer_control() handles groups and providers", {
   map <- leaflet::leaflet()
   one <- "OpenStreetMap"
-  two <- c(A = "OpenStreetMap", B = "CartoDB.Positron")
+  two <- c(A = "OpenStreetMap", B = "Esri.WorldGrayCanvas")
 
   # nothing to switch between
   expect_null(layer_control(add_layer_control(map, one)))

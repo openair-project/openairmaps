@@ -315,9 +315,7 @@ networkMap <-
     }
 
     # cluster options
-    if (
-      cluster %||% (max(table(meta[[control]])) > 25)
-    ) {
+    if (cluster %||% (max(table(meta[[control]])) > 25)) {
       clusteropts <- leaflet::markerClusterOptions()
     } else {
       clusteropts <- NA

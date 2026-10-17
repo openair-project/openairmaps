@@ -140,7 +140,7 @@ test_that("make_leaflet_map() reprojects coordinates", {
     latitude = "lat",
     longitude = "lon",
     crs = 27700,
-    provider = c("OpenStreetMap", "CartoDB.Positron"),
+    provider = c("OpenStreetMap", "OpenStreetMap.HOT"),
     d.icon = 50,
     popup = NULL,
     label = NULL,
@@ -153,7 +153,7 @@ test_that("make_leaflet_map() reprojects coordinates", {
   expect_equal(get_marker_groups(map)$lat, c(51, 53), tolerance = 1e-6)
   expect_equal(
     leaflet_providers(map),
-    c("OpenStreetMap", "CartoDB.Positron")
+    c("OpenStreetMap", "OpenStreetMap.HOT")
   )
 })
 

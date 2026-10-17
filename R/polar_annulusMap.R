@@ -33,7 +33,7 @@
 #' annulusMap(polar_data,
 #'   pollutant = "nox",
 #'   period = "hour",
-#'   provider = "CartoDB.Voyager"
+#'   provider = "Esri.WorldGrayCanvas"
 #' )
 #' }
 annulusMap <- function(

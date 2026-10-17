@@ -50,7 +50,7 @@
 #' @examples
 #' \dontrun{
 #' windroseMap(polar_data,
-#'   provider = "CartoDB.Voyager"
+#'   provider = "Esri.WorldGrayCanvas"
 #' )
 #' }
 windroseMap <- function(

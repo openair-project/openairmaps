@@ -611,7 +611,7 @@ of \code{\link[ggplot2:coord_sf]{ggplot2::coord_sf()}}.
 polarMap(polar_data,
   pollutant = "nox",
   x = "ws",
-  provider = "CartoDB.Voyager"
+  provider = "Esri.WorldGrayCanvas"
 )
 }
 }

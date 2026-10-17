@@ -451,7 +451,7 @@ of \code{\link[ggplot2:coord_sf]{ggplot2::coord_sf()}}.
 freqMap(polar_data,
   pollutant = "nox",
   statistic = "mean",
-  provider = "CartoDB.Voyager"
+  provider = "Esri.WorldGrayCanvas"
 )
 }
 }

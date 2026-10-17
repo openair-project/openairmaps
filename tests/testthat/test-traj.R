@@ -119,9 +119,9 @@ test_that("trajMap() supports other providers", {
   map <- trajMap(
     traj,
     type = "hour",
-    provider = c("OpenStreetMap", "cartolight")
+    provider = c("OpenStreetMap", "hotstyle")
   )
-  expect_equal(leaflet_providers(map), c("OpenStreetMap", "CartoDB.Positron"))
+  expect_equal(leaflet_providers(map), c("OpenStreetMap", "OpenStreetMap.HOT"))
   expect_length(layer_control(map)$overlay, length(unique(traj$date)))
   expect_error(trajMap(traj, provider = "foo"), "provider")
 })
@@ -247,9 +247,9 @@ test_that("addTrajLevel() supports breaks, smoothing, type and no legend", {
 })
 
 test_that("trajLevelMap() makes a map", {
-  map <- quietly(trajLevelMap(traj, type = "hour", provider = "cartodark"))
+  map <- quietly(trajLevelMap(traj, type = "hour", provider = "hotstyle"))
   expect_s3_class(map, "leaflet")
-  expect_equal(leaflet_providers(map), "CartoDB.DarkMatter")
+  expect_equal(leaflet_providers(map), "OpenStreetMap.HOT")
   expect_gt(length(layer_control(map)$base), 1)
 
   map <- quietly(trajLevelMap(traj, pollutant = "nox", statistic = "cwt"))

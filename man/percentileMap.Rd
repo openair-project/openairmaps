@@ -418,7 +418,7 @@ of \code{\link[ggplot2:coord_sf]{ggplot2::coord_sf()}}.
 \dontrun{
 percentileMap(polar_data,
   pollutant = "nox",
-  provider = "CartoDB.Voyager"
+  provider = "Esri.WorldGrayCanvas"
 )
 }
 }

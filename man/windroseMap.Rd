@@ -434,7 +434,7 @@ of \code{\link[ggplot2:coord_sf]{ggplot2::coord_sf()}}.
 \examples{
 \dontrun{
 windroseMap(polar_data,
-  provider = "CartoDB.Voyager"
+  provider = "Esri.WorldGrayCanvas"
 )
 }
 }

@@ -98,13 +98,16 @@ test_that("voronoiMap() makes dynamic maps", {
     breaks = c(0, 30, 70),
     show.markers = FALSE,
     legend.title = "my legend",
-    provider = c("OpenStreetMap", "cartolight")
+    provider = c("Esri.WorldGrayCanvas", "hotstyle")
   ))
   expect_length(leaflet_calls(map, "addCircleMarkers"), 0)
   legend <- leaflet_legends(map)[[1]]
   expect_equal(legend$title, "my legend")
   expect_equal(as.character(legend$labels), c("0 - 30", "30 - 70"))
-  expect_equal(layer_control(map)$base, c("OpenStreetMap", "CartoDB.Positron"))
+  expect_equal(
+    layer_control(map)$base,
+    c("Esri.WorldGrayCanvas", "OpenStreetMap.HOT")
+  )
 
   map <- quietly(voronoiMap(
     interp_data,
@@ -124,11 +127,11 @@ test_that("voronoiMap() makes static maps", {
     interp_data,
     "nox",
     static = TRUE,
-    provider = "CartoDB.Positron",
+    provider = "OpenStreetMap",
     legend.position = "bottom"
   ))
   expect_s3_class(map, "ggplot")
-  expect_equal(map$layers[[1]]$data$type, "cartolight")
+  expect_equal(map$layers[[1]]$data$type, "osm")
   expect_equal(map$theme$legend.position, "bottom")
 
   map <- quietly(voronoiMap(
@@ -327,7 +330,10 @@ test_that("site average maps can have popups and labels", {
 test_that("site average maps can be split using type", {
   data <- dplyr::mutate(
     interp_data,
-    period = factor(ifelse(.data$rep == 1, "before", "after"), c("before", "after"))
+    period = factor(
+      ifelse(.data$rep == 1, "before", "after"),
+      c("before", "after")
+    )
   )
 
   # each level is summarised separately, and becomes a layer
@@ -343,7 +349,12 @@ test_that("site average maps can be split using type", {
 
   # popups need to be unique per site and level
   data$name <- paste("Site", data$site)
-  expect_no_error(quietly(pointMap(data, "nox", type = "period", popup = "name")))
+  expect_no_error(quietly(pointMap(
+    data,
+    "nox",
+    type = "period",
+    popup = "name"
+  )))
   expect_error(
     pointMap(data, "nox", type = "period", popup = "rep"),
     "latitude/longitude/type"

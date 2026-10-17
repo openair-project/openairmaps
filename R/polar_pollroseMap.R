@@ -46,7 +46,7 @@
 #' pollroseMap(polar_data,
 #'   pollutant = "nox",
 #'   statistic = "prop.count",
-#'   provider = "CartoDB.Voyager"
+#'   provider = "Esri.WorldGrayCanvas"
 #' )
 #' }
 pollroseMap <- function(

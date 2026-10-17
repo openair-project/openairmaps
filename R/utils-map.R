@@ -779,7 +779,7 @@ make_leaflet_map <-
 #' Name a vector of leaflet providers
 #'
 #' Any unnamed providers are named after themselves, so users can (partially)
-#' label their basemaps, e.g., `c("Default" = "OpenStreetMap", "CartoDB.Positron")`.
+#' label their basemaps, e.g., `c("Default" = "OpenStreetMap", "Esri.WorldGrayCanvas")`.
 #' @noRd
 name_providers <- function(provider) {
   provider <- provider[!duplicated(provider)]

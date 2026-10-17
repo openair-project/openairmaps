@@ -388,7 +388,7 @@ of \code{\link[ggplot2:coord_sf]{ggplot2::coord_sf()}}.
 pollroseMap(polar_data,
   pollutant = "nox",
   statistic = "prop.count",
-  provider = "CartoDB.Voyager"
+  provider = "Esri.WorldGrayCanvas"
 )
 }
 }

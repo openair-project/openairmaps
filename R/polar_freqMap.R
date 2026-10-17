@@ -56,7 +56,7 @@
 #' freqMap(polar_data,
 #'   pollutant = "nox",
 #'   statistic = "mean",
-#'   provider = "CartoDB.Voyager"
+#'   provider = "Esri.WorldGrayCanvas"
 #' )
 #' }
 freqMap <- function(

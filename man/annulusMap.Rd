@@ -513,7 +513,7 @@ of \code{\link[ggplot2:coord_sf]{ggplot2::coord_sf()}}.
 annulusMap(polar_data,
   pollutant = "nox",
   period = "hour",
-  provider = "CartoDB.Voyager"
+  provider = "Esri.WorldGrayCanvas"
 )
 }
 }

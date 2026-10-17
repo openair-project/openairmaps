@@ -372,7 +372,7 @@
 #' polarMap(polar_data,
 #'   pollutant = "nox",
 #'   x = "ws",
-#'   provider = "CartoDB.Voyager"
+#'   provider = "Esri.WorldGrayCanvas"
 #' )
 #' }
 polarMap <- function(

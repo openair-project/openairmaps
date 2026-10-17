@@ -1,13 +1,13 @@
 test_that("check_providers() validates dynamic providers", {
   expect_equal(check_providers(NULL, static = FALSE), "OpenStreetMap")
   expect_equal(
-    check_providers("CartoDB.Positron", static = FALSE),
-    "CartoDB.Positron"
+    check_providers("Esri.WorldGrayCanvas", static = FALSE),
+    "Esri.WorldGrayCanvas"
   )
   # static shorthands are converted, and names are kept
   expect_equal(
-    check_providers(c(Light = "cartolight", "OpenStreetMap"), static = FALSE),
-    c(Light = "CartoDB.Positron", "OpenStreetMap")
+    check_providers(c(HOTS = "hotstyle", "OpenStreetMap"), static = FALSE),
+    c(HOTS = "OpenStreetMap.HOT", "OpenStreetMap")
   )
   expect_error(check_providers("OpenStreetMapp", static = FALSE))
 })
@@ -15,10 +15,10 @@ test_that("check_providers() validates dynamic providers", {
 test_that("check_providers() validates static providers", {
   expect_equal(unname(check_providers(NULL, static = TRUE)), "osm")
   expect_equal(
-    unname(check_providers("CartoDB.Positron", static = TRUE)),
-    "cartolight"
+    unname(check_providers("OpenStreetMap.HOT", static = TRUE)),
+    "hotstyle"
   )
-  expect_equal(unname(check_providers("cartodark", static = TRUE)), "cartodark")
+  expect_equal(unname(check_providers("hotstyle", static = TRUE)), "hotstyle")
   expect_error(check_providers("not_a_provider", static = TRUE))
 })
 

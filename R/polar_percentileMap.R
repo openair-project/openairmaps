@@ -42,7 +42,7 @@
 #' \dontrun{
 #' percentileMap(polar_data,
 #'   pollutant = "nox",
-#'   provider = "CartoDB.Voyager"
+#'   provider = "Esri.WorldGrayCanvas"
 #' )
 #' }
 percentileMap <- function(
