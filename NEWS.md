@@ -1,5 +1,9 @@
 # openairmaps (development version)
 
+## Breaking changes
+
+* The `control` argument of the `polarMap()` family and `trajMap()`, deprecated in favour of `type` in openairmaps 0.9.0, has been removed. The deprecated `facet` argument (from `polarMapStatic()`) is also no longer recognised. Please use `type` instead; the `polarMap()` family will raise an error pointing to `type` if either is used. Note that `control` in `networkMap()` is unaffected.
+
 ## New features
 
 * `networkMap()` can now take any option passed to `openair::importMeta()`. This behaviour supersedes all of the functionality within `searchNetwork()`, which has been removed. It also no longer overwrites the default `year` argument, and so behaves identically to `openair::importMeta()`.

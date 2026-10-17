@@ -354,7 +354,7 @@
 #'   creating individual polar markers. This option allows this to be turned
 #'   off, if desired.
 #'
-#' @param control **Deprecated.** Please use `type`.
+#' @param control **Removed.** Please use `type`.
 #'
 #' @inheritDotParams openair::polarPlot
 #'
@@ -409,10 +409,9 @@ polarMap <- function(
   ...,
   control = NULL
 ) {
-  if (static) {
-    check_installed_static()
-  }
-  # list pairwise statistics
+  map <- polar_map_init(data, ...)
+
+  # pairwise statistics compare two pollutants in a single marker
   pairwise_stats <- c(
     "r",
     "Pearson",
@@ -421,29 +420,7 @@ polarMap <- function(
     "quantile.slope",
     "york_slope"
   )
-  dots <- rlang::list2(...)
-  pairwise_flag <- FALSE
-  if ("statistic" %in% names(dots)) {
-    if (dots$statistic %in% pairwise_stats) {
-      pairwise_flag <- TRUE
-    }
-  }
-
-  # check basemap providers are valid
-  provider <- check_providers(provider, static)
-  legend.position <- check_legendposition(legend.position, static)
-
-  # check for old facet/control opts
-  type <- type %||% check_facet_control(control = control, ...)
-
-  # assume lat/lon
-  latlon <- assume_latlon(
-    data = data,
-    latitude = latitude,
-    longitude = longitude
-  )
-  latitude <- latlon$latitude
-  longitude <- latlon$longitude
+  pairwise <- isTRUE(map$dots$statistic %in% pairwise_stats)
 
   # deal with upper - before limits, so "fixed" limits use the same surfaces
   # as the markers
@@ -454,7 +431,7 @@ polarMap <- function(
   }
 
   # auto limits
-  if (!pairwise_flag) {
+  if (!pairwise) {
     limits <- check_multipoll(limits, pollutant)
   }
 
@@ -470,9 +447,9 @@ polarMap <- function(
           openair::polarPlot,
           data,
           pollutant = pollutant,
-          latitude = latitude,
-          longitude = longitude,
-          type = type,
+          latitude = map$latitude,
+          longitude = map$longitude,
+          type = map$type,
           x = x,
           upper = upper,
           ...
@@ -484,182 +461,42 @@ polarMap <- function(
     )
   }
 
-  # cut data
-  data <- openair::cutData(x = data, type = type %||% "default", ...)
+  map <- polar_map_prep(map, data, pollutant, c("wd", x), pairwise = pairwise)
 
-  # deal with popups
-  if (length(popup) > 1) {
-    data <-
-      quick_popup(
-        data = data,
-        popup = popup,
-        latitude = latitude,
-        longitude = longitude,
-        control = type
-      )
-    popup <- "popup"
-  }
-
-  # prep data
-  data <-
-    prepMapData(
-      data = data,
-      pollutant = pollutant,
-      control = type,
-      "wd",
-      x,
-      latitude,
-      longitude,
-      popup,
-      label,
-      .to_narrow = !pairwise_flag,
-      .pairwise = pairwise_flag
-    )
-
-  # identify splitting column (defaulting to pollutant)
-  if (length(pollutant) > 1 && !pairwise_flag) {
-    split_col <- "pollutant_name"
-  } else if (!is.null(type)) {
-    data[type] <- as.factor(data[[type]])
-    split_col <- type
-  } else if (pairwise_flag) {
-    data$pollutant_name <- "DUMMY"
-    split_col <- "pollutant_name"
-  } else {
-    split_col <- "pollutant_name"
-  }
-
-  # define function
-  if (pairwise_flag) {
-    funpoll <- pollutant
-  } else {
-    funpoll <- "conc"
-  }
-
-  # arguments for function
-  dots <- rlang::list2(...)
-  dots$annotate <- dots$annotate %||% FALSE
-  fun_args <- append(
-    list(
-      pollutant = funpoll,
-      x = x,
-      plot = FALSE,
-      limits = theLimits,
-      upper = upper,
-      cols = cols,
-      theme = theme,
-      key.position = key.position
-    ),
-    dots
+  fun_args <- list(
+    pollutant = if (pairwise) pollutant else "conc",
+    x = x,
+    limits = theLimits,
+    upper = upper
   )
-
-  # define function
-  fun <- function(data) {
-    rlang::exec(
-      openair::polarPlot,
-      !!!append(
-        list(mydata = data),
-        fun_args
-      )
-    )
-  }
 
   # work out one set of breaks for all markers, so they share a legend
   if (!is.null(breaks)) {
     fun_args$breaks <- resolve_shared_breaks(
       fun = openair::polarPlot,
-      fun_args = fun_args,
-      data = data,
+      fun_args = polar_fun_args(map, fun_args),
+      data = map$data,
       breaks = breaks,
       values = \(x) x$z,
-      latitude = latitude,
-      longitude = longitude,
-      split_col = split_col
+      latitude = map$latitude,
+      longitude = map$longitude,
+      split_col = map$split_col
     )
   }
 
-  # plot and save static markers
-  plots_df <-
-    create_polar_markers(
-      fun = fun,
-      fun_args = fun_args,
-      data = data,
-      latitude = latitude,
-      longitude = longitude,
-      split_col = split_col,
-      d.fig = d.fig,
-      popup = popup,
-      label = label,
-      dropcol = funpoll,
-      progress = progress
-    )
-
-  if (!static) {
-    # create leaflet map
-    map <-
-      make_leaflet_map(
-        plots_df,
-        latitude,
-        longitude,
-        crs,
-        provider,
-        d.icon,
-        popup,
-        label,
-        split_col,
-        control.collapsed,
-        control.position,
-        control.autotext,
-        alpha
-      )
-  }
-
-  if (static) {
-    map <-
-      create_static_map(
-        plots_df = plots_df,
-        latitude = latitude,
-        longitude = longitude,
-        split_col = split_col,
-        # pairwise statistics use two pollutants but only make one marker, so
-        # shouldn't be faceted by pollutant
-        pollutant = if (pairwise_flag) NULL else pollutant,
-        facet = type,
-        facet.nrow = static.nrow,
-        api_key = api_key,
-        d.icon = d.icon,
-        crs = crs,
-        provider = provider,
-        alpha = alpha
-      )
-  }
-
-  # add shared legend
-  if (legend) {
-    map <- add_polar_legend(
-      map,
-      spec = legend_from_markers(
+  polar_map_draw(
+    map,
+    fun = openair::polarPlot,
+    fun_args = fun_args,
+    legend_spec = \(plots_df) {
+      legend_from_markers(
         plots_df,
         values = \(x) x$z,
         limits = theLimits,
         cols = cols,
-        trans = fun_args$trans %||% formals(openair::polarPlot)$trans
-      ),
-      static = static,
-      title = create_legend_title(
-        static = static,
-        legend.title.autotext = legend.title.autotext,
-        legend.title = legend.title,
-        str = paste(pollutant, collapse = if (static) ", " else ",<br>")
-      ),
-      position = legend.position,
-      alpha = alpha,
-      plots_df = plots_df,
-      latitude = latitude,
-      longitude = longitude
-    )
-  }
-
-  # return map
-  return(map)
+        trans = map$dots$trans %||% formals(openair::polarPlot)$trans
+      )
+    },
+    legend_str = pollutant
+  )
 }

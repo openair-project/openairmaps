@@ -104,7 +104,11 @@ resolve_scale <- function(
   } else if (is.numeric(x)) {
     x
   } else {
-    vec <- if (is.null(n)) "a numeric vector" else "a numeric vector of length {n}"
+    vec <- if (is.null(n)) {
+      "a numeric vector"
+    } else {
+      "a numeric vector of length {n}"
+    }
     cli::cli_abort(
       c(
         "!" = "Do not recognise {.field {arg}} value of {.code {x}}",
@@ -498,14 +502,13 @@ quick_popup <- function(data, popup, latitude, longitude, control) {
 # Polar markers ----------------------------------------------------------------
 
 #' Create markers for the static plots
-#' @param fun function of "data" to create plot - or of "data" and "after" if
-#'   `after` is provided - which returns an openair object
+#' @param fun An openair function (e.g., `openair::polarPlot`), called with
+#'   `mydata` - or `before` and `after` if `after` is provided - and
+#'   `fun_args`.
+#' @param fun_args A list of other arguments to pass to `fun`.
 #' @param after optionally, a second data frame for two-table plots (i.e.,
 #'   `polarDiff()`). `data` is then the "before" case, and provides any
 #'   popups/labels.
-#' @param fun_args,polar_fun Objects used by `fun`. `purrr::in_parallel()`
-#'   crates `fun` too, replacing its environment, so anything it refers to
-#'   must be passed in explicitly - even if not running in parallel.
 #' @param latitude,longitude,split_col,d.fig inherited from parent
 #' @noRd
 create_polar_markers <-
@@ -520,7 +523,6 @@ create_polar_markers <-
     label = NULL,
     d.fig,
     dropcol = "conc",
-    polar_fun = NULL,
     after = NULL,
     progress = TRUE
   ) {
@@ -616,7 +618,13 @@ create_polar_markers <-
           function(data, url, after = NULL) {
             openair_obj <- tryCatch(
               error = function(cnd) {},
-              if (is.null(after)) fun(data) else fun(data, after)
+              # (not `rlang::exec(!!!)`, as in_parallel() would inject it
+              # too early)
+              if (is.null(after)) {
+                do.call(fun, c(list(mydata = data), fun_args))
+              } else {
+                do.call(fun, c(list(before = data, after = after), fun_args))
+              }
             )
 
             if (!is.null(openair_obj)) {
@@ -640,7 +648,6 @@ create_polar_markers <-
           },
           fun = fun,
           fun_args = fun_args,
-          polar_fun = polar_fun,
           dims = dims
         ),
         .progress = progress

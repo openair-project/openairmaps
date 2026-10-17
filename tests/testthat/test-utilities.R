@@ -10,7 +10,10 @@ test_that("quickTextHTML() formats pollutants and units", {
     )
   )
   expect_equal(quickTextHTML("ws"), "wind spd.")
-  expect_equal(quickTextHTML("no2 (ug/m3)"), "NO<sub>2</sub> (µg&nbsp;m<sup>-3</sup>)")
+  expect_equal(
+    quickTextHTML("no2 (ug/m3)"),
+    "NO<sub>2</sub> (µg&nbsp;m<sup>-3</sup>)"
+  )
   expect_equal(quickTextHTML("m/s"), "m&nbsp;s<sup>-1</sup>")
   expect_equal(quickTextHTML("m/s2"), "m&nbsp;s<sup>-2</sup>")
   # only whole words are replaced
@@ -92,7 +95,10 @@ test_that("convertPostcode() errors for invalid postcodes", {
   skip_if_not_installed("jsonlite")
   local_mocked_bindings(
     curl_fetch_memory = function(url, ...) {
-      list(status_code = 404L, content = charToRaw('{"error": "Invalid postcode"}'))
+      list(
+        status_code = 404L,
+        content = charToRaw('{"error": "Invalid postcode"}')
+      )
     },
     .package = "curl"
   )

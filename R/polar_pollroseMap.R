@@ -81,180 +81,25 @@ pollroseMap <- function(
   ...,
   control = NULL
 ) {
-  if (static) {
-    check_installed_static()
-  }
+  map <- polar_map_init(data, ...)
+  map <- polar_map_prep(map, data, pollutant, vars = c("wd", "ws"))
 
-  # check basemap providers are valid
-  provider <- check_providers(provider, static)
-  legend.position <- check_legendposition(legend.position, static)
-
-  # check for old facet/control opts
-  type <- type %||% check_facet_control(control = control, ...)
-
-  # assume lat/lon
-  latlon <- assume_latlon(
-    data = data,
-    latitude = latitude,
-    longitude = longitude
-  )
-  latitude <- latlon$latitude
-  longitude <- latlon$longitude
-
-  # cut data
-  data <- openair::cutData(x = data, type = type %||% "default", ...)
-
-  # deal with popups
-  if (length(popup) > 1) {
-    data <-
-      quick_popup(
-        data = data,
-        popup = popup,
-        latitude = latitude,
-        longitude = longitude,
-        control = type
-      )
-    popup <- "popup"
-  }
-
-  # prep data
-  data <-
-    prepMapData(
-      data = data,
-      pollutant = pollutant,
-      control = type,
-      "wd",
-      "ws",
-      latitude,
-      longitude,
-      popup,
-      label
-    )
-
-  # work out breaks
-  # needs to happen before plotting to ensure same scales
+  # work out breaks - needs to happen before plotting to ensure same scales
   if (!is.null(breaks)) {
-    theBreaks <-
-      getBreaks(breaks = breaks, ws.int = NULL, vec = data$conc, polrose = TRUE)
-  } else {
-    theBreaks <- 6
+    breaks <- getBreaks(breaks, NULL, map$data$conc, polrose = TRUE)
   }
 
-  # identify splitting column (defaulting to pollutant)
-  if (length(pollutant) > 1) {
-    split_col <- "pollutant_name"
-  } else if (!is.null(type)) {
-    data[type] <- as.factor(data[[type]])
-    split_col <- type
-  } else {
-    split_col <- "pollutant_name"
-  }
-
-  # arguments for function
-  dots <- rlang::list2(...)
-  dots$annotate <- dots$annotate %||% FALSE
-  fun_args <- append(
-    list(
+  polar_map_draw(
+    map,
+    fun = openair::pollutionRose,
+    fun_args = list(
       pollutant = "conc",
       statistic = statistic,
-      breaks = theBreaks,
-      plot = FALSE,
-      cols = cols,
-      theme = theme,
-      key.position = key.position
+      breaks = breaks %||% 6
     ),
-    dots
+    legend_spec = \(plots_df) {
+      legend_from_markers(plots_df, values = rose_intervals, cols = cols)
+    },
+    legend_str = pollutant
   )
-
-  # define function
-  fun <- function(data) {
-    rlang::exec(
-      openair::pollutionRose,
-      !!!append(
-        list(mydata = data),
-        fun_args
-      )
-    )
-  }
-
-  # plot and save static markers
-  plots_df <-
-    create_polar_markers(
-      fun = fun,
-      fun_args = fun_args,
-      data = data,
-      latitude = latitude,
-      longitude = longitude,
-      split_col = split_col,
-      d.fig = d.fig,
-      popup = popup,
-      label = label,
-      progress = progress
-    )
-
-  if (static) {
-    # create static map - deals with basics & facets
-    map <-
-      create_static_map(
-        plots_df = plots_df,
-        latitude = latitude,
-        longitude = longitude,
-        split_col = split_col,
-        pollutant = pollutant,
-        facet = type,
-        facet.nrow = static.nrow,
-        api_key = api_key,
-        d.icon = d.icon,
-        crs = crs,
-        provider = provider,
-        alpha = alpha
-      )
-  }
-
-  if (!static) {
-    # create leaflet map
-    map <-
-      make_leaflet_map(
-        plots_df,
-        latitude,
-        longitude,
-        crs,
-        provider,
-        d.icon,
-        popup,
-        label,
-        split_col,
-        control.collapsed,
-        control.position,
-        control.autotext,
-        alpha
-      )
-  }
-
-  # add shared legend
-  if (legend) {
-    map <- add_polar_legend(
-      map,
-      spec = legend_from_markers(
-        plots_df,
-        values = rose_intervals,
-        cols = cols
-      ),
-      static = static,
-      title = create_legend_title(
-        static = static,
-        legend.title.autotext = legend.title.autotext,
-        legend.title = legend.title,
-        str = paste(pollutant, collapse = if (static) ", " else ",<br>")
-      ),
-      position = legend.position,
-      alpha = alpha,
-      plots_df = plots_df,
-      latitude = latitude,
-      longitude = longitude
-    )
-  }
-
-  # return map
-  return(map)
 }

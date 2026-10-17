@@ -29,7 +29,12 @@ test_that("checkMapPrep() cleans wind and pollutant data", {
 
 test_that("checkMapPrep() can keep calms and negative wind speeds", {
   out <- quietly(
-    checkMapPrep(wind_df, names(wind_df), remove.calm = FALSE, remove.neg = FALSE)
+    checkMapPrep(
+      wind_df,
+      names(wind_df),
+      remove.calm = FALSE,
+      remove.neg = FALSE
+    )
   )
   expect_equal(out$ws, wind_df$ws)
   expect_equal(out$wd, c(4, 123, 360, NA))
@@ -119,6 +124,12 @@ test_that("quick_popup() combines columns into a popup", {
   )
   out <- quick_popup(df, c("site_name", "nox"), "lat", "lon", NULL)
   expect_true("popup" %in% names(out))
-  expect_equal(out$popup[[1]], "<b>Site Name</b>: a<br><b>NO<sub>x</sub></b>: 2")
-  expect_equal(out$popup[[3]], "<b>Site Name</b>: b<br><b>NO<sub>x</sub></b>: 5")
+  expect_equal(
+    out$popup[[1]],
+    "<b>Site Name</b>: a<br><b>NO<sub>x</sub></b>: 2"
+  )
+  expect_equal(
+    out$popup[[3]],
+    "<b>Site Name</b>: b<br><b>NO<sub>x</sub></b>: 5"
+  )
 })

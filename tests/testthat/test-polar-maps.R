@@ -246,7 +246,12 @@ test_that("windroseMap() makes maps", {
   expect_equal(leaflet_legends(map)[[1]]$title, "Wind Speed")
 
   skip_if_not_installed("ggspatial")
-  map <- quietly(windroseMap(polar, static = TRUE, d.fig = fig, progress = FALSE))
+  map <- quietly(windroseMap(
+    polar,
+    static = TRUE,
+    d.fig = fig,
+    progress = FALSE
+  ))
   expect_s3_class(map, "ggplot")
 })
 

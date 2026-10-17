@@ -117,16 +117,3 @@ test_that("assume_latlon() guesses latitude and longitude", {
     "No clear match"
   )
 })
-
-test_that("check_facet_control() handles deprecated arguments", {
-  expect_null(check_facet_control(control = NULL))
-
-  withr::local_options(lifecycle_verbosity = "warning")
-  expect_warning(out <- check_facet_control(control = "site"), "type")
-  expect_equal(out, "site")
-  expect_warning(
-    out <- check_facet_control(control = NULL, facet = "site"),
-    "type"
-  )
-  expect_equal(out, "site")
-})

@@ -322,7 +322,7 @@ wind directions is from a particular wind sector is also shown.}
 \code{key.position} to \code{"none"}.}
   }}
 
-\item{control}{\strong{Deprecated.} Please use \code{type}.}
+\item{control}{\strong{Removed.} Please use \code{type}.}
 }
 \value{
 Either:

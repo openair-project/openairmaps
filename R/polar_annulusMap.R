@@ -69,25 +69,7 @@ annulusMap <- function(
   ...,
   control = NULL
 ) {
-  if (static) {
-    check_installed_static()
-  }
-
-  # check basemap providers are valid
-  provider <- check_providers(provider, static)
-  legend.position <- check_legendposition(legend.position, static)
-
-  # check for old facet/control opts
-  type <- type %||% check_facet_control(control = control, ...)
-
-  # assume lat/lon
-  latlon <- assume_latlon(
-    data = data,
-    latitude = latitude,
-    longitude = longitude
-  )
-  latitude <- latlon$latitude
-  longitude <- latlon$longitude
+  map <- polar_map_init(data, ...)
 
   # auto limits
   limits <- check_multipoll(limits, pollutant)
@@ -104,9 +86,9 @@ annulusMap <- function(
           openair::polarAnnulus,
           data,
           pollutant = pollutant,
-          latitude = latitude,
-          longitude = longitude,
-          type = type,
+          latitude = map$latitude,
+          longitude = map$longitude,
+          type = map$type,
           period = period,
           ...
         )$pred,
@@ -116,167 +98,37 @@ annulusMap <- function(
     )
   }
 
-  # cut data
-  data <- openair::cutData(x = data, type = type %||% "default", ...)
+  map <- polar_map_prep(map, data, pollutant, c("wd", "date"))
 
-  # deal with popups
-  if (length(popup) > 1) {
-    data <-
-      quick_popup(
-        data = data,
-        popup = popup,
-        latitude = latitude,
-        longitude = longitude,
-        control = type
-      )
-    popup <- "popup"
-  }
-
-  # prepare data for mapping
-  data <-
-    prepMapData(
-      data = data,
-      pollutant = pollutant,
-      control = type,
-      "wd",
-      "date",
-      latitude,
-      longitude,
-      popup,
-      label
-    )
-
-  # identify splitting column (defaulting to pollutant)
-  if (length(pollutant) > 1) {
-    split_col <- "pollutant_name"
-  } else if (!is.null(type)) {
-    data[type] <- as.factor(data[[type]])
-    split_col <- type
-  } else {
-    split_col <- "pollutant_name"
-  }
-
-  # arguments for function
-  dots <- rlang::list2(...)
-  dots$annotate <- dots$annotate %||% FALSE
-  fun_args <- append(
-    list(
-      pollutant = "conc",
-      period = period,
-      plot = FALSE,
-      limits = theLimits,
-      cols = cols,
-      theme = theme,
-      key.position = key.position
-    ),
-    dots
-  )
-
-  # define function
-  fun <- function(data) {
-    rlang::exec(
-      openair::polarAnnulus,
-      !!!append(
-        list(mydata = data),
-        fun_args
-      )
-    )
-  }
+  fun_args <- list(pollutant = "conc", period = period, limits = theLimits)
 
   # work out one set of breaks for all markers, so they share a legend
   if (!is.null(breaks)) {
     fun_args$breaks <- resolve_shared_breaks(
       fun = openair::polarAnnulus,
-      fun_args = fun_args,
-      data = data,
+      fun_args = polar_fun_args(map, fun_args),
+      data = map$data,
       breaks = breaks,
       values = \(x) x$pred,
-      latitude = latitude,
-      longitude = longitude,
-      split_col = split_col
+      latitude = map$latitude,
+      longitude = map$longitude,
+      split_col = map$split_col
     )
   }
 
-  # plot and save static markers
-  plots_df <-
-    create_polar_markers(
-      fun = fun,
-      fun_args = fun_args,
-      data = data,
-      latitude = latitude,
-      longitude = longitude,
-      split_col = split_col,
-      d.fig = d.fig,
-      popup = popup,
-      label = label,
-      progress = progress
-    )
-
-  if (static) {
-    # create static map - deals with basics & facets
-    map <-
-      create_static_map(
-        plots_df = plots_df,
-        latitude = latitude,
-        longitude = longitude,
-        split_col = split_col,
-        pollutant = pollutant,
-        facet = type,
-        facet.nrow = static.nrow,
-        api_key = api_key,
-        d.icon = d.icon,
-        crs = crs,
-        provider = provider,
-        alpha = alpha
-      )
-  }
-
-  if (!static) {
-    # create leaflet map
-    map <-
-      make_leaflet_map(
-        plots_df,
-        latitude,
-        longitude,
-        crs,
-        provider,
-        d.icon,
-        popup,
-        label,
-        split_col,
-        control.collapsed,
-        control.position,
-        control.autotext,
-        alpha
-      )
-  }
-
-  # add shared legend
-  if (legend) {
-    map <- add_polar_legend(
-      map,
-      spec = legend_from_markers(
+  polar_map_draw(
+    map,
+    fun = openair::polarAnnulus,
+    fun_args = fun_args,
+    legend_spec = \(plots_df) {
+      legend_from_markers(
         plots_df,
         values = \(x) x$pred,
         limits = theLimits,
         cols = cols,
-        trans = fun_args$trans %||% formals(openair::polarAnnulus)$trans
-      ),
-      static = static,
-      title = create_legend_title(
-        static = static,
-        legend.title.autotext = legend.title.autotext,
-        legend.title = legend.title,
-        str = paste(pollutant, collapse = if (static) ", " else ",<br>")
-      ),
-      position = legend.position,
-      alpha = alpha,
-      plots_df = plots_df,
-      latitude = latitude,
-      longitude = longitude
-    )
-  }
-
-  # return map
-  return(map)
+        trans = map$dots$trans %||% formals(openair::polarAnnulus)$trans
+      )
+    },
+    legend_str = pollutant
+  )
 }

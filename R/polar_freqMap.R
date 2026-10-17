@@ -91,25 +91,7 @@ freqMap <- function(
   ...,
   control = NULL
 ) {
-  if (static) {
-    check_installed_static()
-  }
-
-  # check basemap providers are valid
-  provider <- check_providers(provider, static)
-  legend.position <- check_legendposition(legend.position, static)
-
-  # check for old facet/control opts
-  type <- type %||% check_facet_control(control = control, ...)
-
-  # assume lat/lon
-  latlon <- assume_latlon(
-    data = data,
-    latitude = latitude,
-    longitude = longitude
-  )
-  latitude <- latlon$latitude
-  longitude <- latlon$longitude
+  map <- polar_map_init(data, ...)
 
   # allow no pollutant when statistic = "frequency"
   if (statistic == "frequency") {
@@ -131,9 +113,9 @@ freqMap <- function(
         openair::polarFreq,
         data,
         pollutant = pollutant,
-        latitude = latitude,
-        longitude = longitude,
-        type = type,
+        latitude = map$latitude,
+        longitude = map$longitude,
+        type = map$type,
         statistic = statistic,
         trans = FALSE,
         ...
@@ -142,152 +124,25 @@ freqMap <- function(
     )
   )
 
-  # cut data
-  data <- openair::cutData(x = data, type = type %||% "default", ...)
+  map <- polar_map_prep(map, data, pollutant, c("wd", "ws"))
 
-  # deal with popups
-  if (length(popup) > 1) {
-    data <-
-      quick_popup(
-        data = data,
-        popup = popup,
-        latitude = latitude,
-        longitude = longitude,
-        control = type
-      )
-    popup <- "popup"
-  }
-
-  # prep data
-  data <-
-    prepMapData(
-      data = data,
-      pollutant = pollutant,
-      control = type,
-      "wd",
-      "ws",
-      latitude,
-      longitude,
-      popup,
-      label
-    )
-
-  # identify splitting column (defaulting to pollutant)
-  if (length(pollutant) > 1) {
-    split_col <- "pollutant_name"
-  } else if (!is.null(type)) {
-    data[type] <- as.factor(data[[type]])
-    split_col <- type
-  } else {
-    split_col <- "pollutant_name"
-  }
-
-  # arguments for function
-  dots <- rlang::list2(...)
-  dots$annotate <- dots$annotate %||% FALSE
-  fun_args <- append(
-    list(
+  polar_map_draw(
+    map,
+    fun = openair::polarFreq,
+    fun_args = list(
       pollutant = "conc",
       breaks = theBreaks,
-      plot = FALSE,
-      statistic = statistic,
-      cols = cols,
-      theme = theme,
-      key.position = key.position
+      statistic = statistic
     ),
-    dots
-  )
-
-  # define function
-  fun <- function(data) {
-    rlang::exec(
-      openair::polarFreq,
-      !!!append(
-        list(mydata = data),
-        fun_args
-      )
-    )
-  }
-
-  # plot and save static markers
-  plots_df <-
-    create_polar_markers(
-      fun = fun,
-      fun_args = fun_args,
-      data = data,
-      latitude = latitude,
-      longitude = longitude,
-      split_col = split_col,
-      d.fig = d.fig,
-      popup = popup,
-      label = label,
-      progress = progress
-    )
-
-  if (static) {
-    # create static map - deals with basics & facets
-    map <-
-      create_static_map(
-        plots_df = plots_df,
-        latitude = latitude,
-        longitude = longitude,
-        split_col = split_col,
-        pollutant = pollutant,
-        facet = type,
-        facet.nrow = static.nrow,
-        api_key = api_key,
-        d.icon = d.icon,
-        crs = crs,
-        provider = provider,
-        alpha = alpha
-      )
-  }
-
-  if (!static) {
-    # create leaflet map
-    map <-
-      make_leaflet_map(
-        plots_df,
-        latitude,
-        longitude,
-        crs,
-        provider,
-        d.icon,
-        popup,
-        label,
-        split_col,
-        control.collapsed,
-        control.position,
-        control.autotext,
-        alpha
-      )
-  }
-
-  # add shared legend
-  if (legend) {
-    map <- add_polar_legend(
-      map,
-      spec = legend_from_markers(
+    legend_spec = \(plots_df) {
+      legend_from_markers(
         plots_df,
         values = \(x) x$weights,
-        limits = fun_args$limits,
+        limits = map$dots$limits,
         cols = cols,
-        trans = fun_args$trans %||% formals(openair::polarFreq)$trans
-      ),
-      static = static,
-      title = create_legend_title(
-        static = static,
-        legend.title.autotext = legend.title.autotext,
-        legend.title = legend.title,
-        str = paste(lab, collapse = if (static) ", " else ",<br>")
-      ),
-      position = legend.position,
-      alpha = alpha,
-      plots_df = plots_df,
-      latitude = latitude,
-      longitude = longitude
-    )
-  }
-
-  map
+        trans = map$dots$trans %||% formals(openair::polarFreq)$trans
+      )
+    },
+    legend_str = lab
+  )
 }

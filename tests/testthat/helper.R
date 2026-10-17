@@ -19,7 +19,8 @@ small_traj <- function(n = 6) {
 
 # a cheap stand-in for an openair polar plotting function, which errors when
 # there isn't enough data (as openair does)
-fake_polar_fun <- function(data, after = NULL) {
+fake_polar_fun <- function(mydata = before, before = NULL, after = NULL, ...) {
+  data <- mydata
   if (nrow(data) < 10) {
     stop("Not enough data")
   }

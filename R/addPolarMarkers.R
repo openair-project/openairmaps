@@ -96,10 +96,6 @@ addPolarMarkers <-
     data = leaflet::getMapData(map),
     ...
   ) {
-    # rename fun input, as `fun` is redefined below to wrap it. `polar_fun`
-    # must be passed to `create_polar_markers()` for carrier crating
-    polar_fun <- fun
-
     # guess lat/lon
     latlon <- assume_latlon(
       data = data,
@@ -118,15 +114,6 @@ addPolarMarkers <-
       ),
       rlang::list2(...)
     )
-    fun <- function(data) {
-      rlang::exec(
-        .fn = polar_fun,
-        !!!append(
-          list(mydata = data),
-          fun_args
-        )
-      )
-    }
 
     # create dummy split_col
     data$dummyvar <- "dummyvar"
@@ -145,8 +132,7 @@ addPolarMarkers <-
         popup = popup,
         label = label,
         dropcol = pollutant,
-        progress = TRUE,
-        polar_fun = polar_fun
+        progress = TRUE
       )
 
     # add markers to map
@@ -221,15 +207,6 @@ addPolarDiffMarkers <-
       ),
       rlang::list2(...)
     )
-    fun <- function(before, after) {
-      rlang::exec(
-        openair::polarDiff,
-        !!!append(
-          list(before = before, after = after),
-          fun_args
-        )
-      )
-    }
 
     # create dummy split_col
     before$dummyvar <- "dummyvar"
@@ -239,7 +216,7 @@ addPolarDiffMarkers <-
     # plot and save static markers
     plots_df <-
       create_polar_markers(
-        fun = fun,
+        fun = openair::polarDiff,
         fun_args = fun_args,
         data = before,
         after = after,

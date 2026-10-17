@@ -10,7 +10,12 @@ fake_meta <- function(source, ..., all, duplicate) {
     latitude = c(51, 51, 52, 56),
     longitude = c(-1, -1, -2, -4),
     variable = c("NO2", "BENZENE", "O3", "NO2"),
-    Parameter_name = c("Nitrogen dioxide", "Benzene", "Ozone", "Nitrogen dioxide"),
+    Parameter_name = c(
+      "Nitrogen dioxide",
+      "Benzene",
+      "Ozone",
+      "Nitrogen dioxide"
+    ),
     start_date = as.POSIXct(
       c("2000-01-01", "2001-01-01", "2002-01-01", "2003-01-01"),
       tz = "GMT"
@@ -45,7 +50,10 @@ test_that("networkMap() makes a map of sites", {
   # multiple networks - legend
   expect_equal(leaflet_legends(map)[[1]]$title, "Network")
   expect_length(leaflet_legends(networkMap("aurn")), 0)
-  expect_length(leaflet_legends(networkMap(c("aurn", "saqn"), legend = FALSE)), 0)
+  expect_length(
+    leaflet_legends(networkMap(c("aurn", "saqn"), legend = FALSE)),
+    0
+  )
 })
 
 test_that("networkMap() splits sites using control", {

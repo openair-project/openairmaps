@@ -87,25 +87,7 @@ diffMap <- function(
   ...,
   control = NULL
 ) {
-  if (static) {
-    check_installed_static()
-  }
-
-  # check basemap providers are valid
-  provider <- check_providers(provider, static)
-  legend.position <- check_legendposition(legend.position, static)
-
-  # check for old facet/control opts
-  type <- type %||% check_facet_control(control = control, ...)
-
-  # assume lat/lon
-  latlon <- assume_latlon(
-    data = before,
-    latitude = latitude,
-    longitude = longitude
-  )
-  latitude <- latlon$latitude
-  longitude <- latlon$longitude
+  map <- polar_map_init(before, ...)
 
   # auto limits
   if ("fixed" %in% limits) {
@@ -115,159 +97,16 @@ diffMap <- function(
   }
   theLimits <- resolve_scale(limits, "limits", free = NA, n = 2)
 
-  # cut data
-  before <- openair::cutData(x = before, type = type %||% "default", ...)
-  after <- openair::cutData(x = after, type = type %||% "default", ...)
+  # only `before` is used for popups/labels
+  map <- polar_map_prep(map, before, pollutant, c("wd", x), after = after)
 
-  # deal with popups - only `before` is used for popups/labels
-  if (length(popup) > 1) {
-    before <-
-      quick_popup(
-        data = before,
-        popup = popup,
-        latitude = latitude,
-        longitude = longitude,
-        control = type
-      )
-    popup <- "popup"
-  }
-
-  # prep data
-  before <-
-    prepMapData(
-      data = before,
-      pollutant = pollutant,
-      control = type,
-      "wd",
-      x,
-      latitude,
-      longitude,
-      popup,
-      label
-    )
-
-  after <-
-    prepMapData(
-      data = after,
-      pollutant = pollutant,
-      control = type,
-      "wd",
-      x,
-      latitude,
-      longitude
-    )
-
-  # identify splitting column (defaulting to pollutant)
-  if (length(pollutant) > 1) {
-    split_col <- "pollutant_name"
-  } else if (!is.null(type)) {
-    before[type] <- as.factor(before[[type]])
-    after[type] <- as.factor(after[[type]])
-    split_col <- type
-  } else {
-    split_col <- "pollutant_name"
-  }
-
-  # arguments for function
-  fun_args <- append(
-    list(
-      pollutant = "conc",
-      x = x,
-      limits = theLimits,
-      cols = cols,
-      theme = theme,
-      key.position = key.position,
-      plot = FALSE
-    ),
-    rlang::list2(...)
+  polar_map_draw(
+    map,
+    fun = openair::polarDiff,
+    fun_args = list(pollutant = "conc", x = x, limits = theLimits),
+    legend_spec = \(plots_df) {
+      if (!anyNA(theLimits)) legend_continuous(theLimits, cols)
+    },
+    legend_str = pollutant
   )
-
-  # define function
-  fun <- function(before, after) {
-    rlang::exec(
-      openair::polarDiff,
-      !!!append(
-        list(before = before, after = after),
-        fun_args
-      )
-    )
-  }
-
-  # plot and save static markers
-  plots_df <-
-    create_polar_markers(
-      fun = fun,
-      fun_args = fun_args,
-      data = before,
-      after = after,
-      latitude = latitude,
-      longitude = longitude,
-      split_col = split_col,
-      d.fig = d.fig,
-      popup = popup,
-      label = label,
-      progress = progress
-    )
-
-  if (static) {
-    # create static map - deals with basics & facets
-    map <-
-      create_static_map(
-        plots_df = plots_df,
-        latitude = latitude,
-        longitude = longitude,
-        split_col = split_col,
-        pollutant = pollutant,
-        facet = type,
-        facet.nrow = static.nrow,
-        api_key = api_key,
-        d.icon = d.icon,
-        crs = crs,
-        provider = provider,
-        alpha = alpha
-      )
-  }
-
-  if (!static) {
-    # create leaflet map
-    map <-
-      make_leaflet_map(
-        plots_df,
-        latitude,
-        longitude,
-        crs,
-        provider,
-        d.icon,
-        popup,
-        label,
-        split_col,
-        control.collapsed,
-        control.position,
-        control.autotext,
-        alpha
-      )
-  }
-
-  # add shared legend
-  if (legend) {
-    map <- add_polar_legend(
-      map,
-      spec = if (!anyNA(theLimits)) legend_continuous(theLimits, cols),
-      static = static,
-      title = create_legend_title(
-        static = static,
-        legend.title.autotext = legend.title.autotext,
-        legend.title = legend.title,
-        str = paste(pollutant, collapse = if (static) ", " else ",<br>")
-      ),
-      position = legend.position,
-      alpha = alpha,
-      plots_df = plots_df,
-      latitude = latitude,
-      longitude = longitude
-    )
-  }
-
-  # return map
-  return(map)
 }

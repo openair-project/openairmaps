@@ -112,8 +112,6 @@
 #'   "topright", "bottomleft" or "bottomright". Passed to the `position`
 #'   argument of [leaflet::addLayersControl()].
 #'
-#' @param control Deprecated. Please use `type`.
-#'
 #' @inheritDotParams openair::cutData -x -type
 #'
 #' @returns A leaflet object.
@@ -143,19 +141,8 @@ trajMap <-
     legend.title.autotext = TRUE,
     control.collapsed = FALSE,
     control.position = "topright",
-    control = NULL,
     ...
   ) {
-    # handle deprecated argument
-    if (!is.null(control)) {
-      lifecycle::deprecate_soft(
-        when = "0.9.0",
-        what = "trajMap(control)",
-        with = "trajMap(type)"
-      )
-    }
-    type <- type %||% control
-
     # make lat/lon easier to use
     names(data)[names(data) == longitude] <- "lon"
     names(data)[names(data) == latitude] <- "lat"

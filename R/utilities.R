@@ -183,10 +183,6 @@ buildPopup <-
     },
     ...
   ) {
-    # check for old facet/control opts
-    dots <- rlang::list2(...)
-    type <- type %||% check_facet_control(control = dots$control)
-
     # assume latitude/longitude
     latlon <- assume_latlon(
       data = data,

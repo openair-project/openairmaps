@@ -63,7 +63,11 @@ test_that("trajMap() draws one line per trajectory", {
   expect_s3_class(map, "leaflet")
   expect_length(leaflet_calls(map, "addPolylines"), n_traj)
   expect_equal(
-    unique(vapply(leaflet_calls(map, "addPolylines"), \(x) x$args[[4]]$color, "")),
+    unique(vapply(
+      leaflet_calls(map, "addPolylines"),
+      \(x) x$args[[4]]$color,
+      ""
+    )),
     "black"
   )
   expect_length(leaflet_legends(map), 0)
@@ -78,15 +82,22 @@ test_that("trajMap() supports multiple receptors", {
 test_that("trajMap() colours trajectories", {
   # fixed colour
   map <- trajMap(traj, colour = "red")
-  colours <- vapply(leaflet_calls(map, "addPolylines"), \(x) x$args[[4]]$color, "")
+  colours <- vapply(
+    leaflet_calls(map, "addPolylines"),
+    \(x) x$args[[4]]$color,
+    ""
+  )
   expect_equal(unique(colours), "red")
 
   # numeric
   map <- trajMap(traj, colour = "nox", legend.title = "my nox")
   expect_equal(leaflet_legends(map)[[1]]$title, "my NO<sub>x</sub>")
-  expect_gt(length(unique(
-    vapply(leaflet_calls(map, "addPolylines"), \(x) x$args[[4]]$color, "")
-  )), 1)
+  expect_gt(
+    length(unique(
+      vapply(leaflet_calls(map, "addPolylines"), \(x) x$args[[4]]$color, "")
+    )),
+    1
+  )
 
   # factor
   traj$fct <- factor(rep(c("a", "b"), length.out = nrow(traj)))
@@ -104,9 +115,12 @@ test_that("trajMap() splits trajectories by type", {
   expect_setequal(layer_control(map)$overlay, as.character(as.numeric(hours)))
 })
 
-test_that("trajMap() supports deprecated control and other providers", {
-  withr::local_options(lifecycle_verbosity = "quiet")
-  map <- trajMap(traj, control = "hour", provider = c("OpenStreetMap", "cartolight"))
+test_that("trajMap() supports other providers", {
+  map <- trajMap(
+    traj,
+    type = "hour",
+    provider = c("OpenStreetMap", "cartolight")
+  )
   expect_equal(leaflet_providers(map), c("OpenStreetMap", "CartoDB.Positron"))
   expect_length(layer_control(map)$overlay, length(unique(traj$date)))
   expect_error(trajMap(traj, provider = "foo"), "provider")
@@ -165,7 +179,9 @@ test_that("addTrajPaths() only takes single colours", {
 # addTrajLevel() / trajLevelMap() ----------------------------------------------
 
 test_that("addTrajLevel() adds gridded trajectory frequencies", {
-  map <- leaflet::leaflet() |> addTrajLevel(data = traj, layerId = "grid") |> quietly()
+  map <- leaflet::leaflet() |>
+    addTrajLevel(data = traj, layerId = "grid") |>
+    quietly()
   rects <- leaflet_calls(map, "addRectangles")[[1]]
   expect_true(all(grepl("^grid-", rects$args[[5]])))
   legend <- leaflet_legends(map)[[1]]
