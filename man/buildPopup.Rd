@@ -84,7 +84,7 @@ could be the start or end of the dates.}
 \item{...}{\strong{Not currently used.}}
 }
 \value{
-a \link[tibble:tibble]{tibble}
+a \link[dplyr:tibble]{tibble}
 }
 \description{
 Group a dataframe together by latitude/longitude columns and create a HTML

@@ -197,8 +197,6 @@ trajMap(traj_data, colour = "pm10")
 \seealso{
 \code{\link[openair:trajPlot]{openair::trajPlot()}}
 
-\code{\link[=trajMapStatic]{trajMapStatic()}} for the static \code{ggplot2} equivalent of \code{\link[=trajMap]{trajMap()}}
-
 Other interactive trajectory maps:
 \code{\link[=trajLevelMap]{trajLevelMap()}}
 }

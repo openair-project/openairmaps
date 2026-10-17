@@ -30,7 +30,6 @@ reference:
   - has_concept("interactive trajectory maps")
   - addTrajPaths
   - addTrajLevel
-  - trajMapStatic
 
 - title: Site Averages & Spatial Interpolation
   desc: |

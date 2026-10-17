@@ -4,6 +4,8 @@
 
 * The `control` argument of the `polarMap()` family and `trajMap()`, deprecated in favour of `type` in openairmaps 0.9.0, has been removed. The deprecated `facet` argument (from `polarMapStatic()`) is also no longer recognised. Please use `type` instead; the `polarMap()` family will raise an error pointing to `type` if either is used. Note that `control` in `networkMap()` is unaffected.
 
+* `trajMapStatic()` and `trajLevelMapStatic()` have both been removed from `openairmaps`. Users should now use `openair::trajPlot()` or `openair::trajLevel()` directly.
+
 ## New features
 
 * Added `pointMap()`, which summarises pollutant data at each site (e.g., the mean concentration) and shows it as coloured circles on a dynamic or static map. It shares its arguments (`statistic`, `breaks`, `limits`, etc.) with `krigingMap()` and `voronoiMap()`, but draws no interpolated surface. All three functions also gain `popup` and `label` arguments, which work like those in `polarMap()` (e.g., to show site names or types when clicking on or hovering over a site marker).

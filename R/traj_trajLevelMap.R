@@ -13,8 +13,6 @@
 #' @seealso [openair::trajLevel()]
 #' @seealso [addTrajLevel()] to add gridded trajectory statistics to any
 #'   leaflet map
-#' @seealso [trajLevelMapStatic()] for the static `ggplot2` equivalent of
-#'   [trajLevelMap()]
 #'
 #' @examples
 #' \dontrun{

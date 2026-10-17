@@ -192,9 +192,6 @@ trajLevelMap(traj_data, pollutant = "pm2.5", statistic = "pscf", min.bin = 10)
 \code{\link[=addTrajLevel]{addTrajLevel()}} to add gridded trajectory statistics to any
 leaflet map
 
-\code{\link[=trajLevelMapStatic]{trajLevelMapStatic()}} for the static \code{ggplot2} equivalent of
-\code{\link[=trajLevelMap]{trajLevelMap()}}
-
 Other interactive trajectory maps:
 \code{\link[=trajMap]{trajMap()}}
 }

@@ -118,7 +118,6 @@
 #' @export
 #'
 #' @seealso [openair::trajPlot()]
-#' @seealso [trajMapStatic()] for the static `ggplot2` equivalent of [trajMap()]
 #'
 #' @examples
 #' \dontrun{
