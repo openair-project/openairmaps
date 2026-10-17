@@ -96,66 +96,7 @@ addPolarMarkers <-
     data = leaflet::getMapData(map),
     ...
   ) {
-    # guess lat/lon
-    latlon <- assume_latlon(
-      data = data,
-      latitude = lat,
-      longitude = lng
-    )
-    latitude <- latlon$latitude
-    longitude <- latlon$longitude
-
-    # define plotting function
-    fun_args <- append(
-      list(
-        pollutant = pollutant,
-        key.position = key.position,
-        plot = FALSE
-      ),
-      rlang::list2(...)
-    )
-
-    # create dummy split_col
-    data$dummyvar <- "dummyvar"
-    split_col <- "dummyvar"
-
-    # plot and save static markers
-    plots_df <-
-      create_polar_markers(
-        fun = fun,
-        fun_args = fun_args,
-        data = data,
-        latitude = latitude,
-        longitude = longitude,
-        split_col = split_col,
-        d.fig = d.fig,
-        popup = popup,
-        label = label,
-        dropcol = pollutant,
-        progress = TRUE
-      )
-
-    # add markers to map
-    out_map <- attach_marker_icons(
-      map = map,
-      data = plots_df,
-      latitude = latitude,
-      longitude = longitude,
-      d.icon = d.icon,
-      group = group,
-      layerId = layerId,
-      popup = popup,
-      popupOptions = popupOptions,
-      label = label,
-      labelOptions = labelOptions,
-      options = options,
-      clusterOptions = clusterOptions,
-      clusterId = clusterId,
-      alpha = alpha
-    )
-
-    # return map
-    return(out_map)
+    add_polar_markers(fun = fun, data = data, ...)
   }
 
 #' @inheritParams diffMap
@@ -189,66 +130,106 @@ addPolarDiffMarkers <-
     alpha = 1,
     ...
   ) {
-    # guess lat/lon
-    latlon <- assume_latlon(
+    add_polar_markers(
+      fun = openair::polarDiff,
       data = before,
-      latitude = lat,
-      longitude = lng
+      after = after,
+      ...
     )
-    latitude <- latlon$latitude
-    longitude <- latlon$longitude
-
-    # define plotting function
-    fun_args <- append(
-      list(
-        pollutant = pollutant,
-        key.position = key.position,
-        plot = FALSE
-      ),
-      rlang::list2(...)
-    )
-
-    # create dummy split_col
-    before$dummyvar <- "dummyvar"
-    after$dummyvar <- "dummyvar"
-    split_col <- "dummyvar"
-
-    # plot and save static markers
-    plots_df <-
-      create_polar_markers(
-        fun = openair::polarDiff,
-        fun_args = fun_args,
-        data = before,
-        after = after,
-        latitude = latitude,
-        longitude = longitude,
-        split_col = split_col,
-        d.fig = d.fig,
-        popup = popup,
-        label = label,
-        dropcol = pollutant,
-        progress = TRUE
-      )
-
-    # add markers to map
-    map <- attach_marker_icons(
-      map = map,
-      data = plots_df,
-      latitude = latitude,
-      longitude = longitude,
-      d.icon = d.icon,
-      group = group,
-      layerId = layerId,
-      popup = popup,
-      popupOptions = popupOptions,
-      label = label,
-      labelOptions = labelOptions,
-      options = options,
-      clusterOptions = clusterOptions,
-      clusterId = clusterId,
-      alpha = alpha
-    )
-
-    # return map
-    return(map)
   }
+
+#' Arguments shared by `addPolarMarkers()` and `addPolarDiffMarkers()`
+#'
+#' `add_polar_markers()` reads these from the calling function, so they don't
+#' have to be passed through by hand. Both functions must have all of them as
+#' arguments - see `test-addPolarMarkers.R`.
+#' @noRd
+polar_marker_args <- c(
+  "map",
+  "pollutant",
+  "lng",
+  "lat",
+  "layerId",
+  "group",
+  "popup",
+  "popupOptions",
+  "label",
+  "labelOptions",
+  "options",
+  "clusterOptions",
+  "clusterId",
+  "key.position",
+  "d.icon",
+  "d.fig",
+  "alpha"
+)
+
+#' Add polar markers to a leaflet map
+#'
+#' The shared implementation of `addPolarMarkers()` and `addPolarDiffMarkers()`.
+#' Collects the shared arguments (see `polar_marker_args`) from the calling
+#' function, plots one marker per location, and attaches them to the map.
+#' @param fun,data,after As in `create_polar_markers()`. `data` also provides
+#'   any popups/labels.
+#' @param ... The `...` of the calling function, passed to `fun`.
+#' @param env The calling function's environment.
+#' @noRd
+add_polar_markers <- function(
+  fun,
+  data,
+  after = NULL,
+  ...,
+  env = rlang::caller_env()
+) {
+  args <- rlang::env_get_list(env, polar_marker_args)
+
+  # guess lat/lon
+  latlon <- assume_latlon(
+    data = data,
+    latitude = args$lat,
+    longitude = args$lng
+  )
+
+  # one marker per location, so use a dummy split_col
+  data$dummyvar <- "dummyvar"
+  if (!is.null(after)) {
+    after$dummyvar <- "dummyvar"
+  }
+
+  # plot and save static markers
+  plots_df <-
+    create_polar_markers(
+      fun = fun,
+      fun_args = c(
+        list(
+          pollutant = args$pollutant,
+          key.position = args$key.position,
+          plot = FALSE
+        ),
+        rlang::list2(...)
+      ),
+      data = data,
+      after = after,
+      latitude = latlon$latitude,
+      longitude = latlon$longitude,
+      split_col = "dummyvar",
+      d.fig = args$d.fig,
+      popup = args$popup,
+      label = args$label,
+      dropcol = args$pollutant,
+      progress = TRUE
+    )
+
+  # add markers to map
+  rlang::exec(
+    attach_marker_icons,
+    map = args$map,
+    data = plots_df,
+    latitude = latlon$latitude,
+    longitude = latlon$longitude,
+    !!!args[setdiff(
+      polar_marker_args,
+      c("map", "pollutant", "lng", "lat", "key.position", "d.fig")
+    )]
+  )
+}

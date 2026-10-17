@@ -3,6 +3,12 @@ skip_on_cran()
 polar <- small_polar()
 one_site <- polar[polar$site == unique(polar$site)[[1]], ]
 
+test_that("addPolar*Markers() have all of the shared marker arguments", {
+  for (fun in list(addPolarMarkers, addPolarDiffMarkers)) {
+    expect_in(polar_marker_args, names(formals(fun)))
+  }
+})
+
 test_that("addPolarMarkers() adds markers to a leaflet map", {
   map <- leaflet::leaflet(polar) |>
     addPolarMarkers(
