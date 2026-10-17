@@ -223,6 +223,28 @@ test_that("raster interpolations can be mapped", {
   expect_s3_class(map, "ggplot")
 })
 
+test_that("breaks are expanded to cover the data", {
+  out <- expand_breaks(c(50, 100, 150), c(25, 80, 200, NA))
+  expect_equal(as.vector(out), c(25, 100, 200))
+
+  # breaks already covering the data are left alone
+  out <- expand_breaks(c(0, 100, 300), c(25, 200))
+  expect_equal(as.vector(out), c(0, 100, 300))
+  expect_equal(attr(out, "labels"), c(0, 100, 300))
+
+  # expanded breaks are exact, but labelled to 3 significant figures
+  out <- expand_breaks(c(50, 100), c(24.98731, 100.01234))
+  expect_equal(as.vector(out), c(24.98731, 100.01234))
+  expect_equal(attr(out, "labels"), c(25, 100))
+
+  # no sites are lost - including those at the lowest break
+  map <- quietly(pointMap(interp_data, "nox", breaks = c(20, 40, 50)))
+  legend <- leaflet_legends(map)[[1]]
+  expect_equal(as.character(legend$labels), c("12 - 40", "40 - 62"))
+  fills <- leaflet_calls(map, "addCircleMarkers")[[1]]$args[[6]]$fillColor
+  expect_false(anyNA(fills))
+})
+
 test_that("pointMap() makes dynamic maps", {
   map <- quietly(pointMap(interp_data, "nox"))
   expect_s3_class(map, "leaflet")

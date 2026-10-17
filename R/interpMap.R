@@ -51,6 +51,11 @@
 #'   the colour scale will be discretised using [cut()]. `labels` can also be
 #'   provided to customise how each factor level is labelled.
 #'
+#'   If the data extend beyond `breaks`, the outermost breaks are expanded to
+#'   cover them so that no sites are left uncoloured. For example, `breaks =
+#'   c(50, 100, 150)` would become `c(25, 100, 200)` for data ranging from 25
+#'   to 200.
+#'
 #' @param statistic *Statistic for aggregating pollutant data.*
 #'
 #'   *default:* `"mean"` | *scope:* dynamic & static

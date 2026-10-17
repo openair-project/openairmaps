@@ -213,9 +213,22 @@ interp_map_draw <- function(
 
   # discretise the colour scale
   if (!is.null(map$breaks)) {
+    breaks <- expand_breaks(
+      map$breaks,
+      values = c(
+        map$data_sf[[pollutant]],
+        unlist(lapply(surfaces, \(x) as.vector(x[[pollutant]])))
+      )
+    )
     labels <- map$labels %||%
-      paste(utils::head(map$breaks, -1), map$breaks[-1], sep = " - ")
-    bin <- \(x) cut(x, breaks = map$breaks, labels = labels)
+      paste(
+        utils::head(attr(breaks, "labels"), -1),
+        attr(breaks, "labels")[-1],
+        sep = " - "
+      )
+    bin <- \(x) {
+      cut(x, breaks = breaks, labels = labels, include.lowest = TRUE)
+    }
 
     map$data_sf[[pollutant]] <- bin(map$data_sf[[pollutant]])
     for (group in names(surfaces)) {
@@ -252,6 +265,34 @@ interp_map_draw <- function(
     show.markers = show.markers,
     voronoi.border = voronoi.border
   )
+}
+
+#' Expand `breaks` to cover the data
+#'
+#' The outermost breaks are moved out to the range of `values`, if needed, so
+#' that no values are left out of the colour scale. For example, `c(50, 100,
+#' 150)` would become `c(25, 100, 200)` for values ranging from 25 to 200.
+#' @returns `breaks`, with a `"labels"` attribute giving the breaks to show in
+#'   default labels. Any expanded breaks are rounded to 3 significant figures,
+#'   which the breaks themselves aren't, so no values fall outside them.
+#' @noRd
+expand_breaks <- function(breaks, values) {
+  labels <- breaks
+  values <- values[is.finite(values)]
+
+  if (length(values) > 0 && length(breaks) > 1) {
+    n <- length(breaks)
+    if (min(values) < breaks[[1]]) {
+      breaks[[1]] <- min(values)
+      labels[[1]] <- signif(min(values), 3)
+    }
+    if (max(values) > breaks[[n]]) {
+      breaks[[n]] <- max(values)
+      labels[[n]] <- signif(max(values), 3)
+    }
+  }
+
+  structure(breaks, labels = labels)
 }
 
 #' Create leaflet map

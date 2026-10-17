@@ -145,7 +145,11 @@ complex and computationally intensive.}
 
 By default, a continuous colour scale is used. If \code{breaks} are provided,
 the colour scale will be discretised using \code{\link[=cut]{cut()}}. \code{labels} can also be
-provided to customise how each factor level is labelled.}
+provided to customise how each factor level is labelled.
+
+If the data extend beyond \code{breaks}, the outermost breaks are expanded to
+cover them so that no sites are left uncoloured. For example, \code{breaks = c(50, 100, 150)} would become \code{c(25, 100, 200)} for data ranging from 25
+to 200.}
 
 \item{limits}{\emph{Specifier for the plot colour scale bounds.}
 

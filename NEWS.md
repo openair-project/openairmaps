@@ -66,6 +66,8 @@
 
 * `krigingMap()` and `voronoiMap()` now give an informative error if `pollutant` is not provided, in line with the `polarMap()` family.
 
+* `krigingMap()` and `voronoiMap()` no longer leave sites or parts of the surface uncoloured when the data fall outside `breaks`. The outermost breaks are now expanded to cover the data (e.g., `breaks = c(50, 100, 150)` becomes `c(25, 100, 200)` for data ranging from 25 to 200), and values equal to the lowest break are now included. This also applies to the new `pointMap()`.
+
 * `krigingMap()` and `voronoiMap()` now give an informative error if `statistic` isn't recognised.
 
 * `krigingMap(statistic = "sd")` and `voronoiMap(statistic = "sd")` now treat the standard deviation of sites with a single measurement as missing, rather than using the measurement itself.
