@@ -39,7 +39,6 @@ Suggests:
     gstat,
     jsonlite,
     knitr,
-    mgcv,
     mirai,
     png,
     prettymapr,

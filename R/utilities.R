@@ -147,7 +147,7 @@ quickTextHTML <- function(text) {
 #'
 #' @param ... **Not currently used.**
 #'
-#' @returns a [tibble][tibble::tibble()]
+#' @returns a [tibble][dplyr::tibble()]
 #' @export
 #'
 #' @examples

@@ -7,7 +7,7 @@ wind_df <- data.frame(
 
 test_that("checkMapPrep() treats data frames and tibbles identically", {
   df <- quietly(checkMapPrep(wind_df, names(wind_df)))
-  tbl <- quietly(checkMapPrep(tibble::as_tibble(wind_df), names(wind_df)))
+  tbl <- quietly(checkMapPrep(dplyr::as_tibble(wind_df), names(wind_df)))
   expect_equal(as.data.frame(tbl), df)
 })
 
