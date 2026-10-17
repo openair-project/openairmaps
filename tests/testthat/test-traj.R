@@ -151,10 +151,12 @@ test_that("addTrajPaths() adds layerIds and marker colours", {
   map <- leaflet::leaflet() |>
     addTrajPaths(data = one, layerId = "traj", markerColor = cols, npoints = 24)
   expect_equal(leaflet_calls(map, "addPolylines")[[1]]$args[[2]], "traj-1")
+  # points are added in one call, each with its own layerId
   points <- leaflet_calls(map, "addCircleMarkers")
-  expect_length(points, sum(one$hour.inc %% 24 == 0))
-  expect_equal(points[[1]]$args[[4]], "traj-1-1")
-  expect_equal(points[[1]]$args[[6]]$color, cols[one$hour.inc %% 24 == 0][[1]])
+  n_points <- sum(one$hour.inc %% 24 == 0)
+  expect_length(points, 1)
+  expect_equal(points[[1]]$args[[4]], paste0("traj-1-", seq_len(n_points)))
+  expect_equal(points[[1]]$args[[6]]$color, cols[one$hour.inc %% 24 == 0])
 
   # vectorised markers can also be coloured
   map <- leaflet::leaflet() |> addTrajPaths(data = one, markerColor = cols)

@@ -160,47 +160,24 @@ addTrajPaths <-
         marker_opts$color <- pdata$markerColor
       }
 
-      if (is.null(layerId)) {
-        # no per-point layer ids needed - add all points in one vectorised call
-        marker_arg <- append(
-          list(
-            map = map,
-            data = pdata,
-            radius = 3,
-            stroke = FALSE,
-            lng = pdata[[lng]],
-            lat = pdata[[lat]],
-            group = group,
-            popup = pdata[["lab"]]
-          ),
-          marker_opts
-        )
-        map <- rlang::exec(leaflet::addCircleMarkers, !!!marker_arg)
-      } else {
-        # per-point layer ids requested - markers must be added one at a time
-        for (j in seq_len(nrow(pdata))) {
-          layeridp <- paste(layerid, j, sep = "-")
-          row_opts <- marker_opts
-          if (!is.null(markerColor)) {
-            row_opts$color <- marker_opts$color[[j]]
-          }
-          marker_arg <- append(
-            list(
-              map = map,
-              data = pdata[j, ],
-              radius = 3,
-              stroke = FALSE,
-              lng = pdata[j, ][[lng]],
-              lat = pdata[j, ][[lat]],
-              group = group,
-              layerId = layeridp,
-              popup = pdata[j, ][["lab"]]
-            ),
-            row_opts
-          )
-          map <- rlang::exec(leaflet::addCircleMarkers, !!!marker_arg)
-        }
-      }
+      # add all points in one vectorised call
+      marker_arg <- append(
+        list(
+          map = map,
+          data = pdata,
+          radius = 3,
+          stroke = FALSE,
+          lng = pdata[[lng]],
+          lat = pdata[[lat]],
+          group = group,
+          layerId = if (!is.null(layerid)) {
+            sprintf("%s-%i", layerid, seq_len(nrow(pdata)))
+          },
+          popup = pdata[["lab"]]
+        ),
+        marker_opts
+      )
+      map <- rlang::exec(leaflet::addCircleMarkers, !!!marker_arg)
     }
 
     map

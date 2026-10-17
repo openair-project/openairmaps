@@ -16,6 +16,8 @@
 
 * `addTrajPaths()` gains a `markerColor` argument, allowing the point markers along a trajectory to be coloured independently of the trajectory line itself (e.g., by a continuously-varying pollutant). `trajMap()` now uses this internally instead of duplicating `addTrajPaths()`'s marker/line-drawing logic.
 
+* `addTrajPaths()` is now much faster when `layerId` is used, as the points along each trajectory are added to the map in a single call rather than one at a time. The layer IDs themselves are unchanged.
+
 * Static maps gain the `api_key` argument, passed to the equivalent argument in `ggspatial::annotation_map_tile()`.
 
 * The popups in `trajMap()`, `addTrajPaths()`, `trajLevelMap()` and `addTrajLevel()` have been restyled to match those in `networkMap()`. For trajectory paths, arrival and trajectory dates now always show the time, and the `colour` variable in `trajMap()` (e.g., a pollutant) is shown in its own row at the bottom of the popup. For gridded trajectories, the popup leads with the value and a description of the statistic, followed by the grid cell location, count and (if used) the `type` level.
@@ -59,6 +61,8 @@
 * `trajMap()` and `addTrajPaths()` now support data with multiple receptors, as returned by `openair::importTraj()`. Previously, trajectories arriving at different receptors at the same time were joined into a single path.
 
 * Static `krigingMap()` and `voronoiMap()` maps now respect `provider`, rather than always using OpenStreetMap. Both functions also now validate `provider` in the same way as the `polarMap()` family.
+
+* `krigingMap()` and `voronoiMap()` now give an informative error if `pollutant` is not provided, in line with the `polarMap()` family.
 
 * `krigingMap()` and `voronoiMap()` now give an informative error if `statistic` isn't recognised.
 

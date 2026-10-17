@@ -147,12 +147,6 @@ trajMap <-
     names(data)[names(data) == longitude] <- "lon"
     names(data)[names(data) == latitude] <- "lat"
 
-    # default colour is black
-    fixedcol <- "black"
-
-    # get factor version of date to reorder by "colour"
-    data$datef <- factor(data$date)
-
     # identify individual trajectories
     data$trajid <- traj_id(data)
 
@@ -167,35 +161,36 @@ trajMap <-
     map <- leaflet::leaflet() |>
       add_basemaps(provider)
 
-    # if "colour", create colour palette
-    if (!is.null(colour)) {
-      if (colour %in% names(data)) {
-        data <- dplyr::arrange(data, .data$datef)
+    # "colour" is either a column to colour by, or a single colour (by
+    # default, black)
+    colour_col <- !is.null(colour) && colour %in% names(data)
+    fixedcol <- if (!is.null(colour) && !colour_col) colour else "black"
 
-        if (
-          inherits(data[[colour]], "factor") ||
-            inherits(data[[colour]], "character")
-        ) {
-          pal <- leaflet::colorFactor(
-            palette = openair::openColours(
-              scheme = cols,
-              n = length(unique(data[[colour]]))
-            ),
-            domain = data[[colour]]
-          )
-        } else if (inherits(data[[colour]], "POSIXct")) {
-          pal <- leaflet::colorNumeric(
-            palette = openair::openColours(scheme = cols),
-            domain = as.numeric(data[[colour]], origin = "1964-10-22")
-          )
-        } else {
-          pal <- leaflet::colorNumeric(
-            palette = openair::openColours(scheme = cols),
-            domain = data[[colour]]
-          )
-        }
+    # if colouring by a column, create colour palette
+    if (colour_col) {
+      data <- dplyr::arrange(data, .data$date)
+
+      if (
+        inherits(data[[colour]], "factor") ||
+          inherits(data[[colour]], "character")
+      ) {
+        pal <- leaflet::colorFactor(
+          palette = openair::openColours(
+            scheme = cols,
+            n = length(unique(data[[colour]]))
+          ),
+          domain = data[[colour]]
+        )
+      } else if (inherits(data[[colour]], "POSIXct")) {
+        pal <- leaflet::colorNumeric(
+          palette = openair::openColours(scheme = cols),
+          domain = as.numeric(data[[colour]], origin = "1964-10-22")
+        )
       } else {
-        fixedcol <- colour
+        pal <- leaflet::colorNumeric(
+          palette = openair::openColours(scheme = cols),
+          domain = data[[colour]]
+        )
       }
     }
 
@@ -203,8 +198,7 @@ trajMap <-
     # (add the "colour" column too, unless it's already in the label)
     extra <- NULL
     if (
-      !is.null(colour) &&
-        colour %in% names(data) &&
+      colour_col &&
         !colour %in% c("date", "date2", "lat", "lon", "height", "pressure")
     ) {
       extra <- colour
@@ -228,11 +222,9 @@ trajMap <-
         lcolors <- fixedcol
         pcolors <- fixedcol
         # apply color pal if it exists
-        if (!is.null(colour)) {
-          if (colour %in% names(data)) {
-            lcolors <- pal(ldata[[colour]])[1]
-            pcolors <- pal(ldata[[colour]])
-          }
+        if (colour_col) {
+          lcolors <- pal(ldata[[colour]])[1]
+          pcolors <- pal(ldata[[colour]])
         }
 
         # add line + points to plot
@@ -250,38 +242,38 @@ trajMap <-
       }
     }
 
-    # if "group" exists, add a legend
-    if (!is.null(colour)) {
-      legend.title <- legend.title %||% colour
-      if (legend.title.autotext) {
-        legend.title <- quickTextHTML(legend.title)
-      }
+    # if colouring by a column, add a legend
+    if (colour_col) {
+      legend.title <- create_legend_title(
+        static = FALSE,
+        legend.title.autotext = legend.title.autotext,
+        legend.title = legend.title,
+        str = colour
+      )
 
-      if (colour %in% names(data)) {
-        if (inherits(data[[colour]], "POSIXct")) {
-          map <-
-            leaflet::addLegend(
-              map,
-              title = legend.title,
-              position = check_legendposition(legend.position, FALSE),
-              pal = pal,
-              values = as.numeric(data[[colour]], origin = "1964-10-22"),
-              labFormat = leaflet::labelFormat(
-                transform = function(x) {
-                  as.Date.POSIXct(x, origin = "1964-10-22")
-                }
-              )
+      if (inherits(data[[colour]], "POSIXct")) {
+        map <-
+          leaflet::addLegend(
+            map,
+            title = legend.title,
+            position = check_legendposition(legend.position, FALSE),
+            pal = pal,
+            values = as.numeric(data[[colour]], origin = "1964-10-22"),
+            labFormat = leaflet::labelFormat(
+              transform = function(x) {
+                as.Date.POSIXct(x, origin = "1964-10-22")
+              }
             )
-        } else {
-          map <-
-            leaflet::addLegend(
-              map,
-              title = legend.title,
-              position = check_legendposition(legend.position, FALSE),
-              pal = pal,
-              values = data[[colour]]
-            )
-        }
+          )
+      } else {
+        map <-
+          leaflet::addLegend(
+            map,
+            title = legend.title,
+            position = check_legendposition(legend.position, FALSE),
+            pal = pal,
+            values = data[[colour]]
+          )
       }
     }
 

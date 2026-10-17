@@ -119,10 +119,12 @@ addTrajLevel <-
       subtitle <- paste(toupper(statistic), "&middot;", toupper(pollutant))
     }
 
-    legend.title <- legend.title %||% title
-    if (legend.title.autotext) {
-      legend.title <- quickTextHTML(legend.title)
-    }
+    legend.title <- create_legend_title(
+      static = FALSE,
+      legend.title.autotext = legend.title.autotext,
+      legend.title = legend.title,
+      str = title
+    )
 
     # calculate gridded statistics - only pass `breaks` if given, as
     # trajLevel() uses `missing(breaks)` to decide on its default breaks

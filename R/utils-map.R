@@ -141,15 +141,7 @@ fixed_scale_data <- function(
   ...,
   call = rlang::caller_env()
 ) {
-  if (is.null(pollutant)) {
-    cli::cli_abort(
-      c(
-        "x" = "{.code pollutant} is missing with no default.",
-        "i" = "Please provide a column of {.code data} which represents the pollutant(s) of interest."
-      ),
-      call = call
-    )
-  }
+  check_pollutant(pollutant, call = call)
 
   data$latlng <- paste(data[[latitude]], data[[longitude]])
 
@@ -160,6 +152,20 @@ fixed_scale_data <- function(
     plot = FALSE,
     ...
   )$data
+}
+
+#' Check a pollutant has been provided
+#' @noRd
+check_pollutant <- function(pollutant, call = rlang::caller_env()) {
+  if (is.null(pollutant)) {
+    cli::cli_abort(
+      c(
+        "x" = "{.code pollutant} is missing with no default.",
+        "i" = "Please provide a column of {.code data} which represents the pollutant(s) of interest."
+      ),
+      call = call
+    )
+  }
 }
 
 #' Check packages are installed for static mapping
@@ -396,15 +402,7 @@ prepMapData <-
     .to_narrow = TRUE,
     .pairwise = FALSE
   ) {
-    # check pollutant is there
-    if (is.null(pollutant)) {
-      cli::cli_abort(
-        c(
-          "x" = "{.code pollutant} is missing with no default.",
-          "i" = "Please provide a column of {.code data} which represents the pollutant(s) of interest."
-        )
-      )
-    }
+    check_pollutant(pollutant)
 
     ## extract variables of interest
     vars <- unique(c(pollutant, control, ...))
@@ -1227,20 +1225,11 @@ create_legend_title <- function(
   legend.title,
   str
 ) {
-  if (legend.title.autotext) {
-    textfun <- quickTextHTML
-    if (static) {
-      textfun <- openair::quickText
-    }
-  } else {
-    textfun <- function(x) {
-      return(x)
-    }
-  }
-
   legend.title <- legend.title %||% str
-  legend.title <- textfun(legend.title)
-  return(legend.title)
+  if (!legend.title.autotext) {
+    return(legend.title)
+  }
+  if (static) openair::quickText(legend.title) else quickTextHTML(legend.title)
 }
 
 #' Legend specifications for polar marker maps

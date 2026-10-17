@@ -249,6 +249,8 @@ test_that("pointMap() makes dynamic maps", {
     0
   )
   expect_error(pointMap(interp_data, "nox", statistic = "maen"), "statistic")
+  expect_error(pointMap(interp_data), "pollutant")
+  expect_error(voronoiMap(interp_data), "pollutant")
 })
 
 test_that("site average maps can have popups and labels", {

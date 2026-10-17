@@ -63,6 +63,7 @@ interp_map_args <- c(
 #' @noRd
 interp_map_init <- function(data, ..., env = rlang::caller_env()) {
   map <- rlang::env_get_list(env, interp_map_args)
+  check_pollutant(map$pollutant, call = env)
 
   if (map$static) {
     rlang::check_installed(c("ggspatial", "prettymapr"))

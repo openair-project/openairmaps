@@ -152,9 +152,6 @@ networkMap <-
           "#303030",
           "#ff8ee9"
         )
-      ) |>
-      dplyr::mutate(
-        colour2 = ifelse(.data$colour == "#FFFFFF", "#303030", "#FFFFFF")
       )
 
     # read in data
@@ -288,7 +285,6 @@ networkMap <-
             c(
               "var_date_block",
               "colour",
-              "colour2",
               "realcolour",
               "popup_html",
               "variable2",
@@ -320,10 +316,7 @@ networkMap <-
 
     # cluster options
     if (
-      cluster %||%
-        any(purrr::map_vec(.x = split(meta, meta[[control]]), .f = \(x) {
-          nrow(x) > 25
-        }))
+      cluster %||% (max(table(meta[[control]])) > 25)
     ) {
       clusteropts <- leaflet::markerClusterOptions()
     } else {
@@ -350,7 +343,7 @@ networkMap <-
             library = "fa",
             icon = "info-circle",
             markerColor = dat$colour,
-            iconColor = dat$colour2
+            iconColor = "#FFFFFF"
           )
         )
     }
@@ -451,7 +444,6 @@ summarise_network_popup <- function(meta, control = NULL) {
     "local_authority",
     "provider",
     "colour",
-    "colour2",
     "realcolour",
     "distance_km"
   )
