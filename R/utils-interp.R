@@ -136,12 +136,10 @@ add_site_popups <- function(map, data, latitude, longitude, call) {
   data <- dplyr::left_join(data, site_stat, by = keys)
 
   popup <- map$popup
-  # other numeric columns have many values per site, so must be averaged
-  is_averaged <- purrr::map_lgl(
-    popup,
-    \(x) x != pollutant && is.numeric(data[[x]])
-  )
-  if (length(popup) > 1 || any(is_averaged)) {
+  # numeric columns go through buildPopup() - other columns have many values per
+  # site so must be averaged, and leaflet won't show a bare number as a popup
+  is_numeric <- purrr::map_lgl(popup, \(x) is.numeric(data[[x]]))
+  if (length(popup) > 1 || any(is_numeric)) {
     # describe the statistic, e.g., "nox (max)"
     stat <- map$statistic
     if (stat == "percentile") {

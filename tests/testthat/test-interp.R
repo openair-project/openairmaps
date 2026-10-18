@@ -327,6 +327,15 @@ test_that("site average maps can have popups and labels", {
   expect_setequal(call[[11]], seq(13, 63, 10))
   expect_match(popup_text(call[[9]]), "NO<sub>x</sub> \\(max\\): [1-6]3$")
 
+  # ...including when it is the only popup column (a bare number isn't shown)
+  map <- quietly(pointMap(data, "nox", statistic = "max", popup = "nox"))
+  popups <- leaflet_calls(map, "addCircleMarkers")[[1]]$args[[9]]
+  expect_type(popups, "character")
+  expect_setequal(
+    popup_text(popups),
+    paste0("NO<sub>x</sub> (max): ", seq(13, 63, 10))
+  )
+
   map <- quietly(pointMap(
     data,
     "nox",
