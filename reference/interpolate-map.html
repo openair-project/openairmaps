@@ -120,10 +120,10 @@ be compared.</p>
 <span>  static.nrow <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  vgm <span class="op">=</span> <span class="fu">gstat</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/gstat/reference/vgm.html" class="external-link">vgm</a></span><span class="op">(</span>psill <span class="op">=</span> <span class="fl">1</span>, model <span class="op">=</span> <span class="st">"Exp"</span>, range <span class="op">=</span> <span class="fl">50</span>, nugget <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span>  args.idw <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  args.idw <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>debug.level <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,</span>
 <span>  args.variogram <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  args.fit.variogram <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  args.krige <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  args.krige <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>debug.level <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -432,8 +432,10 @@ measures distances (e.g., the <code>range</code>) in kilometres.</p></dd>
 <dd><p><em>Extra arguments
 to pass to spatial interpolation functions for <code>krigingMap()</code>.</em></p>
 <p><em>scope:</em> dynamic &amp; static</p>
-<p>Extra arguments passed to <code><a href="https://r-spatial.github.io/gstat/reference/krige.html" class="external-link">gstat::idw()</a></code>, <code><a href="https://r-spatial.github.io/gstat/reference/vgm.html" class="external-link">gstat::vgm()</a></code>,
-<code><a href="https://r-spatial.github.io/gstat/reference/fit.variogram.html" class="external-link">gstat::fit.variogram()</a></code>, and <code><a href="https://r-spatial.github.io/gstat/reference/krige.html" class="external-link">gstat::krige()</a></code>.</p></dd>
+<p>Extra arguments passed to <code><a href="https://r-spatial.github.io/gstat/reference/krige.html" class="external-link">gstat::idw()</a></code>, <code><a href="https://r-spatial.github.io/gstat/reference/variogram.html" class="external-link">gstat::variogram()</a></code>,
+<code><a href="https://r-spatial.github.io/gstat/reference/fit.variogram.html" class="external-link">gstat::fit.variogram()</a></code>, and <code><a href="https://r-spatial.github.io/gstat/reference/krige.html" class="external-link">gstat::krige()</a></code>. <code><a href="https://r-spatial.github.io/gstat/reference/krige.html" class="external-link">gstat::idw()</a></code> and
+<code><a href="https://r-spatial.github.io/gstat/reference/krige.html" class="external-link">gstat::krige()</a></code> are silenced by default (<code>debug.level = 0</code>), but this can
+be overridden (e.g., <code>args.idw = list(debug.level = 1)</code>).</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

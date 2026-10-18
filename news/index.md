@@ -395,6 +395,18 @@
   `data`. Previously, multiple pollutants gave a cryptic error, and a
   missing `popup` or `label` column was silently ignored.
 
+- [`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  no longer prints [gstat](https://github.com/r-spatial/gstat/)’s
+  progress (e.g., “\[inverse distance weighted interpolation\]”) for
+  every `type` level. This can be turned back on using `args.idw` or
+  `args.krige` (e.g., `args.idw = list(debug.level = 1)`).
+  [`voronoiMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  also no longer warns that “attribute variables are assumed to be
+  spatially constant”, and static maps in the
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  family no longer warn that “st_point_on_surface may not give correct
+  results for longitude/latitude data”.
+
 - Dynamic
   [`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
   and

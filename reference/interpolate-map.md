@@ -51,10 +51,10 @@ krigingMap(
   static.nrow = NULL,
   api_key = NULL,
   vgm = gstat::vgm(psill = 1, model = "Exp", range = 50, nugget = 1),
-  args.idw = list(),
+  args.idw = list(debug.level = 0),
   args.variogram = list(),
   args.fit.variogram = list(),
-  args.krige = list(),
+  args.krige = list(debug.level = 0),
   ...
 )
 
@@ -482,10 +482,15 @@ voronoiMap(
 
   Extra arguments passed to
   [`gstat::idw()`](https://r-spatial.github.io/gstat/reference/krige.html),
-  [`gstat::vgm()`](https://r-spatial.github.io/gstat/reference/vgm.html),
+  [`gstat::variogram()`](https://r-spatial.github.io/gstat/reference/variogram.html),
   [`gstat::fit.variogram()`](https://r-spatial.github.io/gstat/reference/fit.variogram.html),
   and
   [`gstat::krige()`](https://r-spatial.github.io/gstat/reference/krige.html).
+  [`gstat::idw()`](https://r-spatial.github.io/gstat/reference/krige.html)
+  and
+  [`gstat::krige()`](https://r-spatial.github.io/gstat/reference/krige.html)
+  are silenced by default (`debug.level = 0`), but this can be
+  overridden (e.g., `args.idw = list(debug.level = 1)`).
 
 - ...:
 
