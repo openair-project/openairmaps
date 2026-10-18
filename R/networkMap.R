@@ -120,6 +120,10 @@ networkMap <-
     control.collapsed = FALSE,
     control.position = "topright"
   ) {
+    # check positions before downloading any metadata
+    legend.position <- check_legendposition(legend.position, static = FALSE)
+    control.position <- check_legendposition(control.position, static = FALSE)
+
     cols <-
       dplyr::tibble(
         source = c(
@@ -152,9 +156,6 @@ networkMap <-
           "#303030",
           "#ff8ee9"
         )
-      ) |>
-      dplyr::mutate(
-        colour2 = ifelse(.data$colour == "#FFFFFF", "#303030", "#FFFFFF")
       )
 
     # read in data
@@ -207,22 +208,12 @@ networkMap <-
     cols <- dplyr::filter(cols, .data$source %in% meta$source)
 
     # build maps
+    # check basemap providers are valid
+    provider <- check_providers(provider, static = FALSE)
+
     # initialise map
-    map <- leaflet::leaflet()
-
-    # add provider tiles
-    if (!rlang::is_named(provider)) {
-      names(provider) <- provider
-    }
-
-    for (i in seq_along(provider)) {
-      map <-
-        leaflet::addProviderTiles(
-          map,
-          provider = provider[[i]],
-          group = names(provider)[[i]]
-        )
-    }
+    map <- leaflet::leaflet() |>
+      add_basemaps(provider)
 
     # if target specified, add to map
     dots <- rlang::list2(...)
@@ -247,41 +238,14 @@ networkMap <-
             markerColor = "white",
             iconColor = "black"
           ),
-          popup = paste0(
-            "<div style='font-family:sans-serif; font-size:13px; max-height:320px;
-             overflow-y:auto; width:200px; padding-right:4px;'>",
-
-            "<div style='display:flex; align-items:center; gap:8px; margin-bottom:10px;
-               padding-bottom:8px; border-bottom:2px solid #ddd;'>",
-            "<div style='width:14px; height:14px; border-radius:50%; flex-shrink:0; background:black;'></div>",
-            "<div style='flex:1;'>",
-            "<div style='font-size:15px; font-weight:700; color:#222; line-height:1.2;'>Search Location</div>",
-            "<div style='font-size:12px; font-weight:600; color:#303030; letter-spacing:0.03em; margin-top:2px;'>TARGET</div>",
-            "</div>",
-            "</div>",
-
-            "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
-            "<span style='color:#888; min-width:100px;'>Latitude</span>",
-            "<span style='font-weight:500; text-align:right;'>",
-            target$lat,
-            "</span>",
-            "</div>",
-
-            "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
-            "<span style='color:#888; min-width:100px;'>Longitude</span>",
-            "<span style='font-weight:500; text-align:right;'>",
-            target$lng,
-            "</span>",
-            "</div>",
-
-            "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
-            "<span style='color:#888; min-width:100px;'>CRS</span>",
-            "<span style='font-weight:500; text-align:right;'>EPSG:",
-            target$crs,
-            "</span>",
-            "</div>",
-
-            "</div>"
+          popup = popup_card(
+            title = "Search Location",
+            subtitle = "TARGET",
+            popup_row("Latitude", target$lat),
+            popup_row("Longitude", target$lng),
+            popup_row("CRS", paste0("EPSG:", target$crs)),
+            width = 200,
+            colour = "black"
           )
         )
 
@@ -301,14 +265,11 @@ networkMap <-
 
     # if there's no metadata, return the map now
     if (nrow(meta) == 0L) {
-      return(leaflet::addLayersControl(
+      return(add_layer_control(
         map,
+        provider = provider,
         position = control.position,
-        options = leaflet::layersControlOptions(
-          collapsed = control.collapsed,
-          autoZIndex = FALSE
-        ),
-        baseGroups = names(provider)
+        collapsed = control.collapsed
       ))
     }
 
@@ -320,7 +281,6 @@ networkMap <-
       if (control == "variable") {
         names(meta)[names(meta) == "variable2"] <- "variable"
       }
-      control.position <- check_legendposition(control.position, static = FALSE)
       control <- rlang::arg_match(
         control,
         names(meta)[
@@ -328,12 +288,9 @@ networkMap <-
             c(
               "var_date_block",
               "colour",
-              "colour2",
               "realcolour",
               "popup_html",
               "variable2",
-              "var_section_html",
-              "overall_dates_html",
               "overall_end",
               "overall_start",
               "latitude",
@@ -361,12 +318,7 @@ networkMap <-
     }
 
     # cluster options
-    if (
-      cluster %||%
-        any(purrr::map_vec(.x = split(meta, meta[[control]]), .f = \(x) {
-          nrow(x) > 25
-        }))
-    ) {
+    if (cluster %||% (max(table(meta[[control]])) > 25)) {
       clusteropts <- leaflet::markerClusterOptions()
     } else {
       clusteropts <- NA
@@ -392,7 +344,7 @@ networkMap <-
             library = "fa",
             icon = "info-circle",
             markerColor = dat$colour,
-            iconColor = dat$colour2
+            iconColor = "#FFFFFF"
           )
         )
     }
@@ -405,23 +357,15 @@ networkMap <-
     if ("Other" %in% control_vars) {
       control_vars <- c(control_vars[control_vars != "Other"], "Other")
     }
-    if (control == "variable") {
-      overlayGroups <- names(provider)
-      baseGroups <- control_vars
-    } else {
-      baseGroups <- names(provider)
-      overlayGroups <- control_vars
-    }
-
-    map <- leaflet::addLayersControl(
+    # pollutants are mutually exclusive (base groups); anything else (e.g.,
+    # site types) can be toggled on and off (overlay groups)
+    map <- add_layer_control(
       map,
+      provider = provider,
+      groups = control_vars,
+      groups_as = if (control == "variable") "base" else "overlay",
       position = control.position,
-      options = leaflet::layersControlOptions(
-        collapsed = control.collapsed,
-        autoZIndex = FALSE
-      ),
-      baseGroups = baseGroups,
-      overlayGroups = overlayGroups
+      collapsed = control.collapsed
     )
 
     # multiple sources - add legend
@@ -430,7 +374,7 @@ networkMap <-
         leaflet::addLegend(
           map,
           opacity = 1,
-          position = check_legendposition(legend.position, static = FALSE),
+          position = legend.position,
           title = "Network",
           colors = cols$realcolour,
           labels = paste0(
@@ -439,11 +383,6 @@ networkMap <-
             "</span>"
           )
         )
-    }
-
-    # hide multiple basemaps
-    if (length(provider) > 1) {
-      map <- leaflet::hideGroup(map, names(provider)[-1])
     }
 
     map
@@ -506,7 +445,6 @@ summarise_network_popup <- function(meta, control = NULL) {
     "local_authority",
     "provider",
     "colour",
-    "colour2",
     "realcolour",
     "distance_km"
   )
@@ -553,11 +491,13 @@ summarise_network_popup <- function(meta, control = NULL) {
         valid <- .data$var_date[!is.na(.data$var_date)]
         if (length(valid) > 0) paste(valid, collapse = "") else NA_character_
       },
-      overall_start = min(.data$start_date),
-      overall_end = {
-        non_missing <- .data$end_date[!is.na(.data$end_date)]
-        if (length(non_missing) == 0) as.POSIXct(NA) else max(non_missing)
+      overall_start = {
+        start <- .data$start_date
+        if (all(is.na(start))) start[1] else min(start, na.rm = TRUE)
       },
+      # a missing end date means a variable is still measured, so the site is
+      # ongoing (`max()` returns `NA` if any end date is missing)
+      overall_end = max(.data$end_date),
       .by = dplyr::any_of(site_cols)
     )
 
@@ -575,124 +515,48 @@ summarise_network_popup <- function(meta, control = NULL) {
   }
 
   # Build popup HTML
+  or_dash <- function(x) ifelse(is.na(x), "-", x)
+
   meta |>
     dplyr::mutate(
-      overall_dates_html = paste0(
-        "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
-        "<span style='color:#888; min-width:100px;'>Active from</span>",
-        "<span style='font-weight:500; text-align:right;'>",
-        format(.data$overall_start, "%Y-%m-%d"),
-        "</span>",
-        "</div>",
-        "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px;'>",
-        "<span style='color:#888; min-width:100px;'>Active to</span>",
-        "<span style='font-weight:500; text-align:right;'>",
-        ifelse(
-          is.na(.data$overall_end),
-          "Ongoing",
-          format(.data$overall_end, "%Y-%m-%d")
-        ),
-        "</span>",
-        "</div>"
-      ),
-      var_section_html = dplyr::if_else(
-        !is.na(.data$var_date_block),
-        paste0(
-          "<div style='font-size:12px; font-weight:700; color:#444;
-                     margin-bottom:6px; padding-bottom:4px;
-                     border-bottom:1px solid #ddd;'>Variables &amp; Measurement Periods</div>",
-          .data$var_date_block
-        ),
-        ""
-      ),
-      popup_html = paste0(
-        "<div style='font-family:sans-serif; font-size:13px; max-height:320px;
-                   overflow-y:auto; width:290px; padding-right:4px;'>",
-
-        "<div style='display:flex; align-items:center; gap:8px; margin-bottom:10px;
-                     padding-bottom:8px; border-bottom:2px solid #ddd;'>",
-        "<div style='width:14px; height:14px; border-radius:50%; flex-shrink:0; background:",
-        .data$realcolour,
-        ";'></div>",
-        "<div style='flex:1;'>",
-        "<div style='font-size:15px; font-weight:700; color:#222; line-height:1.2;'>",
-        .data$site,
-        "</div>",
-        "<div style='font-size:12px; font-weight:600; color:",
-        .data$realcolour,
-        "; letter-spacing:0.03em; margin-top:2px;'>",
-        paste(toupper(.data$source), "-", .data$code),
-        "</div>",
-        "</div>",
-        "</div>",
-
+      popup_html = popup_card(
+        title = .data$site,
+        subtitle = paste(toupper(.data$source), "-", .data$code),
         dplyr::if_else(
           !is.na(.data$distance_km),
-          paste0(
-            "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
-            "<b><span style='color:black; min-width:100px;'>Distance from Target</span></b>",
-            "<span style='font-weight:500; text-align:right;'><b>",
-            signif(.data$distance_km, 4),
-            " km",
-            "</b></span>",
-            "</div>"
+          popup_row(
+            "<b style='color:black;'>Distance from Target</b>",
+            paste0("<b>", signif(.data$distance_km, 4), " km</b>")
           ),
           ""
         ),
-
-        "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
-        "<span style='color:#888; min-width:100px;'>Site type</span>",
-        "<span style='font-weight:500; text-align:right;'>",
-        .data$site_type,
-        "</span>",
-        "</div>",
-
-        "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
-        "<span style='color:#888; min-width:100px;'>Latitude</span>",
-        "<span style='font-weight:500; text-align:right;'>",
-        round(.data$latitude, 5),
-        "</span>",
-        "</div>",
-
-        "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
-        "<span style='color:#888; min-width:100px;'>Longitude</span>",
-        "<span style='font-weight:500; text-align:right;'>",
-        round(.data$longitude, 5),
-        "</span>",
-        "</div>",
-
-        "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
-        "<span style='color:#888; min-width:100px;'>Zone</span>",
-        "<span style='font-weight:500; text-align:right;'>",
-        ifelse(is.na(.data$zone), "-", .data$zone),
-        "</span>",
-        "</div>",
-
-        "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
-        "<span style='color:#888; min-width:100px;'>Agglomeration</span>",
-        "<span style='font-weight:500; text-align:right;'>",
-        ifelse(is.na(.data$agglomeration), "-", .data$agglomeration),
-        "</span>",
-        "</div>",
-
-        "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
-        "<span style='color:#888; min-width:100px;'>Local authority</span>",
-        "<span style='font-weight:500; text-align:right;'>",
-        ifelse(is.na(.data$local_authority), "-", .data$local_authority),
-        "</span>",
-        "</div>",
-
-        "<div style='display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:3px;'>",
-        "<span style='color:#888; min-width:100px;'>LMAM Provider</span>",
-        "<span style='font-weight:500; text-align:right;'>",
-        ifelse(is.na(.data$provider), "-", .data$provider),
-        "</span>",
-        "</div>",
-
-        .data$overall_dates_html,
-        .data$var_section_html,
-
-        "</div>"
+        popup_row("Site type", .data$site_type),
+        popup_row("Latitude", round(.data$latitude, 5)),
+        popup_row("Longitude", round(.data$longitude, 5)),
+        popup_row("Zone", or_dash(.data$zone)),
+        popup_row("Agglomeration", or_dash(.data$agglomeration)),
+        popup_row("Local authority", or_dash(.data$local_authority)),
+        popup_row("LMAM Provider", or_dash(.data$provider)),
+        popup_row("Active from", format(.data$overall_start, "%Y-%m-%d")),
+        popup_row(
+          "Active to",
+          ifelse(
+            is.na(.data$overall_end),
+            "Ongoing",
+            format(.data$overall_end, "%Y-%m-%d")
+          )
+        ),
+        dplyr::if_else(
+          !is.na(.data$var_date_block),
+          paste0(
+            "<div style='font-size:12px; font-weight:700; color:#444; margin-top:10px; margin-bottom:6px; padding-bottom:4px; border-bottom:1px solid #ddd;'>",
+            "Variables &amp; Measurement Periods</div>",
+            .data$var_date_block
+          ),
+          ""
+        ),
+        width = 290,
+        colour = .data$realcolour
       )
     )
 }

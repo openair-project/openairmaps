@@ -56,7 +56,7 @@
 #' freqMap(polar_data,
 #'   pollutant = "nox",
 #'   statistic = "mean",
-#'   provider = "CartoDB.Voyager"
+#'   provider = "Esri.WorldGrayCanvas"
 #' )
 #' }
 freqMap <- function(
@@ -91,25 +91,7 @@ freqMap <- function(
   ...,
   control = NULL
 ) {
-  if (static) {
-    check_installed_static()
-  }
-
-  # check basemap providers are valid
-  provider <- check_providers(provider, static)
-  legend.position <- check_legendposition(legend.position, static)
-
-  # check for old facet/control opts
-  type <- type %||% check_facet_control(control = control, ...)
-
-  # assume lat/lon
-  latlon <- assume_latlon(
-    data = data,
-    latitude = latitude,
-    longitude = longitude
-  )
-  latitude <- latlon$latitude
-  longitude <- latlon$longitude
+  map <- polar_map_init(data, ...)
 
   # allow no pollutant when statistic = "frequency"
   if (statistic == "frequency") {
@@ -123,229 +105,49 @@ freqMap <- function(
   # auto limits
   breaks <- check_multipoll(breaks, pollutant)
 
-  if ("fixed" %in% breaks) {
-    data <-
-      dplyr::mutate(data, latlng = paste(.data[[latitude]], .data[[longitude]]))
+  # breaks are always calculated on untransformed weights, so override any
+  # `trans` given in `...`
+  fixed_args <- map$dots
+  fixed_args$trans <- FALSE
 
-    type_fixed <- type
-    if (is.null(type)) {
-      type_fixed <- "default"
-    }
-
-    testplots <-
-      openair::polarFreq(
+  theBreaks <- resolve_scale(
+    breaks,
+    "breaks",
+    fixed = pretty(
+      rlang::exec(
+        fixed_scale_data,
+        openair::polarFreq,
         data,
         pollutant = pollutant,
+        latitude = map$latitude,
+        longitude = map$longitude,
+        type = map$type,
         statistic = statistic,
-        trans = FALSE,
-        type = c("latlng", type_fixed),
-        plot = FALSE,
-        ...
-      )$data
-
-    theBreaks <- pretty(testplots$weights, n = 10)
-  } else if ("free" %in% breaks) {
-    theBreaks <- NULL
-  } else if (is.numeric(breaks)) {
-    theBreaks <- breaks
-  } else {
-    cli::cli_abort(
-      c(
-        "!" = "Do not recognise {.field breaks} value of {.code {breaks}}",
-        "i" = "{.field breaks} should be one of {.code 'fixed'}, {.code 'free'} or a numeric vector."
-      )
+        !!!fixed_args
+      )$weights,
+      n = 10
     )
-  }
-
-  # cut data
-  data <- openair::cutData(x = data, type = type %||% "default", ...)
-
-  # deal with popups
-  if (length(popup) > 1) {
-    data <-
-      quick_popup(
-        data = data,
-        popup = popup,
-        latitude = latitude,
-        longitude = longitude,
-        control = type
-      )
-    popup <- "popup"
-  }
-
-  # prep data
-  data <-
-    prepMapData(
-      data = data,
-      pollutant = pollutant,
-      control = type,
-      "wd",
-      "ws",
-      latitude,
-      longitude,
-      popup,
-      label
-    )
-
-  # identify splitting column (defaulting to pollutant)
-  if (length(pollutant) > 1) {
-    split_col <- "pollutant_name"
-  } else if (!is.null(type)) {
-    data[type] <- as.factor(data[[type]])
-    split_col <- type
-  } else {
-    split_col <- "pollutant_name"
-  }
-
-  # arguments for function
-  dots <- rlang::list2(...)
-  dots$annotate <- dots$annotate %||% FALSE
-  fun_args <- append(
-    list(
-      pollutant = "conc",
-      breaks = theBreaks,
-      plot = FALSE,
-      statistic = statistic,
-      cols = cols,
-      theme = theme,
-      key.position = key.position
-    ),
-    dots
   )
 
-  # define function
-  fun <- function(data) {
-    rlang::exec(
-      openair::polarFreq,
-      !!!append(
-        list(mydata = data),
-        fun_args
-      )
-    )
-  }
+  map <- polar_map_prep(map, data, pollutant, c("wd", "ws"))
 
-  # plot and save static markers
-  plots_df <-
-    create_polar_markers(
-      fun = fun,
-      fun_args = fun_args,
-      data = data,
-      latitude = latitude,
-      longitude = longitude,
-      split_col = split_col,
-      d.fig = d.fig,
-      popup = popup,
-      label = label,
-      progress = progress
-    )
-
-  if (static) {
-    # create static map - deals with basics & facets
-    map <-
-      create_static_map(
-        plots_df = plots_df,
-        latitude = latitude,
-        longitude = longitude,
-        split_col = split_col,
-        pollutant = pollutant,
-        facet = type,
-        facet.nrow = static.nrow,
-        api_key = api_key,
-        d.icon = d.icon,
-        crs = crs,
-        provider = provider,
-        alpha = alpha
-      )
-
-    # create legend
-    if (!all(is.na(theBreaks)) && legend) {
-      intervals <-
-        stringr::str_c(theBreaks, dplyr::lead(theBreaks), sep = " - ")
-      intervals <- intervals[!is.na(intervals)]
-      intervals <- factor(intervals, intervals)
-      pal <-
-        openair::openColours(scheme = cols, n = length(intervals)) |>
-        stats::setNames(intervals)
-
-      # create dummy df for creating legend
-      dummy <-
-        dplyr::distinct(plots_df, .data[[longitude]], .data[[latitude]]) |>
-        tidyr::crossing(intervals)
-
-      legend.title <-
-        create_legend_title(
-          static = static,
-          legend.title.autotext = legend.title.autotext,
-          legend.title = legend.title,
-          str = paste(lab, collapse = ", ")
-        )
-
-      map <-
-        map +
-        ggplot2::geom_point(
-          data = dummy,
-          ggplot2::aes(
-            .data[[longitude]],
-            .data[[latitude]],
-            color = .data[["intervals"]],
-            fill = .data[["intervals"]]
-          ),
-          size = 0,
-          key_glyph = ggplot2::draw_key_rect
-        ) +
-        ggplot2::scale_color_manual(
-          values = pal,
-          drop = FALSE,
-          aesthetics = c("color", "fill")
-        ) +
-        ggplot2::labs(color = legend.title, fill = legend.title) +
-        ggplot2::theme(legend.position = legend.position)
-    }
-  }
-
-  if (!static) {
-    # create leaflet map
-    map <-
-      make_leaflet_map(
+  polar_map_draw(
+    map,
+    fun = openair::polarFreq,
+    fun_args = list(
+      pollutant = "conc",
+      breaks = theBreaks,
+      statistic = statistic
+    ),
+    legend_spec = \(plots_df) {
+      legend_from_markers(
         plots_df,
-        latitude,
-        longitude,
-        crs,
-        provider,
-        d.icon,
-        popup,
-        label,
-        split_col,
-        control.collapsed,
-        control.position,
-        control.autotext,
-        alpha
+        values = \(x) x$weights,
+        limits = map$dots$limits,
+        cols = cols,
+        trans = map$dots$trans %||% formals(openair::polarFreq)$trans
       )
-
-    # add legends if breaks are set
-    if (!all(is.na(theBreaks)) && legend) {
-      legend.title <-
-        create_legend_title(
-          static = static,
-          legend.title.autotext = legend.title.autotext,
-          legend.title = legend.title,
-          str = paste(lab, collapse = ",<br>")
-        )
-
-      map <-
-        leaflet::addLegend(
-          map,
-          position = legend.position,
-          pal = leaflet::colorBin(
-            palette = openair::openColours(scheme = cols),
-            domain = theBreaks,
-            bins = theBreaks
-          ),
-          values = theBreaks,
-          title = legend.title
-        )
-    }
-  }
-
-  map
+    },
+    legend_str = lab
+  )
 }

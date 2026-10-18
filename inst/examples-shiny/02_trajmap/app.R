@@ -2,7 +2,9 @@ traj_data <- openairmaps::traj_data
 dates <- unique(traj_data$date)
 
 map <- leaflet::leaflet() |>
-  leaflet::addProviderTiles(provider = leaflet::providers$CartoDB.Voyager) |>
+  leaflet::addProviderTiles(
+    provider = leaflet::providers$Esri.WorldGrayCanvas
+  ) |>
   leaflet::setView(lng = -10, lat = 60, zoom = 4)
 
 ui <- bslib::page_fillable(

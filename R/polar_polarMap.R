@@ -75,7 +75,7 @@
 #'
 #'   - *Dynamic*: The pollutants can be toggled between using a "layer control" menu.
 #'
-#'   - *Static:*: The pollutants will each appear in a different panel.
+#'   - *Static*: The pollutants will each appear in a different panel.
 #'
 #'   Multiple `pollutants` prohibit the use of the `type` argument for
 #'   non-pairwise statistics.
@@ -100,6 +100,28 @@
 #'  - A numeric vector in the form `c(lower, upper)` used to define the colour
 #'   scale. For example, `limits = c(0, 100)` would force the plot limits to
 #'   span 0-100.
+#'
+#'   `limits` is ignored if `breaks` is also provided.
+#'
+#' @param breaks *Specifier for a binned colour scale.*
+#'
+#'  *default:* `NULL` | *scope:* dynamic & static
+#'
+#'   By default, markers use a continuous colour scale (see `limits`). If
+#'   `breaks` is provided, the colour scale is instead binned into discrete
+#'   intervals. One of:
+#'  - A numeric vector of breakpoints. For example, `breaks = c(0, 50, 100,
+#'   1000)` would bin the colour scale into three intervals.
+#'  - A single number, which is the number of intervals to bin the colour
+#'   scale into.
+#'  - A list created using [openair::breakOpts()], which provides finer control
+#'   over the binning method and allows custom `labels` to be defined.
+#'
+#'   In all cases, a single set of breakpoints is calculated across *all* of the
+#'   markers, so that they share the same intervals and a shared legend can be
+#'   drawn. If any of the markers' data fall outside of the given breakpoints,
+#'   the lowest and/or highest breakpoints are extended to cover them. If
+#'   `breaks` is provided, `limits` is ignored.
 #'
 #' @param upper *Specifier for the polar plot radial axis upper boundary.*
 #'
@@ -140,7 +162,7 @@
 #'
 #'   - *Dynamic*: The different data splits can be toggled between using a "layer control" menu.
 #'
-#'   - *Static:*: The data splits will each appear in a different panel.
+#'   - *Static*: The data splits will each appear in a different panel.
 #'
 #'   `type` cannot be used if multiple `pollutant` columns have been provided.
 #'
@@ -209,7 +231,7 @@
 #'
 #' @param key.position *Legend position for individual marker legends.*
 #'
-#'  *default:* `FALSE` | *scope:* dynamic & static
+#'  *default:* `"none"` | *scope:* dynamic & static
 #'
 #'   When `key.position` is not `"none"`, a key will be drawn for each
 #'   individual marker. Potentially useful when `limits = "free"`, but of
@@ -219,8 +241,18 @@
 #'
 #'  *default:* `TRUE` | *scope:* dynamic & static
 #'
-#'   When all markers share the same colour scale (e.g., when `limits != "free"`
-#'   in [polarMap()]), should a shared legend be created at the side of the map?
+#'   When all markers share the same colour scale, should a shared legend be
+#'   created at the side of the map? This is the case for:
+#'
+#'  - *Continuous* colour scales, when all markers share the same `limits`
+#'   (e.g., when `limits != "free"` in [polarMap()]), which are shown as a
+#'   colour bar. This legend is not drawn if the colour scale has been
+#'   transformed using `trans` (e.g., `trans = "log10"`), as it would be
+#'   misleading.
+#'
+#'  - *Discrete* colour scales, when all markers are binned into the same
+#'   intervals (e.g., when `breaks` are passed to [polarMap()], or in
+#'   [windroseMap()]), which are shown as a set of labelled colours.
 #'
 #' @param legend.position *Position of the shared legend.*
 #'
@@ -228,9 +260,9 @@
 #'
 #'   When `legend = TRUE`, where should the legend be placed?
 #'
-#'   - *Dynamic*: One of "topright", "topright", "bottomleft" or "bottomright". Passed to the `position` argument of [leaflet::addLegend()].
+#'   - *Dynamic*: One of "topright", "topleft", "bottomleft" or "bottomright". Passed to the `position` argument of [leaflet::addLegend()].
 #'
-#'   - *Static:*: One of "top", "right", "bottom" or "left". Passed to the `legend.position` argument of [ggplot2::theme()].
+#'   - *Static*: One of "top", "right", "bottom" or "left". Passed to the `legend.position` argument of [ggplot2::theme()].
 #'
 #' @param legend.title *Title of the legend.*
 #'
@@ -321,7 +353,7 @@
 #'   creating individual polar markers. This option allows this to be turned
 #'   off, if desired.
 #'
-#' @param control **Deprecated.** Please use `type`.
+#' @param control **Removed.** Please use `type`.
 #'
 #' @inheritDotParams openair::polarPlot
 #'
@@ -339,7 +371,7 @@
 #' polarMap(polar_data,
 #'   pollutant = "nox",
 #'   x = "ws",
-#'   provider = "CartoDB.Voyager"
+#'   provider = "Esri.WorldGrayCanvas"
 #' )
 #' }
 polarMap <- function(
@@ -347,6 +379,7 @@ polarMap <- function(
   pollutant = NULL,
   x = "ws",
   limits = "free",
+  breaks = NULL,
   upper = "fixed",
   latitude = NULL,
   longitude = NULL,
@@ -375,10 +408,9 @@ polarMap <- function(
   ...,
   control = NULL
 ) {
-  if (static) {
-    check_installed_static()
-  }
-  # list pairwise statistics
+  map <- polar_map_init(data, ...)
+
+  # pairwise statistics compare two pollutants in a single marker
   pairwise_stats <- c(
     "r",
     "Pearson",
@@ -387,257 +419,83 @@ polarMap <- function(
     "quantile.slope",
     "york_slope"
   )
-  dots <- rlang::list2(...)
-  pairwise_flag <- FALSE
-  if ("statistic" %in% names(dots)) {
-    if (dots$statistic %in% pairwise_stats) {
-      pairwise_flag <- TRUE
-    }
-  }
+  pairwise <- isTRUE(map$dots$statistic %in% pairwise_stats)
 
-  # check basemap providers are valid
-  provider <- check_providers(provider, static)
-  legend.position <- check_legendposition(legend.position, static)
-
-  # check for old facet/control opts
-  type <- type %||% check_facet_control(control = control, ...)
-
-  # assume lat/lon
-  latlon <- assume_latlon(
-    data = data,
-    latitude = latitude,
-    longitude = longitude
-  )
-  latitude <- latlon$latitude
-  longitude <- latlon$longitude
-
-  # auto limits
-  if (!pairwise_flag) {
-    limits <- check_multipoll(limits, pollutant)
-  }
-
-  if ("fixed" %in% limits) {
-    data <-
-      dplyr::mutate(data, latlng = paste(.data[[latitude]], .data[[longitude]]))
-
-    type_fixed <- type
-    if (is.null(type)) {
-      type_fixed <- "default"
-    }
-
-    testplots <-
-      openair::polarPlot(
-        data,
-        pollutant = pollutant,
-        x = x,
-        type = c("latlng", type_fixed),
-        plot = FALSE,
-        ...
-      )$data
-
-    theLimits <- range(testplots$z, na.rm = TRUE)
-  } else if ("free" %in% limits) {
-    theLimits <- NA
-  } else if (is.numeric(limits)) {
-    theLimits <- limits
-  } else {
-    cli::cli_abort(
-      c(
-        "!" = "Do not recognise {.field limits} value of {.code {limits}}",
-        "i" = "{.field limits} should be one of {.code 'fixed'}, {.code 'free'} or a numeric vector of length 2."
-      )
-    )
-  }
-
-  # cut data
-  data <- openair::cutData(x = data, type = type %||% "default", ...)
-
-  # deal with upper
+  # deal with upper - before limits, so "fixed" limits use the same surfaces
+  # as the markers
   if (any(upper == "fixed")) {
     upper <- max(data[[x]], na.rm = TRUE)
   } else if (any(upper == "free")) {
     upper <- NA
   }
 
-  # deal with popups
-  if (length(popup) > 1) {
-    data <-
-      quick_popup(
-        data = data,
-        popup = popup,
-        latitude = latitude,
-        longitude = longitude,
-        control = type
-      )
-    popup <- "popup"
+  # auto limits
+  if (!pairwise) {
+    limits <- check_multipoll(limits, pollutant)
   }
 
-  # prep data
-  data <-
-    prepMapData(
-      data = data,
-      pollutant = pollutant,
-      control = type,
-      "wd",
-      x,
-      latitude,
-      longitude,
-      popup,
-      label,
-      .to_narrow = !pairwise_flag,
-      .pairwise = pairwise_flag
+  # `breaks` override `limits`
+  if (!is.null(breaks)) {
+    theLimits <- NA
+  } else {
+    theLimits <- resolve_scale(
+      limits,
+      "limits",
+      fixed = range(
+        fixed_scale_data(
+          openair::polarPlot,
+          data,
+          pollutant = pollutant,
+          latitude = map$latitude,
+          longitude = map$longitude,
+          type = map$type,
+          x = x,
+          upper = upper,
+          ...
+        )$z,
+        na.rm = TRUE
+      ),
+      free = NA,
+      n = 2
     )
-
-  # identify splitting column (defaulting to pollutant)
-  if (length(pollutant) > 1 && !pairwise_flag) {
-    split_col <- "pollutant_name"
-  } else if (!is.null(type)) {
-    data[type] <- as.factor(data[[type]])
-    split_col <- type
-  } else if (pairwise_flag) {
-    data$pollutant_name <- "DUMMY"
-    split_col <- "pollutant_name"
-  } else {
-    split_col <- "pollutant_name"
   }
 
-  # define function
-  if (pairwise_flag) {
-    funpoll <- pollutant
-  } else {
-    funpoll <- "conc"
-  }
+  map <- polar_map_prep(map, data, pollutant, c("wd", x), pairwise = pairwise)
 
-  # arguments for function
-  dots <- rlang::list2(...)
-  dots$annotate <- dots$annotate %||% FALSE
-  fun_args <- append(
-    list(
-      pollutant = funpoll,
-      x = x,
-      plot = FALSE,
-      limits = theLimits,
-      upper = upper,
-      cols = cols,
-      theme = theme,
-      key.position = key.position
-    ),
-    dots
+  fun_args <- list(
+    pollutant = if (pairwise) pollutant else "conc",
+    x = x,
+    limits = theLimits,
+    upper = upper
   )
 
-  # define function
-  fun <- function(data) {
-    rlang::exec(
-      openair::polarPlot,
-      !!!append(
-        list(mydata = data),
-        fun_args
-      )
+  # work out one set of breaks for all markers, so they share a legend
+  if (!is.null(breaks)) {
+    fun_args$breaks <- resolve_shared_breaks(
+      fun = openair::polarPlot,
+      fun_args = polar_fun_args(map, fun_args),
+      data = map$data,
+      breaks = breaks,
+      values = \(x) x$z,
+      latitude = map$latitude,
+      longitude = map$longitude,
+      split_col = map$split_col
     )
   }
 
-  # plot and save static markers
-  plots_df <-
-    create_polar_markers(
-      fun = fun,
-      fun_args = fun_args,
-      data = data,
-      latitude = latitude,
-      longitude = longitude,
-      split_col = split_col,
-      d.fig = d.fig,
-      popup = popup,
-      label = label,
-      dropcol = funpoll,
-      progress = progress
-    )
-
-  if (!static) {
-    # create leaflet map
-    map <-
-      make_leaflet_map(
+  polar_map_draw(
+    map,
+    fun = openair::polarPlot,
+    fun_args = fun_args,
+    legend_spec = \(plots_df) {
+      legend_from_markers(
         plots_df,
-        latitude,
-        longitude,
-        crs,
-        provider,
-        d.icon,
-        popup,
-        label,
-        split_col,
-        control.collapsed,
-        control.position,
-        control.autotext,
-        alpha
+        values = \(x) x$z,
+        limits = theLimits,
+        cols = cols,
+        trans = map$dots$trans %||% formals(openair::polarPlot)$trans
       )
-
-    # add legend if limits are set
-    if (!all(is.na(theLimits)) && legend) {
-      legend.title <-
-        create_legend_title(
-          static = static,
-          legend.title.autotext = legend.title.autotext,
-          legend.title = legend.title,
-          str = paste(pollutant, collapse = ",<br>")
-        )
-
-      map <-
-        leaflet::addLegend(
-          map,
-          opacity = alpha,
-          title = legend.title,
-          pal = leaflet::colorNumeric(
-            palette = openair::openColours(scheme = cols),
-            domain = theLimits
-          ),
-          position = legend.position,
-          values = theLimits
-        )
-    }
-  }
-
-  if (static) {
-    map <-
-      create_static_map(
-        plots_df = plots_df,
-        latitude = latitude,
-        longitude = longitude,
-        split_col = split_col,
-        pollutant = pollutant,
-        facet = type,
-        facet.nrow = static.nrow,
-        api_key = api_key,
-        d.icon = d.icon,
-        crs = crs,
-        provider = provider,
-        alpha = alpha
-      )
-
-    if (!all(is.na(theLimits)) && legend) {
-      legend.title <-
-        create_legend_title(
-          static = static,
-          legend.title.autotext = legend.title.autotext,
-          legend.title = legend.title,
-          str = paste(pollutant, collapse = ", ")
-        )
-
-      map <-
-        map +
-        ggplot2::geom_point(
-          data = plots_df,
-          ggplot2::aes(.data[[longitude]], .data[[latitude]], color = 0),
-          alpha = 0
-        ) +
-        ggplot2::scale_color_gradientn(
-          limits = theLimits,
-          colours = openair::openColours(scheme = cols)
-        ) +
-        ggplot2::labs(color = legend.title) +
-        ggplot2::theme(legend.position = legend.position)
-    }
-  }
-
-  # return map
-  return(map)
+    },
+    legend_str = pollutant
+  )
 }

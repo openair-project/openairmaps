@@ -33,7 +33,7 @@
 #' annulusMap(polar_data,
 #'   pollutant = "nox",
 #'   period = "hour",
-#'   provider = "CartoDB.Voyager"
+#'   provider = "Esri.WorldGrayCanvas"
 #' )
 #' }
 annulusMap <- function(
@@ -41,6 +41,7 @@ annulusMap <- function(
   pollutant = NULL,
   period = "hour",
   limits = "free",
+  breaks = NULL,
   latitude = NULL,
   longitude = NULL,
   crs = 4326,
@@ -68,231 +69,66 @@ annulusMap <- function(
   ...,
   control = NULL
 ) {
-  if (static) {
-    check_installed_static()
-  }
-
-  # check basemap providers are valid
-  provider <- check_providers(provider, static)
-  legend.position <- check_legendposition(legend.position, static)
-
-  # check for old facet/control opts
-  type <- type %||% check_facet_control(control = control, ...)
-
-  # assume lat/lon
-  latlon <- assume_latlon(
-    data = data,
-    latitude = latitude,
-    longitude = longitude
-  )
-  latitude <- latlon$latitude
-  longitude <- latlon$longitude
+  map <- polar_map_init(data, ...)
 
   # auto limits
   limits <- check_multipoll(limits, pollutant)
 
-  if ("fixed" %in% limits) {
-    data <-
-      dplyr::mutate(data, latlng = paste(.data[[latitude]], .data[[longitude]]))
-
-    type_fixed <- type
-    if (is.null(type)) {
-      type_fixed <- "default"
-    }
-
-    testplots <-
-      openair::polarAnnulus(
-        data,
-        pollutant = pollutant,
-        period = period,
-        type = c("latlng", type_fixed),
-        plot = FALSE,
-        ...
-      )$data
-
-    theLimits <- range(testplots$pred, na.rm = TRUE)
-  } else if ("free" %in% limits) {
-    theLimits <- NULL
-  } else if (is.numeric(limits)) {
-    theLimits <- limits
+  # `breaks` override `limits`
+  if (!is.null(breaks)) {
+    theLimits <- NA
   } else {
-    cli::cli_abort(
-      c(
-        "!" = "Do not recognise {.field limits} value of {.code {limits}}",
-        "i" = "{.field limits} should be one of {.code 'fixed'}, {.code 'free'} or a numeric vector of length 2."
-      )
+    theLimits <- resolve_scale(
+      limits,
+      "limits",
+      fixed = range(
+        fixed_scale_data(
+          openair::polarAnnulus,
+          data,
+          pollutant = pollutant,
+          latitude = map$latitude,
+          longitude = map$longitude,
+          type = map$type,
+          period = period,
+          ...
+        )$pred,
+        na.rm = TRUE
+      ),
+      n = 2
     )
   }
 
-  # cut data
-  data <- openair::cutData(x = data, type = type %||% "default", ...)
+  map <- polar_map_prep(map, data, pollutant, c("wd", "date"))
 
-  # deal with popups
-  if (length(popup) > 1) {
-    data <-
-      quick_popup(
-        data = data,
-        popup = popup,
-        latitude = latitude,
-        longitude = longitude,
-        control = type
-      )
-    popup <- "popup"
-  }
+  fun_args <- list(pollutant = "conc", period = period, limits = theLimits)
 
-  # prepare data for mapping
-  data <-
-    prepMapData(
-      data = data,
-      pollutant = pollutant,
-      control = type,
-      "wd",
-      "date",
-      latitude,
-      longitude,
-      popup,
-      label
-    )
-
-  # identify splitting column (defaulting to pollutant)
-  if (length(pollutant) > 1) {
-    split_col <- "pollutant_name"
-  } else if (!is.null(type)) {
-    data[type] <- as.factor(data[[type]])
-    split_col <- type
-  } else {
-    split_col <- "pollutant_name"
-  }
-
-  # arguments for function
-  dots <- rlang::list2(...)
-  dots$annotate <- dots$annotate %||% FALSE
-  fun_args <- append(
-    list(
-      pollutant = "conc",
-      period = period,
-      plot = FALSE,
-      limits = theLimits,
-      cols = cols,
-      theme = theme,
-      key.position = key.position
-    ),
-    dots
-  )
-
-  # define function
-  fun <- function(data) {
-    rlang::exec(
-      openair::polarAnnulus,
-      !!!append(
-        list(mydata = data),
-        fun_args
-      )
+  # work out one set of breaks for all markers, so they share a legend
+  if (!is.null(breaks)) {
+    fun_args$breaks <- resolve_shared_breaks(
+      fun = openair::polarAnnulus,
+      fun_args = polar_fun_args(map, fun_args),
+      data = map$data,
+      breaks = breaks,
+      values = \(x) x$pred,
+      latitude = map$latitude,
+      longitude = map$longitude,
+      split_col = map$split_col
     )
   }
 
-  # plot and save static markers
-  plots_df <-
-    create_polar_markers(
-      fun = fun,
-      fun_args = fun_args,
-      data = data,
-      latitude = latitude,
-      longitude = longitude,
-      split_col = split_col,
-      d.fig = d.fig,
-      popup = popup,
-      label = label,
-      progress = progress
-    )
-
-  if (static) {
-    # create static map - deals with basics & facets
-    map <-
-      create_static_map(
-        plots_df = plots_df,
-        latitude = latitude,
-        longitude = longitude,
-        split_col = split_col,
-        pollutant = pollutant,
-        facet = type,
-        facet.nrow = static.nrow,
-        api_key = api_key,
-        d.icon = d.icon,
-        crs = crs,
-        provider = provider,
-        alpha = alpha
-      )
-
-    # create colorbar if limits specified
-    if (!all(is.na(theLimits)) && legend) {
-      legend.title <-
-        create_legend_title(
-          static = static,
-          legend.title.autotext = legend.title.autotext,
-          legend.title = legend.title,
-          str = paste(pollutant, collapse = ", ")
-        )
-
-      map <-
-        map +
-        ggplot2::geom_point(
-          data = plots_df,
-          ggplot2::aes(.data[[longitude]], .data[[latitude]], color = 0),
-          alpha = 0
-        ) +
-        ggplot2::scale_color_gradientn(
-          limits = theLimits,
-          colours = openair::openColours(scheme = cols)
-        ) +
-        ggplot2::labs(color = legend.title) +
-        ggplot2::theme(legend.position = legend.position)
-    }
-  }
-
-  if (!static) {
-    # create leaflet map
-    map <-
-      make_leaflet_map(
+  polar_map_draw(
+    map,
+    fun = openair::polarAnnulus,
+    fun_args = fun_args,
+    legend_spec = \(plots_df) {
+      legend_from_markers(
         plots_df,
-        latitude,
-        longitude,
-        crs,
-        provider,
-        d.icon,
-        popup,
-        label,
-        split_col,
-        control.collapsed,
-        control.position,
-        control.autotext,
-        alpha
+        values = \(x) x$pred,
+        limits = theLimits,
+        cols = cols,
+        trans = map$dots$trans %||% formals(openair::polarAnnulus)$trans
       )
-
-    # add legend if limits are set
-    if (!all(is.na(theLimits)) && legend) {
-      legend.title <-
-        create_legend_title(
-          static = static,
-          legend.title.autotext = legend.title.autotext,
-          legend.title = legend.title,
-          str = paste(pollutant, collapse = ",<br>")
-        )
-
-      map <-
-        leaflet::addLegend(
-          map,
-          title = legend.title,
-          pal = leaflet::colorNumeric(
-            palette = openair::openColours(scheme = cols),
-            domain = theLimits
-          ),
-          position = legend.position,
-          values = theLimits
-        )
-    }
-  }
-
-  # return map
-  return(map)
+    },
+    legend_str = pollutant
+  )
 }

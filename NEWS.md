@@ -1,10 +1,100 @@
 # openairmaps (development version)
 
+## Breaking changes
+
+* The `control` argument of the `polarMap()` family and `trajMap()`, deprecated in favour of `type` in openairmaps 0.9.0, has been removed. The deprecated `facet` argument (from `polarMapStatic()`) is also no longer recognised. Please use `type` instead; the `polarMap()` family will raise an error pointing to `type` if either is used. Note that `control` in `networkMap()` is unaffected.
+
+* `trajMapStatic()` and `trajLevelMapStatic()` have both been removed from `openairmaps`. Users should now use `openair::trajPlot()` or `openair::trajLevel()` directly.
+
+* `trajMap()` and `trajLevelMap()` now take `latitude` before `longitude`, in line with the rest of the package. Both now default to `NULL`, and are guessed from `data` in the same way as the `polarMap()` family.
+
+* `trajMap()` now uses `cols = "turbo"` by default, in line with the rest of the package. It also now errors if `colour` is neither a column of `data` nor a valid colour, rather than silently passing it on to `{leaflet}` (e.g., when a column name is misspelled).
+
+* The default `vgm` in `krigingMap()` now has a `range` of 50 rather than 50,000. As the data are in latitude and longitude, `{gstat}` measures this in kilometres, so the previous default was far larger than intended.
+
+* The "layer control" menus of the `polarMap()` family and `trajMap()` now list `type` levels in the order of their factor levels (e.g., "Monday" before "Tuesday"), and multiple pollutants in the order they were given, rather than the order they first appear in the data.
+
 ## New features
+
+* Added `pointMap()`, which summarises pollutant data at each site (e.g., the mean concentration) and shows it as coloured circles on a dynamic or static map. It shares its arguments (`statistic`, `breaks`, `limits`, etc.) with `krigingMap()` and `voronoiMap()`, but draws no interpolated surface. All three functions also gain `popup` and `label` arguments, which work like those in `polarMap()` (e.g., to show site names or types when clicking on or hovering over a site marker).
+
+* `pointMap()`, `krigingMap()` and `voronoiMap()` gain the `type` argument, in line with the `polarMap()` family. Each `type` level is summarised (and interpolated) separately, but all levels share one colour scale. In dynamic maps, `type` levels can be switched between using a "layer control" menu (customised using `control.collapsed`, `control.position` and `control.autotext`), and in static maps they appear in separate panels (arranged using `static.nrow`). Other arguments can be passed to `openair::cutData()` using `...`.
 
 * `networkMap()` can now take any option passed to `openair::importMeta()`. This behaviour supersedes all of the functionality within `searchNetwork()`, which has been removed. It also no longer overwrites the default `year` argument, and so behaves identically to `openair::importMeta()`.
 
+* Added `addTrajLevel()`, which allows users to add gridded trajectory statistics (calculated using `openair::trajLevel()`) to any `leaflet` map, much like `addTrajPaths()` does for individual trajectories. This offers more control over groups and layerIds than `trajLevelMap()`, which now uses `addTrajLevel()` internally.
+
+* `addTrajPaths()` gains a `markerColor` argument, allowing the point markers along a trajectory to be coloured independently of the trajectory line itself (e.g., by a continuously-varying pollutant). `trajMap()` now uses this internally instead of duplicating `addTrajPaths()`'s marker/line-drawing logic.
+
+* `addTrajPaths()` is now much faster when `layerId` is used, as the points along each trajectory are added to the map in a single call rather than one at a time. The layer IDs themselves are unchanged.
+
 * Static maps gain the `api_key` argument, passed to the equivalent argument in `ggspatial::annotation_map_tile()`.
+
+* The popups in `trajMap()`, `addTrajPaths()`, `trajLevelMap()` and `addTrajLevel()` have been restyled to match those in `networkMap()`. For trajectory paths, arrival and trajectory dates now always show the time, and the `colour` variable in `trajMap()` (e.g., a pollutant) is shown in its own row at the bottom of the popup. For gridded trajectories, the popup leads with the value and a description of the statistic, followed by the grid cell location, count and (if used) the `type` level.
+
+* `trajMap()`, `trajLevelMap()`, `krigingMap()` and `voronoiMap()` now accept any number of basemaps through `provider`, which can be named to customise their labels in the layer control menu (e.g., `c("Default" = "OpenStreetMap", "Satellite" = "Esri.WorldImagery")`), in line with `polarMap()` and `networkMap()`.
+
+* The "layer control" menu is now built the same way across all interactive maps. In particular, only the first basemap is shown when multiple are provided, and a single basemap is no longer listed in the menu as there is nothing to switch to.
+
+* `polarMap()` and `annulusMap()` gain the `breaks` argument, in line with the `breaks` argument now in `openair::polarPlot()` and `openair::polarAnnulus()`. This bins the markers' colour scale into discrete intervals, and can take a numeric vector of breakpoints, a single number of intervals, or a list created using `openair::breakOpts()`. In all cases, a single set of breakpoints is calculated across *all* of the markers so that they can share a legend. `breaks` overrides `limits` if both are provided.
+
+* Shared legends in the `polarMap()` family have been standardised, and now reflect the colour scale `{openair}` actually used to draw the markers:
+
+    * Markers with a *discrete* colour scale now get a shared legend of labelled colours, as long as all markers are binned into the same intervals. `limits` (now supported by `openair::polarFreq()`) can also be passed to `freqMap()` via `...` to get a shared continuous legend. As `openair::polarFreq()` uses `trans = "sqrt"` by default, `trans = FALSE` must also be passed for this legend to be drawn.
+    
+    * Legend labels and colours now exactly match those used by `{openair}`, and are the same for dynamic and static maps (e.g., `"0 to 50"` rather than `"0 – 50"` in dynamic `freqMap()`, `pollroseMap()` and `windroseMap()` legends).
+    
+    * Dynamic legends now consistently use `alpha` for their opacity.
+    
+    * Continuous legends are no longer drawn if the colour scale has been transformed using `trans` (e.g., `polarMap(trans = "log10")`), as they would be misleading. This includes `freqMap()` by default, as `openair::polarFreq()` uses `trans = "sqrt"`. Discrete legends are unaffected, as `{openair}` bins the untransformed values.
+
+* `{openairmaps}` now re-exports `breakOpts()` and `colourOpts()` from `{openair}`.
+
+## Bug fixes
+
+* `diffMap()` no longer errors when multiple columns are passed to `popup`.
+
+* The `polarMap()` family no longer errors when a single `pollutant` is passed to `popup` or `label` (e.g., `polarMap(polar_data, "no2", popup = "no2")`). Pollutants in popups and labels now show their mean at each marker, labelled as such (e.g., "NO<sub>2</sub> (mean)"), whether one or several `popup` columns are given.
+
+* `addPolarMarkers()` now drops rows where the chosen `pollutant` is missing, rather than where `no2` is missing. Previously, it would error if `data` did not contain a `no2` column.
+
+* The colours in the dynamic `percentileMap()` legend now match those of the markers.
+
+* `trajLevelMap()` now respects the `control.collapsed` and `control.position` arguments, which were previously ignored. Note that this means the layer control is now expanded by default (`control.collapsed = FALSE`), in line with `trajMap()`.
+
+* Markers which `{openair}` fails to draw (e.g., due to insufficient data at a site) are now consistently skipped by the `polarMap()` family. Previously, dynamic maps would show a broken image in their place (and list it in the layer control menu), and static maps would error.
+
+* `percentileMap(intervals = "fixed")` now passes `percentile` and `...` to `openair::percentileRose()` when calculating the shared intervals, so they cover all of the plotted percentiles.
+
+* `freqMap(breaks = "fixed")` no longer errors when `trans` is passed via `...`.
+
+* `addTrajLevel()` now respects `lng` and `lat`. Previously, `openair::trajLevel()` would error unless the columns were named "lon" and "lat".
+
+* Dynamic maps now error if more than one `legend.position` or `control.position` is given. `networkMap()` now checks `control.position` even when `control` isn't used.
+
+* `polarMap(limits = "fixed")` now uses the same `upper` as the markers when calculating the shared limits, so the limits better cover the markers' colour scales.
+
+* `trajMap()` and `addTrajPaths()` now support data with multiple receptors, as returned by `openair::importTraj()`. Previously, trajectories arriving at different receptors at the same time were joined into a single path.
+
+* Static `krigingMap()` and `voronoiMap()` maps now respect `provider`, rather than always using OpenStreetMap. Both functions also now validate `provider` in the same way as the `polarMap()` family.
+
+* `krigingMap()` and `voronoiMap()` now give an informative error if `pollutant` is not provided, in line with the `polarMap()` family.
+
+* `krigingMap()` and `voronoiMap()` no longer leave sites or parts of the surface uncoloured when the data fall outside `breaks`. The outermost breaks are now expanded to cover the data (e.g., `breaks = c(50, 100, 150)` becomes `c(25, 100, 200)` for data ranging from 25 to 200), and values equal to the lowest break are now included. This also applies to the new `pointMap()`.
+
+* `krigingMap()` and `voronoiMap()` now give an informative error if `statistic` isn't recognised.
+
+* `krigingMap(statistic = "sd")` and `voronoiMap(statistic = "sd")` now treat the standard deviation of sites with a single measurement as missing, rather than using the measurement itself.
+
+* `buildPopup()` now summarises `Date` columns (using `fun.dttm`) and logical columns (using `fun.character`). Previously, it would error if either was included in `columns`.
+
+* `buildPopup()` now shows columns in the order given in `columns`. Previously, character columns were always shown first, followed by numeric and then date columns.
+
+* `quickTextHTML()` now correctly formats `"m/s2"`.
+
+* `trajLevelMap()` and `addTrajLevel()` now use the correct ordinal suffix in their legend titles and popups when `statistic = "difference"` (e.g., `"11th"` rather than `"11st"`, and `"1st"` rather than `"1th"`).
+
+* `trajMap()`, `trajLevelMap()` and `networkMap()` now validate `provider` in the same way as the `polarMap()` family, giving an informative error for unrecognised basemaps and accepting the same shorthand names (e.g., `"cartolight"`).
 
 # openairmaps 0.10.1
 

@@ -9,6 +9,7 @@ annulusMap(
   pollutant = NULL,
   period = "hour",
   limits = "free",
+  breaks = NULL,
   latitude = NULL,
   longitude = NULL,
   crs = 4326,
@@ -58,7 +59,7 @@ specified and a non-pairwise statistic is supplied, the \code{type} argument
 will no longer be able to be used and:
 \itemize{
 \item \emph{Dynamic}: The pollutants can be toggled between using a "layer control" menu.
-\item \emph{Static:}: The pollutants will each appear in a different panel.
+\item \emph{Static}: The pollutants will each appear in a different panel.
 }
 
 Multiple \code{pollutants} prohibit the use of the \code{type} argument for
@@ -84,7 +85,30 @@ colour scales.
 \item A numeric vector in the form \code{c(lower, upper)} used to define the colour
 scale. For example, \code{limits = c(0, 100)} would force the plot limits to
 span 0-100.
-}}
+}
+
+\code{limits} is ignored if \code{breaks} is also provided.}
+
+\item{breaks}{\emph{Specifier for a binned colour scale.}
+
+\emph{default:} \code{NULL} | \emph{scope:} dynamic & static
+
+By default, markers use a continuous colour scale (see \code{limits}). If
+\code{breaks} is provided, the colour scale is instead binned into discrete
+intervals. One of:
+\itemize{
+\item A numeric vector of breakpoints. For example, \code{breaks = c(0, 50, 100,   1000)} would bin the colour scale into three intervals.
+\item A single number, which is the number of intervals to bin the colour
+scale into.
+\item A list created using \code{\link[openair:breakOpts]{openair::breakOpts()}}, which provides finer control
+over the binning method and allows custom \code{labels} to be defined.
+}
+
+In all cases, a single set of breakpoints is calculated across \emph{all} of the
+markers, so that they share the same intervals and a shared legend can be
+drawn. If any of the markers' data fall outside of the given breakpoints,
+the lowest and/or highest breakpoints are extended to cover them. If
+\code{breaks} is provided, \code{limits} is ignored.}
 
 \item{latitude, longitude}{\emph{The decimal latitude(Y)/longitude(X).}
 
@@ -114,7 +138,7 @@ Used for splitting the input data into different groups, passed to the
 \code{type} argument of \code{\link[openair:cutData]{openair::cutData()}}. When \code{type} is specified:
 \itemize{
 \item \emph{Dynamic}: The different data splits can be toggled between using a "layer control" menu.
-\item \emph{Static:}: The data splits will each appear in a different panel.
+\item \emph{Static}: The data splits will each appear in a different panel.
 }
 
 \code{type} cannot be used if multiple \code{pollutant} columns have been provided.}
@@ -183,7 +207,7 @@ theme.}
 
 \item{key.position}{\emph{Legend position for individual marker legends.}
 
-\emph{default:} \code{FALSE} | \emph{scope:} dynamic & static
+\emph{default:} \code{"none"} | \emph{scope:} dynamic & static
 
 When \code{key.position} is not \code{"none"}, a key will be drawn for each
 individual marker. Potentially useful when \code{limits = "free"}, but of
@@ -193,8 +217,18 @@ limited use otherwise.}
 
 \emph{default:} \code{TRUE} | \emph{scope:} dynamic & static
 
-When all markers share the same colour scale (e.g., when \code{limits != "free"}
-in \code{\link[=polarMap]{polarMap()}}), should a shared legend be created at the side of the map?}
+When all markers share the same colour scale, should a shared legend be
+created at the side of the map? This is the case for:
+\itemize{
+\item \emph{Continuous} colour scales, when all markers share the same \code{limits}
+(e.g., when \code{limits != "free"} in \code{\link[=polarMap]{polarMap()}}), which are shown as a
+colour bar. This legend is not drawn if the colour scale has been
+transformed using \code{trans} (e.g., \code{trans = "log10"}), as it would be
+misleading.
+\item \emph{Discrete} colour scales, when all markers are binned into the same
+intervals (e.g., when \code{breaks} are passed to \code{\link[=polarMap]{polarMap()}}, or in
+\code{\link[=windroseMap]{windroseMap()}}), which are shown as a set of labelled colours.
+}}
 
 \item{legend.position}{\emph{Position of the shared legend.}
 
@@ -202,8 +236,8 @@ in \code{\link[=polarMap]{polarMap()}}), should a shared legend be created at th
 
 When \code{legend = TRUE}, where should the legend be placed?
 \itemize{
-\item \emph{Dynamic}: One of "topright", "topright", "bottomleft" or "bottomright". Passed to the \code{position} argument of \code{\link[leaflet:addLegend]{leaflet::addLegend()}}.
-\item \emph{Static:}: One of "top", "right", "bottom" or "left". Passed to the \code{legend.position} argument of \code{\link[ggplot2:theme]{ggplot2::theme()}}.
+\item \emph{Dynamic}: One of "topright", "topleft", "bottomleft" or "bottomright". Passed to the \code{position} argument of \code{\link[leaflet:addLegend]{leaflet::addLegend()}}.
+\item \emph{Static}: One of "top", "right", "bottom" or "left". Passed to the \code{legend.position} argument of \code{\link[ggplot2:theme]{ggplot2::theme()}}.
 }}
 
 \item{legend.title}{\emph{Title of the legend.}
@@ -336,11 +370,6 @@ value is calculated in the wind speed, wind direction \sQuote{bins}. For
 this reason it can also be useful to set \code{min.bin} to ensure there are a
 sufficient number of points available to estimate a percentile. See
 \code{quantile} for more details of how percentiles are calculated.}
-    \item{\code{breaks}}{\code{breaks} bins a continuous axis into discrete bins. It can
-either take a single number (e.g., \code{breaks = 5}) to split the scale into
-quantiles, a vector of numbers (e.g., \verb{breaks = c(0, 50, 100, 200, 500}) to
-define specific break-points, or a named list. See \code{\link[openair:breakOpts]{breakOpts()}} for more
-details.}
     \item{\code{trans}}{Should a transformation be applied to the colour scale? If the
 distribution of data is skewed, the default scale may be dominated by a few
 high values, so a log or square-root transform may mean the whole colour
@@ -416,7 +445,7 @@ to a file).}
 \code{key.position} to \code{"none"}.}
   }}
 
-\item{control}{\strong{Deprecated.} Please use \code{type}.}
+\item{control}{\strong{Removed.} Please use \code{type}.}
 }
 \value{
 Either:
@@ -483,7 +512,7 @@ of \code{\link[ggplot2:coord_sf]{ggplot2::coord_sf()}}.
 annulusMap(polar_data,
   pollutant = "nox",
   period = "hour",
-  provider = "CartoDB.Voyager"
+  provider = "Esri.WorldGrayCanvas"
 )
 }
 }

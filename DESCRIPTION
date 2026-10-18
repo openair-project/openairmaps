@@ -39,11 +39,12 @@ Suggests:
     gstat,
     jsonlite,
     knitr,
-    mgcv,
     mirai,
     png,
     prettymapr,
     rmarkdown,
+    rnaturalearth,
+    rnaturalearthdata,
     shiny (>= 1.9.0),
     stars,
     terra,
@@ -51,11 +52,11 @@ Suggests:
     withr
 Config/Needs/website: openair-project/openairpkgdown, rnaturalearth,
     rnaturalearthdata
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-GB
 LazyData: true
 Roxygen: list(markdown = TRUE)
-Remotes:  
+Remotes: 
     openair-project/openair

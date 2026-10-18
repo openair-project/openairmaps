@@ -26,63 +26,64 @@
 #' quickTextHTML(labs)
 #'
 quickTextHTML <- function(text) {
-  # gsub, but apply regex bounds and ignore case
-  gsubic <- function(pattern, replacement, ...) {
-    gsub(
-      pattern = paste0("\\b", pattern, "\\b"),
-      replacement = replacement,
-      ignore.case = TRUE,
-      ...
-    )
+  # whole words, ignoring case - applied in order
+  words <- c(
+    # meteo
+    "wd" = "wind dir.",
+    "ws" = "wind spd.",
+    "temp" = "temperature",
+    # gaseous
+    "no2" = "NO<sub>2</sub>",
+    "no" = "NO",
+    "nox" = "NO<sub>x</sub>",
+    "nh3" = "NH<sub>3</sub>",
+    "co" = "CO",
+    "nmhc" = "NMHC",
+    "o3" = "O<sub>3</sub>",
+    "co2" = "CO<sub>2</sub>",
+    "so2" = "SO<sub>2</sub>",
+    "h2s" = "H<sub>2</sub>S",
+    "ch4" = "CH<sub>4</sub>",
+    "nv10" = "NV<sub>10</sub>",
+    "v10" = "V<sub>10</sub>",
+    "nv25" = "NV<sub>2.5</sub>",
+    "nv2.5" = "NV<sub>2.5</sub>",
+    "v25" = "V<sub>2.5</sub>",
+    "v2.5" = "V<sub>2.5</sub>",
+    # particulates
+    "pm25" = "PM<sub>2.5</sub>",
+    "pm2.5" = "PM<sub>2.5</sub>",
+    "pm10" = "PM<sub>10</sub>",
+    "pm4" = "PM<sub>4</sub>",
+    "pm1" = "PM<sub>1</sub>",
+    "pmtot" = "PM<sub>total</sub>",
+    "pmc" = "PM<sub>coarse</sub>",
+    "pmcoarse" = "PM<sub>coarse</sub>",
+    "pmf" = "PM<sub>fine</sub>",
+    "pmfine" = "PM<sub>fine</sub>",
+    "gr25" = "PM<sub>2.5</sub>&nbsp;(grav.)",
+    "gr2.5" = "PM<sub>2.5</sub>&nbsp;(grav.)",
+    "gr10" = "PM<sub>10</sub>&nbsp;(grav.)"
+  )
+
+  # anywhere, matching case - applied in order
+  units <- c(
+    "ug/m3" = "\u00B5g&nbsp;m<sup>-3</sup>",
+    "ng/m3" = "ng&nbsp;m<sup>-3</sup>",
+    "mg/m3" = "mg&nbsp;m<sup>-3</sup>",
+    "m/s2" = "m&nbsp;s<sup>-2</sup>",
+    "m/s" = "m&nbsp;s<sup>-1</sup>"
+  )
+
+  for (i in seq_along(words)) {
+    pattern <- paste0("\\b", names(words)[[i]], "\\b")
+    text <- gsub(pattern, words[[i]], text, ignore.case = TRUE)
+  }
+  for (i in seq_along(units)) {
+    text <- gsub(names(units)[[i]], units[[i]], text)
   }
 
-  # meteo
-  text <- gsubic("wd", "wind dir.", text)
-  text <- gsubic("ws", "wind spd.", text)
-  text <- gsubic("temp", "temperature", text)
-
-  # gaseous
-  text <- gsubic("no2", "NO<sub>2</sub>", text)
-  text <- gsubic("no", "NO", text)
-  text <- gsubic("nox", "NO<sub>x</sub>", text)
-  text <- gsubic("nh3", "NH<sub>3</sub>", text)
-  text <- gsubic("co", "CO", text)
-  text <- gsubic("nmhc", "NMHC", text)
-  text <- gsubic("o3", "O<sub>3</sub>", text)
-  text <- gsubic("co2", "CO<sub>2</sub>", text)
-  text <- gsubic("so2", "SO<sub>2</sub>", text)
-  text <- gsubic("h2s", "H<sub>2</sub>S", text)
-  text <- gsubic("ch4", "CH<sub>4</sub>", text)
-  text <- gsubic("nv10", "NV<sub>10</sub>", text)
-  text <- gsubic("v10", "V<sub>10</sub>", text)
-  text <- gsubic("nv25", "NV<sub>2.5</sub>", text)
-  text <- gsubic("nv2.5", "NV<sub>2.5</sub>", text)
-  text <- gsubic("v25", "V<sub>2.5</sub>", text)
-  text <- gsubic("v2.5", "V<sub>2.5</sub>", text)
-
-  # particulates
-  text <- gsubic("pm25", "PM<sub>2.5</sub>", text)
-  text <- gsubic("pm2.5", "PM<sub>2.5</sub>", text)
-  text <- gsubic("pm10", "PM<sub>10</sub>", text)
-  text <- gsubic("pm4", "PM<sub>4</sub>", text)
-  text <- gsubic("pm1", "PM<sub>1</sub>", text)
-  text <- gsubic("pmtot", "PM<sub>total</sub>", text)
-  text <- gsubic("pmc", "PM<sub>coarse</sub>", text)
-  text <- gsubic("pmcoarse", "PM<sub>coarse</sub>", text)
-  text <- gsubic("pmf", "PM<sub>fine</sub>", text)
-  text <- gsubic("pmfine", "PM<sub>fine</sub>", text)
-  text <- gsubic("gr25", "PM<sub>2.5</sub>&nbsp;(grav.)", text)
-  text <- gsubic("gr2.5", "PM<sub>2.5</sub>&nbsp;(grav.)", text)
-  text <- gsubic("gr10", "PM<sub>10</sub>&nbsp;(grav.)", text)
-
-  # units
-  text <- gsub("ug/m3", "\u00B5g&nbsp;m<sup>-3</sup>", text)
-  text <- gsub("ng/m3", "ng&nbsp;m<sup>-3</sup>", text)
-  text <- gsub("mg/m3", "mg&nbsp;m<sup>-3</sup>", text)
-  text <- gsub("m/s", "m&nbsp;s<sup>-1</sup>", text)
-  text <- gsub("m/s2", "m&nbsp;s<sup>-2</sup>", text)
-
-  return(text)
+  text
 }
 
 
@@ -123,7 +124,8 @@ quickTextHTML <- function(text) {
 #'   for the different map layers (for example, if you are calculating a mean
 #'   pollutant concentration).
 #'
-#' @param fun.character *A function to summarise character and factor columns.*
+#' @param fun.character *A function to summarise character, factor and logical
+#'   columns.*
 #'
 #'  *default:* `function(x) paste(unique(x), collapse = ", ")`
 #'
@@ -137,7 +139,7 @@ quickTextHTML <- function(text) {
 #'   summaries may be of interest, such as the maximum, minimum, standard
 #'   deviation, and so on.
 #'
-#' @param fun.dttm *A function to summarise date columns.*
+#' @param fun.dttm *A function to summarise date and date-time columns.*
 #'
 #'  *default:* `function(x) paste(lubridate::floor_date(range(x, na.rm = TRUE), "day"), collapse = " to ")`
 #'
@@ -146,7 +148,7 @@ quickTextHTML <- function(text) {
 #'
 #' @param ... **Not currently used.**
 #'
-#' @returns a [tibble][tibble::tibble()]
+#' @returns a [tibble][dplyr::tibble()]
 #' @export
 #'
 #' @examples
@@ -182,10 +184,6 @@ buildPopup <-
     },
     ...
   ) {
-    # check for old facet/control opts
-    dots <- rlang::list2(...)
-    type <- type %||% check_facet_control(control = dots$control)
-
     # assume latitude/longitude
     latlon <- assume_latlon(
       data = data,
@@ -208,51 +206,40 @@ buildPopup <-
         dplyr::summarise(
           dplyr::across(
             dplyr::where(is.character) |
-              dplyr::where(is.factor),
+              dplyr::where(is.factor) |
+              dplyr::where(is.logical),
             fun.character
           ),
           dplyr::across(dplyr::where(is.numeric), fun.numeric),
-          dplyr::across(dplyr::where(lubridate::is.POSIXct), fun.dttm),
+          dplyr::across(
+            dplyr::where(lubridate::is.POSIXct) |
+              dplyr::where(lubridate::is.Date),
+            fun.dttm
+          ),
           .groups = "drop"
-        )
+        ) |>
+        # keep the order of `columns`, not the order of the column types
+        dplyr::select(dplyr::all_of(c(latitude, longitude, as.vector(columns))))
 
       if (!is.null(names(columns))) {
         names(columns)[names(columns) == ""] <- columns[names(columns) == ""]
         summary <- dplyr::rename(summary, dplyr::all_of(columns))
       }
 
-      out <-
-        summary |>
-        dplyr::select(-dplyr::all_of(c(latitude, longitude))) |>
-        purrr::imodify(.f = ~ stringr::str_glue("<b>{.y}</b>: {.x}"))
+      # one "<b>name</b>: value" row per column, combined into one popup
+      values <- dplyr::select(summary, -dplyr::all_of(c(latitude, longitude)))
+      rows <- Map(
+        \(value, name) quickTextHTML(paste0("<b>", name, "</b>: ", value)),
+        values,
+        names(values)
+      )
+      summary$popup <- do.call(paste, c(unname(rows), sep = "<br>"))
 
-      if (typeof(out) == "list") {
-        out <- as.data.frame(out)
-        names(out) <- as.vector(columns)
-      }
-
-      out <-
-        out |>
-        dplyr::mutate(dplyr::across(
-          .cols = dplyr::everything(),
-          .fns = quickTextHTML
-        )) |>
-        dplyr::rowwise() |>
-        dplyr::mutate(
-          popup = paste(
-            dplyr::c_across(cols = dplyr::everything()),
-            collapse = "<br>"
-          ),
-          .keep = "unused"
-        )
-
-      out[[latitude]] <- summary[[latitude]]
-      out[[longitude]] <- summary[[longitude]]
-
-      out <-
-        dplyr::left_join(data, out, by = c(latitude, longitude))
-
-      return(out)
+      dplyr::left_join(
+        data,
+        summary[c(latitude, longitude, "popup")],
+        by = c(latitude, longitude)
+      )
     }
 
     if (!is.null(type)) {

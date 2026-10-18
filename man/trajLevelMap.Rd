@@ -6,8 +6,8 @@
 \usage{
 trajLevelMap(
   data,
-  longitude = "lon",
-  latitude = "lat",
+  latitude = NULL,
+  longitude = NULL,
   pollutant,
   type = NULL,
   smooth = FALSE,
@@ -41,12 +41,15 @@ obtained using \code{\link[openair:importTraj]{openair::importTraj()}}.}
 
 \item{latitude, longitude}{\emph{The decimal latitude/longitude.}
 
-\emph{default:} \code{"lat"} / \code{"lon"}
+\emph{default:} \code{NULL}
 
-Column names representing the decimal latitude and longitude.}
+Column names representing the decimal latitude and longitude. If not
+provided, will be automatically inferred from data by looking for a column
+named "lat"/"latitude" or "lon"/"lng"/"long"/"longitude"
+(case-insensitively), such as the "lat" and "lon" columns returned by
+\code{\link[openair:importTraj]{openair::importTraj()}}.}
 
-\item{pollutant}{Pollutant (or any numeric column) to be plotted, if any.
-Alternatively, use \code{group}.}
+\item{pollutant}{The pollutant of interest. Not required when \code{statistic = "frequency"}.}
 
 \item{type}{\emph{A method to condition the \code{data} for separate plotting.}
 
@@ -109,28 +112,37 @@ literature suggest 5.4 km after one hour. However, testing suggests lower
 values reveal source regions more effectively while not introducing too
 much noise.}
 
-\item{cols}{The colours used for plotting, passed to
-\code{\link[openair:openColours]{openair::openColours()}}. The default, \code{"turbo"}, is a rainbow palette with
-relatively perceptually uniform colours.}
+\item{cols}{\emph{Colours to use for plotting.}
 
-\item{alpha}{Opacity of the tiles. Must be between \code{0} and \code{1}.}
+\emph{default:} \code{"turbo"}
+
+The colours used for plotting, passed to \code{\link[openair:openColours]{openair::openColours()}}.}
+
+\item{alpha}{\emph{Transparency value for trajectories.}
+
+\emph{default:} \code{0.5}
+
+A value between \code{0} (fully transparent) and \code{1} (fully opaque).}
 
 \item{tile.border}{Colour to use for the border of binned tiles. Defaults to
 \code{NA}, which draws no border.}
 
-\item{provider}{\emph{The basemap to be used.}
+\item{provider}{\emph{The basemap(s) to be used.}
 
 \emph{default:} \code{"OpenStreetMap"}
 
-A single \link[leaflet:providers]{leaflet::providers}. See
+Any number of \link[leaflet:providers]{leaflet::providers}. See
 \url{http://leaflet-extras.github.io/leaflet-providers/preview/} for a list of
-all base maps that can be used.}
+all base maps that can be used. If multiple base maps are provided, they
+can be toggled between using a "layer control" interface. By default, the
+interface will use the provider names as labels, but users can define their
+own using a named vector (e.g., \code{c("Default" = "OpenStreetMap", "Satellite" = "Esri.WorldImagery")})}
 
 \item{legend.position}{\emph{Position of the shared legend.}
 
 \emph{default:} \code{"topright"}
 
-Where should the legend be placed? One of "topright", "topright",
+Where should the legend be placed? One of "topright", "topleft",
 "bottomleft" or "bottomright". Passed to the \code{position} argument of
 \code{\link[leaflet:addLegend]{leaflet::addLegend()}}. \code{NULL} defaults to "topright".}
 
@@ -181,8 +193,8 @@ trajLevelMap(traj_data, pollutant = "pm2.5", statistic = "pscf", min.bin = 10)
 \seealso{
 \code{\link[openair:trajLevel]{openair::trajLevel()}}
 
-\code{\link[=trajLevelMapStatic]{trajLevelMapStatic()}} for the static \code{ggplot2} equivalent of
-\code{\link[=trajLevelMap]{trajLevelMap()}}
+\code{\link[=addTrajLevel]{addTrajLevel()}} to add gridded trajectory statistics to any
+leaflet map
 
 Other interactive trajectory maps:
 \code{\link[=trajMap]{trajMap()}}

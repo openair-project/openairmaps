@@ -1,114 +1,106 @@
-test_that("quickTextHTML works", {
-  # returns a character
-  testthat::expect_type(
-    quickTextHTML("no2"),
-    type = "character"
+test_that("quickTextHTML() formats pollutants and units", {
+  expect_equal(
+    quickTextHTML(c("no2", "NOx", "pm2.5", "o3", "co2")),
+    c(
+      "NO<sub>2</sub>",
+      "NO<sub>x</sub>",
+      "PM<sub>2.5</sub>",
+      "O<sub>3</sub>",
+      "CO<sub>2</sub>"
+    )
   )
-
-  # formats pollutants
-  testthat::expect_equal(
+  expect_equal(quickTextHTML("ws"), "wind spd.")
+  expect_equal(
     quickTextHTML("no2 (ug/m3)"),
-    "NO<sub>2</sub> (\u00B5g&nbsp;m<sup>-3</sup>)"
+    "NO<sub>2</sub> (µg&nbsp;m<sup>-3</sup>)"
   )
+  expect_equal(quickTextHTML("m/s"), "m&nbsp;s<sup>-1</sup>")
+  expect_equal(quickTextHTML("m/s2"), "m&nbsp;s<sup>-2</sup>")
+  # only whole words are replaced
+  expect_equal(quickTextHTML("snow"), "snow")
+})
 
-  # doesn't do anything weird if character is within another word
-  testthat::expect_equal(
-    quickTextHTML("obnoxious"),
-    "obnoxious"
+popup_data <- data.frame(
+  lat = c(1, 1, 2),
+  lon = c(1, 1, 2),
+  site = c("A", "A", "B"),
+  type = c("x", "y", "x"),
+  nox = c(1, 3, 5),
+  date = as.POSIXct(c("2020-01-01", "2020-02-01", "2020-03-01"), tz = "GMT"),
+  day = as.Date(c("2020-01-01", "2020-02-01", "2020-03-01")),
+  flag = c(TRUE, FALSE, TRUE)
+)
+
+test_that("buildPopup() summarises columns by location", {
+  out <- quietly(buildPopup(popup_data, c("Site" = "site", "nox", "date")))
+  expect_equal(nrow(out), 3)
+  expect_equal(
+    out$popup[[1]],
+    "<b>Site</b>: A<br><b>NO<sub>x</sub></b>: 2<br><b>date</b>: 2020-01-01 to 2020-02-01"
+  )
+  expect_equal(out$popup[[1]], out$popup[[2]])
+
+  # unnamed columns
+  out <- quietly(buildPopup(popup_data, "site"))
+  expect_equal(out$popup[[3]], "<b>site</b>: B")
+})
+
+test_that("buildPopup() supports all column types and custom summaries", {
+  out <- quietly(buildPopup(
+    popup_data,
+    c("day", "flag", "nox"),
+    fun.character = \(x) length(unique(x)),
+    fun.numeric = \(x) max(x),
+    fun.dttm = \(x) format(min(x), "%Y")
+  ))
+  expect_equal(
+    out$popup[[1]],
+    "<b>day</b>: 2020<br><b>flag</b>: 2<br><b>NO<sub>x</sub></b>: 3"
   )
 })
 
-test_that("popup creation works", {
-  # columns
-  expect_identical(
-    polar_data |>
-      dplyr::slice_head(n = 1, by = "site") |>
-      buildPopup(
-        columns = c("date", "nox", "site"),
-        type = "site",
-        latitude = "lat",
-        longitude = "lon"
-      ) |>
-      dplyr::pull(popup),
-    c(
-      "<b>site</b>: London Bloomsbury<br><b>NO<sub>x</sub></b>: 113<br><b>date</b>: 2009-01-01 to 2009-01-01",
-      "<b>site</b>: London Cromwell Road 2<br><b>NO<sub>x</sub></b>: NaN<br><b>date</b>: 2009-01-01 to 2009-01-01",
-      "<b>site</b>: London Marylebone Road<br><b>NO<sub>x</sub></b>: 130<br><b>date</b>: 2009-01-01 to 2009-01-01",
-      "<b>site</b>: London N. Kensington<br><b>NO<sub>x</sub></b>: 31<br><b>date</b>: 2009-01-01 to 2009-01-01"
-    )
-  )
-
-  # named columns
-  expect_identical(
-    polar_data |>
-      dplyr::slice_head(n = 1, by = "site") |>
-      buildPopup(
-        columns = c("Date" = "date", "NOx" = "nox", "Site" = "site"),
-        latitude = "lat",
-        longitude = "lon"
-      ) |>
-      dplyr::pull(popup),
-    c(
-      "<b>Site</b>: London Bloomsbury<br><b>NO<sub>x</sub></b>: 113<br><b>Date</b>: 2009-01-01 to 2009-01-01",
-      "<b>Site</b>: London Cromwell Road 2<br><b>NO<sub>x</sub></b>: NaN<br><b>Date</b>: 2009-01-01 to 2009-01-01",
-      "<b>Site</b>: London Marylebone Road<br><b>NO<sub>x</sub></b>: 130<br><b>Date</b>: 2009-01-01 to 2009-01-01",
-      "<b>Site</b>: London N. Kensington<br><b>NO<sub>x</sub></b>: 31<br><b>Date</b>: 2009-01-01 to 2009-01-01"
-    )
+test_that("buildPopup() summarises separately by type", {
+  out <- quietly(buildPopup(popup_data, "nox", type = "type"))
+  expect_equal(nrow(out), 3)
+  expect_equal(out$popup[out$type == "y"], "<b>NO<sub>x</sub></b>: 3")
+  expect_equal(
+    out$popup[out$type == "x" & out$site == "A"],
+    "<b>NO<sub>x</sub></b>: 1"
   )
 })
 
-test_that("postcode conversion works", {
-  testthat::expect_equal(
-    fmt_api_call("SW1A 1AAA"),
-    "api.postcodes.io/postcodes/sw1a1aaa"
-  )
-
-  testthat::expect_equal(
-    raw_to_json(as.raw(
-      c(
-        0x7b,
-        0x22,
-        0x73,
-        0x74,
-        0x61,
-        0x74,
-        0x75,
-        0x73,
-        0x22,
-        0x3a,
-        0x34,
-        0x30,
-        0x34,
-        0x2c,
-        0x22,
-        0x65,
-        0x72,
-        0x72,
-        0x6f,
-        0x72,
-        0x22,
-        0x3a,
-        0x22,
-        0x49,
-        0x6e,
-        0x76,
-        0x61,
-        0x6c,
-        0x69,
-        0x64,
-        0x20,
-        0x70,
-        0x6f,
-        0x73,
-        0x74,
-        0x63,
-        0x6f,
-        0x64,
-        0x65,
-        0x22,
-        0x7d
+test_that("convertPostcode() returns a latitude and longitude", {
+  skip_if_not_installed("curl")
+  skip_if_not_installed("jsonlite")
+  local_mocked_bindings(
+    curl_fetch_memory = function(url, ...) {
+      expect_equal(url, "api.postcodes.io/postcodes/sw1a1aa")
+      list(
+        status_code = 200L,
+        content = charToRaw(
+          '{"result": {"latitude": 51.5, "longitude": -0.14, "postcode": "SW1A 1AA"}}'
+        )
       )
-    )),
-    list(status = 404L, error = "Invalid postcode")
+    },
+    .package = "curl"
   )
+  expect_equal(
+    convertPostcode("SW1A 1AA"),
+    list(lat = 51.5, lng = -0.14, postcode = "SW1A 1AA")
+  )
+})
+
+test_that("convertPostcode() errors for invalid postcodes", {
+  skip_if_not_installed("curl")
+  skip_if_not_installed("jsonlite")
+  local_mocked_bindings(
+    curl_fetch_memory = function(url, ...) {
+      list(
+        status_code = 404L,
+        content = charToRaw('{"error": "Invalid postcode"}')
+      )
+    },
+    .package = "curl"
+  )
+  expect_error(convertPostcode("foo"), "Invalid postcode")
 })

@@ -6,11 +6,11 @@
 \usage{
 trajMap(
   data,
-  longitude = "lon",
-  latitude = "lat",
+  latitude = NULL,
+  longitude = NULL,
   colour = NULL,
   type = NULL,
-  cols = "default",
+  cols = "turbo",
   alpha = 0.5,
   npoints = 12,
   provider = "OpenStreetMap",
@@ -19,7 +19,6 @@ trajMap(
   legend.title.autotext = TRUE,
   control.collapsed = FALSE,
   control.position = "topright",
-  control = NULL,
   ...
 )
 }
@@ -34,9 +33,13 @@ obtained using \code{\link[openair:importTraj]{openair::importTraj()}}.}
 
 \item{latitude, longitude}{\emph{The decimal latitude/longitude.}
 
-\emph{default:} \code{"lat"} / \code{"lon"}
+\emph{default:} \code{NULL}
 
-Column names representing the decimal latitude and longitude.}
+Column names representing the decimal latitude and longitude. If not
+provided, will be automatically inferred from data by looking for a column
+named "lat"/"latitude" or "lon"/"lng"/"long"/"longitude"
+(case-insensitively), such as the "lat" and "lon" columns returned by
+\code{\link[openair:importTraj]{openair::importTraj()}}.}
 
 \item{colour}{\emph{Column to be used for colouring each trajectory.}
 
@@ -44,7 +47,9 @@ Column names representing the decimal latitude and longitude.}
 
 This column may be numeric, character, factor or date(time). This will
 commonly be a pollutant concentration which has been joined (e.g., by
-\code{\link[dplyr:left_join]{dplyr::left_join()}}) to the trajectory data by "date".}
+\code{\link[dplyr:left_join]{dplyr::left_join()}}) to the trajectory data by "date". Alternatively, a
+single colour (e.g., \code{"red"} or \code{"#FF0000"}) used for every trajectory. If
+\code{NULL}, trajectories are drawn in black.}
 
 \item{type}{\emph{A method to condition the \code{data} for separate plotting.}
 
@@ -56,13 +61,13 @@ selected between using a "layer control" menu. Passed to
 
 \item{cols}{\emph{Colours to use for plotting.}
 
-\emph{default:} \code{"default"}
+\emph{default:} \code{"turbo"}
 
 The colours used for plotting, passed to \code{\link[openair:openColours]{openair::openColours()}}.}
 
 \item{alpha}{\emph{Transparency value for trajectories.}
 
-\emph{default:} \code{1}
+\emph{default:} \code{0.5}
 
 A value between \code{0} (fully transparent) and \code{1} (fully opaque).}
 
@@ -77,19 +82,22 @@ understand where the air masses were at particular times and get a feel for
 the speed of the air (points closer together correspond to slower moving
 air masses). Defaults to \code{12}.}
 
-\item{provider}{\emph{The basemap to be used.}
+\item{provider}{\emph{The basemap(s) to be used.}
 
 \emph{default:} \code{"OpenStreetMap"}
 
-A single \link[leaflet:providers]{leaflet::providers}. See
+Any number of \link[leaflet:providers]{leaflet::providers}. See
 \url{http://leaflet-extras.github.io/leaflet-providers/preview/} for a list of
-all base maps that can be used.}
+all base maps that can be used. If multiple base maps are provided, they
+can be toggled between using a "layer control" interface. By default, the
+interface will use the provider names as labels, but users can define their
+own using a named vector (e.g., \code{c("Default" = "OpenStreetMap", "Satellite" = "Esri.WorldImagery")})}
 
 \item{legend.position}{\emph{Position of the shared legend.}
 
 \emph{default:} \code{"topright"}
 
-Where should the legend be placed? One of "topright", "topright",
+Where should the legend be placed? One of "topright", "topleft",
 "bottomleft" or "bottomright". Passed to the \code{position} argument of
 \code{\link[leaflet:addLegend]{leaflet::addLegend()}}. \code{NULL} defaults to "topright".}
 
@@ -123,8 +131,6 @@ have to hover over an icon to view the options.}
 Where should the "layer control" interface be placed? One of "topleft",
 "topright", "bottomleft" or "bottomright". Passed to the \code{position}
 argument of \code{\link[leaflet:addLayersControl]{leaflet::addLayersControl()}}.}
-
-\item{control}{Deprecated. Please use \code{type}.}
 
 \item{...}{
   Arguments passed on to \code{\link[openair:cutData]{openair::cutData}}
@@ -196,8 +202,6 @@ trajMap(traj_data, colour = "pm10")
 }
 \seealso{
 \code{\link[openair:trajPlot]{openair::trajPlot()}}
-
-\code{\link[=trajMapStatic]{trajMapStatic()}} for the static \code{ggplot2} equivalent of \code{\link[=trajMap]{trajMap()}}
 
 Other interactive trajectory maps:
 \code{\link[=trajLevelMap]{trajLevelMap()}}

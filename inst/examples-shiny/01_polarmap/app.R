@@ -2,7 +2,7 @@ polar_data <- openairmaps::polar_data
 sites <- unique(polar_data$site)
 
 map <- leaflet::leaflet() |>
-  leaflet::addProviderTiles(leaflet::providers$CartoDB.Positron) |>
+  leaflet::addProviderTiles(leaflet::providers$Esri.WorldGrayCanvas) |>
   leaflet::setView(lng = -0.213492, lat = 51.49548, zoom = 13)
 
 ui <- bslib::page_sidebar(

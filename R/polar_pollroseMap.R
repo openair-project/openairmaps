@@ -46,7 +46,7 @@
 #' pollroseMap(polar_data,
 #'   pollutant = "nox",
 #'   statistic = "prop.count",
-#'   provider = "CartoDB.Voyager"
+#'   provider = "Esri.WorldGrayCanvas"
 #' )
 #' }
 pollroseMap <- function(
@@ -81,227 +81,25 @@ pollroseMap <- function(
   ...,
   control = NULL
 ) {
-  if (static) {
-    check_installed_static()
-  }
+  map <- polar_map_init(data, ...)
+  map <- polar_map_prep(map, data, pollutant, vars = c("wd", "ws"))
 
-  # check basemap providers are valid
-  provider <- check_providers(provider, static)
-  legend.position <- check_legendposition(legend.position, static)
-
-  # check for old facet/control opts
-  type <- type %||% check_facet_control(control = control, ...)
-
-  # assume lat/lon
-  latlon <- assume_latlon(
-    data = data,
-    latitude = latitude,
-    longitude = longitude
-  )
-  latitude <- latlon$latitude
-  longitude <- latlon$longitude
-
-  # cut data
-  data <- openair::cutData(x = data, type = type %||% "default", ...)
-
-  # deal with popups
-  if (length(popup) > 1) {
-    data <-
-      quick_popup(
-        data = data,
-        popup = popup,
-        latitude = latitude,
-        longitude = longitude,
-        control = type
-      )
-    popup <- "popup"
-  }
-
-  # prep data
-  data <-
-    prepMapData(
-      data = data,
-      pollutant = pollutant,
-      control = type,
-      "wd",
-      "ws",
-      latitude,
-      longitude,
-      popup,
-      label
-    )
-
-  # work out breaks
-  # needs to happen before plotting to ensure same scales
+  # work out breaks - needs to happen before plotting to ensure same scales
   if (!is.null(breaks)) {
-    theBreaks <-
-      getBreaks(breaks = breaks, ws.int = NULL, vec = data$conc, polrose = TRUE)
-  } else {
-    theBreaks <- 6
+    breaks <- getBreaks(breaks, NULL, map$data$conc, polrose = TRUE)
   }
 
-  # identify splitting column (defaulting to pollutant)
-  if (length(pollutant) > 1) {
-    split_col <- "pollutant_name"
-  } else if (!is.null(type)) {
-    data[type] <- as.factor(data[[type]])
-    split_col <- type
-  } else {
-    split_col <- "pollutant_name"
-  }
-
-  # arguments for function
-  dots <- rlang::list2(...)
-  dots$annotate <- dots$annotate %||% FALSE
-  fun_args <- append(
-    list(
+  polar_map_draw(
+    map,
+    fun = openair::pollutionRose,
+    fun_args = list(
       pollutant = "conc",
       statistic = statistic,
-      breaks = theBreaks,
-      plot = FALSE,
-      cols = cols,
-      theme = theme,
-      key.position = key.position
+      breaks = breaks %||% 6
     ),
-    dots
+    legend_spec = \(plots_df) {
+      legend_from_markers(plots_df, values = rose_intervals, cols = cols)
+    },
+    legend_str = pollutant
   )
-
-  # define function
-  fun <- function(data) {
-    rlang::exec(
-      openair::pollutionRose,
-      !!!append(
-        list(mydata = data),
-        fun_args
-      )
-    )
-  }
-
-  # plot and save static markers
-  plots_df <-
-    create_polar_markers(
-      fun = fun,
-      fun_args = fun_args,
-      data = data,
-      latitude = latitude,
-      longitude = longitude,
-      split_col = split_col,
-      d.fig = d.fig,
-      popup = popup,
-      label = label,
-      progress = progress
-    )
-
-  if (static) {
-    # create static map - deals with basics & facets
-    map <-
-      create_static_map(
-        plots_df = plots_df,
-        latitude = latitude,
-        longitude = longitude,
-        split_col = split_col,
-        pollutant = pollutant,
-        facet = type,
-        facet.nrow = static.nrow,
-        api_key = api_key,
-        d.icon = d.icon,
-        crs = crs,
-        provider = provider,
-        alpha = alpha
-      )
-
-    # create legend
-    if (!is.null(breaks) && legend) {
-      intervals <- attr(plots_df$plot[[1]], "intervals")
-      intervals <- factor(intervals, intervals)
-      pal <-
-        openair::openColours(scheme = cols, n = length(intervals)) |>
-        stats::setNames(intervals)
-
-      # create dummy df for creating legend
-      dummy <-
-        dplyr::distinct(plots_df, .data[[longitude]], .data[[latitude]]) |>
-        tidyr::crossing(intervals)
-
-      legend.title <-
-        create_legend_title(
-          static = static,
-          legend.title.autotext = legend.title.autotext,
-          legend.title = legend.title,
-          str = paste(pollutant, collapse = ", ")
-        )
-
-      # add legend
-      map <-
-        map +
-        ggplot2::geom_tile(
-          data = dummy,
-          ggplot2::aes(
-            .data[[longitude]],
-            .data[[latitude]],
-            color = .data[["intervals"]],
-            fill = .data[["intervals"]]
-          ),
-          show.legend = TRUE,
-          alpha = 0
-        ) +
-        ggplot2::scale_fill_manual(
-          values = pal,
-          drop = FALSE,
-          aesthetics = c("fill", "color")
-        ) +
-        ggplot2::labs(color = legend.title, fill = legend.title) +
-        ggplot2::theme(legend.position = legend.position) +
-        ggplot2::guides(
-          color = ggplot2::guide_legend(override.aes = list(alpha = 1))
-        )
-    }
-  }
-
-  if (!static) {
-    # create leaflet map
-    map <-
-      make_leaflet_map(
-        plots_df,
-        latitude,
-        longitude,
-        crs,
-        provider,
-        d.icon,
-        popup,
-        label,
-        split_col,
-        control.collapsed,
-        control.position,
-        control.autotext,
-        alpha
-      )
-
-    # add legend if breaks are defined
-    if (!is.null(breaks) && legend) {
-      legend.title <-
-        create_legend_title(
-          static = static,
-          legend.title.autotext = legend.title.autotext,
-          legend.title = legend.title,
-          str = paste(pollutant, collapse = ",<br>")
-        )
-
-      map <-
-        leaflet::addLegend(
-          map,
-          position = legend.position,
-          pal = leaflet::colorBin(
-            palette = openair::openColours(cols),
-            domain = theBreaks,
-            bins = theBreaks
-          ),
-          values = theBreaks,
-          title = legend.title
-        )
-    }
-  }
-
-  # return map
-  return(map)
 }

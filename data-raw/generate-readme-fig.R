@@ -18,7 +18,7 @@ webshot("polardata.html", file = "polar.png")
 traj <- trajMap(
   traj_data,
   colour = "pm10",
-  provider = "CartoDB.DarkMatter",
+  provider = "Esri.WorldGrayCanvas",
   cols = "turbo"
 )
 

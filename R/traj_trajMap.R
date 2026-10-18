@@ -18,9 +18,13 @@
 #'
 #' @param latitude,longitude *The decimal latitude/longitude.*
 #'
-#'  *default:* `"lat"` / `"lon"`
+#'  *default:* `NULL`
 #'
-#'   Column names representing the decimal latitude and longitude.
+#'   Column names representing the decimal latitude and longitude. If not
+#'   provided, will be automatically inferred from data by looking for a column
+#'   named "lat"/"latitude" or "lon"/"lng"/"long"/"longitude"
+#'   (case-insensitively), such as the "lat" and "lon" columns returned by
+#'   [openair::importTraj()].
 #'
 #' @param colour *Column to be used for colouring each trajectory.*
 #'
@@ -28,7 +32,9 @@
 #'
 #'   This column may be numeric, character, factor or date(time). This will
 #'   commonly be a pollutant concentration which has been joined (e.g., by
-#'   [dplyr::left_join()]) to the trajectory data by "date".
+#'   [dplyr::left_join()]) to the trajectory data by "date". Alternatively, a
+#'   single colour (e.g., `"red"` or `"#FF0000"`) used for every trajectory. If
+#'   `NULL`, trajectories are drawn in black.
 #'
 #' @param type *A method to condition the `data` for separate plotting.*
 #'
@@ -40,13 +46,13 @@
 #'
 #' @param cols *Colours to use for plotting.*
 #'
-#'  *default:* `"default"`
+#'  *default:* `"turbo"`
 #'
 #'   The colours used for plotting, passed to [openair::openColours()].
 #'
 #' @param alpha *Transparency value for trajectories.*
 #'
-#'  *default:* `1`
+#'  *default:* `0.5`
 #'
 #'   A value between `0` (fully transparent) and `1` (fully opaque).
 #'
@@ -61,19 +67,23 @@
 #'   the speed of the air (points closer together correspond to slower moving
 #'   air masses). Defaults to `12`.
 #'
-#' @param provider *The basemap to be used.*
+#' @param provider *The basemap(s) to be used.*
 #'
 #'  *default:* `"OpenStreetMap"`
 #'
-#'   A single [leaflet::providers]. See
+#'   Any number of [leaflet::providers]. See
 #'   <http://leaflet-extras.github.io/leaflet-providers/preview/> for a list of
-#'   all base maps that can be used.
+#'   all base maps that can be used. If multiple base maps are provided, they
+#'   can be toggled between using a "layer control" interface. By default, the
+#'   interface will use the provider names as labels, but users can define their
+#'   own using a named vector (e.g., `c("Default" = "OpenStreetMap", "Satellite"
+#'   = "Esri.WorldImagery")`)
 #'
 #' @param legend.position *Position of the shared legend.*
 #'
 #'  *default:* `"topright"`
 #'
-#'   Where should the legend be placed? One of "topright", "topright",
+#'   Where should the legend be placed? One of "topright", "topleft",
 #'   "bottomleft" or "bottomright". Passed to the `position` argument of
 #'   [leaflet::addLegend()]. `NULL` defaults to "topright".
 #'
@@ -108,15 +118,12 @@
 #'   "topright", "bottomleft" or "bottomright". Passed to the `position`
 #'   argument of [leaflet::addLayersControl()].
 #'
-#' @param control Deprecated. Please use `type`.
-#'
 #' @inheritDotParams openair::cutData -x -type
 #'
 #' @returns A leaflet object.
 #' @export
 #'
 #' @seealso [openair::trajPlot()]
-#' @seealso [trajMapStatic()] for the static `ggplot2` equivalent of [trajMap()]
 #'
 #' @examples
 #' \dontrun{
@@ -126,11 +133,11 @@
 trajMap <-
   function(
     data,
-    longitude = "lon",
-    latitude = "lat",
+    latitude = NULL,
+    longitude = NULL,
     colour = NULL,
     type = NULL,
-    cols = "default",
+    cols = "turbo",
     alpha = 0.5,
     npoints = 12,
     provider = "OpenStreetMap",
@@ -139,192 +146,160 @@ trajMap <-
     legend.title.autotext = TRUE,
     control.collapsed = FALSE,
     control.position = "topright",
-    control = NULL,
     ...
   ) {
-    # handle deprecated argument
-    if (!is.null(control)) {
-      lifecycle::deprecate_soft(
-        when = "0.9.0",
-        what = "trajMap(control)",
-        with = "trajMap(type)"
-      )
-    }
-    type <- type %||% control
-
     # make lat/lon easier to use
-    names(data)[names(data) == longitude] <- "lon"
-    names(data)[names(data) == latitude] <- "lat"
+    latlon <- assume_latlon(data, latitude = latitude, longitude = longitude)
+    names(data)[names(data) == latlon$longitude] <- "lon"
+    names(data)[names(data) == latlon$latitude] <- "lat"
 
-    # default colour is black
-    fixedcol <- "black"
-
-    # get factor version of date to reorder by "colour"
-    data$datef <- factor(data$date)
+    # identify individual trajectories
+    data$trajid <- traj_id(data)
 
     # if no "type", get a fake column
     type <- type %||% "default"
     data <- openair::cutData(x = data, type = type, ...)
 
+    # check basemap providers are valid
+    provider <- check_providers(provider, static = FALSE)
+
     # initialise map
     map <- leaflet::leaflet() |>
-      leaflet::addProviderTiles(provider = provider)
+      add_basemaps(provider)
 
-    # if "colour", create colour palette
-    if (!is.null(colour)) {
-      if (colour %in% names(data)) {
-        data <- dplyr::arrange(data, .data$datef)
+    # "colour" is either a column to colour by, or a single colour (by
+    # default, black)
+    colour_col <- !is.null(colour) && colour %in% names(data)
+    if (!is.null(colour) && !colour_col && !is_colour(colour)) {
+      cli::cli_abort(
+        c(
+          "x" = "{.arg colour} must be a column of {.arg data} or a single colour.",
+          "i" = "{.val {colour}} is neither."
+        )
+      )
+    }
+    fixedcol <- if (!is.null(colour) && !colour_col) colour else "black"
 
-        if (
-          inherits(data[[colour]], "factor") ||
-            inherits(data[[colour]], "character")
-        ) {
-          pal <- leaflet::colorFactor(
-            palette = openair::openColours(
-              scheme = cols,
-              n = length(unique(data[[colour]]))
-            ),
-            domain = data[[colour]]
-          )
-        } else if (inherits(data[[colour]], "POSIXct")) {
-          pal <- leaflet::colorNumeric(
-            palette = openair::openColours(scheme = cols),
-            domain = as.numeric(data[[colour]], origin = "1964-10-22")
-          )
-        } else {
-          pal <- leaflet::colorNumeric(
-            palette = openair::openColours(scheme = cols),
-            domain = data[[colour]]
-          )
-        }
+    # if colouring by a column, create colour palette
+    if (colour_col) {
+      data <- dplyr::arrange(data, .data$date)
+
+      if (
+        inherits(data[[colour]], "factor") ||
+          inherits(data[[colour]], "character")
+      ) {
+        pal <- leaflet::colorFactor(
+          palette = openair::openColours(
+            scheme = cols,
+            n = length(unique(data[[colour]]))
+          ),
+          domain = data[[colour]]
+        )
+      } else if (inherits(data[[colour]], "POSIXct")) {
+        pal <- leaflet::colorNumeric(
+          palette = openair::openColours(scheme = cols),
+          domain = as.numeric(data[[colour]], origin = "1964-10-22")
+        )
       } else {
-        fixedcol <- colour
+        pal <- leaflet::colorNumeric(
+          palette = openair::openColours(scheme = cols),
+          domain = data[[colour]]
+        )
       }
     }
 
     # make labels
-    data <- dplyr::mutate(
-      data,
-      lab = stringr::str_glue(
-        "<b>Arrival Date:</b> {date}<br>
-                             <b>Trajectory Date:</b> {date2}<br>
-                             <b>Lat:</b> {lat} | <b>Lon:</b> {lon}<br>
-                             <b>Height:</b> {height} m | <b>Pressure:</b> {pressure} Pa"
-      )
-    )
-
-    if (!is.null(colour)) {
-      if (
-        colour %in%
-          names(data) &&
-          !colour %in% c("date", "date2", "lat", "lon", "height", "pressure")
-      ) {
-        data$lab <- paste(
-          data$lab,
-          paste0("<b>", quickTextHTML(colour), ":</b> ", data[[colour]]),
-          sep = "<br>"
-        )
-      }
+    # (add the "colour" column too, unless it's already in the label)
+    extra <- NULL
+    if (
+      colour_col &&
+        !colour %in% c("date", "date2", "lat", "lon", "height", "pressure")
+    ) {
+      extra <- colour
     }
+    data <- build_traj_labels(data, extra = extra)
 
     # iterate over columns in "type" column
-    for (j in seq_along(unique(data[[type]]))) {
+    type_levels <- level_order(data[[type]])
+    for (j in seq_along(type_levels)) {
       # get jth instance of "type"
-      data2 <-
-        dplyr::filter(data, .data[[type]] == unique(data[[type]])[[j]])
+      data2 <- dplyr::filter(data, .data[[type]] == type_levels[[j]])
 
-      # iterate over different arrival dates to plot separate trajectories
-      for (i in seq_along(unique(data2$datef))) {
-        # get line/points data
+      # iterate over individual trajectories (i.e., each arrival date and
+      # receptor) to plot them separately
+      for (i in seq_along(unique(data2$trajid))) {
+        # get line data (addTrajPaths() does its own npoints-based filtering
+        # for the points)
         ldata <-
-          dplyr::filter(data2, .data$datef == unique(data2$datef)[[i]])
-        pdata <-
-          dplyr::filter(ldata, .data$hour.inc %% npoints == 0)
+          dplyr::filter(data2, .data$trajid == unique(data2$trajid)[[i]])
 
         lcolors <- fixedcol
         pcolors <- fixedcol
         # apply color pal if it exists
-        if (!is.null(colour)) {
-          if (colour %in% names(data)) {
-            lcolors <- pal(ldata[[colour]])[1]
-            pcolors <- pal(pdata[[colour]])
-          }
+        if (colour_col) {
+          lcolors <- pal(ldata[[colour]])[1]
+          pcolors <- pal(ldata[[colour]])
         }
 
-        # add points/lines to plot
+        # add line + points to plot
         map <-
-          leaflet::addPolylines(
-            map = map,
+          addTrajPaths(
+            map,
             data = ldata,
-            lng = ldata$lon,
-            lat = ldata$lat,
-            opacity = alpha,
-            weight = 2,
+            npoints = npoints,
+            group = as.character(type_levels[[j]]),
             color = lcolors,
-            group = as.character(unique(data[[type]])[[j]])
-          ) |>
-          leaflet::addCircleMarkers(
-            data = pdata,
-            radius = 3,
-            stroke = FALSE,
-            lng = pdata$lon,
-            lat = pdata$lat,
-            fillOpacity = alpha,
-            color = pcolors,
-            group = as.character(unique(data[[type]])[[j]]),
-            popup = pdata$lab
+            markerColor = pcolors,
+            opacity = alpha,
+            fillOpacity = alpha
           )
       }
     }
 
-    # if "group" exists, add a legend
-    if (!is.null(colour)) {
-      legend.title <- legend.title %||% colour
-      if (legend.title.autotext) {
-        legend.title <- quickTextHTML(legend.title)
-      }
+    # if colouring by a column, add a legend
+    if (colour_col) {
+      legend.title <- create_legend_title(
+        static = FALSE,
+        legend.title.autotext = legend.title.autotext,
+        legend.title = legend.title,
+        str = colour
+      )
 
-      if (colour %in% names(data)) {
-        if (inherits(data[[colour]], "POSIXct")) {
-          map <-
-            leaflet::addLegend(
-              map,
-              title = legend.title,
-              position = check_legendposition(legend.position, FALSE),
-              pal = pal,
-              values = as.numeric(data[[colour]], origin = "1964-10-22"),
-              labFormat = leaflet::labelFormat(
-                transform = function(x) {
-                  as.Date.POSIXct(x, origin = "1964-10-22")
-                }
-              )
+      if (inherits(data[[colour]], "POSIXct")) {
+        map <-
+          leaflet::addLegend(
+            map,
+            title = legend.title,
+            position = check_legendposition(legend.position, FALSE),
+            pal = pal,
+            values = as.numeric(data[[colour]], origin = "1964-10-22"),
+            labFormat = leaflet::labelFormat(
+              transform = function(x) {
+                as.Date.POSIXct(x, origin = "1964-10-22")
+              }
             )
-        } else {
-          map <-
-            leaflet::addLegend(
-              map,
-              title = legend.title,
-              position = check_legendposition(legend.position, FALSE),
-              pal = pal,
-              values = data[[colour]]
-            )
-        }
+          )
+      } else {
+        map <-
+          leaflet::addLegend(
+            map,
+            title = legend.title,
+            position = check_legendposition(legend.position, FALSE),
+            pal = pal,
+            values = data[[colour]]
+          )
       }
     }
 
-    # if "control" exists, add the layer control menu
-    if (type != "default") {
-      map <-
-        leaflet::addLayersControl(
-          map,
-          position = control.position,
-          options = leaflet::layersControlOptions(
-            collapsed = control.collapsed,
-            autoZIndex = FALSE
-          ),
-          overlayGroups = as.character(unique(data[[type]]))
-        )
-    }
+    # add the layer control menu - "type" levels can be toggled on and off
+    map <- add_layer_control(
+      map,
+      provider = provider,
+      groups = if (type != "default") type_levels,
+      groups_as = "overlay",
+      position = control.position,
+      collapsed = control.collapsed
+    )
 
     map
   }

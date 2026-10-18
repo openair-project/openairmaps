@@ -18,6 +18,9 @@ krigingMap(
   latitude = NULL,
   longitude = NULL,
   crs = 4326,
+  type = NULL,
+  popup = NULL,
+  label = NULL,
   provider = "OpenStreetMap",
   cols = "turbo",
   alpha = 0.8,
@@ -27,13 +30,18 @@ krigingMap(
   legend.position = NULL,
   legend.title = NULL,
   legend.title.autotext = TRUE,
+  control.collapsed = FALSE,
+  control.position = "topright",
+  control.autotext = TRUE,
   static = FALSE,
+  static.nrow = NULL,
   api_key = NULL,
-  vgm = gstat::vgm(psill = 1, model = "Exp", range = 50000, nugget = 1),
+  vgm = gstat::vgm(psill = 1, model = "Exp", range = 50, nugget = 1),
   args.idw = list(),
   args.variogram = list(),
   args.fit.variogram = list(),
-  args.krige = list()
+  args.krige = list(),
+  ...
 )
 
 voronoiMap(
@@ -48,6 +56,9 @@ voronoiMap(
   latitude = NULL,
   longitude = NULL,
   crs = 4326,
+  type = NULL,
+  popup = NULL,
+  label = NULL,
   provider = "OpenStreetMap",
   cols = "turbo",
   alpha = 0.8,
@@ -58,8 +69,14 @@ voronoiMap(
   legend.position = NULL,
   legend.title = NULL,
   legend.title.autotext = TRUE,
+  control.collapsed = FALSE,
+  control.position = "topright",
+  control.autotext = TRUE,
   static = FALSE,
-  args.voronoi = list()
+  static.nrow = NULL,
+  api_key = NULL,
+  args.voronoi = list(),
+  ...
 )
 }
 \arguments{
@@ -91,7 +108,10 @@ controls how this is achieved. Possible statistics include:
 \item \code{"min"}: the maximum value (using \code{\link[=min]{min()}})
 \item \code{"sd"}: the standard deviation (using \code{\link[stats:sd]{stats::sd()}})
 \item \code{"percentile"}: a percentile value, defined using the \code{percentile} argument (using \code{\link[stats:quantile]{stats::quantile()}})
-}}
+}
+
+To show this value in marker popups or labels, include \code{pollutant} in
+\code{popup} or \code{label} (e.g., \code{popup = c("site", "nox")}).}
 
 \item{percentile}{\emph{The percentile when `statistic = "percentile"}
 
@@ -125,7 +145,11 @@ complex and computationally intensive.}
 
 By default, a continuous colour scale is used. If \code{breaks} are provided,
 the colour scale will be discretised using \code{\link[=cut]{cut()}}. \code{labels} can also be
-provided to customise how each factor level is labelled.}
+provided to customise how each factor level is labelled.
+
+If the data extend beyond \code{breaks}, the outermost breaks are expanded to
+cover them so that no sites are left uncoloured. For example, \code{breaks = c(50, 100, 150)} would become \code{c(25, 100, 200)} for data ranging from 25
+to 200.}
 
 \item{limits}{\emph{Specifier for the plot colour scale bounds.}
 
@@ -155,6 +179,35 @@ CRS associated with the commonly used latitude and longitude coordinates.
 Different coordinate systems can be specified using \code{crs} (e.g., \code{crs = 27700} for the \href{https://epsg.io/27700}{British National Grid}). Note that
 non-lat/lng coordinate systems will be re-projected to EPSG:4326 for
 plotting on the map.}
+
+\item{type}{\emph{A method to condition the \code{data} for separate plotting.}
+
+\emph{default:} \code{NULL} | \emph{scope:} dynamic & static
+
+Used for splitting the input data into different groups, passed to the
+\code{type} argument of \code{\link[openair:cutData]{openair::cutData()}}. When \code{type} is specified:
+\itemize{
+\item \emph{Dynamic}: The different data splits can be toggled between using a "layer control" menu.
+\item \emph{Static}: The data splits will each appear in a different panel.
+}
+
+\code{type} cannot be used if multiple \code{pollutant} columns have been provided.}
+
+\item{popup}{\emph{Content for marker popups on dynamic maps.}
+
+\emph{default:} \code{NULL} | \emph{scope:} dynamic
+
+Columns to be used as the HTML content for marker popups on dynamic maps.
+Popups may be useful to show information about the individual sites (e.g.,
+site names, codes, types, etc.). If a vector of column names are provided
+they are passed to \code{\link[=buildPopup]{buildPopup()}} using its default values.}
+
+\item{label}{\emph{Content for marker hover-over on dynamic maps.}
+
+\emph{default:} \code{NULL} | \emph{scope:} dynamic
+
+Column to be used as the HTML content for hover-over labels. Labels are
+useful for the same reasons as popups, though are typically shorter.}
 
 \item{provider}{\emph{The basemap(s) to be used.}
 
@@ -197,7 +250,8 @@ A value between 0 (fully transparent) and 1 (fully opaque).}
 \emph{default:} \code{TRUE} | \emph{scope:} dynamic & static
 
 When \code{TRUE}, the coordinates in the input \code{data} will be shown as coloured
-markers.}
+markers. Any \code{popup} or \code{label} is attached to these markers, so neither
+is shown when \code{show.markers = FALSE}.}
 
 \item{marker.border, voronoi.border}{\emph{Border colour to use for markers and
 voronoi tiles.}
@@ -218,8 +272,8 @@ When \code{TRUE}, a legend will appear on the map identifying the colour scale.}
 
 When \code{legend = TRUE}, where should the legend be placed?
 \itemize{
-\item \emph{Dynamic}: One of "topright", "topright", "bottomleft" or "bottomright". Passed to the \code{position} argument of \code{\link[leaflet:addLegend]{leaflet::addLegend()}}.
-\item \emph{Static:}: One of "top", "right", "bottom" or "left". Passed to the \code{legend.position} argument of \code{\link[ggplot2:theme]{ggplot2::theme()}}.
+\item \emph{Dynamic}: One of "topright", "topleft", "bottomleft" or "bottomright". Passed to the \code{position} argument of \code{\link[leaflet:addLegend]{leaflet::addLegend()}}.
+\item \emph{Static}: One of "top", "right", "bottom" or "left". Passed to the \code{legend.position} argument of \code{\link[ggplot2:theme]{ggplot2::theme()}}.
 }}
 
 \item{legend.title}{\emph{Title of the legend.}
@@ -238,6 +292,30 @@ this - for example, to include units or other contextual information. For
 When \code{legend.title.autotext = TRUE}, \code{legend.title} will be first run
 through \code{\link[=quickTextHTML]{quickTextHTML()}} (\emph{dynamic}) or \code{\link[openair:quickText]{openair::quickText()}} (\emph{static}).}
 
+\item{control.collapsed}{\emph{Show the layer control as a collapsed?}
+
+\emph{default:} \code{FALSE} | \emph{scope:} dynamic
+
+For \emph{dynamic} maps, should the "layer control" interface be collapsed? If
+\code{TRUE}, users will have to hover over an icon to view the options.}
+
+\item{control.position}{\emph{Position of the layer control menu}
+
+\emph{default:} \code{"topright"} | \emph{scope:} dynamic
+
+When \code{type != NULL}, or multiple pollutants are specified, where should the
+"layer control" interface be placed? One of "topleft", "topright",
+"bottomleft" or "bottomright". Passed to the \code{position} argument of
+\code{\link[leaflet:addLayersControl]{leaflet::addLayersControl()}}.}
+
+\item{control.autotext}{\emph{Automatically format the content of the layer
+control menu?}
+
+\emph{default:} \code{TRUE} | \emph{scope:} dynamic
+
+When \code{control.autotext = TRUE}, the content of the "layer control"
+interface will be first run through \code{\link[=quickTextHTML]{quickTextHTML()}}.}
+
 \item{static}{\emph{Produce a static map?}
 
 \emph{default:} \code{FALSE}
@@ -245,6 +323,15 @@ through \code{\link[=quickTextHTML]{quickTextHTML()}} (\emph{dynamic}) or \code{
 This controls whether a \emph{dynamic} or \emph{static} map is produced. The former
 is the default and is broadly more useful, but the latter may be preferable
 for DOCX or PDF outputs (e.g., academic papers).}
+
+\item{static.nrow}{\emph{Number of rows in a static map.}
+
+\emph{default:} \code{NULL} | \emph{scope:} static
+
+Controls the number of rows of panels on a static map when multiple
+\code{pollutant}s or \code{type} are specified; passed to the \code{nrow} argument of
+\code{\link[ggplot2:facet_wrap]{ggplot2::facet_wrap()}}. The default, \code{NULL}, results in a roughly square
+grid of panels.}
 
 \item{api_key}{\emph{API key for certain 'static' base map providers.}
 
@@ -255,10 +342,11 @@ Needed for certain \code{providers} (e.g., \code{"cartolight"}).}
 
 \item{vgm}{\emph{A variogram model}
 
-\emph{default:} \code{gstat::vgm(psill = 1, model = "Exp", range = 50000, nugget = 1)} | \emph{scope:} dynamic & static
+\emph{default:} \code{gstat::vgm(psill = 1, model = "Exp", range = 50, nugget = 1)} | \emph{scope:} dynamic & static
 
 The variogram model to use when \code{method = "kriging"}. Must be the output of
-\code{\link[gstat:vgm]{gstat::vgm()}}.}
+\code{\link[gstat:vgm]{gstat::vgm()}}. As the data are in latitude and longitude, \code{{gstat}}
+measures distances (e.g., the \code{range}) in kilometres.}
 
 \item{args.idw, args.variogram, args.fit.variogram, args.krige}{\emph{Extra arguments
 to pass to spatial interpolation functions for \code{\link[=krigingMap]{krigingMap()}}.}
@@ -267,6 +355,58 @@ to pass to spatial interpolation functions for \code{\link[=krigingMap]{krigingM
 
 Extra arguments passed to \code{\link[gstat:idw]{gstat::idw()}}, \code{\link[gstat:vgm]{gstat::vgm()}},
 \code{\link[gstat:fit.variogram]{gstat::fit.variogram()}}, and \code{\link[gstat:krige]{gstat::krige()}}.}
+
+\item{...}{
+  Arguments passed on to \code{\link[openair:cutData]{openair::cutData}}
+  \describe{
+    \item{\code{names}}{By default, the columns created by \code{\link[openair:cutData]{cutData()}} are named after
+their \code{type} option. Specifying \code{names} defines other names for the
+columns, which map onto the \code{type} options in the same order they are
+given. The length of \code{names} should therefore be equal to the length of
+\code{type}.}
+    \item{\code{suffix}}{If \code{name} is not specified, \code{suffix} will be appended to any
+added columns that would otherwise overwrite existing columns. For example,
+\code{cutData(mydata, "nox", suffix = "_cuts")} would append a \code{nox_cuts} column
+rather than overwriting \code{nox}.}
+    \item{\code{hemisphere}}{Can be \code{"northern"} or \code{"southern"}, used to split data
+into seasons.}
+    \item{\code{n.levels}}{Number of quantiles to split numeric data into.}
+    \item{\code{wd.res}}{The number of wind direction bins; one of \code{4} (N/E/S/W), \code{8}
+(N/NE/E/SE/etc., the default) or \code{16} (N/NNE/NE/ENE/etc.).}
+    \item{\code{start.day}}{What day of the week should the \code{type = "weekday"} start on?
+The user can change the start day by supplying an integer between 0 and 6.
+Sunday = 0, Monday = 1, ... For example to start the weekday plots on a
+Saturday, choose \code{start.day = 6}.}
+    \item{\code{start.season}}{What order should the season be. By default, the order is
+spring, summer, autumn, winter. \code{start.season = "winter"} would plot winter
+first.}
+    \item{\code{is.axis}}{A logical (\code{TRUE}/\code{FALSE}), used to request shortened cut
+labels for axes.}
+    \item{\code{local.tz}}{Used for identifying whether a date has daylight savings time
+(DST) applied or not. Examples include \code{local.tz = "Europe/London"},
+\code{local.tz = "America/New_York"}, i.e., time zones that assume DST.
+\url{https://en.wikipedia.org/wiki/List_of_zoneinfo_time_zones} shows time
+zones that should be valid for most systems. It is important that the
+original data are in GMT (UTC) or a fixed offset from GMT.}
+    \item{\code{latitude,longitude}}{The decimal latitude and longitudes used when \code{type = "daylight"}. Note that locations west of Greenwich have negative
+longitudes.}
+    \item{\code{drop}}{How to handle empty factor levels. One of:
+\itemize{
+\item \code{"default"}: Sensible defaults selected on a case-by-case basis for
+different \code{type} options.
+\item \code{"empty"}: Drop all empty factor levels.
+\item \code{"none"}: Retain all empty factor levels, where possible. For example,
+for \code{type = "hour"}, all factor levels from \code{0} and \code{23} will be
+represented.
+\item \code{"outside"}: Retain empty factor levels within the range of the data.
+For example, for \code{type = "hour"} when the data only contains data for 1 AM
+and 5 AM, the factor levels, \code{1}, \code{2}, \code{3}, \code{4} and \code{5} will be retained.
+}
+
+Some of these options only apply to certain \code{type} options. For example,
+for \code{type = "year"}, \code{"outside"} is equivalent to \code{"none"} as there is no
+fixed range of years to use in the \code{"none"} case.}
+  }}
 
 \item{args.voronoi}{\emph{Extra arguments to pass to spatial interpolation
 functions for \code{\link[=voronoiMap]{voronoiMap()}}.}
@@ -293,6 +433,10 @@ identify geographical patterns in pollution data. \code{\link[=krigingMap]{krigi
 smooth spatially interpolated surface using either inverse distance
 weighting or point kriging. \code{\link[=voronoiMap]{voronoiMap()}} creates a surface of 'closest
 observation' polygons. The kriging formula is currently always \code{pollutant ~ 1}; \code{\link[=krigingMap]{krigingMap()}} does not currently support more complex models.
+
+When \code{type} is used, each \code{type} level is summarised and interpolated
+separately, but all levels share the same colour scale so that they can
+be compared.
 }
 \section{Customisation of static maps using ggplot2}{
 

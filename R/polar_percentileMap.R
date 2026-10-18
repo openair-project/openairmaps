@@ -42,7 +42,7 @@
 #' \dontrun{
 #' percentileMap(polar_data,
 #'   pollutant = "nox",
-#'   provider = "CartoDB.Voyager"
+#'   provider = "Esri.WorldGrayCanvas"
 #' )
 #' }
 percentileMap <- function(
@@ -77,255 +77,51 @@ percentileMap <- function(
   ...,
   control = NULL
 ) {
-  if (static) {
-    check_installed_static()
-  }
-
-  # check basemap providers are valid
-  provider <- check_providers(provider, static)
-  legend.position <- check_legendposition(legend.position, static)
-
-  # check for old facet/control opts
-  type <- type %||% check_facet_control(control = control, ...)
-
-  # assume lat/lon
-  latlon <- assume_latlon(
-    data = data,
-    latitude = latitude,
-    longitude = longitude
-  )
-  latitude <- latlon$latitude
-  longitude <- latlon$longitude
+  map <- polar_map_init(data, ...)
 
   # auto limits
   intervals <- check_multipoll(intervals, pollutant)
 
-  if ("fixed" %in% intervals) {
-    if (is.null(pollutant)) {
-      cli::cli_abort(
-        c(
-          "x" = "{.code pollutant} is missing with no default.",
-          "i" = "Please provide a column of {.code data} which represents the pollutant(s) of interest."
-        )
-      )
-    }
-
-    data <-
-      dplyr::mutate(data, latlng = paste(.data[[latitude]], .data[[longitude]]))
-
-    fixed_type <- type
-    if (is.null(type)) {
-      fixed_type <- "default"
-    }
-
-    testplots <-
-      openair::percentileRose(
+  theIntervals <- resolve_scale(
+    intervals,
+    "intervals",
+    fixed = pretty(
+      fixed_scale_data(
+        openair::percentileRose,
         data,
         pollutant = pollutant,
-        type = c("latlng", fixed_type),
-        plot = FALSE
-      )$data
-
-    theIntervals <- pretty(testplots[[pollutant]])
-  } else if ("free" %in% intervals) {
-    theIntervals <- NULL
-  } else if (is.numeric(intervals)) {
-    theIntervals <- intervals
-  } else {
-    cli::cli_abort(
-      c(
-        "!" = "Do not recognise {.field intervals} value of {.code {intervals}}",
-        "i" = "{.field intervals} should be one of {.code 'fixed'}, {.code 'free'} or a numeric vector."
-      )
+        latitude = map$latitude,
+        longitude = map$longitude,
+        type = map$type,
+        percentile = percentile,
+        ...
+      )[[pollutant]]
     )
-  }
-
-  # cut data
-  data <- openair::cutData(x = data, type = type %||% "default", ...)
-
-  # deal with popups
-  if (length(popup) > 1) {
-    data <-
-      quick_popup(
-        data = data,
-        popup = popup,
-        latitude = latitude,
-        longitude = longitude,
-        control = type
-      )
-    popup <- "popup"
-  }
-
-  # prep data
-  data <-
-    prepMapData(
-      data = data,
-      pollutant = pollutant,
-      control = type,
-      "wd",
-      latitude,
-      longitude,
-      popup,
-      label
-    )
-
-  # identify splitting column (defaulting to pollutant)
-  if (length(pollutant) > 1) {
-    split_col <- "pollutant_name"
-  } else if (!is.null(type)) {
-    data[type] <- as.factor(data[[type]])
-    split_col <- type
-  } else {
-    split_col <- "pollutant_name"
-  }
-
-  # arguments for function
-  dots <- rlang::list2(...)
-  dots$annotate <- dots$annotate %||% FALSE
-  fun_args <- append(
-    list(
-      pollutant = "conc",
-      percentile = percentile,
-      plot = FALSE,
-      cols = cols,
-      theme = theme,
-      key.position = key.position,
-      intervals = theIntervals
-    ),
-    dots
   )
 
-  # define function
-  fun <- function(data) {
-    rlang::exec(
-      openair::percentileRose,
-      !!!append(
-        list(mydata = data),
-        fun_args
-      )
-    )
-  }
+  map <- polar_map_prep(map, data, pollutant, "wd")
 
-  # plot and save static markers
-  plots_df <-
-    create_polar_markers(
-      fun = fun,
-      fun_args = fun_args,
-      data = data,
-      latitude = latitude,
-      longitude = longitude,
-      split_col = split_col,
-      d.fig = d.fig,
-      popup = popup,
-      label = label,
-      progress = progress
-    )
+  polar_map_draw(
+    map,
+    fun = openair::percentileRose,
+    fun_args = list(
+      pollutant = "conc",
+      percentile = percentile,
+      intervals = theIntervals
+    ),
+    # (percentile = NA only draws the mean, so there are no bands to show)
+    legend_spec = if (!anyNA(percentile)) {
+      \(plots_df) {
+        legend_discrete(labels = percentile_labels(percentile), cols = cols)
+      }
+    },
+    legend_str = "Percentile"
+  )
+}
 
-  if (static) {
-    # create static map - deals with basics & facets
-    map <-
-      create_static_map(
-        plots_df = plots_df,
-        latitude = latitude,
-        longitude = longitude,
-        split_col = split_col,
-        pollutant = pollutant,
-        facet = type,
-        facet.nrow = static.nrow,
-        api_key = api_key,
-        d.icon = d.icon,
-        crs = crs,
-        provider = provider,
-        alpha = alpha
-      )
-
-    # create legend
-    percs <- unique(c(0, percentile))
-    intervals <-
-      stringr::str_c(percs, dplyr::lead(percs), sep = " - ")
-    intervals <- intervals[!is.na(intervals)]
-    intervals <- factor(intervals, intervals)
-    pal <-
-      openair::openColours(scheme = cols, n = length(intervals)) |>
-      stats::setNames(intervals)
-
-    # create dummy df for creating legend
-    dummy <-
-      dplyr::distinct(plots_df, .data[[longitude]], .data[[latitude]]) |>
-      tidyr::crossing(intervals)
-
-    if (legend) {
-      legend.title <-
-        create_legend_title(
-          static = static,
-          legend.title.autotext = legend.title.autotext,
-          legend.title = legend.title,
-          str = "Percentile"
-        )
-
-      map <-
-        map +
-        ggplot2::geom_point(
-          data = dummy,
-          ggplot2::aes(
-            .data[[longitude]],
-            .data[[latitude]],
-            color = .data[["intervals"]]
-          ),
-          size = 0,
-          key_glyph = ggplot2::draw_key_rect
-        ) +
-        ggplot2::scale_color_manual(values = pal, drop = FALSE) +
-        ggplot2::labs(color = legend.title) +
-        ggplot2::theme(legend.position = legend.position)
-    }
-  }
-
-  if (!static) {
-    # create leaflet map
-    map <-
-      make_leaflet_map(
-        plots_df,
-        latitude,
-        longitude,
-        crs,
-        provider,
-        d.icon,
-        popup,
-        label,
-        split_col,
-        control.collapsed,
-        control.position,
-        control.autotext,
-        alpha
-      )
-
-    legend.title <-
-      create_legend_title(
-        static = static,
-        legend.title.autotext = legend.title.autotext,
-        legend.title = legend.title,
-        str = "Percentile"
-      )
-
-    # add legend
-    if (!anyNA(percentile) && legend) {
-      percs <- unique(c(0, percentile))
-      map <-
-        leaflet::addLegend(
-          map,
-          title = legend.title,
-          position = legend.position,
-          pal = leaflet::colorBin(
-            palette = openair::openColours(scheme = cols, n = length(percs)),
-            bins = percs,
-            domain = 0:100
-          ),
-          values = 0:100
-        )
-    }
-  }
-
-  # return map
-  return(map)
+#' Labels for the bands drawn by openair::percentileRose()
+#' @noRd
+percentile_labels <- function(percentile) {
+  percs <- sort(unique(c(0, percentile)))
+  paste(utils::head(percs, -1), percs[-1], sep = " - ")
 }
