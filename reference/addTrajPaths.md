@@ -18,6 +18,7 @@ addTrajPaths(
   group = NULL,
   data = leaflet::getMapData(map),
   npoints = 12,
+  markerColor = NULL,
   ...
 )
 ```
@@ -71,17 +72,29 @@ addTrajPaths(
   feel for the speed of the air (points closer together correspond to
   slower moving air masses). Defaults to `12`.
 
+- markerColor:
+
+  An optional colour (or vector of colours, one per row of `data`) to
+  use for the point markers, overriding whatever `color` is passed via
+  `...`. Unlike `color`/`fillColor`, this is permitted to vary per
+  point - useful for colouring the markers along a single trajectory by
+  a continuous variable (e.g. a pollutant) while keeping the trajectory
+  line itself a single colour, as required by
+  [`leaflet::addPolylines()`](https://rstudio.github.io/leaflet/reference/map-layers.html).
+
 - ...:
 
-  Other arguments to pass to both
+  Other arguments o pass to both
   [`leaflet::addCircleMarkers()`](https://rstudio.github.io/leaflet/reference/map-layers.html)
   and
   [`leaflet::addPolylines()`](https://rstudio.github.io/leaflet/reference/map-layers.html).
   If you use the `color` argument, it is important to ensure the vector
   you supply is of length one to avoid issues with
   [`leaflet::addPolylines()`](https://rstudio.github.io/leaflet/reference/map-layers.html)
-  (i.e., use `color = ~ pal(nox)[1]`). Note that `opacity` controls the
-  opacity of the lines and `fillOpacity` the opacity of the markers.
+  (i.e., use `color = ~ pal(nox)[1]`), unless you use `markerColor` to
+  separately control the colour of the point markers. Note that
+  `opacity` controls the opacity of the lines and `fillOpacity` the
+  opacity of the markers.
 
 ## Value
 
@@ -108,6 +121,13 @@ example. The easiest way to achieve this is to write a for loop or use
 another iterative approach (e.g. the `purrr` package) to add one path
 per arrival date. An example of this is provided in the Examples.
 
+If you only need to vary the colour of the *markers* rather than the
+lines - for example, colouring the points by a pollutant that changes
+over time - use `markerColor` instead, which is not subject to the same
+length-one restriction as `color` and can vary across every trajectory
+in `data`, not just within one. This often avoids the need for a loop
+entirely; see the Examples.
+
 ## See also
 
 `shiny::runExample(package = "openairmaps")` to see examples of this
@@ -119,9 +139,8 @@ function used in a
 ``` r
 if (FALSE) { # \dontrun{
 library(leaflet)
-library(openairmaps)
 
-pal <- colorNumeric(palette = "viridis", domain = traj_data$nox)
+pal <- colorNumeric(palette = "viridis", domain = traj_data$height)
 
 map <- leaflet() |>
   addTiles()
@@ -132,7 +151,10 @@ for (i in seq_along(unique(traj_data$date))) {
   map <- map |>
     addTrajPaths(
       data = data,
-      color = pal(data$nox)[1]
+      color = pal(data$height)[1],
+      markerColor = pal(data$height),
+      opacity = 0.5,
+      fillOpacity = 0.8
     )
 }
 

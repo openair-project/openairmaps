@@ -78,6 +78,7 @@ produced instead.</p>
 <span>  pollutant <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  x <span class="op">=</span> <span class="st">"ws"</span>,</span>
 <span>  limits <span class="op">=</span> <span class="st">"free"</span>,</span>
+<span>  breaks <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  upper <span class="op">=</span> <span class="st">"fixed"</span>,</span>
 <span>  latitude <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  longitude <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -129,7 +130,7 @@ used in conjunction with <code>crs</code>).</p></dd>
 <p>The column name(s) of the pollutant(s) to plot. If multiple pollutants are
 specified and a non-pairwise statistic is supplied, the <code>type</code> argument
 will no longer be able to be used and:</p><ul><li><p><em>Dynamic</em>: The pollutants can be toggled between using a "layer control" menu.</p></li>
-<li><p><em>Static:</em>: The pollutants will each appear in a different panel.</p></li>
+<li><p><em>Static</em>: The pollutants will each appear in a different panel.</p></li>
 </ul><p>Multiple <code>pollutants</code> prohibit the use of the <code>type</code> argument for
 non-pairwise statistics.</p></dd>
 
@@ -152,7 +153,24 @@ colour scales.</p></li>
 <li><p>A numeric vector in the form <code>c(lower, upper)</code> used to define the colour
 scale. For example, <code>limits = c(0, 100)</code> would force the plot limits to
 span 0-100.</p></li>
-</ul></dd>
+</ul><p><code>limits</code> is ignored if <code>breaks</code> is also provided.</p></dd>
+
+
+<dt id="arg-breaks">breaks<a class="anchor" aria-label="anchor" href="#arg-breaks"></a></dt>
+<dd><p><em>Specifier for a binned colour scale.</em></p>
+<p><em>default:</em> <code>NULL</code> | <em>scope:</em> dynamic &amp; static</p>
+<p>By default, markers use a continuous colour scale (see <code>limits</code>). If
+<code>breaks</code> is provided, the colour scale is instead binned into discrete
+intervals. One of:</p><ul><li><p>A numeric vector of breakpoints. For example, <code>breaks = c(0, 50, 100,   1000)</code> would bin the colour scale into three intervals.</p></li>
+<li><p>A single number, which is the number of intervals to bin the colour
+scale into.</p></li>
+<li><p>A list created using <code><a href="https://openair-project.github.io/openair/reference/breakOpts.html" class="external-link">openair::breakOpts()</a></code>, which provides finer control
+over the binning method and allows custom <code>labels</code> to be defined.</p></li>
+</ul><p>In all cases, a single set of breakpoints is calculated across <em>all</em> of the
+markers, so that they share the same intervals and a shared legend can be
+drawn. If any of the markers' data fall outside of the given breakpoints,
+the lowest and/or highest breakpoints are extended to cover them. If
+<code>breaks</code> is provided, <code>limits</code> is ignored.</p></dd>
 
 
 <dt id="arg-upper">upper<a class="anchor" aria-label="anchor" href="#arg-upper"></a></dt>
@@ -189,7 +207,7 @@ plotting on the map.</p></dd>
 <p><em>default:</em> <code>NULL</code> | <em>scope:</em> dynamic &amp; static</p>
 <p>Used for splitting the input data into different groups, passed to the
 <code>type</code> argument of <code><a href="https://openair-project.github.io/openair/reference/cutData.html" class="external-link">openair::cutData()</a></code>. When <code>type</code> is specified:</p><ul><li><p><em>Dynamic</em>: The different data splits can be toggled between using a "layer control" menu.</p></li>
-<li><p><em>Static:</em>: The data splits will each appear in a different panel.</p></li>
+<li><p><em>Static</em>: The data splits will each appear in a different panel.</p></li>
 </ul><p><code>type</code> cannot be used if multiple <code>pollutant</code> columns have been provided.</p></dd>
 
 
@@ -253,7 +271,7 @@ theme.</p></dd>
 
 <dt id="arg-key-position">key.position<a class="anchor" aria-label="anchor" href="#arg-key-position"></a></dt>
 <dd><p><em>Legend position for individual marker legends.</em></p>
-<p><em>default:</em> <code>FALSE</code> | <em>scope:</em> dynamic &amp; static</p>
+<p><em>default:</em> <code>"none"</code> | <em>scope:</em> dynamic &amp; static</p>
 <p>When <code>key.position</code> is not <code>"none"</code>, a key will be drawn for each
 individual marker. Potentially useful when <code>limits = "free"</code>, but of
 limited use otherwise.</p></dd>
@@ -262,15 +280,23 @@ limited use otherwise.</p></dd>
 <dt id="arg-legend">legend<a class="anchor" aria-label="anchor" href="#arg-legend"></a></dt>
 <dd><p><em>Draw a shared legend?</em></p>
 <p><em>default:</em> <code>TRUE</code> | <em>scope:</em> dynamic &amp; static</p>
-<p>When all markers share the same colour scale (e.g., when <code>limits != "free"</code>
-in <code>polarMap()</code>), should a shared legend be created at the side of the map?</p></dd>
+<p>When all markers share the same colour scale, should a shared legend be
+created at the side of the map? This is the case for:</p><ul><li><p><em>Continuous</em> colour scales, when all markers share the same <code>limits</code>
+(e.g., when <code>limits != "free"</code> in <code>polarMap()</code>), which are shown as a
+colour bar. This legend is not drawn if the colour scale has been
+transformed using <code>trans</code> (e.g., <code>trans = "log10"</code>), as it would be
+misleading.</p></li>
+<li><p><em>Discrete</em> colour scales, when all markers are binned into the same
+intervals (e.g., when <code>breaks</code> are passed to <code>polarMap()</code>, or in
+<code><a href="windroseMap.html">windroseMap()</a></code>), which are shown as a set of labelled colours.</p></li>
+</ul></dd>
 
 
 <dt id="arg-legend-position">legend.position<a class="anchor" aria-label="anchor" href="#arg-legend-position"></a></dt>
 <dd><p><em>Position of the shared legend.</em></p>
 <p><em>default:</em> <code>NULL</code> | <em>scope:</em> dynamic &amp; static</p>
-<p>When <code>legend = TRUE</code>, where should the legend be placed?</p><ul><li><p><em>Dynamic</em>: One of "topright", "topright", "bottomleft" or "bottomright". Passed to the <code>position</code> argument of <code><a href="https://rstudio.github.io/leaflet/reference/addLegend.html" class="external-link">leaflet::addLegend()</a></code>.</p></li>
-<li><p><em>Static:</em>: One of "top", "right", "bottom" or "left". Passed to the <code>legend.position</code> argument of <code><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">ggplot2::theme()</a></code>.</p></li>
+<p>When <code>legend = TRUE</code>, where should the legend be placed?</p><ul><li><p><em>Dynamic</em>: One of "topright", "topleft", "bottomleft" or "bottomright". Passed to the <code>position</code> argument of <code><a href="https://rstudio.github.io/leaflet/reference/addLegend.html" class="external-link">leaflet::addLegend()</a></code>.</p></li>
+<li><p><em>Static</em>: One of "top", "right", "bottom" or "left". Passed to the <code>legend.position</code> argument of <code><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">ggplot2::theme()</a></code>.</p></li>
 </ul></dd>
 
 
@@ -428,13 +454,6 @@ method the uncertainties in <code>x</code> and <code>y</code> are used in the
 determination of the slope. The uncertainties are provided by
 <code>x_error</code> and <code>y_error</code> — see below.</p></li>
 </ul></dd>
-
-    <dt><code>breaks</code></dt>
-<dd><p><code>breaks</code> bins a continuous axis into discrete bins. It can
-either take a single number (e.g., <code>breaks = 5</code>) to split the scale into
-quantiles, a vector of numbers (e.g., <code>breaks = c(0, 50, 100, 200, 500</code>) to
-define specific break-points, or a named list. See <code><a href="https://openair-project.github.io/openair/reference/breakOpts.html" class="external-link">breakOpts()</a></code> for more
-details.</p></dd>
 
     <dt><code>trans</code></dt>
 <dd><p>Should a transformation be applied to the colour scale? If the
@@ -614,7 +633,7 @@ to a file).</p></dd>
 
 
 <dt id="arg-control">control<a class="anchor" aria-label="anchor" href="#arg-control"></a></dt>
-<dd><p><strong>Deprecated.</strong> Please use <code>type</code>.</p></dd>
+<dd><p><strong>Removed.</strong> Please use <code>type</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -679,7 +698,7 @@ of <code><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="exte
 <span class="r-in"><span><span class="fu">polarMap</span><span class="op">(</span><span class="va">polar_data</span>,</span></span>
 <span class="r-in"><span>  pollutant <span class="op">=</span> <span class="st">"nox"</span>,</span></span>
 <span class="r-in"><span>  x <span class="op">=</span> <span class="st">"ws"</span>,</span></span>
-<span class="r-in"><span>  provider <span class="op">=</span> <span class="st">"CartoDB.Voyager"</span></span></span>
+<span class="r-in"><span>  provider <span class="op">=</span> <span class="st">"Esri.WorldGrayCanvas"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>

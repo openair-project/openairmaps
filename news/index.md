@@ -2,7 +2,90 @@
 
 ## openairmaps (development version)
 
+### Breaking changes
+
+- The `control` argument of the
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  family and
+  [`trajMap()`](https://openair-project.github.io/openairmaps/reference/trajMap.md),
+  deprecated in favour of `type` in openairmaps 0.9.0, has been removed.
+  The deprecated `facet` argument (from `polarMapStatic()`) is also no
+  longer recognised. Please use `type` instead; the
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  family will raise an error pointing to `type` if either is used. Note
+  that `control` in
+  [`networkMap()`](https://openair-project.github.io/openairmaps/reference/networkMap.md)
+  is unaffected.
+
+- `trajMapStatic()` and `trajLevelMapStatic()` have both been removed
+  from `openairmaps`. Users should now use
+  [`openair::trajPlot()`](https://openair-project.github.io/openair/reference/trajPlot.html)
+  or
+  [`openair::trajLevel()`](https://openair-project.github.io/openair/reference/trajLevel.html)
+  directly.
+
+- [`trajMap()`](https://openair-project.github.io/openairmaps/reference/trajMap.md)
+  and
+  [`trajLevelMap()`](https://openair-project.github.io/openairmaps/reference/trajLevelMap.md)
+  now take `latitude` before `longitude`, in line with the rest of the
+  package. Both now default to `NULL`, and are guessed from `data` in
+  the same way as the
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  family.
+
+- [`trajMap()`](https://openair-project.github.io/openairmaps/reference/trajMap.md)
+  now uses `cols = "turbo"` by default, in line with the rest of the
+  package. It also now errors if `colour` is neither a column of `data`
+  nor a valid colour, rather than silently passing it on to
+  [leaflet](https://rstudio.github.io/leaflet/) (e.g., when a column
+  name is misspelled).
+
+- The default `vgm` in
+  [`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  now has a `range` of 50 rather than 50,000. As the data are in
+  latitude and longitude, [gstat](https://github.com/r-spatial/gstat/)
+  measures this in kilometres, so the previous default was far larger
+  than intended.
+
+- The “layer control” menus of the
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  family and
+  [`trajMap()`](https://openair-project.github.io/openairmaps/reference/trajMap.md)
+  now list `type` levels in the order of their factor levels (e.g.,
+  “Monday” before “Tuesday”), and multiple pollutants in the order they
+  were given, rather than the order they first appear in the data.
+
 ### New features
+
+- Added
+  [`pointMap()`](https://openair-project.github.io/openairmaps/reference/pointMap.md),
+  which summarises pollutant data at each site (e.g., the mean
+  concentration) and shows it as coloured circles on a dynamic or static
+  map. It shares its arguments (`statistic`, `breaks`, `limits`, etc.)
+  with
+  [`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  and
+  [`voronoiMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md),
+  but draws no interpolated surface. All three functions also gain
+  `popup` and `label` arguments, which work like those in
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  (e.g., to show site names or types when clicking on or hovering over a
+  site marker).
+
+- [`pointMap()`](https://openair-project.github.io/openairmaps/reference/pointMap.md),
+  [`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  and
+  [`voronoiMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  gain the `type` argument, in line with the
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  family. Each `type` level is summarised (and interpolated) separately,
+  but all levels share one colour scale. In dynamic maps, `type` levels
+  can be switched between using a “layer control” menu (customised using
+  `control.collapsed`, `control.position` and `control.autotext`), and
+  in static maps they appear in separate panels (arranged using
+  `static.nrow`). Other arguments can be passed to
+  [`openair::cutData()`](https://openair-project.github.io/openair/reference/cutData.html)
+  using `...`.
 
 - [`networkMap()`](https://openair-project.github.io/openairmaps/reference/networkMap.md)
   can now take any option passed to
@@ -12,9 +95,264 @@
   overwrites the default `year` argument, and so behaves identically to
   [`openair::importMeta()`](https://openair-project.github.io/openair/reference/importMeta.html).
 
+- Added
+  [`addTrajLevel()`](https://openair-project.github.io/openairmaps/reference/addTrajLevel.md),
+  which allows users to add gridded trajectory statistics (calculated
+  using
+  [`openair::trajLevel()`](https://openair-project.github.io/openair/reference/trajLevel.html))
+  to any `leaflet` map, much like
+  [`addTrajPaths()`](https://openair-project.github.io/openairmaps/reference/addTrajPaths.md)
+  does for individual trajectories. This offers more control over groups
+  and layerIds than
+  [`trajLevelMap()`](https://openair-project.github.io/openairmaps/reference/trajLevelMap.md),
+  which now uses
+  [`addTrajLevel()`](https://openair-project.github.io/openairmaps/reference/addTrajLevel.md)
+  internally.
+
+- [`addTrajPaths()`](https://openair-project.github.io/openairmaps/reference/addTrajPaths.md)
+  gains a `markerColor` argument, allowing the point markers along a
+  trajectory to be coloured independently of the trajectory line itself
+  (e.g., by a continuously-varying pollutant).
+  [`trajMap()`](https://openair-project.github.io/openairmaps/reference/trajMap.md)
+  now uses this internally instead of duplicating
+  [`addTrajPaths()`](https://openair-project.github.io/openairmaps/reference/addTrajPaths.md)’s
+  marker/line-drawing logic.
+
+- [`addTrajPaths()`](https://openair-project.github.io/openairmaps/reference/addTrajPaths.md)
+  is now much faster when `layerId` is used, as the points along each
+  trajectory are added to the map in a single call rather than one at a
+  time. The layer IDs themselves are unchanged.
+
 - Static maps gain the `api_key` argument, passed to the equivalent
   argument in
   [`ggspatial::annotation_map_tile()`](https://paleolimbot.github.io/ggspatial/reference/annotation_map_tile.html).
+
+- The popups in
+  [`trajMap()`](https://openair-project.github.io/openairmaps/reference/trajMap.md),
+  [`addTrajPaths()`](https://openair-project.github.io/openairmaps/reference/addTrajPaths.md),
+  [`trajLevelMap()`](https://openair-project.github.io/openairmaps/reference/trajLevelMap.md)
+  and
+  [`addTrajLevel()`](https://openair-project.github.io/openairmaps/reference/addTrajLevel.md)
+  have been restyled to match those in
+  [`networkMap()`](https://openair-project.github.io/openairmaps/reference/networkMap.md).
+  For trajectory paths, arrival and trajectory dates now always show the
+  time, and the `colour` variable in
+  [`trajMap()`](https://openair-project.github.io/openairmaps/reference/trajMap.md)
+  (e.g., a pollutant) is shown in its own row at the bottom of the
+  popup. For gridded trajectories, the popup leads with the value and a
+  description of the statistic, followed by the grid cell location,
+  count and (if used) the `type` level.
+
+- [`trajMap()`](https://openair-project.github.io/openairmaps/reference/trajMap.md),
+  [`trajLevelMap()`](https://openair-project.github.io/openairmaps/reference/trajLevelMap.md),
+  [`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  and
+  [`voronoiMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  now accept any number of basemaps through `provider`, which can be
+  named to customise their labels in the layer control menu (e.g.,
+  `c("Default" = "OpenStreetMap", "Satellite" = "Esri.WorldImagery")`),
+  in line with
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  and
+  [`networkMap()`](https://openair-project.github.io/openairmaps/reference/networkMap.md).
+
+- The “layer control” menu is now built the same way across all
+  interactive maps. In particular, only the first basemap is shown when
+  multiple are provided, and a single basemap is no longer listed in the
+  menu as there is nothing to switch to.
+
+- [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  and
+  [`annulusMap()`](https://openair-project.github.io/openairmaps/reference/annulusMap.md)
+  gain the `breaks` argument, in line with the `breaks` argument now in
+  [`openair::polarPlot()`](https://openair-project.github.io/openair/reference/polarPlot.html)
+  and
+  [`openair::polarAnnulus()`](https://openair-project.github.io/openair/reference/polarAnnulus.html).
+  This bins the markers’ colour scale into discrete intervals, and can
+  take a numeric vector of breakpoints, a single number of intervals, or
+  a list created using
+  [`openair::breakOpts()`](https://openair-project.github.io/openair/reference/breakOpts.html).
+  In all cases, a single set of breakpoints is calculated across *all*
+  of the markers so that they can share a legend. `breaks` overrides
+  `limits` if both are provided.
+
+- Shared legends in the
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  family have been standardised, and now reflect the colour scale
+  [openair](https://openair-project.github.io/openair/) actually used to
+  draw the markers:
+
+  - Markers with a *discrete* colour scale now get a shared legend of
+    labelled colours, as long as all markers are binned into the same
+    intervals. `limits` (now supported by
+    [`openair::polarFreq()`](https://openair-project.github.io/openair/reference/polarFreq.html))
+    can also be passed to
+    [`freqMap()`](https://openair-project.github.io/openairmaps/reference/freqMap.md)
+    via `...` to get a shared continuous legend. As
+    [`openair::polarFreq()`](https://openair-project.github.io/openair/reference/polarFreq.html)
+    uses `trans = "sqrt"` by default, `trans = FALSE` must also be
+    passed for this legend to be drawn.
+
+  - Legend labels and colours now exactly match those used by
+    [openair](https://openair-project.github.io/openair/), and are the
+    same for dynamic and static maps (e.g., `"0 to 50"` rather than
+    `"0 – 50"` in dynamic
+    [`freqMap()`](https://openair-project.github.io/openairmaps/reference/freqMap.md),
+    [`pollroseMap()`](https://openair-project.github.io/openairmaps/reference/pollroseMap.md)
+    and
+    [`windroseMap()`](https://openair-project.github.io/openairmaps/reference/windroseMap.md)
+    legends).
+
+  - Dynamic legends now consistently use `alpha` for their opacity.
+
+  - Continuous legends are no longer drawn if the colour scale has been
+    transformed using `trans` (e.g., `polarMap(trans = "log10")`), as
+    they would be misleading. This includes
+    [`freqMap()`](https://openair-project.github.io/openairmaps/reference/freqMap.md)
+    by default, as
+    [`openair::polarFreq()`](https://openair-project.github.io/openair/reference/polarFreq.html)
+    uses `trans = "sqrt"`. Discrete legends are unaffected, as
+    [openair](https://openair-project.github.io/openair/) bins the
+    untransformed values.
+
+- [openairmaps](https://openair-project.github.io/openairmaps/) now
+  re-exports
+  [`breakOpts()`](https://openair-project.github.io/openair/reference/breakOpts.html)
+  and
+  [`colourOpts()`](https://openair-project.github.io/openair/reference/colourOpts.html)
+  from [openair](https://openair-project.github.io/openair/).
+
+### Bug fixes
+
+- [`diffMap()`](https://openair-project.github.io/openairmaps/reference/diffMap.md)
+  no longer errors when multiple columns are passed to `popup`.
+
+- The
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  family no longer errors when a single `pollutant` is passed to `popup`
+  or `label` (e.g., `polarMap(polar_data, "no2", popup = "no2")`).
+  Pollutants in popups and labels now show their mean at each marker,
+  labelled as such (e.g., “NO₂ (mean)”), whether one or several `popup`
+  columns are given.
+
+- [`addPolarMarkers()`](https://openair-project.github.io/openairmaps/reference/addPolarMarkers.md)
+  now drops rows where the chosen `pollutant` is missing, rather than
+  where `no2` is missing. Previously, it would error if `data` did not
+  contain a `no2` column.
+
+- The colours in the dynamic
+  [`percentileMap()`](https://openair-project.github.io/openairmaps/reference/percentileMap.md)
+  legend now match those of the markers.
+
+- [`trajLevelMap()`](https://openair-project.github.io/openairmaps/reference/trajLevelMap.md)
+  now respects the `control.collapsed` and `control.position` arguments,
+  which were previously ignored. Note that this means the layer control
+  is now expanded by default (`control.collapsed = FALSE`), in line with
+  [`trajMap()`](https://openair-project.github.io/openairmaps/reference/trajMap.md).
+
+- Markers which [openair](https://openair-project.github.io/openair/)
+  fails to draw (e.g., due to insufficient data at a site) are now
+  consistently skipped by the
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  family. Previously, dynamic maps would show a broken image in their
+  place (and list it in the layer control menu), and static maps would
+  error.
+
+- `percentileMap(intervals = "fixed")` now passes `percentile` and `...`
+  to
+  [`openair::percentileRose()`](https://openair-project.github.io/openair/reference/percentileRose.html)
+  when calculating the shared intervals, so they cover all of the
+  plotted percentiles.
+
+- `freqMap(breaks = "fixed")` no longer errors when `trans` is passed
+  via `...`.
+
+- [`addTrajLevel()`](https://openair-project.github.io/openairmaps/reference/addTrajLevel.md)
+  now respects `lng` and `lat`. Previously,
+  [`openair::trajLevel()`](https://openair-project.github.io/openair/reference/trajLevel.html)
+  would error unless the columns were named “lon” and “lat”.
+
+- Dynamic maps now error if more than one `legend.position` or
+  `control.position` is given.
+  [`networkMap()`](https://openair-project.github.io/openairmaps/reference/networkMap.md)
+  now checks `control.position` even when `control` isn’t used.
+
+- `polarMap(limits = "fixed")` now uses the same `upper` as the markers
+  when calculating the shared limits, so the limits better cover the
+  markers’ colour scales.
+
+- [`trajMap()`](https://openair-project.github.io/openairmaps/reference/trajMap.md)
+  and
+  [`addTrajPaths()`](https://openair-project.github.io/openairmaps/reference/addTrajPaths.md)
+  now support data with multiple receptors, as returned by
+  [`openair::importTraj()`](https://openair-project.github.io/openair/reference/importTraj.html).
+  Previously, trajectories arriving at different receptors at the same
+  time were joined into a single path.
+
+- Static
+  [`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  and
+  [`voronoiMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  maps now respect `provider`, rather than always using OpenStreetMap.
+  Both functions also now validate `provider` in the same way as the
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  family.
+
+- [`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  and
+  [`voronoiMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  now give an informative error if `pollutant` is not provided, in line
+  with the
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  family.
+
+- [`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  and
+  [`voronoiMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  no longer leave sites or parts of the surface uncoloured when the data
+  fall outside `breaks`. The outermost breaks are now expanded to cover
+  the data (e.g., `breaks = c(50, 100, 150)` becomes `c(25, 100, 200)`
+  for data ranging from 25 to 200), and values equal to the lowest break
+  are now included. This also applies to the new
+  [`pointMap()`](https://openair-project.github.io/openairmaps/reference/pointMap.md).
+
+- [`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  and
+  [`voronoiMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  now give an informative error if `statistic` isn’t recognised.
+
+- `krigingMap(statistic = "sd")` and `voronoiMap(statistic = "sd")` now
+  treat the standard deviation of sites with a single measurement as
+  missing, rather than using the measurement itself.
+
+- [`buildPopup()`](https://openair-project.github.io/openairmaps/reference/buildPopup.md)
+  now summarises `Date` columns (using `fun.dttm`) and logical columns
+  (using `fun.character`). Previously, it would error if either was
+  included in `columns`.
+
+- [`buildPopup()`](https://openair-project.github.io/openairmaps/reference/buildPopup.md)
+  now shows columns in the order given in `columns`. Previously,
+  character columns were always shown first, followed by numeric and
+  then date columns.
+
+- [`quickTextHTML()`](https://openair-project.github.io/openairmaps/reference/quickTextHTML.md)
+  now correctly formats `"m/s2"`.
+
+- [`trajLevelMap()`](https://openair-project.github.io/openairmaps/reference/trajLevelMap.md)
+  and
+  [`addTrajLevel()`](https://openair-project.github.io/openairmaps/reference/addTrajLevel.md)
+  now use the correct ordinal suffix in their legend titles and popups
+  when `statistic = "difference"` (e.g., `"11th"` rather than `"11st"`,
+  and `"1st"` rather than `"1th"`).
+
+- [`trajMap()`](https://openair-project.github.io/openairmaps/reference/trajMap.md),
+  [`trajLevelMap()`](https://openair-project.github.io/openairmaps/reference/trajLevelMap.md)
+  and
+  [`networkMap()`](https://openair-project.github.io/openairmaps/reference/networkMap.md)
+  now validate `provider` in the same way as the
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  family, giving an informative error for unrecognised basemaps and
+  accepting the same shorthand names (e.g., `"cartolight"`).
 
 ## openairmaps 0.10.1
 
@@ -33,10 +371,8 @@ CRAN release: 2026-05-20
   has gained `breaks` in line with
   [`openair::trajLevel()`](https://openair-project.github.io/openair/reference/trajLevel.html).
 
-- [`trajMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
-  and
-  [`trajLevelMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
-  now call `openair::trajMap()` and
+- `trajMapStatic()` and `trajLevelMapStatic()` now call
+  `openair::trajMap()` and
   [`openair::trajLevel()`](https://openair-project.github.io/openair/reference/trajLevel.html),
   respectively. This is an advancement towards complete removal, which
   will happen in a future version of `openairmaps`.
@@ -71,8 +407,7 @@ CRAN release: 2026-04-04
     This may be unfavourable, but can be partially overriden using the
     new `theme` argument.
 
-- The `polarMapStatic()` family have been removed. The
-  [`trajMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
+- The `polarMapStatic()` family have been removed. The `trajMapStatic()`
   family are still exported but have been deprecated.
 
 ### New features
@@ -156,9 +491,8 @@ CRAN release: 2024-11-19
   family has gained the `progress` argument, allowing users to switch
   the progress bar on and off.
 
-- [`trajMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
-  has gained the `size` and `linewidth` arguments, which directly map
-  onto the arguments in
+- `trajMapStatic()` has gained the `size` and `linewidth` arguments,
+  which directly map onto the arguments in
   [`ggplot2::geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html)
   and
   [`ggplot2::geom_path()`](https://ggplot2.tidyverse.org/reference/geom_path.html),
@@ -191,11 +525,9 @@ CRAN release: 2024-11-19
   would incorrectly format non breaking spaces when doing, e.g.,
   `quickTextHTML("ug/m3")`.
 
-- The order in which
-  [`trajMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
-  draws points and paths has been tweaked, which should ensure that
-  markers are drawn on top of their respective path, rather than on top
-  of all paths.
+- The order in which `trajMapStatic()` draws points and paths has been
+  tweaked, which should ensure that markers are drawn on top of their
+  respective path, rather than on top of all paths.
 
 - [`buildPopup()`](https://openair-project.github.io/openairmaps/reference/buildPopup.md)
   will now work correctly if no `type` is provided.
@@ -441,10 +773,8 @@ adding two new experimental functions, and fixing a few bugs.
 
 ### New features
 
-- [`trajMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
-  and
-  [`trajLevelMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
-  have been added as two new *experimental* functions to provide
+- `trajMapStatic()` and `trajLevelMapStatic()` have been added as two
+  new *experimental* functions to provide
   [ggplot2](https://ggplot2.tidyverse.org) equivalents of
   [`openair::trajPlot()`](https://openair-project.github.io/openair/reference/trajPlot.html)
   and

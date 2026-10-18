@@ -55,17 +55,17 @@ Create HTML `leaflet` and static `ggplot2` maps of HYSPLIT trajectories.
 - [`addTrajPaths()`](https://openair-project.github.io/openairmaps/reference/addTrajPaths.md)
   : Add trajectory paths to leaflet map
 
-- [`trajLevelMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
-  [`trajMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
-  **\[deprecated\]** :
+- [`addTrajLevel()`](https://openair-project.github.io/openairmaps/reference/addTrajLevel.md)
+  : Add gridded trajectory statistics to leaflet map
 
-  Trajectory plots in `ggplot2`
+## Site Averages & Spatial Interpolation
 
-## Spatial Interpolation
+Create HTML `leaflet` and static `ggplot2` maps of pollution data
+averaged at each site, either as points or spatially interpolated
+surfaces.
 
-Create HTML `leaflet` and static `ggplot2` maps of spatially
-interpolated pollution data.
-
+- [`pointMap()`](https://openair-project.github.io/openairmaps/reference/pointMap.md)
+  : Site average concentrations on dynamic and static maps
 - [`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
   [`voronoiMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
   **\[experimental\]** : Spatially interpolated dynamic and static maps

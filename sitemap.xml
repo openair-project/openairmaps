@@ -10,11 +10,11 @@
 <url><loc>https://openair-project.github.io/openairmaps/index.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/news/index.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/addPolarMarkers.html</loc></url>
+<url><loc>https://openair-project.github.io/openairmaps/reference/addTrajLevel.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/addTrajPaths.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/annulusMap.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/buildPopup.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/convertPostcode.html</loc></url>
-<url><loc>https://openair-project.github.io/openairmaps/reference/deprecated-traj.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/diffMap.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/freqMap.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/index.html</loc></url>
@@ -22,10 +22,12 @@
 <url><loc>https://openair-project.github.io/openairmaps/reference/networkMap.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/openairmaps-package.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/percentileMap.html</loc></url>
+<url><loc>https://openair-project.github.io/openairmaps/reference/pointMap.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/polarMap.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/polar_data.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/pollroseMap.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/quickTextHTML.html</loc></url>
+<url><loc>https://openair-project.github.io/openairmaps/reference/reexports.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/trajLevelMap.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/trajMap.html</loc></url>
 <url><loc>https://openair-project.github.io/openairmaps/reference/traj_data.html</loc></url>

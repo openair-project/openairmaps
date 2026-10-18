@@ -10,8 +10,8 @@ function.
 ``` r
 trajLevelMap(
   data,
-  longitude = "lon",
-  latitude = "lat",
+  latitude = NULL,
+  longitude = NULL,
   pollutant,
   type = NULL,
   smooth = FALSE,
@@ -52,14 +52,18 @@ trajLevelMap(
 
   *The decimal latitude/longitude.*
 
-  *default:* `"lat"` / `"lon"`
+  *default:* `NULL`
 
-  Column names representing the decimal latitude and longitude.
+  Column names representing the decimal latitude and longitude. If not
+  provided, will be automatically inferred from data by looking for a
+  column named "lat"/"latitude" or "lon"/"lng"/"long"/"longitude"
+  (case-insensitively), such as the "lat" and "lon" columns returned by
+  [`openair::importTraj()`](https://openair-project.github.io/openair/reference/importTraj.html).
 
 - pollutant:
 
-  Pollutant (or any numeric column) to be plotted, if any.
-  Alternatively, use `group`.
+  The pollutant of interest. Not required when
+  `statistic = "frequency"`.
 
 - type:
 
@@ -150,14 +154,20 @@ trajLevelMap(
 
 - cols:
 
+  *Colours to use for plotting.*
+
+  *default:* `"turbo"`
+
   The colours used for plotting, passed to
   [`openair::openColours()`](https://openair-project.github.io/openair/reference/openColours.html).
-  The default, `"turbo"`, is a rainbow palette with relatively
-  perceptually uniform colours.
 
 - alpha:
 
-  Opacity of the tiles. Must be between `0` and `1`.
+  *Transparency value for trajectories.*
+
+  *default:* `0.5`
+
+  A value between `0` (fully transparent) and `1` (fully opaque).
 
 - tile.border:
 
@@ -166,14 +176,18 @@ trajLevelMap(
 
 - provider:
 
-  *The basemap to be used.*
+  *The basemap(s) to be used.*
 
   *default:* `"OpenStreetMap"`
 
-  A single
+  Any number of
   [leaflet::providers](https://rstudio.github.io/leaflet/reference/providers.html).
   See <http://leaflet-extras.github.io/leaflet-providers/preview/> for a
-  list of all base maps that can be used.
+  list of all base maps that can be used. If multiple base maps are
+  provided, they can be toggled between using a "layer control"
+  interface. By default, the interface will use the provider names as
+  labels, but users can define their own using a named vector (e.g.,
+  `c("Default" = "OpenStreetMap", "Satellite" = "Esri.WorldImagery")`)
 
 - legend.position:
 
@@ -181,7 +195,7 @@ trajLevelMap(
 
   *default:* `"topright"`
 
-  Where should the legend be placed? One of "topright", "topright",
+  Where should the legend be placed? One of "topright", "topleft",
   "bottomleft" or "bottomright". Passed to the `position` argument of
   [`leaflet::addLegend()`](https://rstudio.github.io/leaflet/reference/addLegend.html).
   `NULL` defaults to "topright".
@@ -236,8 +250,8 @@ A leaflet object.
 
 [`openair::trajLevel()`](https://openair-project.github.io/openair/reference/trajLevel.html)
 
-[`trajLevelMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
-for the static `ggplot2` equivalent of `trajLevelMap()`
+[`addTrajLevel()`](https://openair-project.github.io/openairmaps/reference/addTrajLevel.md)
+to add gridded trajectory statistics to any leaflet map
 
 Other interactive trajectory maps:
 [`trajMap()`](https://openair-project.github.io/openairmaps/reference/trajMap.md)

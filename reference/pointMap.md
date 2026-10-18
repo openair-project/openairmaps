@@ -1,0 +1,544 @@
+# Site average concentrations on dynamic and static maps
+
+`pointMap()` summarises pollutant data at each monitoring site (e.g.,
+taking the mean concentration) and shows the result as coloured circles
+on a map. It is the simplest way to compare concentrations across a
+network of sites. Unlike
+[`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+and
+[`voronoiMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md),
+no attempt is made to estimate concentrations away from the sites
+themselves. By default, these maps are dynamic and can be panned,
+zoomed, and otherwise interacted with. Using the `static` argument
+allows for static images to be produced instead.
+
+## Usage
+
+``` r
+pointMap(
+  data,
+  pollutant = NULL,
+  statistic = "mean",
+  percentile = 95,
+  breaks = NULL,
+  labels = NULL,
+  limits = NULL,
+  latitude = NULL,
+  longitude = NULL,
+  crs = 4326,
+  type = NULL,
+  popup = NULL,
+  label = NULL,
+  provider = "OpenStreetMap",
+  cols = "turbo",
+  alpha = 1,
+  marker.border = "white",
+  legend = TRUE,
+  legend.position = NULL,
+  legend.title = NULL,
+  legend.title.autotext = TRUE,
+  control.collapsed = FALSE,
+  control.position = "topright",
+  control.autotext = TRUE,
+  static = FALSE,
+  static.nrow = NULL,
+  api_key = NULL,
+  ...
+)
+```
+
+## Arguments
+
+- data:
+
+  *Input data table with pollutant and geo-spatial information.*
+
+  **required** \| *scope:* dynamic & static
+
+  A data frame. The data frame must contain at least one numeric column
+  to interpolate, plus a decimal latitude and longitude (or X/Y
+  coordinate used in conjunction with `crs`).
+
+- pollutant:
+
+  *Pollutant name.*
+
+  **required** \| *scope:* dynamic & static
+
+  The column name of the pollutant to plot. Multiple `pollutants` are
+  prohibited by this function.
+
+- statistic:
+
+  *Statistic for aggregating pollutant data.*
+
+  *default:* `"mean"` \| *scope:* dynamic & static
+
+  Pollutant data will be aggregated by latitude & longitude; `statistic`
+  controls how this is achieved. Possible statistics include:
+
+  - `"mean"`: the arithmetic mean (using
+    [`base::mean()`](https://rdrr.io/r/base/mean.html))
+
+  - `"median"`: the median (middle) value (using
+    [`stats::median()`](https://rdrr.io/r/stats/median.html))
+
+  - `"max"`: the maximum value (using
+    [`max()`](https://rdrr.io/r/base/Extremes.html))
+
+  - `"min"`: the maximum value (using
+    [`min()`](https://rdrr.io/r/base/Extremes.html))
+
+  - `"sd"`: the standard deviation (using
+    [`stats::sd()`](https://rdrr.io/r/stats/sd.html))
+
+  - `"percentile"`: a percentile value, defined using the `percentile`
+    argument (using
+    [`stats::quantile()`](https://rdrr.io/r/stats/quantile.html))
+
+  To show this value in marker popups or labels, include `pollutant` in
+  `popup` or `label` (e.g., `popup = c("site", "nox")`).
+
+- percentile:
+
+  *The percentile when \`statistic = "percentile"*
+
+  *default:* `95` \| *scope:* dynamic & static
+
+  The percentile level used when `statistic = "percentile"`. The default
+  is `95`, representing 95%. Should be between `0` and `100`.
+
+- labels, breaks:
+
+  *Discretise the map color scale.*
+
+  *default:* `NULL` \| *scope:* dynamic & static
+
+  By default, a continuous colour scale is used. If `breaks` are
+  provided, the colour scale will be discretised using
+  [`cut()`](https://rdrr.io/r/base/cut.html). `labels` can also be
+  provided to customise how each factor level is labelled.
+
+  If the data extend beyond `breaks`, the outermost breaks are expanded
+  to cover them so that no sites are left uncoloured. For example,
+  `breaks = c(50, 100, 150)` would become `c(25, 100, 200)` for data
+  ranging from 25 to 200.
+
+- limits:
+
+  *Specifier for the plot colour scale bounds.*
+
+  *default:* `NULL` \| *scope:* dynamic & static
+
+  A numeric vector in the form `c(lower, upper)` used to define the
+  colour scale. For example, `limits = c(0, 100)` would force the plot
+  limits to span 0-100. If `NULL`, appropriate limits will be selected
+  based on the range in `data[[pollutant]]`.
+
+- latitude, longitude:
+
+  *The decimal latitude(Y)/longitude(X).*
+
+  *default:* `NULL` \| *scope:* dynamic & static
+
+  Column names representing the decimal latitude and longitude (or other
+  Y/X coordinate if using a different `crs`). If not provided, will be
+  automatically inferred from data by looking for a column named
+  "lat"/"latitude" or "lon"/"lng"/"long"/"longitude"
+  (case-insensitively).
+
+- crs:
+
+  *The coordinate reference system (CRS).*
+
+  *default:* `4326` \| *scope:* dynamic & static
+
+  The coordinate reference system (CRS) of the data, passed to
+  [`sf::st_crs()`](https://r-spatial.github.io/sf/reference/st_crs.html).
+  By default this is [EPSG:4326](https://epsg.io/4326), the CRS
+  associated with the commonly used latitude and longitude coordinates.
+  Different coordinate systems can be specified using `crs` (e.g.,
+  `crs = 27700` for the [British National Grid](https://epsg.io/27700)).
+  Note that non-lat/lng coordinate systems will be re-projected to
+  EPSG:4326 for plotting on the map.
+
+- type:
+
+  *A method to condition the `data` for separate plotting.*
+
+  *default:* `NULL` \| *scope:* dynamic & static
+
+  Used for splitting the input data into different groups, passed to the
+  `type` argument of
+  [`openair::cutData()`](https://openair-project.github.io/openair/reference/cutData.html).
+  When `type` is specified:
+
+  - *Dynamic*: The different data splits can be toggled between using a
+    "layer control" menu.
+
+  - *Static*: The data splits will each appear in a different panel.
+
+  `type` cannot be used if multiple `pollutant` columns have been
+  provided.
+
+- popup:
+
+  *Content for marker popups on dynamic maps.*
+
+  *default:* `NULL` \| *scope:* dynamic
+
+  Columns to be used as the HTML content for marker popups on dynamic
+  maps. Popups may be useful to show information about the individual
+  sites (e.g., site names, codes, types, etc.). If a vector of column
+  names are provided they are passed to
+  [`buildPopup()`](https://openair-project.github.io/openairmaps/reference/buildPopup.md)
+  using its default values.
+
+- label:
+
+  *Content for marker hover-over on dynamic maps.*
+
+  *default:* `NULL` \| *scope:* dynamic
+
+  Column to be used as the HTML content for hover-over labels. Labels
+  are useful for the same reasons as popups, though are typically
+  shorter.
+
+- provider:
+
+  *The basemap(s) to be used.*
+
+  *default:* `"OpenStreetMap"` \| *scope:* dynamic & static
+
+  The base map(s) to be used for the map. If not provided, will default
+  to `"OpenStreetMap"`/`"osm"` for both dynamic and static maps.
+
+  - *Dynamic*: Any number of
+    [leaflet::providers](https://rstudio.github.io/leaflet/reference/providers.html).
+    See <http://leaflet-extras.github.io/leaflet-providers/preview/> for
+    a list of all base maps that can be used. If multiple base maps are
+    provided, they can be toggled between using a "layer control"
+    interface. By default, the interface will use the provider names as
+    labels, but users can define their own using a named vector (e.g.,
+    `c("Default" = "OpenStreetMap", "Satellite" = "Esri.WorldImagery")`)
+
+  - *Static*: One of the options listed in
+    [`rosm::osm.types()`](https://rdrr.io/pkg/rosm/man/deprecated.html)
+    (for example, `"osm"`, `"cartodark"`, `"cartolight"`, etc.).
+
+  There is some overlap in static and dynamic providers. For example,
+  `{ggspatial}` uses "osm" to specify "OpenStreetMap". When static
+  providers are provided to dynamic maps or vice versa, `{openairmaps}`
+  will attempt to substitute the correct provider string.
+
+- cols:
+
+  *Colours to use for plotting.*
+
+  *default:* `"turbo"` \| *scope:* dynamic & static
+
+  The colours used for plotting, passed to
+  [`openair::openColours()`](https://openair-project.github.io/openair/reference/openColours.html).
+  The default, `"turbo"`, is a rainbow palette with relatively
+  perceptually uniform colours.
+
+- alpha:
+
+  *Transparency value for the site markers.*
+
+  *default:* `1` \| *scope:* dynamic & static
+
+  A value between 0 (fully transparent) and 1 (fully opaque).
+
+- marker.border:
+
+  *Border colour to use for the site markers.*
+
+  *default:* `"white"` \| *scope:* dynamic & static
+
+  Any valid HTML colour (e.g., a hex code). Use `NA` for no border.
+
+- legend:
+
+  *Draw a legend?*
+
+  *default:* `TRUE` \| *scope:* dynamic & static
+
+  When `TRUE`, a legend will appear on the map identifying the colour
+  scale.
+
+- legend.position:
+
+  *Position of the shared legend.*
+
+  *default:* `NULL` \| *scope:* dynamic & static
+
+  When `legend = TRUE`, where should the legend be placed?
+
+  - *Dynamic*: One of "topright", "topleft", "bottomleft" or
+    "bottomright". Passed to the `position` argument of
+    [`leaflet::addLegend()`](https://rstudio.github.io/leaflet/reference/addLegend.html).
+
+  - *Static*: One of "top", "right", "bottom" or "left". Passed to the
+    `legend.position` argument of
+    [`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html).
+
+- legend.title:
+
+  *Title of the legend.*
+
+  *default:* `NULL` \| *scope:* dynamic & static
+
+  By default, when `legend.title = NULL`, the function will attempt to
+  provide a sensible legend title. `legend.title` allows users to
+  overwrite this - for example, to include units or other contextual
+  information. For *dynamic* maps, users may wish to use HTML tags to
+  format the title.
+
+- legend.title.autotext:
+
+  *Automatically format the title of the legend?*
+
+  *default:* `TRUE` \| *scope:* dynamic & static
+
+  When `legend.title.autotext = TRUE`, `legend.title` will be first run
+  through
+  [`quickTextHTML()`](https://openair-project.github.io/openairmaps/reference/quickTextHTML.md)
+  (*dynamic*) or
+  [`openair::quickText()`](https://openair-project.github.io/openair/reference/quickText.html)
+  (*static*).
+
+- control.collapsed:
+
+  *Show the layer control as a collapsed?*
+
+  *default:* `FALSE` \| *scope:* dynamic
+
+  For *dynamic* maps, should the "layer control" interface be collapsed?
+  If `TRUE`, users will have to hover over an icon to view the options.
+
+- control.position:
+
+  *Position of the layer control menu*
+
+  *default:* `"topright"` \| *scope:* dynamic
+
+  When `type != NULL`, or multiple pollutants are specified, where
+  should the "layer control" interface be placed? One of "topleft",
+  "topright", "bottomleft" or "bottomright". Passed to the `position`
+  argument of
+  [`leaflet::addLayersControl()`](https://rstudio.github.io/leaflet/reference/addLayersControl.html).
+
+- control.autotext:
+
+  *Automatically format the content of the layer control menu?*
+
+  *default:* `TRUE` \| *scope:* dynamic
+
+  When `control.autotext = TRUE`, the content of the "layer control"
+  interface will be first run through
+  [`quickTextHTML()`](https://openair-project.github.io/openairmaps/reference/quickTextHTML.md).
+
+- static:
+
+  *Produce a static map?*
+
+  *default:* `FALSE`
+
+  This controls whether a *dynamic* or *static* map is produced. The
+  former is the default and is broadly more useful, but the latter may
+  be preferable for DOCX or PDF outputs (e.g., academic papers).
+
+- static.nrow:
+
+  *Number of rows in a static map.*
+
+  *default:* `NULL` \| *scope:* static
+
+  Controls the number of rows of panels on a static map when multiple
+  `pollutant`s or `type` are specified; passed to the `nrow` argument of
+  [`ggplot2::facet_wrap()`](https://ggplot2.tidyverse.org/reference/facet_wrap.html).
+  The default, `NULL`, results in a roughly square grid of panels.
+
+- api_key:
+
+  *API key for certain 'static' base map providers.*
+
+  *default:* `NULL` \| *scope:* static
+
+  Passed to the `api_key` argument of
+  [`ggspatial::annotation_map_tile()`](https://paleolimbot.github.io/ggspatial/reference/annotation_map_tile.html).
+  Needed for certain `providers` (e.g., `"cartolight"`).
+
+- ...:
+
+  Arguments passed on to
+  [`openair::cutData`](https://openair-project.github.io/openair/reference/cutData.html)
+
+  `names`
+
+  :   By default, the columns created by
+      [`cutData()`](https://openair-project.github.io/openair/reference/cutData.html)
+      are named after their `type` option. Specifying `names` defines
+      other names for the columns, which map onto the `type` options in
+      the same order they are given. The length of `names` should
+      therefore be equal to the length of `type`.
+
+  `suffix`
+
+  :   If `name` is not specified, `suffix` will be appended to any added
+      columns that would otherwise overwrite existing columns. For
+      example, `cutData(mydata, "nox", suffix = "_cuts")` would append a
+      `nox_cuts` column rather than overwriting `nox`.
+
+  `hemisphere`
+
+  :   Can be `"northern"` or `"southern"`, used to split data into
+      seasons.
+
+  `n.levels`
+
+  :   Number of quantiles to split numeric data into.
+
+  `wd.res`
+
+  :   The number of wind direction bins; one of `4` (N/E/S/W), `8`
+      (N/NE/E/SE/etc., the default) or `16` (N/NNE/NE/ENE/etc.).
+
+  `start.day`
+
+  :   What day of the week should the `type = "weekday"` start on? The
+      user can change the start day by supplying an integer between 0
+      and 6. Sunday = 0, Monday = 1, ... For example to start the
+      weekday plots on a Saturday, choose `start.day = 6`.
+
+  `start.season`
+
+  :   What order should the season be. By default, the order is spring,
+      summer, autumn, winter. `start.season = "winter"` would plot
+      winter first.
+
+  `is.axis`
+
+  :   A logical (`TRUE`/`FALSE`), used to request shortened cut labels
+      for axes.
+
+  `local.tz`
+
+  :   Used for identifying whether a date has daylight savings time
+      (DST) applied or not. Examples include
+      `local.tz = "Europe/London"`, `local.tz = "America/New_York"`,
+      i.e., time zones that assume DST.
+      <https://en.wikipedia.org/wiki/List_of_zoneinfo_time_zones> shows
+      time zones that should be valid for most systems. It is important
+      that the original data are in GMT (UTC) or a fixed offset from
+      GMT.
+
+  `latitude,longitude`
+
+  :   The decimal latitude and longitudes used when `type = "daylight"`.
+      Note that locations west of Greenwich have negative longitudes.
+
+  `drop`
+
+  :   How to handle empty factor levels. One of:
+
+      - `"default"`: Sensible defaults selected on a case-by-case basis
+        for different `type` options.
+
+      - `"empty"`: Drop all empty factor levels.
+
+      - `"none"`: Retain all empty factor levels, where possible. For
+        example, for `type = "hour"`, all factor levels from `0` and
+        `23` will be represented.
+
+      - `"outside"`: Retain empty factor levels within the range of the
+        data. For example, for `type = "hour"` when the data only
+        contains data for 1 AM and 5 AM, the factor levels, `1`, `2`,
+        `3`, `4` and `5` will be retained.
+
+      Some of these options only apply to certain `type` options. For
+      example, for `type = "year"`, `"outside"` is equivalent to
+      `"none"` as there is no fixed range of years to use in the
+      `"none"` case.
+
+## Value
+
+Either:
+
+- *Dynamic:* A leaflet object
+
+- *Static:* A `ggplot2` object using
+  [`ggplot2::coord_sf()`](https://ggplot2.tidyverse.org/reference/ggsf.html)
+  coordinates with a `ggspatial` basemap
+
+## Details
+
+When `type` is used, the data are summarised separately for each `type`
+level, but all levels share the same colour scale so that they can be
+compared.
+
+## Customisation of static maps using ggplot2
+
+As all static plots functions are `ggplot2` figures, further
+customisation is possible using functions such as
+[`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html),
+[`ggplot2::guides()`](https://ggplot2.tidyverse.org/reference/guides.html)
+and
+[`ggplot2::labs()`](https://ggplot2.tidyverse.org/reference/labs.html).
+
+Subscripting pollutants (e.g., the "x" in "NOx") is achieved using the
+[ggtext](https://wilkelab.org/ggtext/reference/ggtext.html) package.
+Therefore if you choose to override the plot theme, it is recommended to
+use `[ggplot2::theme()]` and `[ggtext::element_markdown()]` to define
+the `strip.text` parameter.
+
+Legends can be removed using `ggplot2::theme(legend.position = "none")`,
+or further customised using
+[`ggplot2::guides()`](https://ggplot2.tidyverse.org/reference/guides.html)
+and either `color = ggplot2::guide_colourbar()` for continuous legends
+or `color = ggplot2::guide_legend()` for discrete legends.
+
+The extent of a map can be adjusted using the `xlim` and `ylim`
+arguments of
+[`ggplot2::coord_sf()`](https://ggplot2.tidyverse.org/reference/ggsf.html).
+
+    polarMap(polar_data, "no2", static = TRUE) +
+        ggplot2::coord_sf(
+            xlim = c(-0.3, 0.2),
+            ylim = c(51.2, 51.8)
+        )
+
+## See also
+
+[`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+and
+[`voronoiMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+to spatially interpolate between the sites.
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# import ozone DAQI
+daqi <-
+  openair::importUKAQ(
+    pollutant = "o3",
+    year = 2020,
+    source = "aurn",
+    data_type = "daqi",
+    meta = TRUE
+  )
+
+# maximum DAQI at each site
+pointMap(
+  daqi,
+  pollutant = "poll_index",
+  statistic = "max",
+  breaks = seq(0.5, 10.5, 1),
+  labels = as.character(1:10),
+  legend.title = "Max O3 DAQI",
+  cols = "daqi"
+)
+} # }
+```

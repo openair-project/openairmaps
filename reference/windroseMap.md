@@ -118,7 +118,7 @@ windroseMap(
   - *Dynamic*: The different data splits can be toggled between using a
     "layer control" menu.
 
-  - *Static:*: The data splits will each appear in a different panel.
+  - *Static*: The data splits will each appear in a different panel.
 
   `type` cannot be used if multiple `pollutant` columns have been
   provided.
@@ -210,7 +210,7 @@ windroseMap(
 
   *Legend position for individual marker legends.*
 
-  *default:* `FALSE` \| *scope:* dynamic & static
+  *default:* `"none"` \| *scope:* dynamic & static
 
   When `key.position` is not `"none"`, a key will be drawn for each
   individual marker. Potentially useful when `limits = "free"`, but of
@@ -222,10 +222,21 @@ windroseMap(
 
   *default:* `TRUE` \| *scope:* dynamic & static
 
-  When all markers share the same colour scale (e.g., when
-  `limits != "free"` in
-  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)),
-  should a shared legend be created at the side of the map?
+  When all markers share the same colour scale, should a shared legend
+  be created at the side of the map? This is the case for:
+
+  - *Continuous* colour scales, when all markers share the same `limits`
+    (e.g., when `limits != "free"` in
+    [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)),
+    which are shown as a colour bar. This legend is not drawn if the
+    colour scale has been transformed using `trans` (e.g.,
+    `trans = "log10"`), as it would be misleading.
+
+  - *Discrete* colour scales, when all markers are binned into the same
+    intervals (e.g., when `breaks` are passed to
+    [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md),
+    or in `windroseMap()`), which are shown as a set of labelled
+    colours.
 
 - legend.position:
 
@@ -235,11 +246,11 @@ windroseMap(
 
   When `legend = TRUE`, where should the legend be placed?
 
-  - *Dynamic*: One of "topright", "topright", "bottomleft" or
+  - *Dynamic*: One of "topright", "topleft", "bottomleft" or
     "bottomright". Passed to the `position` argument of
     [`leaflet::addLegend()`](https://rstudio.github.io/leaflet/reference/addLegend.html).
 
-  - *Static:*: One of "top", "right", "bottom" or "left". Passed to the
+  - *Static*: One of "top", "right", "bottom" or "left". Passed to the
     `legend.position` argument of
     [`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html).
 
@@ -535,7 +546,7 @@ windroseMap(
 
 - control:
 
-  **Deprecated.** Please use `type`.
+  **Removed.** Please use `type`.
 
 ## Value
 
@@ -615,7 +626,7 @@ Other directional analysis maps:
 ``` r
 if (FALSE) { # \dontrun{
 windroseMap(polar_data,
-  provider = "CartoDB.Voyager"
+  provider = "Esri.WorldGrayCanvas"
 )
 } # }
 ```

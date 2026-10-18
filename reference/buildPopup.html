@@ -133,7 +133,8 @@ pollutant concentration).</p></dd>
 
 
 <dt id="arg-fun-character">fun.character<a class="anchor" aria-label="anchor" href="#arg-fun-character"></a></dt>
-<dd><p><em>A function to summarise character and factor columns.</em></p>
+<dd><p><em>A function to summarise character, factor and logical
+columns.</em></p>
 <p><em>default:</em> <code>function(x) paste(unique(x), collapse = ", ")</code></p>
 <p>The default collapses unique values into a comma-separated list.</p></dd>
 
@@ -147,7 +148,7 @@ deviation, and so on.</p></dd>
 
 
 <dt id="arg-fun-dttm">fun.dttm<a class="anchor" aria-label="anchor" href="#arg-fun-dttm"></a></dt>
-<dd><p><em>A function to summarise date columns.</em></p>
+<dd><p><em>A function to summarise date and date-time columns.</em></p>
 <p><em>default:</em> <code>function(x) paste(lubridate::floor_date(range(x, na.rm = TRUE), "day"), collapse = " to ")</code></p>
 <p>The default presents the date as a range. Other statistics of interest
 could be the start or end of the dates.</p></dd>

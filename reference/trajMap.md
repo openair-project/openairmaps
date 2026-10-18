@@ -12,11 +12,11 @@ show/hide different layers.
 ``` r
 trajMap(
   data,
-  longitude = "lon",
-  latitude = "lat",
+  latitude = NULL,
+  longitude = NULL,
   colour = NULL,
   type = NULL,
-  cols = "default",
+  cols = "turbo",
   alpha = 0.5,
   npoints = 12,
   provider = "OpenStreetMap",
@@ -25,7 +25,6 @@ trajMap(
   legend.title.autotext = TRUE,
   control.collapsed = FALSE,
   control.position = "topright",
-  control = NULL,
   ...
 )
 ```
@@ -47,9 +46,13 @@ trajMap(
 
   *The decimal latitude/longitude.*
 
-  *default:* `"lat"` / `"lon"`
+  *default:* `NULL`
 
-  Column names representing the decimal latitude and longitude.
+  Column names representing the decimal latitude and longitude. If not
+  provided, will be automatically inferred from data by looking for a
+  column named "lat"/"latitude" or "lon"/"lng"/"long"/"longitude"
+  (case-insensitively), such as the "lat" and "lon" columns returned by
+  [`openair::importTraj()`](https://openair-project.github.io/openair/reference/importTraj.html).
 
 - colour:
 
@@ -60,7 +63,9 @@ trajMap(
   This column may be numeric, character, factor or date(time). This will
   commonly be a pollutant concentration which has been joined (e.g., by
   [`dplyr::left_join()`](https://dplyr.tidyverse.org/reference/mutate-joins.html))
-  to the trajectory data by "date".
+  to the trajectory data by "date". Alternatively, a single colour
+  (e.g., `"red"` or `"#FF0000"`) used for every trajectory. If `NULL`,
+  trajectories are drawn in black.
 
 - type:
 
@@ -76,7 +81,7 @@ trajMap(
 
   *Colours to use for plotting.*
 
-  *default:* `"default"`
+  *default:* `"turbo"`
 
   The colours used for plotting, passed to
   [`openair::openColours()`](https://openair-project.github.io/openair/reference/openColours.html).
@@ -85,7 +90,7 @@ trajMap(
 
   *Transparency value for trajectories.*
 
-  *default:* `1`
+  *default:* `0.5`
 
   A value between `0` (fully transparent) and `1` (fully opaque).
 
@@ -103,14 +108,18 @@ trajMap(
 
 - provider:
 
-  *The basemap to be used.*
+  *The basemap(s) to be used.*
 
   *default:* `"OpenStreetMap"`
 
-  A single
+  Any number of
   [leaflet::providers](https://rstudio.github.io/leaflet/reference/providers.html).
   See <http://leaflet-extras.github.io/leaflet-providers/preview/> for a
-  list of all base maps that can be used.
+  list of all base maps that can be used. If multiple base maps are
+  provided, they can be toggled between using a "layer control"
+  interface. By default, the interface will use the provider names as
+  labels, but users can define their own using a named vector (e.g.,
+  `c("Default" = "OpenStreetMap", "Satellite" = "Esri.WorldImagery")`)
 
 - legend.position:
 
@@ -118,7 +127,7 @@ trajMap(
 
   *default:* `"topright"`
 
-  Where should the legend be placed? One of "topright", "topright",
+  Where should the legend be placed? One of "topright", "topleft",
   "bottomleft" or "bottomright". Passed to the `position` argument of
   [`leaflet::addLegend()`](https://rstudio.github.io/leaflet/reference/addLegend.html).
   `NULL` defaults to "topright".
@@ -164,10 +173,6 @@ trajMap(
   "topleft", "topright", "bottomleft" or "bottomright". Passed to the
   `position` argument of
   [`leaflet::addLayersControl()`](https://rstudio.github.io/leaflet/reference/addLayersControl.html).
-
-- control:
-
-  Deprecated. Please use `type`.
 
 - ...:
 
@@ -268,9 +273,6 @@ A leaflet object.
 ## See also
 
 [`openair::trajPlot()`](https://openair-project.github.io/openair/reference/trajPlot.html)
-
-[`trajMapStatic()`](https://openair-project.github.io/openairmaps/reference/deprecated-traj.md)
-for the static `ggplot2` equivalent of `trajMap()`
 
 Other interactive trajectory maps:
 [`trajLevelMap()`](https://openair-project.github.io/openairmaps/reference/trajLevelMap.md)

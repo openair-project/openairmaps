@@ -249,7 +249,7 @@ theme.</p></dd>
 
 <dt id="arg-key-position">key.position<a class="anchor" aria-label="anchor" href="#arg-key-position"></a></dt>
 <dd><p><em>Legend position for individual marker legends.</em></p>
-<p><em>default:</em> <code>FALSE</code> | <em>scope:</em> dynamic &amp; static</p>
+<p><em>default:</em> <code>"none"</code> | <em>scope:</em> dynamic &amp; static</p>
 <p>When <code>key.position</code> is not <code>"none"</code>, a key will be drawn for each
 individual marker. Potentially useful when <code>limits = "free"</code>, but of
 limited use otherwise.</p></dd>
@@ -258,15 +258,23 @@ limited use otherwise.</p></dd>
 <dt id="arg-legend">legend<a class="anchor" aria-label="anchor" href="#arg-legend"></a></dt>
 <dd><p><em>Draw a shared legend?</em></p>
 <p><em>default:</em> <code>TRUE</code> | <em>scope:</em> dynamic &amp; static</p>
-<p>When all markers share the same colour scale (e.g., when <code>limits != "free"</code>
-in <code><a href="polarMap.html">polarMap()</a></code>), should a shared legend be created at the side of the map?</p></dd>
+<p>When all markers share the same colour scale, should a shared legend be
+created at the side of the map? This is the case for:</p><ul><li><p><em>Continuous</em> colour scales, when all markers share the same <code>limits</code>
+(e.g., when <code>limits != "free"</code> in <code><a href="polarMap.html">polarMap()</a></code>), which are shown as a
+colour bar. This legend is not drawn if the colour scale has been
+transformed using <code>trans</code> (e.g., <code>trans = "log10"</code>), as it would be
+misleading.</p></li>
+<li><p><em>Discrete</em> colour scales, when all markers are binned into the same
+intervals (e.g., when <code>breaks</code> are passed to <code><a href="polarMap.html">polarMap()</a></code>, or in
+<code><a href="windroseMap.html">windroseMap()</a></code>), which are shown as a set of labelled colours.</p></li>
+</ul></dd>
 
 
 <dt id="arg-legend-position">legend.position<a class="anchor" aria-label="anchor" href="#arg-legend-position"></a></dt>
 <dd><p><em>Position of the shared legend.</em></p>
 <p><em>default:</em> <code>NULL</code> | <em>scope:</em> dynamic &amp; static</p>
-<p>When <code>legend = TRUE</code>, where should the legend be placed?</p><ul><li><p><em>Dynamic</em>: One of "topright", "topright", "bottomleft" or "bottomright". Passed to the <code>position</code> argument of <code><a href="https://rstudio.github.io/leaflet/reference/addLegend.html" class="external-link">leaflet::addLegend()</a></code>.</p></li>
-<li><p><em>Static:</em>: One of "top", "right", "bottom" or "left". Passed to the <code>legend.position</code> argument of <code><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">ggplot2::theme()</a></code>.</p></li>
+<p>When <code>legend = TRUE</code>, where should the legend be placed?</p><ul><li><p><em>Dynamic</em>: One of "topright", "topleft", "bottomleft" or "bottomright". Passed to the <code>position</code> argument of <code><a href="https://rstudio.github.io/leaflet/reference/addLegend.html" class="external-link">leaflet::addLegend()</a></code>.</p></li>
+<li><p><em>Static</em>: One of "top", "right", "bottom" or "left". Passed to the <code>legend.position</code> argument of <code><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">ggplot2::theme()</a></code>.</p></li>
 </ul></dd>
 
 
@@ -615,7 +623,7 @@ to a file).</p></dd>
 
 
 <dt id="arg-control">control<a class="anchor" aria-label="anchor" href="#arg-control"></a></dt>
-<dd><p><strong>Deprecated.</strong> Please use <code>type</code>.</p></dd>
+<dd><p><strong>Removed.</strong> Please use <code>type</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

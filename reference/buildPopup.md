@@ -80,7 +80,7 @@ buildPopup(
 
 - fun.character:
 
-  *A function to summarise character and factor columns.*
+  *A function to summarise character, factor and logical columns.*
 
   *default:* `function(x) paste(unique(x), collapse = ", ")`
 
@@ -98,7 +98,7 @@ buildPopup(
 
 - fun.dttm:
 
-  *A function to summarise date columns.*
+  *A function to summarise date and date-time columns.*
 
   *default:*
   `function(x) paste(lubridate::floor_date(range(x, na.rm = TRUE), "day"), collapse = " to ")`

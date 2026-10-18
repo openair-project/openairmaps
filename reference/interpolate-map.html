@@ -6,14 +6,20 @@ pollution concentrations where no monitoring is occurring, or better
 identify geographical patterns in pollution data. krigingMap() creates a
 smooth spatially interpolated surface using either inverse distance
 weighting or point kriging. voronoiMap() creates a surface of 'closest
-observation' polygons. The kriging formula is currently always pollutant ~ 1; krigingMap() does not currently support more complex models."><meta property="og:description" content="
+observation' polygons. The kriging formula is currently always pollutant ~ 1; krigingMap() does not currently support more complex models.
+When type is used, each type level is summarised and interpolated
+separately, but all levels share the same colour scale so that they can
+be compared."><meta property="og:description" content="
 These functions create interpolated surfaces out of data at individual
 monitoring sites. This can be useful to 'fill in the gaps' to estimate
 pollution concentrations where no monitoring is occurring, or better
 identify geographical patterns in pollution data. krigingMap() creates a
 smooth spatially interpolated surface using either inverse distance
 weighting or point kriging. voronoiMap() creates a surface of 'closest
-observation' polygons. The kriging formula is currently always pollutant ~ 1; krigingMap() does not currently support more complex models."><meta property="og:image" content="https://openair-project.github.io/openairmaps/logo.png"></head><body>
+observation' polygons. The kriging formula is currently always pollutant ~ 1; krigingMap() does not currently support more complex models.
+When type is used, each type level is summarised and interpolated
+separately, but all levels share the same colour scale so that they can
+be compared."><meta property="og:image" content="https://openair-project.github.io/openairmaps/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -75,6 +81,9 @@ identify geographical patterns in pollution data. <code>krigingMap()</code> crea
 smooth spatially interpolated surface using either inverse distance
 weighting or point kriging. <code>voronoiMap()</code> creates a surface of 'closest
 observation' polygons. The kriging formula is currently always <code>pollutant ~ 1</code>; <code>krigingMap()</code> does not currently support more complex models.</p>
+<p>When <code>type</code> is used, each <code>type</code> level is summarised and interpolated
+separately, but all levels share the same colour scale so that they can
+be compared.</p>
     </div>
 
     <div class="section level2">
@@ -92,6 +101,9 @@ observation' polygons. The kriging formula is currently always <code>pollutant ~
 <span>  latitude <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  longitude <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  crs <span class="op">=</span> <span class="fl">4326</span>,</span>
+<span>  type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  popup <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  label <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  provider <span class="op">=</span> <span class="st">"OpenStreetMap"</span>,</span>
 <span>  cols <span class="op">=</span> <span class="st">"turbo"</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">0.8</span>,</span>
@@ -101,13 +113,18 @@ observation' polygons. The kriging formula is currently always <code>pollutant ~
 <span>  legend.position <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  legend.title <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  legend.title.autotext <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  control.collapsed <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  control.position <span class="op">=</span> <span class="st">"topright"</span>,</span>
+<span>  control.autotext <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  static <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  static.nrow <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  vgm <span class="op">=</span> <span class="fu">gstat</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/gstat/reference/vgm.html" class="external-link">vgm</a></span><span class="op">(</span>psill <span class="op">=</span> <span class="fl">1</span>, model <span class="op">=</span> <span class="st">"Exp"</span>, range <span class="op">=</span> <span class="fl">50000</span>, nugget <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  vgm <span class="op">=</span> <span class="fu">gstat</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/gstat/reference/vgm.html" class="external-link">vgm</a></span><span class="op">(</span>psill <span class="op">=</span> <span class="fl">1</span>, model <span class="op">=</span> <span class="st">"Exp"</span>, range <span class="op">=</span> <span class="fl">50</span>, nugget <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  args.idw <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  args.variogram <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  args.fit.variogram <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  args.krige <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  args.krige <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">voronoiMap</span><span class="op">(</span></span>
@@ -122,6 +139,9 @@ observation' polygons. The kriging formula is currently always <code>pollutant ~
 <span>  latitude <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  longitude <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  crs <span class="op">=</span> <span class="fl">4326</span>,</span>
+<span>  type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  popup <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  label <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  provider <span class="op">=</span> <span class="st">"OpenStreetMap"</span>,</span>
 <span>  cols <span class="op">=</span> <span class="st">"turbo"</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">0.8</span>,</span>
@@ -132,8 +152,14 @@ observation' polygons. The kriging formula is currently always <code>pollutant ~
 <span>  legend.position <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  legend.title <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  legend.title.autotext <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  control.collapsed <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  control.position <span class="op">=</span> <span class="st">"topright"</span>,</span>
+<span>  control.autotext <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  static <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  args.voronoi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  static.nrow <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  args.voronoi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -166,7 +192,8 @@ controls how this is achieved. Possible statistics include:</p><ul><li><p><code>
 <li><p><code>"min"</code>: the maximum value (using <code><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min()</a></code>)</p></li>
 <li><p><code>"sd"</code>: the standard deviation (using <code><a href="https://rdrr.io/r/stats/sd.html" class="external-link">stats::sd()</a></code>)</p></li>
 <li><p><code>"percentile"</code>: a percentile value, defined using the <code>percentile</code> argument (using <code><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">stats::quantile()</a></code>)</p></li>
-</ul></dd>
+</ul><p>To show this value in marker popups or labels, include <code>pollutant</code> in
+<code>popup</code> or <code>label</code> (e.g., <code>popup = c("site", "nox")</code>).</p></dd>
 
 
 <dt id="arg-percentile">percentile<a class="anchor" aria-label="anchor" href="#arg-percentile"></a></dt>
@@ -200,7 +227,10 @@ complex and computationally intensive.</p></dd>
 <p><em>default:</em> <code>NULL</code> | <em>scope:</em> dynamic &amp; static</p>
 <p>By default, a continuous colour scale is used. If <code>breaks</code> are provided,
 the colour scale will be discretised using <code><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut()</a></code>. <code>labels</code> can also be
-provided to customise how each factor level is labelled.</p></dd>
+provided to customise how each factor level is labelled.</p>
+<p>If the data extend beyond <code>breaks</code>, the outermost breaks are expanded to
+cover them so that no sites are left uncoloured. For example, <code>breaks = c(50, 100, 150)</code> would become <code>c(25, 100, 200)</code> for data ranging from 25
+to 200.</p></dd>
 
 
 <dt id="arg-limits">limits<a class="anchor" aria-label="anchor" href="#arg-limits"></a></dt>
@@ -230,6 +260,31 @@ CRS associated with the commonly used latitude and longitude coordinates.
 Different coordinate systems can be specified using <code>crs</code> (e.g., <code>crs = 27700</code> for the <a href="https://epsg.io/27700" class="external-link">British National Grid</a>). Note that
 non-lat/lng coordinate systems will be re-projected to EPSG:4326 for
 plotting on the map.</p></dd>
+
+
+<dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
+<dd><p><em>A method to condition the <code>data</code> for separate plotting.</em></p>
+<p><em>default:</em> <code>NULL</code> | <em>scope:</em> dynamic &amp; static</p>
+<p>Used for splitting the input data into different groups, passed to the
+<code>type</code> argument of <code><a href="https://openair-project.github.io/openair/reference/cutData.html" class="external-link">openair::cutData()</a></code>. When <code>type</code> is specified:</p><ul><li><p><em>Dynamic</em>: The different data splits can be toggled between using a "layer control" menu.</p></li>
+<li><p><em>Static</em>: The data splits will each appear in a different panel.</p></li>
+</ul><p><code>type</code> cannot be used if multiple <code>pollutant</code> columns have been provided.</p></dd>
+
+
+<dt id="arg-popup">popup<a class="anchor" aria-label="anchor" href="#arg-popup"></a></dt>
+<dd><p><em>Content for marker popups on dynamic maps.</em></p>
+<p><em>default:</em> <code>NULL</code> | <em>scope:</em> dynamic</p>
+<p>Columns to be used as the HTML content for marker popups on dynamic maps.
+Popups may be useful to show information about the individual sites (e.g.,
+site names, codes, types, etc.). If a vector of column names are provided
+they are passed to <code><a href="buildPopup.html">buildPopup()</a></code> using its default values.</p></dd>
+
+
+<dt id="arg-label">label<a class="anchor" aria-label="anchor" href="#arg-label"></a></dt>
+<dd><p><em>Content for marker hover-over on dynamic maps.</em></p>
+<p><em>default:</em> <code>NULL</code> | <em>scope:</em> dynamic</p>
+<p>Column to be used as the HTML content for hover-over labels. Labels are
+useful for the same reasons as popups, though are typically shorter.</p></dd>
 
 
 <dt id="arg-provider">provider<a class="anchor" aria-label="anchor" href="#arg-provider"></a></dt>
@@ -268,7 +323,8 @@ uniform colours.</p></dd>
 <dd><p><em>Show original monitoring site markers?</em></p>
 <p><em>default:</em> <code>TRUE</code> | <em>scope:</em> dynamic &amp; static</p>
 <p>When <code>TRUE</code>, the coordinates in the input <code>data</code> will be shown as coloured
-markers.</p></dd>
+markers. Any <code>popup</code> or <code>label</code> is attached to these markers, so neither
+is shown when <code>show.markers = FALSE</code>.</p></dd>
 
 
 <dt id="arg-marker-border-voronoi-border">marker.border, voronoi.border<a class="anchor" aria-label="anchor" href="#arg-marker-border-voronoi-border"></a></dt>
@@ -287,8 +343,8 @@ voronoi tiles.</em></p>
 <dt id="arg-legend-position">legend.position<a class="anchor" aria-label="anchor" href="#arg-legend-position"></a></dt>
 <dd><p><em>Position of the shared legend.</em></p>
 <p><em>default:</em> <code>NULL</code> | <em>scope:</em> dynamic &amp; static</p>
-<p>When <code>legend = TRUE</code>, where should the legend be placed?</p><ul><li><p><em>Dynamic</em>: One of "topright", "topright", "bottomleft" or "bottomright". Passed to the <code>position</code> argument of <code><a href="https://rstudio.github.io/leaflet/reference/addLegend.html" class="external-link">leaflet::addLegend()</a></code>.</p></li>
-<li><p><em>Static:</em>: One of "top", "right", "bottom" or "left". Passed to the <code>legend.position</code> argument of <code><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">ggplot2::theme()</a></code>.</p></li>
+<p>When <code>legend = TRUE</code>, where should the legend be placed?</p><ul><li><p><em>Dynamic</em>: One of "topright", "topleft", "bottomleft" or "bottomright". Passed to the <code>position</code> argument of <code><a href="https://rstudio.github.io/leaflet/reference/addLegend.html" class="external-link">leaflet::addLegend()</a></code>.</p></li>
+<li><p><em>Static</em>: One of "top", "right", "bottom" or "left". Passed to the <code>legend.position</code> argument of <code><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">ggplot2::theme()</a></code>.</p></li>
 </ul></dd>
 
 
@@ -308,12 +364,45 @@ this - for example, to include units or other contextual information. For
 through <code><a href="quickTextHTML.html">quickTextHTML()</a></code> (<em>dynamic</em>) or <code><a href="https://openair-project.github.io/openair/reference/quickText.html" class="external-link">openair::quickText()</a></code> (<em>static</em>).</p></dd>
 
 
+<dt id="arg-control-collapsed">control.collapsed<a class="anchor" aria-label="anchor" href="#arg-control-collapsed"></a></dt>
+<dd><p><em>Show the layer control as a collapsed?</em></p>
+<p><em>default:</em> <code>FALSE</code> | <em>scope:</em> dynamic</p>
+<p>For <em>dynamic</em> maps, should the "layer control" interface be collapsed? If
+<code>TRUE</code>, users will have to hover over an icon to view the options.</p></dd>
+
+
+<dt id="arg-control-position">control.position<a class="anchor" aria-label="anchor" href="#arg-control-position"></a></dt>
+<dd><p><em>Position of the layer control menu</em></p>
+<p><em>default:</em> <code>"topright"</code> | <em>scope:</em> dynamic</p>
+<p>When <code>type != NULL</code>, or multiple pollutants are specified, where should the
+"layer control" interface be placed? One of "topleft", "topright",
+"bottomleft" or "bottomright". Passed to the <code>position</code> argument of
+<code><a href="https://rstudio.github.io/leaflet/reference/addLayersControl.html" class="external-link">leaflet::addLayersControl()</a></code>.</p></dd>
+
+
+<dt id="arg-control-autotext">control.autotext<a class="anchor" aria-label="anchor" href="#arg-control-autotext"></a></dt>
+<dd><p><em>Automatically format the content of the layer
+control menu?</em></p>
+<p><em>default:</em> <code>TRUE</code> | <em>scope:</em> dynamic</p>
+<p>When <code>control.autotext = TRUE</code>, the content of the "layer control"
+interface will be first run through <code><a href="quickTextHTML.html">quickTextHTML()</a></code>.</p></dd>
+
+
 <dt id="arg-static">static<a class="anchor" aria-label="anchor" href="#arg-static"></a></dt>
 <dd><p><em>Produce a static map?</em></p>
 <p><em>default:</em> <code>FALSE</code></p>
 <p>This controls whether a <em>dynamic</em> or <em>static</em> map is produced. The former
 is the default and is broadly more useful, but the latter may be preferable
 for DOCX or PDF outputs (e.g., academic papers).</p></dd>
+
+
+<dt id="arg-static-nrow">static.nrow<a class="anchor" aria-label="anchor" href="#arg-static-nrow"></a></dt>
+<dd><p><em>Number of rows in a static map.</em></p>
+<p><em>default:</em> <code>NULL</code> | <em>scope:</em> static</p>
+<p>Controls the number of rows of panels on a static map when multiple
+<code>pollutant</code>s or <code>type</code> are specified; passed to the <code>nrow</code> argument of
+<code><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">ggplot2::facet_wrap()</a></code>. The default, <code>NULL</code>, results in a roughly square
+grid of panels.</p></dd>
 
 
 <dt id="arg-api-key">api_key<a class="anchor" aria-label="anchor" href="#arg-api-key"></a></dt>
@@ -325,9 +414,10 @@ Needed for certain <code>providers</code> (e.g., <code>"cartolight"</code>).</p>
 
 <dt id="arg-vgm">vgm<a class="anchor" aria-label="anchor" href="#arg-vgm"></a></dt>
 <dd><p><em>A variogram model</em></p>
-<p><em>default:</em> <code>gstat::vgm(psill = 1, model = "Exp", range = 50000, nugget = 1)</code> | <em>scope:</em> dynamic &amp; static</p>
+<p><em>default:</em> <code>gstat::vgm(psill = 1, model = "Exp", range = 50, nugget = 1)</code> | <em>scope:</em> dynamic &amp; static</p>
 <p>The variogram model to use when <code>method = "kriging"</code>. Must be the output of
-<code><a href="https://r-spatial.github.io/gstat/reference/vgm.html" class="external-link">gstat::vgm()</a></code>.</p></dd>
+<code><a href="https://r-spatial.github.io/gstat/reference/vgm.html" class="external-link">gstat::vgm()</a></code>. As the data are in latitude and longitude, <code>{gstat}</code>
+measures distances (e.g., the <code>range</code>) in kilometres.</p></dd>
 
 
 <dt id="arg-args-idw-args-variogram-args-fit-variogram-args-krige">args.idw, args.variogram, args.fit.variogram, args.krige<a class="anchor" aria-label="anchor" href="#arg-args-idw-args-variogram-args-fit-variogram-args-krige"></a></dt>
@@ -336,6 +426,76 @@ to pass to spatial interpolation functions for <code>krigingMap()</code>.</em></
 <p><em>scope:</em> dynamic &amp; static</p>
 <p>Extra arguments passed to <code><a href="https://r-spatial.github.io/gstat/reference/krige.html" class="external-link">gstat::idw()</a></code>, <code><a href="https://r-spatial.github.io/gstat/reference/vgm.html" class="external-link">gstat::vgm()</a></code>,
 <code><a href="https://r-spatial.github.io/gstat/reference/fit.variogram.html" class="external-link">gstat::fit.variogram()</a></code>, and <code><a href="https://r-spatial.github.io/gstat/reference/krige.html" class="external-link">gstat::krige()</a></code>.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Arguments passed on to <code><a href="https://openair-project.github.io/openair/reference/cutData.html" class="external-link">openair::cutData</a></code></p><dl><dt><code>names</code></dt>
+<dd><p>By default, the columns created by <code><a href="https://openair-project.github.io/openair/reference/cutData.html" class="external-link">cutData()</a></code> are named after
+their <code>type</code> option. Specifying <code>names</code> defines other names for the
+columns, which map onto the <code>type</code> options in the same order they are
+given. The length of <code>names</code> should therefore be equal to the length of
+<code>type</code>.</p></dd>
+
+    <dt><code>suffix</code></dt>
+<dd><p>If <code>name</code> is not specified, <code>suffix</code> will be appended to any
+added columns that would otherwise overwrite existing columns. For example,
+<code>cutData(mydata, "nox", suffix = "_cuts")</code> would append a <code>nox_cuts</code> column
+rather than overwriting <code>nox</code>.</p></dd>
+
+    <dt><code>hemisphere</code></dt>
+<dd><p>Can be <code>"northern"</code> or <code>"southern"</code>, used to split data
+into seasons.</p></dd>
+
+    <dt><code>n.levels</code></dt>
+<dd><p>Number of quantiles to split numeric data into.</p></dd>
+
+    <dt><code>wd.res</code></dt>
+<dd><p>The number of wind direction bins; one of <code>4</code> (N/E/S/W), <code>8</code>
+(N/NE/E/SE/etc., the default) or <code>16</code> (N/NNE/NE/ENE/etc.).</p></dd>
+
+    <dt><code>start.day</code></dt>
+<dd><p>What day of the week should the <code>type = "weekday"</code> start on?
+The user can change the start day by supplying an integer between 0 and 6.
+Sunday = 0, Monday = 1, ... For example to start the weekday plots on a
+Saturday, choose <code>start.day = 6</code>.</p></dd>
+
+    <dt><code>start.season</code></dt>
+<dd><p>What order should the season be. By default, the order is
+spring, summer, autumn, winter. <code>start.season = "winter"</code> would plot winter
+first.</p></dd>
+
+    <dt><code>is.axis</code></dt>
+<dd><p>A logical (<code>TRUE</code>/<code>FALSE</code>), used to request shortened cut
+labels for axes.</p></dd>
+
+    <dt><code>local.tz</code></dt>
+<dd><p>Used for identifying whether a date has daylight savings time
+(DST) applied or not. Examples include <code>local.tz = "Europe/London"</code>,
+<code>local.tz = "America/New_York"</code>, i.e., time zones that assume DST.
+<a href="https://en.wikipedia.org/wiki/List_of_zoneinfo_time_zones" class="external-link">https://en.wikipedia.org/wiki/List_of_zoneinfo_time_zones</a> shows time
+zones that should be valid for most systems. It is important that the
+original data are in GMT (UTC) or a fixed offset from GMT.</p></dd>
+
+    <dt><code>latitude,longitude</code></dt>
+<dd><p>The decimal latitude and longitudes used when <code>type = "daylight"</code>. Note that locations west of Greenwich have negative
+longitudes.</p></dd>
+
+    <dt><code>drop</code></dt>
+<dd><p>How to handle empty factor levels. One of:</p><ul><li><p><code>"default"</code>: Sensible defaults selected on a case-by-case basis for
+different <code>type</code> options.</p></li>
+<li><p><code>"empty"</code>: Drop all empty factor levels.</p></li>
+<li><p><code>"none"</code>: Retain all empty factor levels, where possible. For example,
+for <code>type = "hour"</code>, all factor levels from <code>0</code> and <code>23</code> will be
+represented.</p></li>
+<li><p><code>"outside"</code>: Retain empty factor levels within the range of the data.
+For example, for <code>type = "hour"</code> when the data only contains data for 1 AM
+and 5 AM, the factor levels, <code>1</code>, <code>2</code>, <code>3</code>, <code>4</code> and <code>5</code> will be retained.</p></li>
+</ul><p>Some of these options only apply to certain <code>type</code> options. For example,
+for <code>type = "year"</code>, <code>"outside"</code> is equivalent to <code>"none"</code> as there is no
+fixed range of years to use in the <code>"none"</code> case.</p></dd>
+
+
+</dl></dd>
 
 
 <dt id="arg-args-voronoi">args.voronoi<a class="anchor" aria-label="anchor" href="#arg-args-voronoi"></a></dt>

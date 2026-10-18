@@ -15,6 +15,7 @@ annulusMap(
   pollutant = NULL,
   period = "hour",
   limits = "free",
+  breaks = NULL,
   latitude = NULL,
   longitude = NULL,
   crs = 4326,
@@ -71,7 +72,7 @@ annulusMap(
   - *Dynamic*: The pollutants can be toggled between using a "layer
     control" menu.
 
-  - *Static:*: The pollutants will each appear in a different panel.
+  - *Static*: The pollutants will each appear in a different panel.
 
   Multiple `pollutants` prohibit the use of the `type` argument for
   non-pairwise statistics.
@@ -103,6 +104,36 @@ annulusMap(
   - A numeric vector in the form `c(lower, upper)` used to define the
     colour scale. For example, `limits = c(0, 100)` would force the plot
     limits to span 0-100.
+
+  `limits` is ignored if `breaks` is also provided.
+
+- breaks:
+
+  *Specifier for a binned colour scale.*
+
+  *default:* `NULL` \| *scope:* dynamic & static
+
+  By default, markers use a continuous colour scale (see `limits`). If
+  `breaks` is provided, the colour scale is instead binned into discrete
+  intervals. One of:
+
+  - A numeric vector of breakpoints. For example,
+    `breaks = c(0, 50, 100, 1000)` would bin the colour scale into three
+    intervals.
+
+  - A single number, which is the number of intervals to bin the colour
+    scale into.
+
+  - A list created using
+    [`openair::breakOpts()`](https://openair-project.github.io/openair/reference/breakOpts.html),
+    which provides finer control over the binning method and allows
+    custom `labels` to be defined.
+
+  In all cases, a single set of breakpoints is calculated across *all*
+  of the markers, so that they share the same intervals and a shared
+  legend can be drawn. If any of the markers' data fall outside of the
+  given breakpoints, the lowest and/or highest breakpoints are extended
+  to cover them. If `breaks` is provided, `limits` is ignored.
 
 - latitude, longitude:
 
@@ -145,7 +176,7 @@ annulusMap(
   - *Dynamic*: The different data splits can be toggled between using a
     "layer control" menu.
 
-  - *Static:*: The data splits will each appear in a different panel.
+  - *Static*: The data splits will each appear in a different panel.
 
   `type` cannot be used if multiple `pollutant` columns have been
   provided.
@@ -237,7 +268,7 @@ annulusMap(
 
   *Legend position for individual marker legends.*
 
-  *default:* `FALSE` \| *scope:* dynamic & static
+  *default:* `"none"` \| *scope:* dynamic & static
 
   When `key.position` is not `"none"`, a key will be drawn for each
   individual marker. Potentially useful when `limits = "free"`, but of
@@ -249,10 +280,22 @@ annulusMap(
 
   *default:* `TRUE` \| *scope:* dynamic & static
 
-  When all markers share the same colour scale (e.g., when
-  `limits != "free"` in
-  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)),
-  should a shared legend be created at the side of the map?
+  When all markers share the same colour scale, should a shared legend
+  be created at the side of the map? This is the case for:
+
+  - *Continuous* colour scales, when all markers share the same `limits`
+    (e.g., when `limits != "free"` in
+    [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)),
+    which are shown as a colour bar. This legend is not drawn if the
+    colour scale has been transformed using `trans` (e.g.,
+    `trans = "log10"`), as it would be misleading.
+
+  - *Discrete* colour scales, when all markers are binned into the same
+    intervals (e.g., when `breaks` are passed to
+    [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md),
+    or in
+    [`windroseMap()`](https://openair-project.github.io/openairmaps/reference/windroseMap.md)),
+    which are shown as a set of labelled colours.
 
 - legend.position:
 
@@ -262,11 +305,11 @@ annulusMap(
 
   When `legend = TRUE`, where should the legend be placed?
 
-  - *Dynamic*: One of "topright", "topright", "bottomleft" or
+  - *Dynamic*: One of "topright", "topleft", "bottomleft" or
     "bottomright". Passed to the `position` argument of
     [`leaflet::addLegend()`](https://rstudio.github.io/leaflet/reference/addLegend.html).
 
-  - *Static:*: One of "top", "right", "bottom" or "left". Passed to the
+  - *Static*: One of "top", "right", "bottom" or "left". Passed to the
     `legend.position` argument of
     [`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html).
 
@@ -455,16 +498,6 @@ annulusMap(
       estimate a percentile. See `quantile` for more details of how
       percentiles are calculated.
 
-  `breaks`
-
-  :   `breaks` bins a continuous axis into discrete bins. It can either
-      take a single number (e.g., `breaks = 5`) to split the scale into
-      quantiles, a vector of numbers (e.g.,
-      `breaks = c(0, 50, 100, 200, 500`) to define specific
-      break-points, or a named list. See
-      [`breakOpts()`](https://openair-project.github.io/openair/reference/breakOpts.html)
-      for more details.
-
   `trans`
 
   :   Should a transformation be applied to the colour scale? If the
@@ -591,7 +624,7 @@ annulusMap(
 
 - control:
 
-  **Deprecated.** Please use `type`.
+  **Removed.** Please use `type`.
 
 ## Value
 
@@ -672,7 +705,7 @@ if (FALSE) { # \dontrun{
 annulusMap(polar_data,
   pollutant = "nox",
   period = "hour",
-  provider = "CartoDB.Voyager"
+  provider = "Esri.WorldGrayCanvas"
 )
 } # }
 ```
