@@ -107,12 +107,12 @@ check_multipoll <- function(vec, pollutant) {
 #'   messages.
 #' @noRd
 resolve_scale <- function(
-  x,
-  arg,
-  fixed,
-  free = NULL,
-  n = NULL,
-  call = rlang::caller_env()
+    x,
+    arg,
+    fixed,
+    free = NULL,
+    n = NULL,
+    call = rlang::caller_env()
 ) {
   if ("fixed" %in% x) {
     fixed
@@ -149,14 +149,14 @@ resolve_scale <- function(
 #' @returns The `$data` returned by `fun`.
 #' @noRd
 fixed_scale_data <- function(
-  fun,
-  data,
-  pollutant,
-  latitude,
-  longitude,
-  type,
-  ...,
-  call = rlang::caller_env()
+    fun,
+    data,
+    pollutant,
+    latitude,
+    longitude,
+    type,
+    ...,
+    call = rlang::caller_env()
 ) {
   check_pollutant(pollutant, call = call)
 

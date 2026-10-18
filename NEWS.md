@@ -14,6 +14,8 @@
 
 * The "layer control" menus of the `polarMap()` family and `trajMap()` now list `type` levels in the order of their factor levels (e.g., "Monday" before "Tuesday"), and multiple pollutants in the order they were given, rather than the order they first appear in the data.
 
+* `polar_data` now includes the site code as a column, and columns have been reordered to better match the return values of `openair::importUKAQ()`.
+
 ## New features
 
 * Added `pointMap()`, which summarises pollutant data at each site (e.g., the mean concentration) and shows it as coloured circles on a dynamic or static map. It shares its arguments (`statistic`, `breaks`, `limits`, etc.) with `krigingMap()` and `voronoiMap()`, but draws no interpolated surface. All three functions also gain `popup` and `label` arguments, which work like those in `polarMap()` (e.g., to show site names or types when clicking on or hovering over a site marker).

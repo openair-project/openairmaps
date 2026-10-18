@@ -109,12 +109,12 @@ polar_map_init <- function(data, ..., env = rlang::caller_env()) {
 #'   added.
 #' @noRd
 polar_map_prep <- function(
-  map,
-  data,
-  pollutant,
-  vars,
-  after = NULL,
-  pairwise = FALSE
+    map,
+    data,
+    pollutant,
+    vars,
+    after = NULL,
+    pairwise = FALSE
 ) {
   type <- map$type
 
