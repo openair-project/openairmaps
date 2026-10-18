@@ -93,7 +93,7 @@ test_that("create_interp_grid() covers the data or newdata", {
 
 test_that("voronoiMap() makes dynamic maps", {
   local_coarse_grid()
-  map <- quietly(voronoiMap(interp_data, "nox"))
+  expect_no_warning(map <- suppressMessages(voronoiMap(interp_data, "nox")))
   expect_s3_class(map, "leaflet")
   expect_length(leaflet_calls(map, "addPolygons"), 1)
   expect_length(leaflet_calls(map, "addCircleMarkers"), 1)
@@ -501,6 +501,15 @@ test_that("krigingMap() makes maps", {
     breaks = c(0, 30, 70)
   ))
   expect_s3_class(map, "leaflet")
+
+  # gstat is silenced by default, but this can be overridden
+  expect_output(suppressMessages(krigingMap(interp_data, "nox")), NA)
+  expect_output(
+    suppressMessages(
+      krigingMap(interp_data, "nox", args.idw = list(debug.level = 1))
+    ),
+    "inverse distance"
+  )
 
   skip_if_not_installed("ggspatial")
   map <- quietly(krigingMap(interp_data, "nox", static = TRUE))

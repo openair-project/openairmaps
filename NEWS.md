@@ -100,6 +100,8 @@
 
 * `krigingMap()` and `voronoiMap()` now give an informative error if more than one `pollutant` is given, or if the `pollutant`, `popup` or `label` columns can't be found in `data`. Previously, multiple pollutants gave a cryptic error, and a missing `popup` or `label` column was silently ignored.
 
+* `krigingMap()` no longer prints `{gstat}`'s progress (e.g., "[inverse distance weighted interpolation]") for every `type` level. This can be turned back on using `args.idw` or `args.krige` (e.g., `args.idw = list(debug.level = 1)`). `voronoiMap()` also no longer warns that "attribute variables are assumed to be spatially constant", and static maps in the `polarMap()` family no longer warn that "st_point_on_surface may not give correct results for longitude/latitude data".
+
 * Dynamic `krigingMap()` and `voronoiMap()` legends now use `alpha` for their opacity, rather than always being semi-transparent. This also applies to `trajMap()` and `addTrajLevel()` (and therefore `trajLevelMap()`).
 
 * `trajMap()` and `addTrajPaths()` now support data with multiple receptors, as returned by `openair::importTraj()`. Previously, trajectories arriving at different receptors at the same time were joined into a single path.

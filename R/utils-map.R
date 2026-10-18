@@ -1049,7 +1049,10 @@ create_static_map <-
         data = plots_sf,
         ggplot2::aes(label = .data[["link"]]),
         fill = NA,
-        color = NA
+        color = NA,
+        # the markers are already points, so don't need to be placed "on
+        # surface" (which warns for latitude/longitude data)
+        fun.geometry = sf::st_zm
       ) +
       theme_static() +
       ggplot2::coord_sf(

@@ -37,10 +37,10 @@ krigingMap(
   static.nrow = NULL,
   api_key = NULL,
   vgm = gstat::vgm(psill = 1, model = "Exp", range = 50, nugget = 1),
-  args.idw = list(),
+  args.idw = list(debug.level = 0),
   args.variogram = list(),
   args.fit.variogram = list(),
-  args.krige = list(),
+  args.krige = list(debug.level = 0),
   ...
 )
 
@@ -362,8 +362,10 @@ to pass to spatial interpolation functions for \code{\link[=krigingMap]{krigingM
 
 \emph{scope:} dynamic & static
 
-Extra arguments passed to \code{\link[gstat:idw]{gstat::idw()}}, \code{\link[gstat:vgm]{gstat::vgm()}},
-\code{\link[gstat:fit.variogram]{gstat::fit.variogram()}}, and \code{\link[gstat:krige]{gstat::krige()}}.}
+Extra arguments passed to \code{\link[gstat:idw]{gstat::idw()}}, \code{\link[gstat:variogram]{gstat::variogram()}},
+\code{\link[gstat:fit.variogram]{gstat::fit.variogram()}}, and \code{\link[gstat:krige]{gstat::krige()}}. \code{\link[gstat:idw]{gstat::idw()}} and
+\code{\link[gstat:krige]{gstat::krige()}} are silenced by default (\code{debug.level = 0}), but this can
+be overridden (e.g., \code{args.idw = list(debug.level = 1)}).}
 
 \item{...}{
   Arguments passed on to \code{\link[openair:cutData]{openair::cutData}}

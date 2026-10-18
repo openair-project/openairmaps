@@ -164,8 +164,10 @@
 #'
 #'  *scope:* dynamic & static
 #'
-#'   Extra arguments passed to [gstat::idw()], [gstat::vgm()],
-#'   [gstat::fit.variogram()], and [gstat::krige()].
+#'   Extra arguments passed to [gstat::idw()], [gstat::variogram()],
+#'   [gstat::fit.variogram()], and [gstat::krige()]. [gstat::idw()] and
+#'   [gstat::krige()] are silenced by default (`debug.level = 0`), but this can
+#'   be overridden (e.g., `args.idw = list(debug.level = 1)`).
 #'
 #' @inheritDotParams openair::cutData -x -type
 #'
@@ -250,10 +252,10 @@ krigingMap <- function(
   static.nrow = NULL,
   api_key = NULL,
   vgm = gstat::vgm(psill = 1, model = "Exp", range = 50, nugget = 1),
-  args.idw = list(),
+  args.idw = list(debug.level = 0),
   args.variogram = list(),
   args.fit.variogram = list(),
-  args.krige = list(),
+  args.krige = list(debug.level = 0),
   ...
 ) {
   rlang::check_installed(c("terra", "stars", "gstat"))
@@ -370,6 +372,9 @@ voronoiMap <- function(
   tessellate <- function(sites) {
     rlang::exec(terra::voronoi, !!!args.voronoi, x = terra::vect(sites)) |>
       sf::st_as_sf() |>
+      # each tile has one value, so clipping it to the boundary doesn't change
+      # it (this also avoids a warning from sf)
+      sf::st_set_agr("constant") |>
       sf::st_intersection(boundary)
   }
 

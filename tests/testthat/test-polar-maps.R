@@ -134,6 +134,9 @@ test_that("polarMap() makes static maps", {
   expect_s3_class(map, "ggplot")
   expect_false(inherits(map$facet, "FacetWrap"))
   expect_equal(map$scales$get_scales("colour")$limits, c(0, 1))
+  # markers are placed at their points, without sf's "on surface" warning
+  markers <- Filter(\(x) inherits(x$geom, "GeomRichText"), map$layers)[[1]]
+  expect_identical(markers$stat_params$fun.geometry, sf::st_zm)
 
   map <- quietly(polarMap(
     polar,
