@@ -43,7 +43,10 @@ test_that("polar maps show the mean pollutant in popups and labels", {
 
   map <- quietly(polarMap(data, "no2", popup = c("no2", "nox"), d.fig = 1))
   popups <- leaflet_calls(map, "addMarkers")[[1]]$args[[7]]
-  expect_match(popup_text(popups), "\\(mean\\): [0-9.]+; .*\\(mean\\): [0-9.]+$")
+  expect_match(
+    popup_text(popups),
+    "\\(mean\\): [0-9.]+; .*\\(mean\\): [0-9.]+$"
+  )
 })
 
 test_that("polarMap() handles fixed limits, type and popups", {

@@ -53,6 +53,56 @@ test_that("create_polar_markers() saves each marker to its own file", {
   expect_true(all(file.exists(out$url[has_plot(out)])))
 })
 
+test_that("marker_theme() makes the panel transparent, unless overridden", {
+  panel_fill <- \(x) x$panel.background$fill
+  expect_true(is.na(panel_fill(marker_theme("default"))))
+  expect_true(is.na(panel_fill(marker_theme(NULL))))
+  expect_equal(marker_theme("dark"), "dark")
+
+  # the user's theme takes precedence
+  user <- ggplot2::theme(panel.background = ggplot2::element_rect(fill = "red"))
+  expect_equal(panel_fill(marker_theme(user)), "red")
+  # ...but only for what it sets
+  user <- ggplot2::theme(axis.text = ggplot2::element_blank())
+  expect_true(is.na(panel_fill(marker_theme(user))))
+  expect_s3_class(marker_theme(user)$axis.text, "element_blank")
+})
+
+test_that("create_polar_markers() saves markers with transparent panels", {
+  skip_if_not_installed("png")
+  # like openair::windRose(), whose default theme fills the panel white, and
+  # which adds any user `theme` on top
+  white_panel_fun <- function(mydata, theme = "default", ...) {
+    plot <- ggplot2::ggplot() +
+      ggplot2::theme_void() +
+      ggplot2::theme(panel.background = ggplot2::element_rect(fill = "white"))
+    if (ggplot2::is_theme(theme)) {
+      plot <- plot + theme
+    }
+    list(plot = plot, data = data.frame(z = 1))
+  }
+  max_alpha <- function(theme) {
+    out <- create_polar_markers(
+      fun = white_panel_fun,
+      fun_args = list(theme = theme),
+      data = fake_marker_data(),
+      latitude = "lat",
+      longitude = "lon",
+      split_col = "grp",
+      d.fig = 0.5,
+      progress = FALSE
+    )
+    max(png::readPNG(out$url[[1]])[,, 4])
+  }
+  expect_equal(max_alpha("default"), 0)
+  expect_equal(max_alpha(NULL), 0)
+  # users can still give markers a panel background
+  white <- ggplot2::theme(
+    panel.background = ggplot2::element_rect(fill = "white")
+  )
+  expect_equal(max_alpha(white), 1)
+})
+
 test_that("marker_dims() expands sizes into width and height", {
   expect_equal(marker_dims(50), list(width = 50, height = 50))
   expect_equal(marker_dims(c(50, 60)), list(width = 50, height = 60))

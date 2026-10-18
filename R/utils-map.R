@@ -115,12 +115,12 @@ check_multipoll <- function(vec, pollutant, arg = "limits", warn = TRUE) {
 #'   messages.
 #' @noRd
 resolve_scale <- function(
-    x,
-    arg,
-    fixed,
-    free = NULL,
-    n = NULL,
-    call = rlang::caller_env()
+  x,
+  arg,
+  fixed,
+  free = NULL,
+  n = NULL,
+  call = rlang::caller_env()
 ) {
   if ("fixed" %in% x) {
     fixed
@@ -157,14 +157,14 @@ resolve_scale <- function(
 #' @returns The `$data` returned by `fun`.
 #' @noRd
 fixed_scale_data <- function(
-    fun,
-    data,
-    pollutant,
-    latitude,
-    longitude,
-    type,
-    ...,
-    call = rlang::caller_env()
+  fun,
+  data,
+  pollutant,
+  latitude,
+  longitude,
+  type,
+  ...,
+  call = rlang::caller_env()
 ) {
   check_pollutant(pollutant, call = call)
 
@@ -432,6 +432,32 @@ abort_multiple_popups <- function(
 
 # Polar markers ----------------------------------------------------------------
 
+#' Give polar markers a transparent panel, unless the user says otherwise
+#'
+#' Some openair plots have a panel background (e.g., `openair::windRose()`'s
+#' is white), which would hide the map behind the marker. This is removed via
+#' openair's `theme` argument, rather than after plotting, so that users can
+#' still choose a panel background through `theme`:
+#'
+#' - `"default"` (or `NULL`) becomes a transparent panel.
+#' - A `ggplot2::theme()` is added to a transparent panel, so any
+#'   `panel.background` it sets takes precedence.
+#' - Any other preset (e.g., `"dark"`) is used as-is.
+#' @noRd
+marker_theme <- function(theme) {
+  transparent <- ggplot2::theme(
+    panel.background = ggplot2::element_rect(fill = NA)
+  )
+  theme <- theme %||% "default"
+  if (ggplot2::is_theme(theme)) {
+    return(transparent + theme)
+  }
+  if (identical(theme, "default")) {
+    return(transparent)
+  }
+  theme
+}
+
 #' Create markers for the static plots
 #' @param fun An openair function (e.g., `openair::polarPlot`), called with
 #'   `mydata` - or `before` and `after` if `after` is provided - and
@@ -467,6 +493,9 @@ create_polar_markers <-
       data$.label <- "NA"
       label <- ".label"
     }
+
+    # markers sit on a map, so shouldn't have a panel background
+    fun_args$theme <- marker_theme(fun_args$theme)
 
     # drop missing data
     data <- tidyr::drop_na(data, dplyr::all_of(dropcol))

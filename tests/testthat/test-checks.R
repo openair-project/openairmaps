@@ -67,7 +67,10 @@ test_that("check_multipoll() warns about fixed scales for many pollutants", {
 })
 
 test_that("ordinal() formats ordinal numbers", {
-  expect_equal(ordinal(c(1, 2, 3, 4, 21, 101)), c("1st", "2nd", "3rd", "4th", "21st", "101st"))
+  expect_equal(
+    ordinal(c(1, 2, 3, 4, 21, 101)),
+    c("1st", "2nd", "3rd", "4th", "21st", "101st")
+  )
   # the "teens" are exceptions
   expect_equal(ordinal(c(11, 12, 13, 112)), c("11th", "12th", "13th", "112th"))
   # decimals always use "th"

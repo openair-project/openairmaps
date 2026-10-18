@@ -228,9 +228,9 @@ add_site_popups <- function(map, data, latitude, longitude, call) {
 #' @param voronoi.border The border colour of any polygons in the surfaces.
 #' @noRd
 interp_map_draw <- function(
-    map,
-    surface_fun = NULL,
-    show.markers = TRUE,
+  map,
+  surface_fun = NULL,
+  show.markers = TRUE,
   voronoi.border = NA
 ) {
   pollutant <- map$pollutant
