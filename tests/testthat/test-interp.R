@@ -283,6 +283,31 @@ test_that("pointMap() makes dynamic maps", {
   expect_error(pointMap(interp_data, "nox", statistic = "maen"), "statistic")
   expect_error(pointMap(interp_data), "pollutant")
   expect_error(voronoiMap(interp_data), "pollutant")
+  expect_error(
+    pointMap(interp_data, c("nox", "rep")),
+    "single `pollutant`"
+  )
+  expect_error(pointMap(interp_data, "no2"), "Can't find")
+  expect_error(pointMap(interp_data, "nox", popup = "nope"), "Can't find")
+  expect_error(pointMap(interp_data, "nox", label = "nope"), "Can't find")
+})
+
+test_that("site average map legends use `alpha`", {
+  map <- quietly(pointMap(interp_data, "nox", alpha = 0.7))
+  expect_equal(leaflet_legends(map)[[1]]$opacity, 0.7)
+  map <- quietly(pointMap(interp_data, "nox", breaks = c(0, 30, 70)))
+  expect_equal(leaflet_legends(map)[[1]]$opacity, 1)
+})
+
+test_that("values outside `limits` take the nearest colour", {
+  expect_no_warning(
+    map <- quietly(pointMap(interp_data, "nox", limits = c(20, 40)))
+  )
+  colours <- leaflet_calls(map, "addCircleMarkers")[[1]]$args[[6]]$fillColor
+  expect_false(anyNA(colours))
+  pal <- leaflet::colorNumeric(openair::openColours("turbo"), c(20, 40))
+  # sites 1 & 6 average 12 and 62, so take the lowest & highest colours
+  expect_setequal(colours[c(1, 6)], pal(c(20, 40)))
 })
 
 test_that("site average maps can have popups and labels", {
@@ -314,6 +339,18 @@ test_that("site average maps can have popups and labels", {
   map <- quietly(pointMap(data, "nox", popup = "rep"))
   popups <- leaflet_calls(map, "addCircleMarkers")[[1]]$args[[9]]
   expect_equal(unique(popup_text(popups)), "rep (mean): 2")
+  map <- quietly(pointMap(data, "nox", label = "rep"))
+  labels <- leaflet_calls(map, "addCircleMarkers")[[1]]$args[[11]]
+  expect_equal(unique(as.character(labels)), "2")
+  map <- quietly(pointMap(
+    data,
+    "nox",
+    statistic = "percentile",
+    percentile = 92.5,
+    popup = "nox"
+  ))
+  popups <- leaflet_calls(map, "addCircleMarkers")[[1]]$args[[9]]
+  expect_match(popup_text(popups), "^NO<sub>x</sub> \\(92.5th percentile\\): ")
 
   # the pollutant shows the site statistic, not the mean of the raw data
   map <- quietly(pointMap(

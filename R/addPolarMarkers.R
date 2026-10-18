@@ -37,6 +37,7 @@
 #'   non-circular marker is desired.
 #' @param alpha The desired opacity of the polar markers. Can also be set via
 #'   `options` but is provided here for convenience.
+#' @param progress Show a progress bar while the markers are created?
 #' @param ... Other arguments for the plotting function (e.g. `period` for
 #'   [openair::polarAnnulus()]).
 #' @returns A leaflet object.
@@ -93,6 +94,7 @@ addPolarMarkers <-
     d.icon = 200,
     d.fig = 3.5,
     alpha = 1,
+    progress = TRUE,
     data = leaflet::getMapData(map),
     ...
   ) {
@@ -128,6 +130,7 @@ addPolarDiffMarkers <-
     d.icon = 200,
     d.fig = 3.5,
     alpha = 1,
+    progress = TRUE,
     ...
   ) {
     add_polar_markers(
@@ -161,7 +164,8 @@ polar_marker_args <- c(
   "key.position",
   "d.icon",
   "d.fig",
-  "alpha"
+  "alpha",
+  "progress"
 )
 
 #' Add polar markers to a leaflet map
@@ -217,7 +221,7 @@ add_polar_markers <- function(
       popup = args$popup,
       label = args$label,
       dropcol = args$pollutant,
-      progress = TRUE
+      progress = args$progress
     )
 
   # add markers to map
@@ -229,7 +233,15 @@ add_polar_markers <- function(
     longitude = latlon$longitude,
     !!!args[setdiff(
       polar_marker_args,
-      c("map", "pollutant", "lng", "lat", "key.position", "d.fig")
+      c(
+        "map",
+        "pollutant",
+        "lng",
+        "lat",
+        "key.position",
+        "d.fig",
+        "progress"
+      )
     )]
   )
 }

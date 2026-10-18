@@ -81,12 +81,20 @@ check_legendposition <- function(position, static) {
 }
 
 #' checks if multiple pollutants have been provided with a "fixed" scale
+#' @param arg The name of the argument, for the warning.
+#' @param warn Warn when falling back to `"free"`? Set to `FALSE` when `"fixed"`
+#'   is just the default, rather than something the user asked for.
 #' @noRd
-check_multipoll <- function(vec, pollutant) {
+check_multipoll <- function(vec, pollutant, arg = "limits", warn = TRUE) {
   if ("fixed" %in% vec && length(pollutant) > 1) {
-    cli::cli_warn(
-      "{.code 'fixed'} limits only work with a single given {.field pollutant}"
-    )
+    if (warn) {
+      cli::cli_warn(
+        c(
+          "!" = "{.code {arg} = 'fixed'} only works with a single {.arg pollutant}.",
+          "i" = "Using {.code {arg} = 'free'} instead."
+        )
+      )
+    }
     "free"
   } else {
     vec
@@ -383,9 +391,10 @@ label_mean_popups <- function(popup, data, latitude, longitude) {
 #' Format a number as an ordinal, e.g., `"1st"`, `"12th"` or `"95th"`
 #' @noRd
 ordinal <- function(x) {
-  # 11th, 12th & 13th are exceptions to 1st, 2nd & 3rd
+  # 11th, 12th & 13th are exceptions to 1st, 2nd & 3rd, and decimals (e.g.,
+  # 92.5th) always use "th"
   suffix <- ifelse(
-    x %% 100 %in% 11:13,
+    x %% 100 %in% 11:13 | x %% 1 != 0,
     "th",
     c("th", "st", "nd", "rd", rep("th", 6))[x %% 10 + 1]
   )
@@ -497,7 +506,7 @@ create_polar_markers <-
 
         cli::cli_warn(
           c(
-            "!" = "Not all {.code latitude}/{.code longitude}/{.code control} combinations in {.code before} matched in {.code after}.",
+            "!" = "Not all {.code latitude}/{.code longitude}/{.code type} combinations in {.code before} matched in {.code after}.",
             "i" = "Not matched: {.field {warn_df$warning}}"
           )
         )
@@ -1361,8 +1370,9 @@ traj_id <- function(data) {
 #' Styled to match the [networkMap()] popups.
 #' @param extra Optional name of an additional column to show (e.g., the
 #'   pollutant used to colour the trajectories).
+#' @param lat,lng The names of the latitude and longitude columns.
 #' @noRd
-build_traj_labels <- function(data, extra = NULL) {
+build_traj_labels <- function(data, extra = NULL, lat = "lat", lng = "lon") {
   extra_row <- ""
   if (!is.null(extra)) {
     extra_row <- popup_section(popup_row(quickTextHTML(extra), data[[extra]]))
@@ -1372,8 +1382,8 @@ build_traj_labels <- function(data, extra = NULL) {
     title = format(data$date, "%Y-%m-%d %H:%M"),
     subtitle = "ARRIVAL DATE",
     popup_row("Trajectory date", format(data$date2, "%Y-%m-%d %H:%M")),
-    popup_row("Latitude", data$lat),
-    popup_row("Longitude", data$lon),
+    popup_row("Latitude", data[[lat]]),
+    popup_row("Longitude", data[[lng]]),
     popup_row("Height", paste(data$height, "m")),
     popup_row("Pressure", paste(data$pressure, "hPa")),
     extra_row

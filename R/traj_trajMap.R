@@ -270,6 +270,7 @@ trajMap <-
           leaflet::addLegend(
             map,
             title = legend.title,
+            opacity = alpha,
             position = check_legendposition(legend.position, FALSE),
             pal = pal,
             values = as.numeric(data[[colour]], origin = "1964-10-22"),
@@ -284,6 +285,7 @@ trajMap <-
           leaflet::addLegend(
             map,
             title = legend.title,
+            opacity = alpha,
             position = check_legendposition(legend.position, FALSE),
             pal = pal,
             values = data[[colour]]

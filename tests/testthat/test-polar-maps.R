@@ -184,7 +184,7 @@ test_that("freqMap() makes maps", {
   ))
   expect_s3_class(map, "leaflet")
   legend <- leaflet_legends(map)[[1]]
-  expect_equal(legend$title, "frequency")
+  expect_equal(legend$title, "Frequency")
 
   skip_if_not_installed("ggspatial")
   map <- quietly(freqMap(

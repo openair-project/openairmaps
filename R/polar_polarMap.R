@@ -175,12 +175,18 @@
 #'   site names, codes, types, etc.). If a vector of column names are provided
 #'   they are passed to [buildPopup()] using its default values.
 #'
+#'   Numeric columns (e.g., pollutant concentrations) have many values at each
+#'   marker, so are averaged and labelled as such (e.g., "NO<sub>2</sub>
+#'   (mean)"). Names given to `popup` (e.g., `c("Mean NOx" = "nox")`) are used
+#'   instead of these labels.
+#'
 #' @param label *Content for marker hover-over on dynamic maps.*
 #'
 #'  *default:* `NULL` | *scope:* dynamic
 #'
 #'   Column to be used as the HTML content for hover-over labels. Labels are
-#'   useful for the same reasons as popups, though are typically shorter.
+#'   useful for the same reasons as popups, though are typically shorter. As
+#'   with `popup`, numeric columns are averaged at each marker.
 #'
 #' @param provider *The basemap(s) to be used.*
 #'

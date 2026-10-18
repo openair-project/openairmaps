@@ -54,6 +54,24 @@ test_that("check_multipoll() warns about fixed scales for many pollutants", {
     "fixed"
   )
   expect_equal(out, "free")
+
+  # the warning names the argument, and can be turned off
+  expect_warning(
+    check_multipoll("fixed", c("nox", "no2"), arg = "intervals"),
+    "intervals = 'fixed'"
+  )
+  expect_no_warning(
+    out <- check_multipoll("fixed", c("nox", "no2"), warn = FALSE)
+  )
+  expect_equal(out, "free")
+})
+
+test_that("ordinal() formats ordinal numbers", {
+  expect_equal(ordinal(c(1, 2, 3, 4, 21, 101)), c("1st", "2nd", "3rd", "4th", "21st", "101st"))
+  # the "teens" are exceptions
+  expect_equal(ordinal(c(11, 12, 13, 112)), c("11th", "12th", "13th", "112th"))
+  # decimals always use "th"
+  expect_equal(ordinal(c(92.5, 99.9, 1.5)), c("92.5th", "99.9th", "1.5th"))
 })
 
 test_that("resolve_scale() handles fixed, free and numeric scales", {

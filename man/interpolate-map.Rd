@@ -158,7 +158,8 @@ to 200.}
 A numeric vector in the form \code{c(lower, upper)} used to define the colour
 scale. For example, \code{limits = c(0, 100)} would force the plot limits to
 span 0-100. If \code{NULL}, appropriate limits will be selected based on the
-range in \code{data[[pollutant]]}.}
+range in \code{data[[pollutant]]}. Values outside of \code{limits} are given the
+colour of the nearest limit.}
 
 \item{latitude, longitude}{\emph{The decimal latitude(Y)/longitude(X).}
 
@@ -197,17 +198,25 @@ Used for splitting the input data into different groups, passed to the
 
 \emph{default:} \code{NULL} | \emph{scope:} dynamic
 
-Columns to be used as the HTML content for marker popups on dynamic maps.
-Popups may be useful to show information about the individual sites (e.g.,
-site names, codes, types, etc.). If a vector of column names are provided
-they are passed to \code{\link[=buildPopup]{buildPopup()}} using its default values.}
+Columns to be used as the HTML content for site marker popups on dynamic
+maps. Popups may be useful to show information about the individual sites
+(e.g., site names, codes, types, etc.). If a vector of column names are
+provided they are passed to \code{\link[=buildPopup]{buildPopup()}} using its default values.
+
+The \code{pollutant} column shows the site \code{statistic} (i.e., what the markers
+are coloured by), labelled as such (e.g., "NO\if{html}{\out{<sub>}}2\if{html}{\out{</sub>}} (max)"). Any
+other numeric columns have many values at each site, so are averaged and
+labelled "(mean)". Names given to \code{popup} (e.g., \code{c("Site NOx" = "nox")})
+are used instead of these labels.}
 
 \item{label}{\emph{Content for marker hover-over on dynamic maps.}
 
 \emph{default:} \code{NULL} | \emph{scope:} dynamic
 
 Column to be used as the HTML content for hover-over labels. Labels are
-useful for the same reasons as popups, though are typically shorter.}
+useful for the same reasons as popups, though are typically shorter. The
+\code{pollutant} column shows the site \code{statistic}, and other numeric columns
+are averaged at each site.}
 
 \item{provider}{\emph{The basemap(s) to be used.}
 
@@ -241,7 +250,7 @@ uniform colours.}
 
 \item{alpha}{\emph{Transparency value for interpolated surface.}
 
-\emph{default:} \code{1} | \emph{scope:} dynamic & static
+\emph{default:} \code{0.8} | \emph{scope:} dynamic & static
 
 A value between 0 (fully transparent) and 1 (fully opaque).}
 

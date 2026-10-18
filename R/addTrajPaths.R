@@ -127,7 +127,7 @@ addTrajPaths <-
     # labels (skip if the caller has already supplied one - e.g. trajMap()
     # adds a pollutant-specific line to the default label)
     if (!"lab" %in% names(data)) {
-      data <- build_traj_labels(data)
+      data <- build_traj_labels(data, lat = lat, lng = lng)
     }
 
     for (i in seq_along(unique(data$trajid))) {

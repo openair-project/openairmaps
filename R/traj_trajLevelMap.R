@@ -6,6 +6,7 @@
 #' @family interactive trajectory maps
 #' @inheritParams trajMap
 #' @inheritParams addTrajLevel
+#' @inheritDotParams openair::cutData -x -type
 #'
 #' @returns A leaflet object.
 #' @export
@@ -24,7 +25,7 @@ trajLevelMap <-
     data,
     latitude = NULL,
     longitude = NULL,
-    pollutant,
+    pollutant = NULL,
     type = NULL,
     smooth = FALSE,
     statistic = "frequency",
@@ -43,9 +44,15 @@ trajLevelMap <-
     legend.title = NULL,
     legend.title.autotext = TRUE,
     control.collapsed = FALSE,
-    control.position = "topright"
+    control.position = "topright",
+    ...
   ) {
     latlon <- assume_latlon(data, latitude = latitude, longitude = longitude)
+
+    # condition the data here, so `...` can be passed to openair::cutData()
+    if (!is.null(type)) {
+      data <- openair::cutData(data, type = type, ...)
+    }
 
     # check basemap providers are valid
     provider <- check_providers(provider, static = FALSE)
@@ -60,7 +67,7 @@ trajLevelMap <-
       data = data,
       lng = latlon$longitude,
       lat = latlon$latitude,
-      pollutant = if (missing(pollutant)) NULL else pollutant,
+      pollutant = pollutant,
       statistic = statistic,
       percentile = percentile,
       lon.inc = lon.inc,
@@ -82,9 +89,7 @@ trajLevelMap <-
     # control menu - "type" levels (if any) are the base groups
     type_levels <- NULL
     if (!is.null(type)) {
-      # (suppress warnings already given by addTrajLevel())
-      type_levels <- suppressWarnings(openair::cutData(data, type = type))
-      type_levels <- sort(unique(type_levels[[type]]))
+      type_levels <- level_order(data[[type]])
     }
 
     map <- add_layer_control(

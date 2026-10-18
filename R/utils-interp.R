@@ -64,6 +64,15 @@ interp_map_args <- c(
 interp_map_init <- function(data, ..., env = rlang::caller_env()) {
   map <- rlang::env_get_list(env, interp_map_args)
   check_pollutant(map$pollutant, call = env)
+  if (length(map$pollutant) > 1) {
+    cli::cli_abort(
+      c(
+        "x" = "Only a single {.arg pollutant} can be mapped at once.",
+        "i" = "You have provided {length(map$pollutant)}: {.field {map$pollutant}}."
+      ),
+      call = env
+    )
+  }
 
   if (map$static) {
     rlang::check_installed(c("ggspatial", "prettymapr"))
@@ -90,6 +99,14 @@ interp_map_init <- function(data, ..., env = rlang::caller_env()) {
     data <- openair::cutData(data, type = map$type, ...)
   }
   data[[map$split_col]] <- droplevels(as.factor(data[[map$split_col]]))
+
+  missing <- setdiff(c(map$pollutant, map$popup, map$label), names(data))
+  if (length(missing) > 0) {
+    cli::cli_abort(
+      "Can't find the variable{?s} {.field {missing}} in {.arg data}.",
+      call = env
+    )
+  }
 
   map$data_sf <- prepare_sf_data(
     data = data,
@@ -118,10 +135,11 @@ interp_map_init <- function(data, ..., env = rlang::caller_env()) {
 
 #' Add popups and labels to the site averages
 #'
-#' The `popup` and `label` columns must have a single value per site (and
-#' `type` level). If either names the pollutant, the site statistic (i.e., what
-#' the markers are coloured by) is shown, rather than the raw data. Multiple
-#' `popup` columns are combined using `buildPopup()`.
+#' Non-numeric `popup` and `label` columns must have a single value per site
+#' (and `type` level). If either names the pollutant, the site statistic (i.e.,
+#' what the markers are coloured by) is shown, rather than the raw data. Other
+#' numeric columns are averaged. Multiple `popup` columns, or any numeric ones,
+#' are combined using `buildPopup()`.
 #' @returns `map`, with `.popup` and/or `.label` columns added to `data_sf`, and
 #'   `popup`/`label` updated to match.
 #' @noRd
@@ -161,13 +179,24 @@ add_site_popups <- function(map, data, latitude, longitude, call) {
     popup <- "popup"
   }
 
+  # other numeric labels are averaged too
+  label <- map$label
+  if (!is.null(label) && label != pollutant && is.numeric(data[[label]])) {
+    data <- dplyr::mutate(
+      data,
+      .label_mean = signif(mean(.data[[label]], na.rm = TRUE), 3),
+      .by = dplyr::all_of(keys)
+    )
+    label <- ".label_mean"
+  }
+
   popups <-
     dplyr::tibble(
       !!latitude := data[[latitude]],
       !!longitude := data[[longitude]],
       !!map$split_col := data[[map$split_col]],
       .popup = if (!is.null(popup)) data[[popup]],
-      .label = if (!is.null(map$label)) data[[map$label]]
+      .label = if (!is.null(label)) data[[label]]
     ) |>
     dplyr::distinct()
 
@@ -250,6 +279,14 @@ interp_map_draw <- function(
       unlist(lapply(surfaces, \(x) as.vector(x[[pollutant]])))
     )
     map$range <- range(map$limits %||% pretty(c(0, values)))
+
+    # values outside `limits` take the nearest colour (as in openair), rather
+    # than being left uncoloured
+    squish <- \(x) pmin(pmax(x, map$range[[1]]), map$range[[2]])
+    map$data_sf[[pollutant]] <- squish(map$data_sf[[pollutant]])
+    for (group in names(surfaces)) {
+      surfaces[[group]][[pollutant]] <- squish(surfaces[[group]][[pollutant]])
+    }
   }
 
   map$title <- create_legend_title(
@@ -389,6 +426,7 @@ draw_dynamic_interp_map <- function(
         labels = map$levels,
         colors = pal(map$levels),
         title = map$title,
+        opacity = map$alpha,
         position = map$legend.position
       )
     } else {
@@ -397,6 +435,7 @@ draw_dynamic_interp_map <- function(
         pal = pal,
         values = map$range,
         title = map$title,
+        opacity = map$alpha,
         position = map$legend.position
       )
     }

@@ -96,14 +96,14 @@ freqMap <- function(
   # allow no pollutant when statistic = "frequency"
   if (statistic == "frequency") {
     data$dummy <- seq_len(nrow(data))
-    lab <- "frequency"
+    lab <- "Frequency"
     pollutant <- "dummy"
   } else {
     lab <- pollutant
   }
 
   # auto limits
-  breaks <- check_multipoll(breaks, pollutant)
+  breaks <- check_multipoll(breaks, pollutant, arg = "breaks")
 
   # breaks are always calculated on untransformed weights, so override any
   # `trans` given in `...`

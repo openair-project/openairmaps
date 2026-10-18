@@ -80,7 +80,13 @@ percentileMap <- function(
   map <- polar_map_init(data, ...)
 
   # auto limits
-  intervals <- check_multipoll(intervals, pollutant)
+  # ("fixed" is the default, so only warn if it was asked for)
+  intervals <- check_multipoll(
+    intervals,
+    pollutant,
+    arg = "intervals",
+    warn = !missing(intervals)
+  )
 
   theIntervals <- resolve_scale(
     intervals,

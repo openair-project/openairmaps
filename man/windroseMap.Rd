@@ -103,14 +103,20 @@ Used for splitting the input data into different groups, passed to the
 Columns to be used as the HTML content for marker popups on dynamic maps.
 Popups may be useful to show information about the individual sites (e.g.,
 site names, codes, types, etc.). If a vector of column names are provided
-they are passed to \code{\link[=buildPopup]{buildPopup()}} using its default values.}
+they are passed to \code{\link[=buildPopup]{buildPopup()}} using its default values.
+
+Numeric columns (e.g., pollutant concentrations) have many values at each
+marker, so are averaged and labelled as such (e.g., "NO\if{html}{\out{<sub>}}2\if{html}{\out{</sub>}}
+(mean)"). Names given to \code{popup} (e.g., \code{c("Mean NOx" = "nox")}) are used
+instead of these labels.}
 
 \item{label}{\emph{Content for marker hover-over on dynamic maps.}
 
 \emph{default:} \code{NULL} | \emph{scope:} dynamic
 
 Column to be used as the HTML content for hover-over labels. Labels are
-useful for the same reasons as popups, though are typically shorter.}
+useful for the same reasons as popups, though are typically shorter. As
+with \code{popup}, numeric columns are averaged at each marker.}
 
 \item{provider}{\emph{The basemap(s) to be used.}
 

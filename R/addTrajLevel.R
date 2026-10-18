@@ -246,6 +246,7 @@ addTrajLevel <-
         map <- leaflet::addLegend(
           map,
           title = legend.title,
+          opacity = alpha,
           position = legend.position,
           colors = pal(rev(levels(data[[pollutant]]))),
           labels = rev(levels(data[[pollutant]])),
@@ -257,6 +258,7 @@ addTrajLevel <-
         map <- leaflet::addLegend(
           map,
           title = legend.title,
+          opacity = alpha,
           position = legend.position,
           pal = pal,
           values = data[[pollutant]],

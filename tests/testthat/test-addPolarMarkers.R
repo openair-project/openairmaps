@@ -46,6 +46,28 @@ test_that("addPolarMarkers() can override the map's data", {
   expect_null(call[[5]])
 })
 
+test_that("addPolar*Markers() pass on `progress`", {
+  progress <- NULL
+  local_mocked_bindings(
+    create_polar_markers = function(..., progress) {
+      progress <<- progress
+      stop("done")
+    }
+  )
+  for (value in c(TRUE, FALSE)) {
+    expect_error(
+      addPolarMarkers(leaflet::leaflet(one_site), "nox", progress = value),
+      "done"
+    )
+    expect_equal(progress, value)
+    expect_error(
+      addPolarDiffMarkers(leaflet::leaflet(one_site), "nox", progress = value),
+      "done"
+    )
+    expect_equal(progress, value)
+  }
+})
+
 test_that("addPolarDiffMarkers() adds markers to a leaflet map", {
   after <- dplyr::mutate(one_site, nox = .data$nox * 2)
   map <- leaflet::leaflet(one_site) |>

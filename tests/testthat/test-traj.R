@@ -160,6 +160,20 @@ test_that("addTrajPaths() adds lines and points", {
   expect_equal(points[[1]]$args[[5]], "trajs")
 })
 
+test_that("addTrajPaths() popups use `lng` and `lat`", {
+  data <- dplyr::rename(traj, x = "lon", y = "lat")
+  expect_no_warning(
+    map <- leaflet::leaflet() |>
+      addTrajPaths(data = data, lng = "x", lat = "y")
+  )
+  args <- leaflet_calls(map, "addCircleMarkers")[[1]]$args
+  popups <- Filter(\(x) any(grepl("ARRIVAL DATE", x)), args)[[1]]
+  first <- data[traj_id(data) == levels(traj_id(data))[[1]], ]
+  first <- first[first$hour.inc %% 12 == 0, ]
+  expect_match(popup_text(popups), "Latitude: -?[0-9.]+; Longitude: -?[0-9.]+;")
+  expect_match(popup_text(popups[[1]]), paste0("Latitude: ", first$y[[1]], ";"))
+})
+
 test_that("addTrajPaths() supports multiple receptors", {
   map <- leaflet::leaflet() |> addTrajPaths(data = two_receptors)
   expect_length(leaflet_calls(map, "addPolylines"), n_traj * 2)
@@ -274,5 +288,14 @@ test_that("trajLevelMap() makes a map", {
   expect_gt(length(layer_control(map)$base), 1)
 
   map <- quietly(trajLevelMap(traj, pollutant = "nox", statistic = "cwt"))
+  expect_null(layer_control(map))
+  # legends use `alpha`
+  expect_equal(leaflet_legends(map)[[1]]$opacity, 0.5)
+})
+
+test_that("trajLevelMap() passes `...` to openair::cutData()", {
+  map <- quietly(trajLevelMap(traj, type = "season", hemisphere = "southern"))
+  groups <- leaflet_calls(map, "addRectangles")[[1]]$args[[6]]
+  expect_true(all(grepl("autumn", groups)))
   expect_null(layer_control(map))
 })

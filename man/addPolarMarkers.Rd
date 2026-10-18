@@ -24,6 +24,7 @@ addPolarMarkers(
   d.icon = 200,
   d.fig = 3.5,
   alpha = 1,
+  progress = TRUE,
   data = leaflet::getMapData(map),
   ...
 )
@@ -48,6 +49,7 @@ addPolarDiffMarkers(
   d.icon = 200,
   d.fig = 3.5,
   alpha = 1,
+  progress = TRUE,
   ...
 )
 }
@@ -108,6 +110,8 @@ non-circular marker is desired.}
 
 \item{alpha}{The desired opacity of the polar markers. Can also be set via
 \code{options} but is provided here for convenience.}
+
+\item{progress}{Show a progress bar while the markers are created?}
 
 \item{data}{A data frame. The data frame must contain the data to plot your
 choice of openair directional analysis plot, which includes wind speed
