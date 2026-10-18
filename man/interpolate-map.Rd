@@ -188,7 +188,7 @@ Used for splitting the input data into different groups, passed to the
 \code{type} argument of \code{\link[openair:cutData]{openair::cutData()}}. When \code{type} is specified:
 \itemize{
 \item \emph{Dynamic}: The different data splits can be toggled between using a "layer control" menu.
-\item \emph{Static:}: The data splits will each appear in a different panel.
+\item \emph{Static}: The data splits will each appear in a different panel.
 }
 
 \code{type} cannot be used if multiple \code{pollutant} columns have been provided.}
@@ -272,8 +272,8 @@ When \code{TRUE}, a legend will appear on the map identifying the colour scale.}
 
 When \code{legend = TRUE}, where should the legend be placed?
 \itemize{
-\item \emph{Dynamic}: One of "topright", "topright", "bottomleft" or "bottomright". Passed to the \code{position} argument of \code{\link[leaflet:addLegend]{leaflet::addLegend()}}.
-\item \emph{Static:}: One of "top", "right", "bottom" or "left". Passed to the \code{legend.position} argument of \code{\link[ggplot2:theme]{ggplot2::theme()}}.
+\item \emph{Dynamic}: One of "topright", "topleft", "bottomleft" or "bottomright". Passed to the \code{position} argument of \code{\link[leaflet:addLegend]{leaflet::addLegend()}}.
+\item \emph{Static}: One of "top", "right", "bottom" or "left". Passed to the \code{legend.position} argument of \code{\link[ggplot2:theme]{ggplot2::theme()}}.
 }}
 
 \item{legend.title}{\emph{Title of the legend.}

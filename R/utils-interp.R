@@ -586,6 +586,8 @@ create_interp_grid <- function(data_sf, newdata) {
       sf::st_bbox(data_sf) |>
       stars::st_as_stars(crs = 4326)
   } else {
+    # the site data are always in lat/lng, so the grid must be too
+    newdata <- sf::st_transform(newdata, crs = 4326)
     stars_grid <-
       sf::st_bbox(newdata) |>
       stars::st_as_stars(crs = 4326) |>

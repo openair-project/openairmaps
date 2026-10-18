@@ -77,7 +77,7 @@
 #'
 #'  *default:* `"topright"`
 #'
-#'   Where should the legend be placed? One of "topright", "topright",
+#'   Where should the legend be placed? One of "topright", "topleft",
 #'   "bottomleft" or "bottomright". Passed to the `position` argument of
 #'   [leaflet::addLegend()]. `NULL` defaults to "topright".
 #'

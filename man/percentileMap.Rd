@@ -58,7 +58,7 @@ specified and a non-pairwise statistic is supplied, the \code{type} argument
 will no longer be able to be used and:
 \itemize{
 \item \emph{Dynamic}: The pollutants can be toggled between using a "layer control" menu.
-\item \emph{Static:}: The pollutants will each appear in a different panel.
+\item \emph{Static}: The pollutants will each appear in a different panel.
 }
 
 Multiple \code{pollutants} prohibit the use of the \code{type} argument for
@@ -111,7 +111,7 @@ Used for splitting the input data into different groups, passed to the
 \code{type} argument of \code{\link[openair:cutData]{openair::cutData()}}. When \code{type} is specified:
 \itemize{
 \item \emph{Dynamic}: The different data splits can be toggled between using a "layer control" menu.
-\item \emph{Static:}: The data splits will each appear in a different panel.
+\item \emph{Static}: The data splits will each appear in a different panel.
 }
 
 \code{type} cannot be used if multiple \code{pollutant} columns have been provided.}
@@ -180,7 +180,7 @@ theme.}
 
 \item{key.position}{\emph{Legend position for individual marker legends.}
 
-\emph{default:} \code{FALSE} | \emph{scope:} dynamic & static
+\emph{default:} \code{"none"} | \emph{scope:} dynamic & static
 
 When \code{key.position} is not \code{"none"}, a key will be drawn for each
 individual marker. Potentially useful when \code{limits = "free"}, but of
@@ -199,9 +199,8 @@ colour bar. This legend is not drawn if the colour scale has been
 transformed using \code{trans} (e.g., \code{trans = "log10"}), as it would be
 misleading.
 \item \emph{Discrete} colour scales, when all markers are binned into the same
-intervals (e.g., when numeric \code{breaks} are passed to \code{\link[=polarMap]{polarMap()}} via
-\code{...}, or in \code{\link[=windroseMap]{windroseMap()}}), which are shown as a set of labelled
-colours.
+intervals (e.g., when \code{breaks} are passed to \code{\link[=polarMap]{polarMap()}}, or in
+\code{\link[=windroseMap]{windroseMap()}}), which are shown as a set of labelled colours.
 }}
 
 \item{legend.position}{\emph{Position of the shared legend.}
@@ -210,8 +209,8 @@ colours.
 
 When \code{legend = TRUE}, where should the legend be placed?
 \itemize{
-\item \emph{Dynamic}: One of "topright", "topright", "bottomleft" or "bottomright". Passed to the \code{position} argument of \code{\link[leaflet:addLegend]{leaflet::addLegend()}}.
-\item \emph{Static:}: One of "top", "right", "bottom" or "left". Passed to the \code{legend.position} argument of \code{\link[ggplot2:theme]{ggplot2::theme()}}.
+\item \emph{Dynamic}: One of "topright", "topleft", "bottomleft" or "bottomright". Passed to the \code{position} argument of \code{\link[leaflet:addLegend]{leaflet::addLegend()}}.
+\item \emph{Static}: One of "top", "right", "bottom" or "left". Passed to the \code{legend.position} argument of \code{\link[ggplot2:theme]{ggplot2::theme()}}.
 }}
 
 \item{legend.title}{\emph{Title of the legend.}

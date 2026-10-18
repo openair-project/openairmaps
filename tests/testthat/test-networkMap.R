@@ -103,6 +103,28 @@ test_that("networkMap() returns a basemap when there are no sites", {
   expect_error(networkMap("aurn", provider = "foo"), "provider")
 })
 
+test_that("networkMap() popups show when each site was active", {
+  local_fake_meta(function(source, ...) {
+    dplyr::tibble(
+      source = "aurn",
+      code = "A1",
+      site = "Site A",
+      latitude = 51,
+      longitude = -1,
+      variable = c("NO2", "O3", "SO2"),
+      Parameter_name = c("Nitrogen dioxide", "Ozone", "Sulphur dioxide"),
+      start_date = as.POSIXct(c(NA, "2001-01-01", "2005-01-01"), tz = "GMT"),
+      end_date = as.POSIXct(c("2010-01-01", NA, "2008-01-01"), tz = "GMT")
+    )
+  })
+  popup <- leaflet_calls(networkMap(), "addAwesomeMarkers")[[1]]$args[[7]]
+
+  # missing start dates are ignored, but a missing end date means the site is
+  # still active
+  expect_match(popup, "Active from</span><span[^>]*>2001-01-01")
+  expect_match(popup, "Active to</span><span[^>]*>Ongoing")
+})
+
 test_that("networkMap() handles imperial metadata", {
   local_fake_meta(function(source, ...) {
     dplyr::tibble(

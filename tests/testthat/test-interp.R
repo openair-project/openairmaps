@@ -82,6 +82,13 @@ test_that("create_interp_grid() covers the data or newdata", {
   ))
   grid <- create_interp_grid(data_sf, sf::st_sf(geometry = poly))
   expect_equal(unname(sf::st_bbox(grid)[c("xmin", "ymax")]), c(-2, 53))
+
+  # newdata in another CRS is transformed to match the data
+  grid <- create_interp_grid(
+    data_sf,
+    sf::st_transform(sf::st_sf(geometry = poly), 27700)
+  )
+  expect_equal(sf::st_crs(grid), sf::st_crs(4326))
 })
 
 test_that("voronoiMap() makes dynamic maps", {

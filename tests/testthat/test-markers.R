@@ -252,6 +252,51 @@ test_that("create_static_map() applies alpha to markers", {
   }
 })
 
+test_that("create_static_map() leaves markers alone when alpha = 1", {
+  skip_if_not_installed("ggspatial")
+  skip_if_not_installed("png")
+  plots_df <- fake_markers()
+  ok <- !vapply(plots_df$plot, is.null, logical(1))
+
+  url <- plots_df$url[ok][[1]]
+  png::writePNG(array(0.5, c(4, 4, 3)), url)
+
+  create_static_map(
+    plots_df,
+    latitude = "lat",
+    longitude = "lon",
+    crs = 4326,
+    provider = "osm",
+    split_col = "grp",
+    pollutant = "nox",
+    d.icon = 50,
+    facet = NULL,
+    facet.nrow = NULL,
+    api_key = NULL,
+    alpha = 1
+  )
+  expect_equal(dim(png::readPNG(url))[3], 3)
+})
+
+test_that("set_png_alpha() handles every type of PNG", {
+  grey <- matrix(0.5, 4, 4)
+  grey_alpha <- array(c(rep(0.5, 16), rep(0.5, 16)), c(4, 4, 2))
+  rgb <- array(0.5, c(4, 4, 3))
+  rgba <- array(c(rep(0.5, 48), rep(0.5, 16)), c(4, 4, 4))
+
+  # images without an alpha channel are given one
+  expect_equal(dim(set_png_alpha(grey, 0.4)), c(4, 4, 2))
+  expect_equal(dim(set_png_alpha(rgb, 0.4)), c(4, 4, 4))
+  expect_equal(unique(as.vector(set_png_alpha(grey, 0.4)[,, 2])), 0.4)
+  expect_equal(unique(as.vector(set_png_alpha(rgb, 0.4)[,, 4])), 0.4)
+  expect_equal(set_png_alpha(rgb, 0.4)[,, 1:3], rgb)
+
+  # existing alpha channels are multiplied
+  expect_equal(unique(as.vector(set_png_alpha(grey_alpha, 0.4)[,, 2])), 0.2)
+  expect_equal(unique(as.vector(set_png_alpha(rgba, 0.4)[,, 4])), 0.2)
+  expect_equal(set_png_alpha(rgba, 0.4)[,, 1:3], rgba[,, 1:3])
+})
+
 test_that("resolve_shared_breaks() parses openair's intervals", {
   fake_fun <- function(mydata, type, breaks, ...) {
     expect_equal(type, ".marker")

@@ -20,6 +20,15 @@ check_providers <- function(provider, static) {
 
   if (static) {
     provider <- provider %||% "osm"
+    if (length(provider) > 1) {
+      cli::cli_abort(
+        c(
+          "x" = "Static maps can only use a single {.arg provider}.",
+          "i" = "You have provided {length(provider)}: {.val {provider}}."
+        ),
+        call = NULL
+      )
+    }
     if (provider %in% names(providers_dict)) {
       provider <- providers_dict[provider]
     }
@@ -736,15 +745,9 @@ make_leaflet_map <-
       textfun <- identity
     }
 
-    data <- sf::st_as_sf(data, coords = c(longitude, latitude), crs = crs) |>
-      sf::st_transform(crs = 4326)
-
-    # pull the reprojected (lng/lat) coordinates back out as plain columns,
-    # since attach_marker_icons() expects explicit lat/lng columns rather
-    # than relying on sf geometry
-    coords <- sf::st_coordinates(data)
-    data[[longitude]] <- coords[, "X"]
-    data[[latitude]] <- coords[, "Y"]
+    # attach_marker_icons() expects explicit lat/lng columns rather than
+    # relying on sf geometry
+    data <- as_lnglat(data, latitude, longitude, crs)
 
     # create map
     map <- leaflet::leaflet(data) |>
@@ -775,6 +778,21 @@ make_leaflet_map <-
 
     return(map)
   }
+
+#' Reproject latitude/longitude columns to EPSG:4326
+#'
+#' `latitude` and `longitude` are overwritten with their EPSG:4326
+#' coordinates, so data in any `crs` can be placed on a lat/lng map.
+#' @noRd
+as_lnglat <- function(data, latitude, longitude, crs) {
+  coords <-
+    sf::st_as_sf(data, coords = c(longitude, latitude), crs = crs) |>
+    sf::st_transform(crs = 4326) |>
+    sf::st_coordinates()
+  data[[longitude]] <- coords[, "X"]
+  data[[latitude]] <- coords[, "Y"]
+  data
+}
 
 #' Name a vector of leaflet providers
 #'
@@ -947,20 +965,11 @@ create_static_map <-
       ) |>
       sf::st_transform(crs = 4326)
 
-    # add alpha channel, if requested
-    for (x in plots_sf$url) {
-      img <- png::readPNG(x)
-      if (dim(img)[3] == 3) {
-        # RGB image, add alpha channel
-        img_alpha <- array(dim = c(dim(img)[1], dim(img)[2], 4))
-        img_alpha[,, 1:3] <- img
-        img_alpha[,, 4] <- alpha
-      } else if (dim(img)[3] == 4) {
-        # Already has alpha, multiply it
-        img_alpha <- img
-        img_alpha[,, 4] <- img[,, 4] * alpha
+    # apply transparency, if requested
+    if (alpha < 1) {
+      for (x in plots_sf$url) {
+        png::writePNG(set_png_alpha(png::readPNG(x), alpha), x)
       }
-      png::writePNG(img_alpha, x)
     }
 
     # create link to image
@@ -1009,6 +1018,32 @@ create_static_map <-
 
     return(plt)
   }
+
+#' Multiply the opacity of an image by `alpha`
+#'
+#' @param img An image array, as returned by [png::readPNG()]: greyscale
+#'   (a matrix), greyscale + alpha, RGB or RGBA. Any image without an alpha
+#'   channel is given one.
+#' @returns An image array with an alpha channel as its last channel.
+#' @noRd
+set_png_alpha <- function(img, alpha) {
+  # greyscale images are matrices, rather than arrays with one channel
+  if (length(dim(img)) == 2) {
+    img <- array(img, dim = c(dim(img), 1))
+  }
+
+  # greyscale/RGB images have no alpha channel, so add an opaque one
+  channels <- dim(img)[3]
+  if (channels %in% c(1, 3)) {
+    opaque <- array(1, dim = c(dim(img)[1:2], channels + 1))
+    opaque[,, seq_len(channels)] <- img
+    img <- opaque
+  }
+
+  n <- dim(img)[3]
+  img[,, n] <- img[,, n] * alpha
+  img
+}
 
 #' a combination of geom_sf and geom_richtext
 #'
@@ -1173,8 +1208,8 @@ rose_intervals <- function(data) {
 #' @param spec A legend specification, from `legend_continuous()`,
 #'   `legend_discrete()` or `legend_from_markers()`. If `NULL`, no legend is
 #'   drawn.
-#' @param plots_df,latitude,longitude Only needed for static maps, which need
-#'   some (invisible) data to attach a legend to.
+#' @param plots_df,latitude,longitude,crs Only needed for static maps, which
+#'   need some (invisible) data to attach a legend to.
 #' @noRd
 add_polar_legend <- function(
   map,
@@ -1185,7 +1220,8 @@ add_polar_legend <- function(
   alpha = 1,
   plots_df = NULL,
   latitude = NULL,
-  longitude = NULL
+  longitude = NULL,
+  crs = 4326
 ) {
   if (is.null(spec)) {
     return(map)
@@ -1222,8 +1258,10 @@ add_polar_legend <- function(
   }
 
   # static maps need a layer for the legend to belong to - use invisible points
-  # at the marker locations
-  points <- dplyr::distinct(plots_df, .data[[longitude]], .data[[latitude]])
+  # at the marker locations (reprojected, like the markers themselves)
+  points <-
+    dplyr::distinct(plots_df, .data[[longitude]], .data[[latitude]]) |>
+    as_lnglat(latitude, longitude, crs)
 
   if (spec$type == "continuous") {
     return(

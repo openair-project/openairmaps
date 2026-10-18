@@ -325,7 +325,8 @@ polar_map_draw <- function(
       alpha = map$alpha,
       plots_df = plots_df,
       latitude = map$latitude,
-      longitude = map$longitude
+      longitude = map$longitude,
+      crs = map$crs
     )
   }
 

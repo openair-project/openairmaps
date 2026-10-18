@@ -91,7 +91,7 @@ own using a named vector (e.g., \code{c("Default" = "OpenStreetMap", "Satellite"
 
 \emph{default:} \code{"topright"}
 
-Where should the legend be placed? One of "topright", "topright",
+Where should the legend be placed? One of "topright", "topleft",
 "bottomleft" or "bottomright". Passed to the \code{position} argument of
 \code{\link[leaflet:addLegend]{leaflet::addLegend()}}. \code{NULL} defaults to "topright".}
 

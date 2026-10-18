@@ -488,11 +488,13 @@ summarise_network_popup <- function(meta, control = NULL) {
         valid <- .data$var_date[!is.na(.data$var_date)]
         if (length(valid) > 0) paste(valid, collapse = "") else NA_character_
       },
-      overall_start = min(.data$start_date),
-      overall_end = {
-        non_missing <- .data$end_date[!is.na(.data$end_date)]
-        if (length(non_missing) == 0) as.POSIXct(NA) else max(non_missing)
+      overall_start = {
+        start <- .data$start_date
+        if (all(is.na(start))) start[1] else min(start, na.rm = TRUE)
       },
+      # a missing end date means a variable is still measured, so the site is
+      # ongoing (`max()` returns `NA` if any end date is missing)
+      overall_end = max(.data$end_date),
       .by = dplyr::any_of(site_cols)
     )
 

@@ -105,11 +105,17 @@ freqMap <- function(
   # auto limits
   breaks <- check_multipoll(breaks, pollutant)
 
+  # breaks are always calculated on untransformed weights, so override any
+  # `trans` given in `...`
+  fixed_args <- map$dots
+  fixed_args$trans <- FALSE
+
   theBreaks <- resolve_scale(
     breaks,
     "breaks",
     fixed = pretty(
-      fixed_scale_data(
+      rlang::exec(
+        fixed_scale_data,
         openair::polarFreq,
         data,
         pollutant = pollutant,
@@ -117,8 +123,7 @@ freqMap <- function(
         longitude = map$longitude,
         type = map$type,
         statistic = statistic,
-        trans = FALSE,
-        ...
+        !!!fixed_args
       )$weights,
       n = 10
     )

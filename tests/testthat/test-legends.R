@@ -130,3 +130,23 @@ test_that("add_polar_legend() adds ggplot2 legends", {
   expect_equal(nrow(out$layers[[1]]$data), 4)
   expect_equal(out$theme$legend.position, "bottom")
 })
+
+test_that("add_polar_legend() reprojects static legend data", {
+  # two points in the British National Grid
+  plots_df <- data.frame(y = c(182039, 182015), x = c(530119, 528126))
+
+  out <- add_polar_legend(
+    ggplot2::ggplot(),
+    legend_continuous(c(0, 10), "turbo"),
+    static = TRUE,
+    title = "NOx",
+    position = "right",
+    plots_df = plots_df,
+    latitude = "y",
+    longitude = "x",
+    crs = 27700
+  )
+  points <- out$layers[[1]]$data
+  expect_equal(points$x, c(-0.126, -0.155), tolerance = 0.01)
+  expect_equal(points$y, c(51.52, 51.52), tolerance = 0.01)
+})

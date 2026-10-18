@@ -32,7 +32,7 @@
 
 * Shared legends in the `polarMap()` family have been standardised, and now reflect the colour scale `{openair}` actually used to draw the markers:
 
-    * Markers with a *discrete* colour scale now get a shared legend of labelled colours, as long as all markers are binned into the same intervals. `limits` (now supported by `openair::polarFreq()`) can also be passed to `freqMap()` via `...` to get a shared continuous legend.
+    * Markers with a *discrete* colour scale now get a shared legend of labelled colours, as long as all markers are binned into the same intervals. `limits` (now supported by `openair::polarFreq()`) can also be passed to `freqMap()` via `...` to get a shared continuous legend. As `openair::polarFreq()` uses `trans = "sqrt"` by default, `trans = FALSE` must also be passed for this legend to be drawn.
     
     * Legend labels and colours now exactly match those used by `{openair}`, and are the same for dynamic and static maps (e.g., `"0 to 50"` rather than `"0 – 50"` in dynamic `freqMap()`, `pollroseMap()` and `windroseMap()` legends).
     
@@ -56,7 +56,9 @@
 
 * Markers which `{openair}` fails to draw (e.g., due to insufficient data at a site) are now consistently skipped by the `polarMap()` family. Previously, dynamic maps would show a broken image in their place (and list it in the layer control menu), and static maps would error.
 
-* `percentileMap(intervals = "fixed")` now passes `...` to `openair::percentileRose()` when calculating the shared intervals, so they reflect options such as `percentile`.
+* `percentileMap(intervals = "fixed")` now passes `percentile` and `...` to `openair::percentileRose()` when calculating the shared intervals, so they cover all of the plotted percentiles.
+
+* `freqMap(breaks = "fixed")` no longer errors when `trans` is passed via `...`.
 
 * `polarMap(limits = "fixed")` now uses the same `upper` as the markers when calculating the shared limits, so the limits better cover the markers' colour scales.
 

@@ -93,6 +93,7 @@ percentileMap <- function(
         latitude = map$latitude,
         longitude = map$longitude,
         type = map$type,
+        percentile = percentile,
         ...
       )[[pollutant]]
     )

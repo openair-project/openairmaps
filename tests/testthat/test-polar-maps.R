@@ -192,6 +192,18 @@ test_that("freqMap() makes maps", {
   expect_error(quietly(freqMap(polar, "nox", breaks = "foo")), "breaks")
 })
 
+test_that("freqMap() allows trans with fixed breaks", {
+  map <- quietly(freqMap(
+    polar,
+    "nox",
+    breaks = "fixed",
+    trans = "sqrt",
+    d.fig = fig,
+    progress = FALSE
+  ))
+  expect_s3_class(map, "leaflet")
+})
+
 test_that("percentileMap() makes maps", {
   map <- quietly(percentileMap(
     one_site,
@@ -224,6 +236,25 @@ test_that("percentileMap() makes maps", {
     quietly(percentileMap(polar, "nox", intervals = "foo")),
     "intervals"
   )
+})
+
+test_that("percentileMap() uses percentile for fixed intervals", {
+  percentile <- NULL
+  real_fixed_scale_data <- fixed_scale_data
+  local_mocked_bindings(fixed_scale_data = function(...) {
+    percentile <<- list(...)$percentile
+    real_fixed_scale_data(...)
+  })
+
+  quietly(percentileMap(
+    one_site,
+    "nox",
+    percentile = c(50, 99),
+    intervals = "fixed",
+    d.fig = fig,
+    progress = FALSE
+  ))
+  expect_equal(percentile, c(50, 99))
 })
 
 test_that("percentile_labels() matches openair's bands", {

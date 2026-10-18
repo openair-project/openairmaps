@@ -20,6 +20,10 @@ test_that("check_providers() validates static providers", {
   )
   expect_equal(unname(check_providers("hotstyle", static = TRUE)), "hotstyle")
   expect_error(check_providers("not_a_provider", static = TRUE))
+  expect_error(
+    check_providers(c("osm", "cartodark"), static = TRUE),
+    "single"
+  )
 })
 
 test_that("check_legendposition() validates positions", {
