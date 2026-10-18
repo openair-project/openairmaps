@@ -50,6 +50,8 @@
 
 * `buildPopup()` popups have also been restyled to match those in `networkMap()`, with each column shown as a grey label alongside its value. This also applies to popups built automatically when several `popup` columns are passed to the `polarMap()` family, `pointMap()`, `krigingMap()` and `voronoiMap()`.
 
+* `buildPopup()` gains the `name` argument, which sets the name of the new popup column (`"popup"` by default). `buildPopup()` now errors if this column already exists in `data`, rather than returning duplicated `popup.x` and `popup.y` columns.
+
 * `networkMap()` can now take any option passed to `openair::importMeta()`. This behaviour supersedes all of the functionality within `searchNetwork()`, which has been removed. It also no longer overwrites the default `year` argument, and so behaves identically to `openair::importMeta()`.
 
 * `trajMap()`, `trajLevelMap()`, `krigingMap()` and `voronoiMap()` now accept any number of basemaps through `provider`, which can be named to customise their labels in the layer control menu (e.g., `c("Default" = "OpenStreetMap", "Satellite" = "Esri.WorldImagery")`), in line with `polarMap()` and `networkMap()`.
@@ -65,6 +67,8 @@
 * The `polarMap()` family no longer errors when a single `pollutant` is passed to `popup` or `label` (e.g., `polarMap(polar_data, "no2", popup = "no2")`). Pollutants in popups and labels now show their mean at each marker, labelled as such (e.g., "NO<sub>2</sub> (mean)"), whether one or several `popup` columns are given. Other numeric columns are averaged and labelled the same way, so a single non-pollutant numeric `popup` or `label` (e.g., `polarMap(polar_data, "nox", popup = "no2")`) no longer errors either.
 
 * `diffMap()` no longer errors when multiple columns are passed to `popup`.
+
+* Columns of `data` named "popup" or "label" can now be used in the `popup` and `label` arguments of the `polarMap()` family, `pointMap()`, `krigingMap()` and `voronoiMap()`. Previously, they could be overwritten by the package's own popup and label columns (e.g., `polarMap(popup = "label")` showed "NA" in every popup, and `pointMap(popup = c("popup", "site"))` showed no popups at all).
 
 * `addPolarMarkers()` now drops rows where the chosen `pollutant` is missing, rather than where `no2` is missing. Previously, it would error if `data` did not contain a `no2` column.
 

@@ -146,6 +146,13 @@ quickTextHTML <- function(text) {
 #'   The default presents the date as a range. Other statistics of interest
 #'   could be the start or end of the dates.
 #'
+#' @param name *The name for the new column.*
+#'
+#'  *default:* `"popup"`
+#'
+#'   A character string for the name for the new column to be appended to
+#'   `data`.
+#'
 #' @param ... **Not currently used.**
 #'
 #' @returns a [tibble][dplyr::tibble()]
@@ -182,8 +189,13 @@ buildPopup <-
         collapse = " to "
       )
     },
+    name = "popup",
     ...
   ) {
+    if (name %in% names(data)) {
+      cli::cli_abort("'{name}' is already a column in {.arg data}.")
+    }
+
     # assume latitude/longitude
     latlon <- assume_latlon(
       data = data,
@@ -233,11 +245,11 @@ buildPopup <-
         values,
         names(values)
       )
-      summary$popup <- popup_container(do.call(paste0, unname(rows)))
+      summary[[name]] <- popup_container(do.call(paste0, unname(rows)))
 
       dplyr::left_join(
         data,
-        summary[c(latitude, longitude, "popup")],
+        summary[c(latitude, longitude, name)],
         by = c(latitude, longitude)
       )
     }

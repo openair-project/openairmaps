@@ -77,13 +77,19 @@ test_that("quick_popup() combines columns into a popup", {
     default = "all data"
   )
   out <- quick_popup(df, c("site_name", "nox"), "lat", "lon", NULL)
-  expect_true("popup" %in% names(out))
+  expect_true(".popup" %in% names(out))
   expect_equal(
-    popup_text(out$popup[[1]]),
+    popup_text(out$.popup[[1]]),
     "Site Name: a; NO<sub>x</sub>: 2"
   )
   expect_equal(
-    popup_text(out$popup[[3]]),
+    popup_text(out$.popup[[3]]),
     "Site Name: b; NO<sub>x</sub>: 5"
   )
+
+  # a user's "popup" column can be shown, without being overwritten
+  df$popup <- "hello"
+  out <- quick_popup(df, c("popup", "site_name"), "lat", "lon", NULL)
+  expect_equal(unique(out$popup), "hello")
+  expect_equal(popup_text(out$.popup[[1]]), "Popup: hello; Site Name: a")
 })

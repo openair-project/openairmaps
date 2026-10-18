@@ -10,8 +10,15 @@ test_that("create_polar_markers() makes one marker per location and group", {
   expect_false(any(file.exists(out$url[failed])))
 
   # default popups/labels
-  expect_equal(unique(out$popup), "NA")
-  expect_equal(unique(out$label), "NA")
+  expect_equal(unique(out$.popup), "NA")
+  expect_equal(unique(out$.label), "NA")
+
+  # ...which don't overwrite the user's columns
+  data <- fake_marker_data()
+  data$label <- paste("Label", data$site)
+  out <- fake_markers(data, popup = "label")
+  expect_setequal(out$label, paste("Label", c("A", "B", "C")))
+  expect_equal(unique(out$.label), "NA")
 })
 
 test_that("create_polar_markers() drops missing data", {
@@ -61,8 +68,8 @@ test_that("attach_marker_icons() only adds markers that were plotted", {
     longitude = "lon",
     d.icon = c(50, 60),
     group_col = "grp_col",
-    popup = "popup",
-    label = "label",
+    popup = ".popup",
+    label = ".label",
     alpha = 0.5
   )
   call <- leaflet_calls(map, "addMarkers")[[1]]$args

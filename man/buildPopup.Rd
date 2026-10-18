@@ -20,6 +20,7 @@ buildPopup(
      paste(lubridate::floor_date(range(x, na.rm = TRUE),
     "day"), collapse = " to ")
  },
+  name = "popup",
   ...
 )
 }
@@ -80,6 +81,13 @@ deviation, and so on.}
 
 The default presents the date as a range. Other statistics of interest
 could be the start or end of the dates.}
+
+\item{name}{\emph{The name for the new column.}
+
+\emph{default:} \code{"popup"}
+
+A character string for the name for the new column to be appended to
+\code{data}.}
 
 \item{...}{\strong{Not currently used.}}
 }

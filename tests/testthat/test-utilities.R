@@ -43,6 +43,15 @@ test_that("buildPopup() summarises columns by location", {
   # unnamed columns
   out <- quietly(buildPopup(popup_data, "site"))
   expect_equal(popup_text(out$popup[[3]]), "site: B")
+
+  # the new column can be renamed, and never overwrites an existing one
+  out <- quietly(buildPopup(popup_data, "site", name = "info"))
+  expect_equal(popup_text(out$info[[3]]), "site: B")
+  expect_false("popup" %in% names(out))
+  expect_error(
+    quietly(buildPopup(out, "nox", name = "info")),
+    "already a column"
+  )
 })
 
 test_that("buildPopup() supports all column types and custom summaries", {

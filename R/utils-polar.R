@@ -145,7 +145,7 @@ polar_map_prep <- function(
         longitude = map$longitude,
         control = type
       )
-    map$popup <- "popup"
+    map$popup <- ".popup"
   }
 
   if (any(is_numeric(map$label))) {

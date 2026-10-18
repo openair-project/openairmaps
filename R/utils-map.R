@@ -353,8 +353,17 @@ getBreaks <- function(breaks, ws.int, vec, polrose) {
 #' function to quickly combine multiple popups together
 #' @param data,popup,latitude,longitude,control inherited from parent. Any
 #'   names of `popup` are used as-is; otherwise, they are tidied column names.
+#' @param name The name of the new popup column - `".popup"` by default, so it
+#'   can't clash with a user's column (e.g., one called `"popup"`).
 #' @noRd
-quick_popup <- function(data, popup, latitude, longitude, control) {
+quick_popup <- function(
+  data,
+  popup,
+  latitude,
+  longitude,
+  control,
+  name = ".popup"
+) {
   nice_popup <-
     stringr::str_replace_all(popup, "\\_|\\.|\\-", " ") |>
     stringr::str_to_title()
@@ -369,7 +378,8 @@ quick_popup <- function(data, popup, latitude, longitude, control) {
     columns = names,
     latitude = latitude,
     longitude = longitude,
-    type = control
+    type = control,
+    name = name
   )
 }
 
@@ -447,14 +457,15 @@ create_polar_markers <-
     after = NULL,
     progress = TRUE
   ) {
-    # sort out popups/labels
+    # sort out popups/labels - placeholders are dot-prefixed, so they can't
+    # overwrite a user's column (e.g., `popup = "label"`)
     if (is.null(popup)) {
-      data$popup <- "NA"
-      popup <- "popup"
+      data$.popup <- "NA"
+      popup <- ".popup"
     }
     if (is.null(label)) {
-      data$label <- "NA"
-      label <- "label"
+      data$.label <- "NA"
+      label <- ".label"
     }
 
     # drop missing data
