@@ -122,6 +122,14 @@
   [`colourOpts()`](https://openair-project.github.io/openair/reference/colourOpts.html)
   from [openair](https://openair-project.github.io/openair/).
 
+- [`addPolarMarkers()`](https://openair-project.github.io/openairmaps/reference/addPolarMarkers.md)
+  and
+  [`addPolarDiffMarkers()`](https://openair-project.github.io/openairmaps/reference/addPolarMarkers.md)
+  gain the `progress` argument, in line with the
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  family, so the progress bar shown while the markers are created can be
+  turned off.
+
 - Added
   [`pointMap()`](https://openair-project.github.io/openairmaps/reference/pointMap.md),
   which summarises pollutant data at each site (e.g., the mean
@@ -135,7 +143,9 @@
   `popup` and `label` arguments, which work like those in
   [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
   (e.g., to show site names or types when clicking on or hovering over a
-  site marker).
+  site marker). If `popup` or `label` includes the `pollutant`, the site
+  `statistic` is shown, labelled as such (e.g., “NO₂ (max)”). Any other
+  numeric columns are averaged at each site.
 
 - [`pointMap()`](https://openair-project.github.io/openairmaps/reference/pointMap.md),
   [`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
@@ -179,6 +189,14 @@
   is now much faster when `layerId` is used, as the points along each
   trajectory are added to the map in a single call rather than one at a
   time. The layer IDs themselves are unchanged.
+
+- [`trajLevelMap()`](https://openair-project.github.io/openairmaps/reference/trajLevelMap.md)
+  now passes `...` to
+  [`openair::cutData()`](https://openair-project.github.io/openair/reference/cutData.html)
+  (e.g., `type = "season", hemisphere = "southern"`), in line with
+  [`trajMap()`](https://openair-project.github.io/openairmaps/reference/trajMap.md).
+  Its `pollutant` argument also now defaults to `NULL`, in line with the
+  rest of the package.
 
 - The popups in
   [`trajMap()`](https://openair-project.github.io/openairmaps/reference/trajMap.md),
@@ -284,6 +302,27 @@
 - `freqMap(breaks = "fixed")` no longer errors when `trans` is passed
   via `...`.
 
+- [`percentileMap()`](https://openair-project.github.io/openairmaps/reference/percentileMap.md)
+  no longer warns that “fixed” `intervals` only work with a single
+  pollutant when several pollutants are given, unless
+  `intervals = "fixed"` was explicitly set. As before, each marker then
+  uses its own intervals. This warning (also given by
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md),
+  [`annulusMap()`](https://openair-project.github.io/openairmaps/reference/annulusMap.md)
+  and
+  [`freqMap()`](https://openair-project.github.io/openairmaps/reference/freqMap.md))
+  now names the relevant argument.
+
+- The legend title of `freqMap(statistic = "frequency")` is now
+  capitalised (“Frequency”), in line with the other
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  family legends.
+
+- The warning given by
+  [`diffMap()`](https://openair-project.github.io/openairmaps/reference/diffMap.md)
+  when `before` and `after` don’t match now refers to `type`, rather
+  than the removed `control` argument.
+
 - [`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
   and
   [`voronoiMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
@@ -320,6 +359,34 @@
   treat the standard deviation of sites with a single measurement as
   missing, rather than using the measurement itself.
 
+- [`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  and
+  [`voronoiMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  now give values outside `limits` the colour of the nearest limit, as
+  in [openair](https://openair-project.github.io/openair/). Previously,
+  they were left uncoloured. This also applies to the new
+  [`pointMap()`](https://openair-project.github.io/openairmaps/reference/pointMap.md).
+
+- [`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  and
+  [`voronoiMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  now give an informative error if more than one `pollutant` is given,
+  or if the `pollutant`, `popup` or `label` columns can’t be found in
+  `data`. Previously, multiple pollutants gave a cryptic error, and a
+  missing `popup` or `label` column was silently ignored.
+
+- Dynamic
+  [`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  and
+  [`voronoiMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  legends now use `alpha` for their opacity, rather than always being
+  semi-transparent. This also applies to
+  [`trajMap()`](https://openair-project.github.io/openairmaps/reference/trajMap.md)
+  and
+  [`addTrajLevel()`](https://openair-project.github.io/openairmaps/reference/addTrajLevel.md)
+  (and therefore
+  [`trajLevelMap()`](https://openair-project.github.io/openairmaps/reference/trajLevelMap.md)).
+
 - [`trajMap()`](https://openair-project.github.io/openairmaps/reference/trajMap.md)
   and
   [`addTrajPaths()`](https://openair-project.github.io/openairmaps/reference/addTrajPaths.md)
@@ -339,12 +406,23 @@
   [`openair::trajLevel()`](https://openair-project.github.io/openair/reference/trajLevel.html)
   would error unless the columns were named “lon” and “lat”.
 
+- [`addTrajPaths()`](https://openair-project.github.io/openairmaps/reference/addTrajPaths.md)
+  popups now respect `lng` and `lat`. Previously, the latitude and
+  longitude rows were blank unless the columns were named “lon” and
+  “lat”.
+
 - [`trajLevelMap()`](https://openair-project.github.io/openairmaps/reference/trajLevelMap.md)
   and
   [`addTrajLevel()`](https://openair-project.github.io/openairmaps/reference/addTrajLevel.md)
   now use the correct ordinal suffix in their legend titles and popups
   when `statistic = "difference"` (e.g., `"11th"` rather than `"11st"`,
-  and `"1st"` rather than `"1th"`).
+  and `"1st"` rather than `"1th"`). Decimal percentiles now always use
+  “th” (e.g., `"92.5th"` rather than `"92.5nd"`), including in
+  [`pointMap()`](https://openair-project.github.io/openairmaps/reference/pointMap.md),
+  [`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  and
+  [`voronoiMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  popups.
 
 - [`trajMap()`](https://openair-project.github.io/openairmaps/reference/trajMap.md),
   [`trajLevelMap()`](https://openair-project.github.io/openairmaps/reference/trajLevelMap.md)

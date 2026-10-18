@@ -198,14 +198,19 @@ plotting on the map.</p></dd>
 <p>Columns to be used as the HTML content for marker popups on dynamic maps.
 Popups may be useful to show information about the individual sites (e.g.,
 site names, codes, types, etc.). If a vector of column names are provided
-they are passed to <code><a href="buildPopup.html">buildPopup()</a></code> using its default values.</p></dd>
+they are passed to <code><a href="buildPopup.html">buildPopup()</a></code> using its default values.</p>
+<p>Numeric columns (e.g., pollutant concentrations) have many values at each
+marker, so are averaged and labelled as such (e.g., "NO<sub>2</sub>
+(mean)"). Names given to <code>popup</code> (e.g., <code>c("Mean NOx" = "nox")</code>) are used
+instead of these labels.</p></dd>
 
 
 <dt id="arg-label">label<a class="anchor" aria-label="anchor" href="#arg-label"></a></dt>
 <dd><p><em>Content for marker hover-over on dynamic maps.</em></p>
 <p><em>default:</em> <code>NULL</code> | <em>scope:</em> dynamic</p>
 <p>Column to be used as the HTML content for hover-over labels. Labels are
-useful for the same reasons as popups, though are typically shorter.</p></dd>
+useful for the same reasons as popups, though are typically shorter. As
+with <code>popup</code>, numeric columns are averaged at each marker.</p></dd>
 
 
 <dt id="arg-provider">provider<a class="anchor" aria-label="anchor" href="#arg-provider"></a></dt>

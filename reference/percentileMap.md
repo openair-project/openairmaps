@@ -163,6 +163,11 @@ percentileMap(
   [`buildPopup()`](https://openair-project.github.io/openairmaps/reference/buildPopup.md)
   using its default values.
 
+  Numeric columns (e.g., pollutant concentrations) have many values at
+  each marker, so are averaged and labelled as such (e.g., "NO₂
+  (mean)"). Names given to `popup` (e.g., `c("Mean NOx" = "nox")`) are
+  used instead of these labels.
+
 - label:
 
   *Content for marker hover-over on dynamic maps.*
@@ -171,7 +176,7 @@ percentileMap(
 
   Column to be used as the HTML content for hover-over labels. Labels
   are useful for the same reasons as popups, though are typically
-  shorter.
+  shorter. As with `popup`, numeric columns are averaged at each marker.
 
 - provider:
 

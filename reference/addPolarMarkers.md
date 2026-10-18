@@ -31,6 +31,7 @@ addPolarMarkers(
   d.icon = 200,
   d.fig = 3.5,
   alpha = 1,
+  progress = TRUE,
   data = leaflet::getMapData(map),
   ...
 )
@@ -55,6 +56,7 @@ addPolarDiffMarkers(
   d.icon = 200,
   d.fig = 3.5,
   alpha = 1,
+  progress = TRUE,
   ...
 )
 ```
@@ -169,6 +171,10 @@ addPolarDiffMarkers(
 
   The desired opacity of the polar markers. Can also be set via
   `options` but is provided here for convenience.
+
+- progress:
+
+  Show a progress bar while the markers are created?
 
 - data:
 

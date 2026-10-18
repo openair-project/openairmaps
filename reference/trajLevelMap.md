@@ -12,7 +12,7 @@ trajLevelMap(
   data,
   latitude = NULL,
   longitude = NULL,
-  pollutant,
+  pollutant = NULL,
   type = NULL,
   smooth = FALSE,
   statistic = "frequency",
@@ -31,7 +31,8 @@ trajLevelMap(
   legend.title = NULL,
   legend.title.autotext = TRUE,
   control.collapsed = FALSE,
-  control.position = "topright"
+  control.position = "topright",
+  ...
 )
 ```
 
@@ -241,6 +242,98 @@ trajLevelMap(
   "topleft", "topright", "bottomleft" or "bottomright". Passed to the
   `position` argument of
   [`leaflet::addLayersControl()`](https://rstudio.github.io/leaflet/reference/addLayersControl.html).
+
+- ...:
+
+  Arguments passed on to
+  [`openair::cutData`](https://openair-project.github.io/openair/reference/cutData.html)
+
+  `names`
+
+  :   By default, the columns created by
+      [`cutData()`](https://openair-project.github.io/openair/reference/cutData.html)
+      are named after their `type` option. Specifying `names` defines
+      other names for the columns, which map onto the `type` options in
+      the same order they are given. The length of `names` should
+      therefore be equal to the length of `type`.
+
+  `suffix`
+
+  :   If `name` is not specified, `suffix` will be appended to any added
+      columns that would otherwise overwrite existing columns. For
+      example, `cutData(mydata, "nox", suffix = "_cuts")` would append a
+      `nox_cuts` column rather than overwriting `nox`.
+
+  `hemisphere`
+
+  :   Can be `"northern"` or `"southern"`, used to split data into
+      seasons.
+
+  `n.levels`
+
+  :   Number of quantiles to split numeric data into.
+
+  `wd.res`
+
+  :   The number of wind direction bins; one of `4` (N/E/S/W), `8`
+      (N/NE/E/SE/etc., the default) or `16` (N/NNE/NE/ENE/etc.).
+
+  `start.day`
+
+  :   What day of the week should the `type = "weekday"` start on? The
+      user can change the start day by supplying an integer between 0
+      and 6. Sunday = 0, Monday = 1, ... For example to start the
+      weekday plots on a Saturday, choose `start.day = 6`.
+
+  `start.season`
+
+  :   What order should the season be. By default, the order is spring,
+      summer, autumn, winter. `start.season = "winter"` would plot
+      winter first.
+
+  `is.axis`
+
+  :   A logical (`TRUE`/`FALSE`), used to request shortened cut labels
+      for axes.
+
+  `local.tz`
+
+  :   Used for identifying whether a date has daylight savings time
+      (DST) applied or not. Examples include
+      `local.tz = "Europe/London"`, `local.tz = "America/New_York"`,
+      i.e., time zones that assume DST.
+      <https://en.wikipedia.org/wiki/List_of_zoneinfo_time_zones> shows
+      time zones that should be valid for most systems. It is important
+      that the original data are in GMT (UTC) or a fixed offset from
+      GMT.
+
+  `latitude,longitude`
+
+  :   The decimal latitude and longitudes used when `type = "daylight"`.
+      Note that locations west of Greenwich have negative longitudes.
+
+  `drop`
+
+  :   How to handle empty factor levels. One of:
+
+      - `"default"`: Sensible defaults selected on a case-by-case basis
+        for different `type` options.
+
+      - `"empty"`: Drop all empty factor levels.
+
+      - `"none"`: Retain all empty factor levels, where possible. For
+        example, for `type = "hour"`, all factor levels from `0` and
+        `23` will be represented.
+
+      - `"outside"`: Retain empty factor levels within the range of the
+        data. For example, for `type = "hour"` when the data only
+        contains data for 1 AM and 5 AM, the factor levels, `1`, `2`,
+        `3`, `4` and `5` will be retained.
+
+      Some of these options only apply to certain `type` options. For
+      example, for `type = "year"`, `"outside"` is equivalent to
+      `"none"` as there is no fixed range of years to use in the
+      `"none"` case.
 
 ## Value
 

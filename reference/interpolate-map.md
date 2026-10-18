@@ -204,7 +204,8 @@ voronoiMap(
   A numeric vector in the form `c(lower, upper)` used to define the
   colour scale. For example, `limits = c(0, 100)` would force the plot
   limits to span 0-100. If `NULL`, appropriate limits will be selected
-  based on the range in `data[[pollutant]]`.
+  based on the range in `data[[pollutant]]`. Values outside of `limits`
+  are given the colour of the nearest limit.
 
 - latitude, longitude:
 
@@ -258,12 +259,18 @@ voronoiMap(
 
   *default:* `NULL` \| *scope:* dynamic
 
-  Columns to be used as the HTML content for marker popups on dynamic
-  maps. Popups may be useful to show information about the individual
-  sites (e.g., site names, codes, types, etc.). If a vector of column
-  names are provided they are passed to
+  Columns to be used as the HTML content for site marker popups on
+  dynamic maps. Popups may be useful to show information about the
+  individual sites (e.g., site names, codes, types, etc.). If a vector
+  of column names are provided they are passed to
   [`buildPopup()`](https://openair-project.github.io/openairmaps/reference/buildPopup.md)
   using its default values.
+
+  The `pollutant` column shows the site `statistic` (i.e., what the
+  markers are coloured by), labelled as such (e.g., "NO₂ (max)"). Any
+  other numeric columns have many values at each site, so are averaged
+  and labelled "(mean)". Names given to `popup` (e.g.,
+  `c("Site NOx" = "nox")`) are used instead of these labels.
 
 - label:
 
@@ -273,7 +280,8 @@ voronoiMap(
 
   Column to be used as the HTML content for hover-over labels. Labels
   are useful for the same reasons as popups, though are typically
-  shorter.
+  shorter. The `pollutant` column shows the site `statistic`, and other
+  numeric columns are averaged at each site.
 
 - provider:
 
@@ -317,7 +325,7 @@ voronoiMap(
 
   *Transparency value for interpolated surface.*
 
-  *default:* `1` \| *scope:* dynamic & static
+  *default:* `0.8` \| *scope:* dynamic & static
 
   A value between 0 (fully transparent) and 1 (fully opaque).
 

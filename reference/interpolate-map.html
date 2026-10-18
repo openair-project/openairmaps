@@ -239,7 +239,8 @@ to 200.</p></dd>
 <p>A numeric vector in the form <code>c(lower, upper)</code> used to define the colour
 scale. For example, <code>limits = c(0, 100)</code> would force the plot limits to
 span 0-100. If <code>NULL</code>, appropriate limits will be selected based on the
-range in <code>data[[pollutant]]</code>.</p></dd>
+range in <code>data[[pollutant]]</code>. Values outside of <code>limits</code> are given the
+colour of the nearest limit.</p></dd>
 
 
 <dt id="arg-latitude-longitude">latitude, longitude<a class="anchor" aria-label="anchor" href="#arg-latitude-longitude"></a></dt>
@@ -274,17 +275,24 @@ plotting on the map.</p></dd>
 <dt id="arg-popup">popup<a class="anchor" aria-label="anchor" href="#arg-popup"></a></dt>
 <dd><p><em>Content for marker popups on dynamic maps.</em></p>
 <p><em>default:</em> <code>NULL</code> | <em>scope:</em> dynamic</p>
-<p>Columns to be used as the HTML content for marker popups on dynamic maps.
-Popups may be useful to show information about the individual sites (e.g.,
-site names, codes, types, etc.). If a vector of column names are provided
-they are passed to <code><a href="buildPopup.html">buildPopup()</a></code> using its default values.</p></dd>
+<p>Columns to be used as the HTML content for site marker popups on dynamic
+maps. Popups may be useful to show information about the individual sites
+(e.g., site names, codes, types, etc.). If a vector of column names are
+provided they are passed to <code><a href="buildPopup.html">buildPopup()</a></code> using its default values.</p>
+<p>The <code>pollutant</code> column shows the site <code>statistic</code> (i.e., what the markers
+are coloured by), labelled as such (e.g., "NO<sub>2</sub> (max)"). Any
+other numeric columns have many values at each site, so are averaged and
+labelled "(mean)". Names given to <code>popup</code> (e.g., <code>c("Site NOx" = "nox")</code>)
+are used instead of these labels.</p></dd>
 
 
 <dt id="arg-label">label<a class="anchor" aria-label="anchor" href="#arg-label"></a></dt>
 <dd><p><em>Content for marker hover-over on dynamic maps.</em></p>
 <p><em>default:</em> <code>NULL</code> | <em>scope:</em> dynamic</p>
 <p>Column to be used as the HTML content for hover-over labels. Labels are
-useful for the same reasons as popups, though are typically shorter.</p></dd>
+useful for the same reasons as popups, though are typically shorter. The
+<code>pollutant</code> column shows the site <code>statistic</code>, and other numeric columns
+are averaged at each site.</p></dd>
 
 
 <dt id="arg-provider">provider<a class="anchor" aria-label="anchor" href="#arg-provider"></a></dt>
@@ -315,7 +323,7 @@ uniform colours.</p></dd>
 
 <dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
 <dd><p><em>Transparency value for interpolated surface.</em></p>
-<p><em>default:</em> <code>1</code> | <em>scope:</em> dynamic &amp; static</p>
+<p><em>default:</em> <code>0.8</code> | <em>scope:</em> dynamic &amp; static</p>
 <p>A value between 0 (fully transparent) and 1 (fully opaque).</p></dd>
 
 
