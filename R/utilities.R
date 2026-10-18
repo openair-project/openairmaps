@@ -226,14 +226,14 @@ buildPopup <-
         summary <- dplyr::rename(summary, dplyr::all_of(columns))
       }
 
-      # one "<b>name</b>: value" row per column, combined into one popup
+      # one label/value row per column, styled like the other package popups
       values <- dplyr::select(summary, -dplyr::all_of(c(latitude, longitude)))
       rows <- Map(
-        \(value, name) quickTextHTML(paste0("<b>", name, "</b>: ", value)),
+        \(value, name) popup_row(quickTextHTML(name), quickTextHTML(value)),
         values,
         names(values)
       )
-      summary$popup <- do.call(paste, c(unname(rows), sep = "<br>"))
+      summary$popup <- popup_container(do.call(paste0, unname(rows)))
 
       dplyr::left_join(
         data,

@@ -302,8 +302,8 @@ test_that("site average maps can have popups and labels", {
   popups <- leaflet_calls(map, "addCircleMarkers")[[1]]$args[[9]]
   expect_length(popups, 6)
   expect_match(
-    popups,
-    "<b>Name</b>: Site [0-9]<br><b>Site Type</b>: (Urban|Rural)"
+    popup_text(popups),
+    "^Name: Site [0-9]; Site Type: (Urban|Rural)$"
   )
 
   # popups must be unique per site
@@ -313,7 +313,7 @@ test_that("site average maps can have popups and labels", {
   # ...but other numeric columns are averaged, and labelled as such
   map <- quietly(pointMap(data, "nox", popup = "rep"))
   popups <- leaflet_calls(map, "addCircleMarkers")[[1]]$args[[9]]
-  expect_equal(unique(popups), "<b>rep (mean)</b>: 2")
+  expect_equal(unique(popup_text(popups)), "rep (mean): 2")
 
   # the pollutant shows the site statistic, not the mean of the raw data
   map <- quietly(pointMap(
@@ -325,7 +325,7 @@ test_that("site average maps can have popups and labels", {
   ))
   call <- leaflet_calls(map, "addCircleMarkers")[[1]]$args
   expect_setequal(call[[11]], seq(13, 63, 10))
-  expect_match(call[[9]], "<b>NO<sub>x</sub> \\(max\\)</b>: [1-6]3$")
+  expect_match(popup_text(call[[9]]), "NO<sub>x</sub> \\(max\\): [1-6]3$")
 
   map <- quietly(pointMap(
     data,
@@ -335,7 +335,7 @@ test_that("site average maps can have popups and labels", {
     popup = c("name", "Concentration" = "nox")
   ))
   popups <- leaflet_calls(map, "addCircleMarkers")[[1]]$args[[9]]
-  expect_match(popups, "<b>Concentration</b>")
+  expect_match(popup_text(popups), "Concentration: ")
 
   expect_equal(
     ordinal(c(1, 2, 3, 4, 11, 12, 13, 21, 92, 101, 111)),

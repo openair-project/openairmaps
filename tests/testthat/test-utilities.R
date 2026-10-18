@@ -35,14 +35,14 @@ test_that("buildPopup() summarises columns by location", {
   out <- quietly(buildPopup(popup_data, c("Site" = "site", "nox", "date")))
   expect_equal(nrow(out), 3)
   expect_equal(
-    out$popup[[1]],
-    "<b>Site</b>: A<br><b>NO<sub>x</sub></b>: 2<br><b>date</b>: 2020-01-01 to 2020-02-01"
+    popup_text(out$popup[[1]]),
+    "Site: A; NO<sub>x</sub>: 2; date: 2020-01-01 to 2020-02-01"
   )
   expect_equal(out$popup[[1]], out$popup[[2]])
 
   # unnamed columns
   out <- quietly(buildPopup(popup_data, "site"))
-  expect_equal(out$popup[[3]], "<b>site</b>: B")
+  expect_equal(popup_text(out$popup[[3]]), "site: B")
 })
 
 test_that("buildPopup() supports all column types and custom summaries", {
@@ -54,19 +54,23 @@ test_that("buildPopup() supports all column types and custom summaries", {
     fun.dttm = \(x) format(min(x), "%Y")
   ))
   expect_equal(
-    out$popup[[1]],
-    "<b>day</b>: 2020<br><b>flag</b>: 2<br><b>NO<sub>x</sub></b>: 3"
+    popup_text(out$popup[[1]]),
+    "day: 2020; flag: 2; NO<sub>x</sub>: 3"
   )
 })
 
 test_that("buildPopup() summarises separately by type", {
   out <- quietly(buildPopup(popup_data, "nox", type = "type"))
   expect_equal(nrow(out), 3)
-  expect_equal(out$popup[out$type == "y"], "<b>NO<sub>x</sub></b>: 3")
+  expect_equal(popup_text(out$popup[out$type == "y"]), "NO<sub>x</sub>: 3")
   expect_equal(
-    out$popup[out$type == "x" & out$site == "A"],
-    "<b>NO<sub>x</sub></b>: 1"
+    popup_text(out$popup[out$type == "x" & out$site == "A"]),
+    "NO<sub>x</sub>: 1"
   )
+
+  # styled like the package's other popups
+  expect_match(out$popup, "^<div style='font-family:sans-serif;")
+  expect_match(out$popup, "<span style='color:#888; min-width:100px;'>")
 })
 
 test_that("convertPostcode() returns a latitude and longitude", {

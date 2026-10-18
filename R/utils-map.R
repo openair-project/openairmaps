@@ -1414,8 +1414,9 @@ build_traj_level_labels <- function(data, subtitle, type = NULL) {
 
 #' Shared building blocks for popups
 #'
-#' Used by the trajectory functions and [networkMap()] so their popups look
-#' the same. `popup_card()` wraps rows in a bold title + caption header,
+#' Used by the trajectory functions, [networkMap()] and [buildPopup()] so their
+#' popups look the same. `popup_container()` sets the font and scrolling,
+#' `popup_card()` wraps rows in it with a bold title + caption header,
 #' `popup_row()` is a single grey-label/value row, and `popup_section()`
 #' separates rows from those above with a thin divider. All are vectorised.
 #' @param width The width of the card, in pixels.
@@ -1434,11 +1435,8 @@ popup_card <- function(title, subtitle, ..., width = 220, colour = NULL) {
     subtitle_colour <- colour
   }
 
-  paste0(
-    "<div style='font-family:sans-serif; font-size:13px; max-height:320px; overflow-y:auto; width:",
-    width,
-    "px; padding-right:4px;'>",
-
+  popup_container(
+    width = width,
     "<div style='display:flex; align-items:center; gap:8px; margin-bottom:10px; padding-bottom:8px; border-bottom:2px solid #ddd;'>",
     dot,
     "<div style='flex:1;'>",
@@ -1452,9 +1450,19 @@ popup_card <- function(title, subtitle, ..., width = 220, colour = NULL) {
     "</div>",
     "</div>",
     "</div>",
+    ...
+  )
+}
 
+#' @rdname popup_card
+#' @noRd
+popup_container <- function(..., width = NULL) {
+  width <- if (!is.null(width)) paste0(" width:", width, "px;") else ""
+  paste0(
+    "<div style='font-family:sans-serif; font-size:13px; max-height:320px; overflow-y:auto;",
+    width,
+    " padding-right:4px;'>",
     ...,
-
     "</div>"
   )
 }

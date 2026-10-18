@@ -63,6 +63,15 @@ fake_markers <- function(data = fake_marker_data(), split_col = "grp", ...) {
 
 # Inspecting maps --------------------------------------------------------------
 
+# the text of popup_row()-style popups, as "label: value; label: value"
+popup_text <- function(x) {
+  x <- gsub("</span></div>", "|", x)
+  x <- gsub("</span><span[^>]*>", ": ", x)
+  x <- gsub("</?(div|span)[^>]*>", "", x)
+  x <- sub("\\|$", "", x)
+  gsub("\\|", "; ", x)
+}
+
 # get all calls of a given leaflet method
 leaflet_calls <- function(map, method) {
   Filter(\(x) x$method == method, map$x$calls)

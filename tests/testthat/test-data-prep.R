@@ -79,11 +79,11 @@ test_that("quick_popup() combines columns into a popup", {
   out <- quick_popup(df, c("site_name", "nox"), "lat", "lon", NULL)
   expect_true("popup" %in% names(out))
   expect_equal(
-    out$popup[[1]],
-    "<b>Site Name</b>: a<br><b>NO<sub>x</sub></b>: 2"
+    popup_text(out$popup[[1]]),
+    "Site Name: a; NO<sub>x</sub>: 2"
   )
   expect_equal(
-    out$popup[[3]],
-    "<b>Site Name</b>: b<br><b>NO<sub>x</sub></b>: 5"
+    popup_text(out$popup[[3]]),
+    "Site Name: b; NO<sub>x</sub>: 5"
   )
 })

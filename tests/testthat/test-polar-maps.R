@@ -24,7 +24,7 @@ test_that("polar maps show the mean pollutant in popups and labels", {
   means <- tapply(data$nox, data$site, mean, na.rm = TRUE)
 
   expect_setequal(call[[11]], signif(unname(means), 3))
-  expect_match(call[[7]], "^<b>NO<sub>x</sub> \\(mean\\)</b>: [0-9.]+$")
+  expect_match(popup_text(call[[7]]), "^NO<sub>x</sub> \\(mean\\): [0-9.]+$")
 
   # names are kept, and other pollutants are just like any other column
   map <- quietly(polarMap(
@@ -34,16 +34,16 @@ test_that("polar maps show the mean pollutant in popups and labels", {
     d.fig = 1
   ))
   popups <- leaflet_calls(map, "addMarkers")[[1]]$args[[7]]
-  expect_match(popups, "^<b>NO<sub>x</sub> conc.</b>: ")
+  expect_match(popup_text(popups), "^NO<sub>x</sub> conc.: ")
 
   # other numeric columns are also averaged, and labelled as such
   map <- quietly(polarMap(data, "nox", popup = "no2", d.fig = 1))
   popups <- leaflet_calls(map, "addMarkers")[[1]]$args[[7]]
-  expect_match(popups, "^<b>NO<sub>2</sub> \\(mean\\)</b>: [0-9.]+$")
+  expect_match(popup_text(popups), "^NO<sub>2</sub> \\(mean\\): [0-9.]+$")
 
   map <- quietly(polarMap(data, "no2", popup = c("no2", "nox"), d.fig = 1))
   popups <- leaflet_calls(map, "addMarkers")[[1]]$args[[7]]
-  expect_match(popups, "\\(mean\\)</b>: [0-9.]+<br>.*\\(mean\\)</b>: [0-9.]+$")
+  expect_match(popup_text(popups), "\\(mean\\): [0-9.]+; .*\\(mean\\): [0-9.]+$")
 })
 
 test_that("polarMap() handles fixed limits, type and popups", {
