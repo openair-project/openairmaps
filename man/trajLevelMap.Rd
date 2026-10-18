@@ -6,8 +6,8 @@
 \usage{
 trajLevelMap(
   data,
-  longitude = "lon",
-  latitude = "lat",
+  latitude = NULL,
+  longitude = NULL,
   pollutant,
   type = NULL,
   smooth = FALSE,
@@ -41,9 +41,13 @@ obtained using \code{\link[openair:importTraj]{openair::importTraj()}}.}
 
 \item{latitude, longitude}{\emph{The decimal latitude/longitude.}
 
-\emph{default:} \code{"lat"} / \code{"lon"}
+\emph{default:} \code{NULL}
 
-Column names representing the decimal latitude and longitude.}
+Column names representing the decimal latitude and longitude. If not
+provided, will be automatically inferred from data by looking for a column
+named "lat"/"latitude" or "lon"/"lng"/"long"/"longitude"
+(case-insensitively), such as the "lat" and "lon" columns returned by
+\code{\link[openair:importTraj]{openair::importTraj()}}.}
 
 \item{pollutant}{The pollutant of interest. Not required when \code{statistic = "frequency"}.}
 
@@ -110,13 +114,13 @@ much noise.}
 
 \item{cols}{\emph{Colours to use for plotting.}
 
-\emph{default:} \code{"default"}
+\emph{default:} \code{"turbo"}
 
 The colours used for plotting, passed to \code{\link[openair:openColours]{openair::openColours()}}.}
 
 \item{alpha}{\emph{Transparency value for trajectories.}
 
-\emph{default:} \code{1}
+\emph{default:} \code{0.5}
 
 A value between \code{0} (fully transparent) and \code{1} (fully opaque).}
 

@@ -68,6 +68,12 @@ test_that("networkMap() splits sites using control", {
   expect_error(networkMap("aurn", control = "foo"), "control")
 })
 
+test_that("networkMap() checks positions, with or without control", {
+  local_fake_meta()
+  expect_error(networkMap("aurn", control.position = "middle"), "must be one")
+  expect_error(networkMap("aurn", legend.position = "middle"), "must be one")
+})
+
 test_that("networkMap() splits sites by pollutant", {
   local_fake_meta()
   map <- networkMap(c("aurn", "saqn"), control = "variable")

@@ -128,10 +128,11 @@
 #'
 #' @param vgm *A variogram model*
 #'
-#'  *default:* `gstat::vgm(psill = 1, model = "Exp", range = 50000, nugget = 1)` | *scope:* dynamic & static
+#'  *default:* `gstat::vgm(psill = 1, model = "Exp", range = 50, nugget = 1)` | *scope:* dynamic & static
 #'
 #'   The variogram model to use when `method = "kriging"`. Must be the output of
-#'   [gstat::vgm()].
+#'   [gstat::vgm()]. As the data are in latitude and longitude, `{gstat}`
+#'   measures distances (e.g., the `range`) in kilometres.
 #'
 #' @param args.idw,args.variogram,args.fit.variogram,args.krige *Extra arguments
 #'   to pass to spatial interpolation functions for [krigingMap()].*
@@ -223,7 +224,7 @@ krigingMap <- function(
   static = FALSE,
   static.nrow = NULL,
   api_key = NULL,
-  vgm = gstat::vgm(psill = 1, model = "Exp", range = 50000, nugget = 1),
+  vgm = gstat::vgm(psill = 1, model = "Exp", range = 50, nugget = 1),
   args.idw = list(),
   args.variogram = list(),
   args.fit.variogram = list(),

@@ -107,6 +107,27 @@ test_that("trajMap() colours trajectories", {
   # dates
   map <- trajMap(traj, colour = "date")
   expect_length(leaflet_legends(map), 1)
+
+  # neither a column nor a colour (e.g., a typo)
+  expect_error(trajMap(traj, colour = "noxx"), "single colour")
+})
+
+test_that("trajMap() and trajLevelMap() guess latitude and longitude", {
+  renamed <- dplyr::rename(traj, latitude = "lat", longitude = "lon")
+  map <- quietly(trajMap(renamed))
+  expect_length(leaflet_calls(map, "addPolylines"), n_traj)
+
+  map <- quietly(trajLevelMap(renamed))
+  expect_length(leaflet_calls(map, "addRectangles"), 1)
+})
+
+test_that("trajMap() orders the layer control by type level", {
+  traj$period <- factor(
+    ifelse(traj$date == min(traj$date), "first", "later"),
+    levels = c("later", "first")
+  )
+  map <- trajMap(traj, type = "period")
+  expect_equal(layer_control(map)$overlay, c("later", "first"))
 })
 
 test_that("trajMap() splits trajectories by type", {

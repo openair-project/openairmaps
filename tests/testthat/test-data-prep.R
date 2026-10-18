@@ -32,7 +32,8 @@ test_that("prepMapData() pivots pollutants into long format", {
   out <- prepMapData(df, c("nox", "no2"), NULL, "lat", "lon")
   expect_equal(nrow(out), 4)
   expect_true(is.factor(out$pollutant_name))
-  expect_equal(sort(unique(as.character(out$pollutant_name))), c("no2", "nox"))
+  # pollutants keep the order they were given in
+  expect_equal(levels(out$pollutant_name), c("nox", "no2"))
   expect_equal(out$conc, c(1, 3, 2, 4))
 
   out <- prepMapData(df, "nox", NULL, "lat", .to_narrow = FALSE)

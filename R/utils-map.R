@@ -49,6 +49,14 @@ check_providers <- function(provider, static) {
   return(provider)
 }
 
+#' Is `x` a single colour that R (and therefore leaflet) understands?
+#' @noRd
+is_colour <- function(x) {
+  length(x) == 1 &&
+    is.character(x) &&
+    !inherits(try(grDevices::col2rgb(x), silent = TRUE), "try-error")
+}
+
 #' Check legend positions are valid
 #' @noRd
 check_legendposition <- function(position, static) {
@@ -66,7 +74,7 @@ check_legendposition <- function(position, static) {
     rlang::arg_match(
       position,
       c("topright", "topleft", "bottomright", "bottomleft"),
-      multiple = TRUE
+      multiple = FALSE
     )
   }
   return(position)
@@ -184,8 +192,7 @@ check_installed_static <- function() {
     "ggspatial",
     "prettymapr",
     "ggtext",
-    "png",
-    "rosm"
+    "png"
   ))
 }
 
@@ -297,11 +304,11 @@ prepMapData <-
           values_to = "conc"
         )
 
-      # make pollutant names factors
+      # make pollutant names factors, in the order they were given
       data <-
         dplyr::mutate(
           .data = data,
-          pollutant_name = as.factor(.data$pollutant_name)
+          pollutant_name = factor(.data$pollutant_name, levels = pollutant)
         )
     }
 
@@ -771,7 +778,7 @@ make_leaflet_map <-
     map <- add_layer_control(
       map,
       provider = provider,
-      groups = textfun(unique(data[[split_col]][has_plot(data)])),
+      groups = textfun(level_order(data[[split_col]][has_plot(data)])),
       position = control.position,
       collapsed = control.collapsed
     )
@@ -792,6 +799,19 @@ as_lnglat <- function(data, latitude, longitude, crs) {
   data[[longitude]] <- coords[, "X"]
   data[[latitude]] <- coords[, "Y"]
   data
+}
+
+#' The unique values of `x`, in order
+#'
+#' Factors keep the order of their levels (e.g., `"Monday"` before `"Tuesday"`
+#' when `type = "weekday"`), dropping any unused ones. Anything else is sorted.
+#' Used to order the groups of a "layer control" menu.
+#' @noRd
+level_order <- function(x) {
+  if (is.factor(x)) {
+    return(levels(droplevels(x)))
+  }
+  sort(unique(x))
 }
 
 #' Name a vector of leaflet providers

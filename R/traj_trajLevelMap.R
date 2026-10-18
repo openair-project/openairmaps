@@ -22,8 +22,8 @@
 trajLevelMap <-
   function(
     data,
-    longitude = "lon",
-    latitude = "lat",
+    latitude = NULL,
+    longitude = NULL,
     pollutant,
     type = NULL,
     smooth = FALSE,
@@ -45,6 +45,8 @@ trajLevelMap <-
     control.collapsed = FALSE,
     control.position = "topright"
   ) {
+    latlon <- assume_latlon(data, latitude = latitude, longitude = longitude)
+
     # check basemap providers are valid
     provider <- check_providers(provider, static = FALSE)
 
@@ -56,8 +58,8 @@ trajLevelMap <-
     map <- addTrajLevel(
       map,
       data = data,
-      lng = longitude,
-      lat = latitude,
+      lng = latlon$longitude,
+      lat = latlon$latitude,
       pollutant = if (missing(pollutant)) NULL else pollutant,
       statistic = statistic,
       percentile = percentile,

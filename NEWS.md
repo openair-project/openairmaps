@@ -6,6 +6,14 @@
 
 * `trajMapStatic()` and `trajLevelMapStatic()` have both been removed from `openairmaps`. Users should now use `openair::trajPlot()` or `openair::trajLevel()` directly.
 
+* `trajMap()` and `trajLevelMap()` now take `latitude` before `longitude`, in line with the rest of the package. Both now default to `NULL`, and are guessed from `data` in the same way as the `polarMap()` family.
+
+* `trajMap()` now uses `cols = "turbo"` by default, in line with the rest of the package. It also now errors if `colour` is neither a column of `data` nor a valid colour, rather than silently passing it on to `{leaflet}` (e.g., when a column name is misspelled).
+
+* The default `vgm` in `krigingMap()` now has a `range` of 50 rather than 50,000. As the data are in latitude and longitude, `{gstat}` measures this in kilometres, so the previous default was far larger than intended.
+
+* The "layer control" menus of the `polarMap()` family and `trajMap()` now list `type` levels in the order of their factor levels (e.g., "Monday" before "Tuesday"), and multiple pollutants in the order they were given, rather than the order they first appear in the data.
+
 ## New features
 
 * Added `pointMap()`, which summarises pollutant data at each site (e.g., the mean concentration) and shows it as coloured circles on a dynamic or static map. It shares its arguments (`statistic`, `breaks`, `limits`, etc.) with `krigingMap()` and `voronoiMap()`, but draws no interpolated surface. All three functions also gain `popup` and `label` arguments, which work like those in `polarMap()` (e.g., to show site names or types when clicking on or hovering over a site marker).
@@ -59,6 +67,10 @@
 * `percentileMap(intervals = "fixed")` now passes `percentile` and `...` to `openair::percentileRose()` when calculating the shared intervals, so they cover all of the plotted percentiles.
 
 * `freqMap(breaks = "fixed")` no longer errors when `trans` is passed via `...`.
+
+* `addTrajLevel()` now respects `lng` and `lat`. Previously, `openair::trajLevel()` would error unless the columns were named "lon" and "lat".
+
+* Dynamic maps now error if more than one `legend.position` or `control.position` is given. `networkMap()` now checks `control.position` even when `control` isn't used.
 
 * `polarMap(limits = "fixed")` now uses the same `upper` as the markers when calculating the shared limits, so the limits better cover the markers' colour scales.
 

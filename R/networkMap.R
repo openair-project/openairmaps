@@ -120,6 +120,10 @@ networkMap <-
     control.collapsed = FALSE,
     control.position = "topright"
   ) {
+    # check positions before downloading any metadata
+    legend.position <- check_legendposition(legend.position, static = FALSE)
+    control.position <- check_legendposition(control.position, static = FALSE)
+
     cols <-
       dplyr::tibble(
         source = c(
@@ -277,7 +281,6 @@ networkMap <-
       if (control == "variable") {
         names(meta)[names(meta) == "variable2"] <- "variable"
       }
-      control.position <- check_legendposition(control.position, static = FALSE)
       control <- rlang::arg_match(
         control,
         names(meta)[
@@ -371,7 +374,7 @@ networkMap <-
         leaflet::addLegend(
           map,
           opacity = 1,
-          position = check_legendposition(legend.position, static = FALSE),
+          position = legend.position,
           title = "Network",
           colors = cols$realcolour,
           labels = paste0(

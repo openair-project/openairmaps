@@ -12,6 +12,13 @@ test_that("name_providers() names and de-duplicates providers", {
   )
 })
 
+test_that("level_order() orders factors by level, and sorts anything else", {
+  x <- factor(c("Wed", "Mon", "Wed"), levels = c("Mon", "Tue", "Wed"))
+  expect_equal(level_order(x), c("Mon", "Wed"))
+  expect_equal(level_order(c("b", "a", "b")), c("a", "b"))
+  expect_equal(level_order(c(10, 2, 10)), c(2, 10))
+})
+
 test_that("add_basemaps() adds each provider as its own group", {
   map <- add_basemaps(
     leaflet::leaflet(),

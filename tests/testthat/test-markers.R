@@ -127,6 +127,27 @@ test_that("make_leaflet_map() keeps groups aligned when plots fail", {
   expect_equal(layer_control(map)$base, c("Group A", "Group C"))
 })
 
+test_that("make_leaflet_map() orders the layer control by factor level", {
+  plots_df <- fake_markers()
+  plots_df$grp <- factor(plots_df$grp, levels = c("Group C", "Group A"))
+  map <- make_leaflet_map(
+    plots_df,
+    latitude = "lat",
+    longitude = "lon",
+    crs = 4326,
+    provider = "OpenStreetMap",
+    d.icon = 50,
+    popup = NULL,
+    label = NULL,
+    split_col = "grp",
+    control.collapsed = FALSE,
+    control.position = "topright",
+    control.autotext = FALSE,
+    alpha = 1
+  )
+  expect_equal(layer_control(map)$base, c("Group C", "Group A"))
+})
+
 test_that("make_leaflet_map() reprojects coordinates", {
   data <- fake_marker_data()
   pts <- sf::st_as_sf(data, coords = c("lon", "lat"), crs = 4326) |>

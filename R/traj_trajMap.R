@@ -18,9 +18,13 @@
 #'
 #' @param latitude,longitude *The decimal latitude/longitude.*
 #'
-#'  *default:* `"lat"` / `"lon"`
+#'  *default:* `NULL`
 #'
-#'   Column names representing the decimal latitude and longitude.
+#'   Column names representing the decimal latitude and longitude. If not
+#'   provided, will be automatically inferred from data by looking for a column
+#'   named "lat"/"latitude" or "lon"/"lng"/"long"/"longitude"
+#'   (case-insensitively), such as the "lat" and "lon" columns returned by
+#'   [openair::importTraj()].
 #'
 #' @param colour *Column to be used for colouring each trajectory.*
 #'
@@ -28,7 +32,9 @@
 #'
 #'   This column may be numeric, character, factor or date(time). This will
 #'   commonly be a pollutant concentration which has been joined (e.g., by
-#'   [dplyr::left_join()]) to the trajectory data by "date".
+#'   [dplyr::left_join()]) to the trajectory data by "date". Alternatively, a
+#'   single colour (e.g., `"red"` or `"#FF0000"`) used for every trajectory. If
+#'   `NULL`, trajectories are drawn in black.
 #'
 #' @param type *A method to condition the `data` for separate plotting.*
 #'
@@ -40,13 +46,13 @@
 #'
 #' @param cols *Colours to use for plotting.*
 #'
-#'  *default:* `"default"`
+#'  *default:* `"turbo"`
 #'
 #'   The colours used for plotting, passed to [openair::openColours()].
 #'
 #' @param alpha *Transparency value for trajectories.*
 #'
-#'  *default:* `1`
+#'  *default:* `0.5`
 #'
 #'   A value between `0` (fully transparent) and `1` (fully opaque).
 #'
@@ -127,11 +133,11 @@
 trajMap <-
   function(
     data,
-    longitude = "lon",
-    latitude = "lat",
+    latitude = NULL,
+    longitude = NULL,
     colour = NULL,
     type = NULL,
-    cols = "default",
+    cols = "turbo",
     alpha = 0.5,
     npoints = 12,
     provider = "OpenStreetMap",
@@ -143,8 +149,9 @@ trajMap <-
     ...
   ) {
     # make lat/lon easier to use
-    names(data)[names(data) == longitude] <- "lon"
-    names(data)[names(data) == latitude] <- "lat"
+    latlon <- assume_latlon(data, latitude = latitude, longitude = longitude)
+    names(data)[names(data) == latlon$longitude] <- "lon"
+    names(data)[names(data) == latlon$latitude] <- "lat"
 
     # identify individual trajectories
     data$trajid <- traj_id(data)
@@ -163,6 +170,14 @@ trajMap <-
     # "colour" is either a column to colour by, or a single colour (by
     # default, black)
     colour_col <- !is.null(colour) && colour %in% names(data)
+    if (!is.null(colour) && !colour_col && !is_colour(colour)) {
+      cli::cli_abort(
+        c(
+          "x" = "{.arg colour} must be a column of {.arg data} or a single colour.",
+          "i" = "{.val {colour}} is neither."
+        )
+      )
+    }
     fixedcol <- if (!is.null(colour) && !colour_col) colour else "black"
 
     # if colouring by a column, create colour palette
@@ -205,10 +220,10 @@ trajMap <-
     data <- build_traj_labels(data, extra = extra)
 
     # iterate over columns in "type" column
-    for (j in seq_along(unique(data[[type]]))) {
+    type_levels <- level_order(data[[type]])
+    for (j in seq_along(type_levels)) {
       # get jth instance of "type"
-      data2 <-
-        dplyr::filter(data, .data[[type]] == unique(data[[type]])[[j]])
+      data2 <- dplyr::filter(data, .data[[type]] == type_levels[[j]])
 
       # iterate over individual trajectories (i.e., each arrival date and
       # receptor) to plot them separately
@@ -232,7 +247,7 @@ trajMap <-
             map,
             data = ldata,
             npoints = npoints,
-            group = as.character(unique(data[[type]])[[j]]),
+            group = as.character(type_levels[[j]]),
             color = lcolors,
             markerColor = pcolors,
             opacity = alpha,
@@ -280,7 +295,7 @@ trajMap <-
     map <- add_layer_control(
       map,
       provider = provider,
-      groups = if (type != "default") unique(data[[type]]),
+      groups = if (type != "default") type_levels,
       groups_as = "overlay",
       position = control.position,
       collapsed = control.collapsed

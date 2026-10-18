@@ -33,6 +33,7 @@ test_that("check_legendposition() validates positions", {
     "bottomleft"
   )
   expect_error(check_legendposition("top", static = FALSE))
+  expect_error(check_legendposition(c("topright", "bottomleft"), FALSE))
 
   expect_equal(check_legendposition("left", static = TRUE), "left")
   expect_error(check_legendposition("topright", static = TRUE))

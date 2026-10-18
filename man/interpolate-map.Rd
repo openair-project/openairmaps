@@ -36,7 +36,7 @@ krigingMap(
   static = FALSE,
   static.nrow = NULL,
   api_key = NULL,
-  vgm = gstat::vgm(psill = 1, model = "Exp", range = 50000, nugget = 1),
+  vgm = gstat::vgm(psill = 1, model = "Exp", range = 50, nugget = 1),
   args.idw = list(),
   args.variogram = list(),
   args.fit.variogram = list(),
@@ -342,10 +342,11 @@ Needed for certain \code{providers} (e.g., \code{"cartolight"}).}
 
 \item{vgm}{\emph{A variogram model}
 
-\emph{default:} \code{gstat::vgm(psill = 1, model = "Exp", range = 50000, nugget = 1)} | \emph{scope:} dynamic & static
+\emph{default:} \code{gstat::vgm(psill = 1, model = "Exp", range = 50, nugget = 1)} | \emph{scope:} dynamic & static
 
 The variogram model to use when \code{method = "kriging"}. Must be the output of
-\code{\link[gstat:vgm]{gstat::vgm()}}.}
+\code{\link[gstat:vgm]{gstat::vgm()}}. As the data are in latitude and longitude, \code{{gstat}}
+measures distances (e.g., the \code{range}) in kilometres.}
 
 \item{args.idw, args.variogram, args.fit.variogram, args.krige}{\emph{Extra arguments
 to pass to spatial interpolation functions for \code{\link[=krigingMap]{krigingMap()}}.}

@@ -6,11 +6,11 @@
 \usage{
 trajMap(
   data,
-  longitude = "lon",
-  latitude = "lat",
+  latitude = NULL,
+  longitude = NULL,
   colour = NULL,
   type = NULL,
-  cols = "default",
+  cols = "turbo",
   alpha = 0.5,
   npoints = 12,
   provider = "OpenStreetMap",
@@ -33,9 +33,13 @@ obtained using \code{\link[openair:importTraj]{openair::importTraj()}}.}
 
 \item{latitude, longitude}{\emph{The decimal latitude/longitude.}
 
-\emph{default:} \code{"lat"} / \code{"lon"}
+\emph{default:} \code{NULL}
 
-Column names representing the decimal latitude and longitude.}
+Column names representing the decimal latitude and longitude. If not
+provided, will be automatically inferred from data by looking for a column
+named "lat"/"latitude" or "lon"/"lng"/"long"/"longitude"
+(case-insensitively), such as the "lat" and "lon" columns returned by
+\code{\link[openair:importTraj]{openair::importTraj()}}.}
 
 \item{colour}{\emph{Column to be used for colouring each trajectory.}
 
@@ -43,7 +47,9 @@ Column names representing the decimal latitude and longitude.}
 
 This column may be numeric, character, factor or date(time). This will
 commonly be a pollutant concentration which has been joined (e.g., by
-\code{\link[dplyr:left_join]{dplyr::left_join()}}) to the trajectory data by "date".}
+\code{\link[dplyr:left_join]{dplyr::left_join()}}) to the trajectory data by "date". Alternatively, a
+single colour (e.g., \code{"red"} or \code{"#FF0000"}) used for every trajectory. If
+\code{NULL}, trajectories are drawn in black.}
 
 \item{type}{\emph{A method to condition the \code{data} for separate plotting.}
 
@@ -55,13 +61,13 @@ selected between using a "layer control" menu. Passed to
 
 \item{cols}{\emph{Colours to use for plotting.}
 
-\emph{default:} \code{"default"}
+\emph{default:} \code{"turbo"}
 
 The colours used for plotting, passed to \code{\link[openair:openColours]{openair::openColours()}}.}
 
 \item{alpha}{\emph{Transparency value for trajectories.}
 
-\emph{default:} \code{1}
+\emph{default:} \code{0.5}
 
 A value between \code{0} (fully transparent) and \code{1} (fully opaque).}
 

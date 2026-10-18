@@ -126,12 +126,17 @@ addTrajLevel <-
       str = title
     )
 
+    # openair::trajLevel() needs columns named "lat" and "lon", whatever its
+    # `lat`/`lon` arguments are
+    names(data)[names(data) == lng] <- "lon"
+    names(data)[names(data) == lat] <- "lat"
+
     # calculate gridded statistics - only pass `breaks` if given, as
     # trajLevel() uses `missing(breaks)` to decide on its default breaks
     traj_args <- list(
       mydata = data,
-      lon = lng,
-      lat = lat,
+      lon = "lon",
+      lat = "lat",
       pollutant = pollutant,
       statistic = statistic,
       percentile = percentile,

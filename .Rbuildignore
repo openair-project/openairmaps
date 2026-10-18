@@ -15,7 +15,8 @@ README_cache
 ^pkgdown$
 ^CODE_OF_CONDUCT\.md$
 ^codecov\.yml$
-man/figures/
+^man/figures/README-patchwork\.png$
+^man/figures/feature-banner\.png$
 .mailmap
 ^vignettes/articles$
 ^[.]?air[.]toml$
@@ -23,3 +24,5 @@ man/figures/
 ^revdep$
 ^\.positai$
 ^\.claude$
+^Rplots\.pdf$
+^tests/testthat/Rplots\.pdf$
