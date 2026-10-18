@@ -307,7 +307,13 @@ test_that("site average maps can have popups and labels", {
   )
 
   # popups must be unique per site
-  expect_error(pointMap(data, "nox", popup = "rep"), "Multiple popups")
+  data$rep_chr <- paste("Rep", data$rep)
+  expect_error(pointMap(data, "nox", popup = "rep_chr"), "Multiple popups")
+
+  # ...but other numeric columns are averaged, and labelled as such
+  map <- quietly(pointMap(data, "nox", popup = "rep"))
+  popups <- leaflet_calls(map, "addCircleMarkers")[[1]]$args[[9]]
+  expect_equal(unique(popups), "<b>rep (mean)</b>: 2")
 
   # the pollutant shows the site statistic, not the mean of the raw data
   map <- quietly(pointMap(
@@ -378,6 +384,7 @@ test_that("site average maps can be split using type", {
 
   # popups need to be unique per site and level
   data$name <- paste("Site", data$site)
+  data$name_rep <- paste(data$name, data$rep)
   expect_no_error(quietly(pointMap(
     data,
     "nox",
@@ -385,7 +392,7 @@ test_that("site average maps can be split using type", {
     popup = "name"
   )))
   expect_error(
-    pointMap(data, "nox", type = "period", popup = "rep"),
+    pointMap(data, "nox", type = "period", popup = "name_rep"),
     "latitude/longitude/type"
   )
 

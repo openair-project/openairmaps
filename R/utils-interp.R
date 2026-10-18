@@ -136,7 +136,12 @@ add_site_popups <- function(map, data, latitude, longitude, call) {
   data <- dplyr::left_join(data, site_stat, by = keys)
 
   popup <- map$popup
-  if (length(popup) > 1) {
+  # other numeric columns have many values per site, so must be averaged
+  is_averaged <- purrr::map_lgl(
+    popup,
+    \(x) x != pollutant && is.numeric(data[[x]])
+  )
+  if (length(popup) > 1 || any(is_averaged)) {
     # describe the statistic, e.g., "nox (max)"
     stat <- map$statistic
     if (stat == "percentile") {
@@ -145,6 +150,8 @@ add_site_popups <- function(map, data, latitude, longitude, call) {
     names(popup) <- names(popup) %||% rep("", length(popup))
     is_pollutant <- popup == pollutant & names(popup) == ""
     names(popup)[is_pollutant] <- paste0(pollutant, " (", stat, ")")
+    # any other numeric columns are averaged
+    popup <- label_mean_popups(popup, data, latitude, longitude)
 
     data <- quick_popup(
       data = data,

@@ -54,7 +54,7 @@
 
 * `diffMap()` no longer errors when multiple columns are passed to `popup`.
 
-* The `polarMap()` family no longer errors when a single `pollutant` is passed to `popup` or `label` (e.g., `polarMap(polar_data, "no2", popup = "no2")`). Pollutants in popups and labels now show their mean at each marker, labelled as such (e.g., "NO<sub>2</sub> (mean)"), whether one or several `popup` columns are given.
+* The `polarMap()` family no longer errors when a single `pollutant` is passed to `popup` or `label` (e.g., `polarMap(polar_data, "no2", popup = "no2")`). Pollutants in popups and labels now show their mean at each marker, labelled as such (e.g., "NO<sub>2</sub> (mean)"), whether one or several `popup` columns are given. Other numeric columns are averaged and labelled the same way, so a single non-pollutant numeric `popup` or `label` (e.g., `polarMap(polar_data, "nox", popup = "no2")`) no longer errors either.
 
 * `addPolarMarkers()` now drops rows where the chosen `pollutant` is missing, rather than where `no2` is missing. Previously, it would error if `data` did not contain a `no2` column.
 

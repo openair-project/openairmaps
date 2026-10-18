@@ -365,6 +365,21 @@ quick_popup <- function(data, popup, latitude, longitude, control) {
   )
 }
 
+#' Label numeric popup columns as averages, e.g., `"nox (mean)"`
+#'
+#' `buildPopup()` averages numeric columns at each marker, so unnamed numeric
+#' `popup` columns (other than the coordinates) are named to say so.
+#' @returns `popup`, with names added where needed.
+#' @noRd
+label_mean_popups <- function(popup, data, latitude, longitude) {
+  popup <- rlang::set_names(popup, rlang::names2(popup))
+  is_mean <- rlang::names2(popup) == "" &
+    !popup %in% c(latitude, longitude) &
+    purrr::map_lgl(popup, \(x) is.numeric(data[[x]]))
+  names(popup)[is_mean] <- paste(popup[is_mean], "(mean)")
+  popup
+}
+
 #' Format a number as an ordinal, e.g., `"1st"`, `"12th"` or `"95th"`
 #' @noRd
 ordinal <- function(x) {
