@@ -89,6 +89,7 @@ the <code>popup</code> argument of a function like <code><a href="polarMap.html"
 <span>     <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/round_date.html" class="external-link">floor_date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    <span class="st">"day"</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">" to "</span><span class="op">)</span></span>
 <span> <span class="op">}</span>,</span>
+<span>  name <span class="op">=</span> <span class="st">"popup"</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -152,6 +153,13 @@ deviation, and so on.</p></dd>
 <p><em>default:</em> <code>function(x) paste(lubridate::floor_date(range(x, na.rm = TRUE), "day"), collapse = " to ")</code></p>
 <p>The default presents the date as a range. Other statistics of interest
 could be the start or end of the dates.</p></dd>
+
+
+<dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
+<dd><p><em>The name for the new column.</em></p>
+<p><em>default:</em> <code>"popup"</code></p>
+<p>A character string for the name for the new column to be appended to
+<code>data</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

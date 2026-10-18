@@ -27,6 +27,7 @@ buildPopup(
      paste(lubridate::floor_date(range(x, na.rm = TRUE),
     "day"), collapse = " to ")
  },
+  name = "popup",
   ...
 )
 ```
@@ -105,6 +106,15 @@ buildPopup(
 
   The default presents the date as a range. Other statistics of interest
   could be the start or end of the dates.
+
+- name:
+
+  *The name for the new column.*
+
+  *default:* `"popup"`
+
+  A character string for the name for the new column to be appended to
+  `data`.
 
 - ...:
 

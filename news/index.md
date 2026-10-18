@@ -227,6 +227,13 @@
   and
   [`voronoiMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md).
 
+- [`buildPopup()`](https://openair-project.github.io/openairmaps/reference/buildPopup.md)
+  gains the `name` argument, which sets the name of the new popup column
+  (`"popup"` by default).
+  [`buildPopup()`](https://openair-project.github.io/openairmaps/reference/buildPopup.md)
+  now errors if this column already exists in `data`, rather than
+  returning duplicated `popup.x` and `popup.y` columns.
+
 - [`networkMap()`](https://openair-project.github.io/openairmaps/reference/networkMap.md)
   can now take any option passed to
   [`openair::importMeta()`](https://openair-project.github.io/openair/reference/importMeta.html).
@@ -279,6 +286,19 @@
 
 - [`diffMap()`](https://openair-project.github.io/openairmaps/reference/diffMap.md)
   no longer errors when multiple columns are passed to `popup`.
+
+- Columns of `data` named “popup” or “label” can now be used in the
+  `popup` and `label` arguments of the
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  family,
+  [`pointMap()`](https://openair-project.github.io/openairmaps/reference/pointMap.md),
+  [`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
+  and
+  [`voronoiMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md).
+  Previously, they could be overwritten by the package’s own popup and
+  label columns (e.g., `polarMap(popup = "label")` showed “NA” in every
+  popup, and `pointMap(popup = c("popup", "site"))` showed no popups at
+  all).
 
 - [`addPolarMarkers()`](https://openair-project.github.io/openairmaps/reference/addPolarMarkers.md)
   now drops rows where the chosen `pollutant` is missing, rather than
