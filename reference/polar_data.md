@@ -13,16 +13,21 @@ polar_data
 ## Format
 
 An object of class `tbl_df` (inherits from `tbl`, `data.frame`) with
-35040 rows and 13 columns.
+35040 rows and 14 columns.
 
 ## Source
 
 `polar_data` was compiled from data using the
-[`openair::importAURN()`](https://openair-project.github.io/openair/reference/importUKAQ-wrapper.html)
+[`openair::importUKAQ()`](https://openair-project.github.io/openair/reference/importUKAQ.html)
 function from the `openair` package with meteorological data from the
 `worldmet` package.
 
 ## Details
+
+- site,code:
+
+  The site name and code. Useful for use with the `popup` and `label`
+  arguments in `openairmaps` functions.
 
 - date:
 
@@ -31,19 +36,6 @@ function from the `openair` package with meteorological data from the
 - nox, no2, pm2.5, pm10:
 
   Pollutant concentrations
-
-- site:
-
-  The site name. Useful for use with the `popup` and `label` arguments
-  in `openairmaps` functions.
-
-- latitude, longitude:
-
-  Decimal latitude and longitude of the sites.
-
-- site.type:
-
-  Site type of the site (either "Urban Traffic" or "Urban Background").
 
 - wd:
 
@@ -61,23 +53,32 @@ function from the `openair` package with meteorological data from the
 
   Air temperature in degrees Celcius.
 
+- latitude, longitude:
+
+  Decimal latitude and longitude of the sites.
+
+- site.type:
+
+  Site type of the site (either "Urban Traffic" or "Urban Background").
+
 ## Examples
 
 ``` r
 polar_data
-#> # A tibble: 35,040 × 13
-#>    date                  nox   no2 pm2.5  pm10 site         lat    lon site_type
-#>    <dttm>              <dbl> <dbl> <dbl> <dbl> <chr>      <dbl>  <dbl> <chr>    
-#>  1 2009-01-01 00:00:00   113    46    42    46 London Bl…  51.5 -0.126 Urban Ba…
-#>  2 2009-01-01 01:00:00    40    32    45    49 London Bl…  51.5 -0.126 Urban Ba…
-#>  3 2009-01-01 02:00:00    48    36    43    46 London Bl…  51.5 -0.126 Urban Ba…
-#>  4 2009-01-01 03:00:00    36    29    37    NA London Bl…  51.5 -0.126 Urban Ba…
-#>  5 2009-01-01 04:00:00    40    32    36    38 London Bl…  51.5 -0.126 Urban Ba…
-#>  6 2009-01-01 05:00:00    50    36    33    32 London Bl…  51.5 -0.126 Urban Ba…
-#>  7 2009-01-01 06:00:00    50    34    33    36 London Bl…  51.5 -0.126 Urban Ba…
-#>  8 2009-01-01 07:00:00    53    34    31    32 London Bl…  51.5 -0.126 Urban Ba…
-#>  9 2009-01-01 08:00:00    80    50    27    30 London Bl…  51.5 -0.126 Urban Ba…
-#> 10 2009-01-01 09:00:00   111    59    28    32 London Bl…  51.5 -0.126 Urban Ba…
+#> # A tibble: 35,040 × 14
+#>    site            code  date                  nox   no2 pm2.5  pm10    wd    ws
+#>    <chr>           <chr> <dttm>              <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+#>  1 London Bloomsb… CLL2  2009-01-01 00:00:00   113    46    42    46  58.9  2.07
+#>  2 London Bloomsb… CLL2  2009-01-01 01:00:00    40    32    45    49  74.5  1.9 
+#>  3 London Bloomsb… CLL2  2009-01-01 02:00:00    48    36    43    46  30    1.55
+#>  4 London Bloomsb… CLL2  2009-01-01 03:00:00    36    29    37    NA  45    2.1 
+#>  5 London Bloomsb… CLL2  2009-01-01 04:00:00    40    32    36    38  70    1.5 
+#>  6 London Bloomsb… CLL2  2009-01-01 05:00:00    50    36    33    32  46.6  2.1 
+#>  7 London Bloomsb… CLL2  2009-01-01 06:00:00    50    34    33    36  60    2.6 
+#>  8 London Bloomsb… CLL2  2009-01-01 07:00:00    53    34    31    32  70    2.27
+#>  9 London Bloomsb… CLL2  2009-01-01 08:00:00    80    50    27    30  54.5  2.35
+#> 10 London Bloomsb… CLL2  2009-01-01 09:00:00   111    59    28    32  40    1.9 
 #> # ℹ 35,030 more rows
-#> # ℹ 4 more variables: wd <dbl>, ws <dbl>, visibility <dbl>, air_temp <dbl>
+#> # ℹ 5 more variables: visibility <dbl>, air_temp <dbl>, lat <dbl>, lon <dbl>,
+#> #   site_type <chr>
 ```
