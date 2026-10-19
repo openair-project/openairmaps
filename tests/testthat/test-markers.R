@@ -92,7 +92,13 @@ test_that("create_polar_markers() saves markers with transparent panels", {
       d.fig = 0.5,
       progress = FALSE
     )
-    max(png::readPNG(out$url[[1]])[,, 4])
+    img <- png::readPNG(out$url[[1]])
+    # some devices (e.g., on Linux) drop the alpha channel of fully opaque
+    # images, writing RGB or greyscale PNGs instead
+    if (length(dim(img)) < 3 || !dim(img)[3] %in% c(2, 4)) {
+      return(1)
+    }
+    max(img[,, dim(img)[3]])
   }
   expect_equal(max_alpha("default"), 0)
   expect_equal(max_alpha(NULL), 0)
