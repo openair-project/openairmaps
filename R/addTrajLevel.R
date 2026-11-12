@@ -96,7 +96,7 @@ addTrajLevel <-
       subtitle <- "% OF TRAJECTORIES"
       style <- leaflet::labelFormat(between = " to ", suffix = "%")
       pollutant <- "default_pollutant"
-      data[[pollutant]] <- pollutant
+      data[[pollutant]] <- 0L
     } else if (is.null(pollutant)) {
       cli::cli_abort(
         "{.arg pollutant} must be provided when {.arg statistic} is {.val {statistic}}."

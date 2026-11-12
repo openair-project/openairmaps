@@ -24,17 +24,21 @@ library(openairmaps)
 
 ```{r read}
 london_data <-
-  openair::importUKAQ(site = c("my1", "hors", "cll2"), year = 2020, meta = TRUE)
+  openair::importUKAQ(
+    site = c("my1", "hors", "cll2"),
+    year = 2020,
+    meta = TRUE,
+    source = "aurn"
+  )
 
 london_data
-
 names(london_data)
 ```
 
 To find sites to import data from, you can visualise and search UK monitoring networks using `networkMap()`.
 
 ```{r network}
-networkMap(source = c("aurn", "aqe"), year = 2020, control = "variable")
+networkMap(source = c("aurn", "saqd"), year = 2020)
 ```
 
 # Polar Plot Maps
