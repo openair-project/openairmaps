@@ -21,7 +21,12 @@ ensure that your data has coordinate data appended in a similar way.
 ``` r
 
 london_data <-
-  openair::importUKAQ(site = c("my1", "hors", "cll2"), year = 2020, meta = TRUE)
+  openair::importUKAQ(
+    site = c("my1", "hors", "cll2"),
+    year = 2020,
+    meta = TRUE,
+    source = "aurn"
+  )
 
 london_data
 #> # A tibble: 26,352 × 22
@@ -39,14 +44,13 @@ london_data
 #> 10 aurn   London … CLL2  2020-01-01 09:00:00 127.   41.6 55.5   2.05 3.18   42.1
 #> # ℹ 26,342 more rows
 #> # ℹ 12 more variables: pm2.5 <dbl>, v10 <dbl>, v2.5 <dbl>, nv10 <dbl>,
-#> #   nv2.5 <dbl>, ws <dbl>, wd <dbl>, air_temp <dbl>, co <dbl>, site_type <chr>,
+#> #   nv2.5 <dbl>, co <dbl>, ws <dbl>, wd <dbl>, air_temp <dbl>, site_type <chr>,
 #> #   latitude <dbl>, longitude <dbl>
-
 names(london_data)
 #>  [1] "source"    "site"      "code"      "date"      "nox"       "no2"      
 #>  [7] "no"        "o3"        "so2"       "pm10"      "pm2.5"     "v10"      
-#> [13] "v2.5"      "nv10"      "nv2.5"     "ws"        "wd"        "air_temp" 
-#> [19] "co"        "site_type" "latitude"  "longitude"
+#> [13] "v2.5"      "nv10"      "nv2.5"     "co"        "ws"        "wd"       
+#> [19] "air_temp"  "site_type" "latitude"  "longitude"
 ```
 
 To find sites to import data from, you can visualise and search UK
@@ -55,7 +59,7 @@ monitoring networks using
 
 ``` r
 
-networkMap(source = c("aurn", "aqe"), year = 2020, control = "variable")
+networkMap(source = c("aurn", "saqd"), year = 2020)
 ```
 
 ## Polar Plot Maps
