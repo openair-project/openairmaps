@@ -313,11 +313,9 @@ prepMapData <-
         )
 
       # make pollutant names factors, in the order they were given
-      data <-
-        dplyr::mutate(
-          .data = data,
-          pollutant_name = factor(.data$pollutant_name, levels = pollutant)
-        )
+      # (base R to avoid data masking - a "pollutant" column in `data` would
+      # otherwise shadow the `pollutant` argument)
+      data$pollutant_name <- factor(data$pollutant_name, levels = pollutant)
     }
 
     return(data)
