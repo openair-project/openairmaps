@@ -117,6 +117,8 @@ test_that("trajMap() and trajLevelMap() guess latitude and longitude", {
   map <- quietly(trajMap(renamed))
   expect_length(leaflet_calls(map, "addPolylines"), n_traj)
 
+  # openair::trajLevel() needs {rnaturalearth}, even without plotting
+  skip_if_not_installed("rnaturalearth")
   map <- quietly(trajLevelMap(renamed))
   expect_length(leaflet_calls(map, "addRectangles"), 1)
 })
@@ -216,6 +218,7 @@ test_that("addTrajPaths() only takes single colours", {
 # addTrajLevel() / trajLevelMap() ----------------------------------------------
 
 test_that("addTrajLevel() adds gridded trajectory frequencies", {
+  skip_if_not_installed("rnaturalearth")
   map <- leaflet::leaflet() |>
     addTrajLevel(data = traj, layerId = "grid") |>
     quietly()
@@ -226,6 +229,7 @@ test_that("addTrajLevel() adds gridded trajectory frequencies", {
 })
 
 test_that("addTrajLevel() supports other statistics", {
+  skip_if_not_installed("rnaturalearth")
   map <- leaflet::leaflet() |>
     addTrajLevel(data = traj, pollutant = "nox", statistic = "cwt") |>
     quietly()
@@ -262,6 +266,7 @@ test_that("addTrajLevel() supports other statistics", {
 })
 
 test_that("addTrajLevel() supports breaks, smoothing, type and no legend", {
+  skip_if_not_installed("rnaturalearth")
   map <- leaflet::leaflet() |>
     addTrajLevel(data = traj, breaks = c(0, 1, 10, 100)) |>
     quietly()
@@ -282,6 +287,7 @@ test_that("addTrajLevel() supports breaks, smoothing, type and no legend", {
 })
 
 test_that("trajLevelMap() makes a map", {
+  skip_if_not_installed("rnaturalearth")
   map <- quietly(trajLevelMap(traj, type = "hour", provider = "hotstyle"))
   expect_s3_class(map, "leaflet")
   expect_equal(leaflet_providers(map), "OpenStreetMap.HOT")
@@ -294,6 +300,7 @@ test_that("trajLevelMap() makes a map", {
 })
 
 test_that("trajLevelMap() passes `...` to openair::cutData()", {
+  skip_if_not_installed("rnaturalearth")
   map <- quietly(trajLevelMap(traj, type = "season", hemisphere = "southern"))
   groups <- leaflet_calls(map, "addRectangles")[[1]]$args[[6]]
   expect_true(all(grepl("autumn", groups)))

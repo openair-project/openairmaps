@@ -87,6 +87,13 @@ addTrajLevel <-
     legend.title.autotext = TRUE,
     ...
   ) {
+    # openair::trajLevel() requires {rnaturalearth} to draw its map, and
+    # checks for it even when no map is drawn - check here, so users know why
+    rlang::check_installed(
+      "rnaturalearth",
+      reason = "to calculate gridded trajectory statistics with `openair::trajLevel()`."
+    )
+
     # get titles/legend styles (and a shorter description for the popups)
     style <- leaflet::labelFormat()
     title <- ""
