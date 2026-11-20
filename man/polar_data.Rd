@@ -28,7 +28,7 @@ pollutant concentrations, location and meteorological data.
 \item{wd}{Wind direction, in degrees from North, as a numeric vector.}
 \item{ws}{Wind speed, in m/s, as numeric vector.}
 \item{visibility}{The visibility in metres.}
-\item{air_temp}{Air temperature in degrees Celcius.}
+\item{air_temp}{Air temperature in degrees Celsius.}
 \item{latitude, longitude}{Decimal latitude and longitude of the sites.}
 \item{site.type}{Site type of the site (either "Urban Traffic" or "Urban Background").}
 }
