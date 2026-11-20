@@ -432,6 +432,12 @@ properly, e.g., by subscripting the "2" in "NO2". Passed to <code><a href="https
 <dd><p>Used to set the title of the legend. The legend title is
 passed to <code><a href="https://openair-project.github.io/openair/reference/quickText.html" class="external-link">quickText()</a></code> if <code>auto.text = TRUE</code>.</p></dd>
 
+    <dt><code>key.columns,key.rows</code></dt>
+<dd><p>Number of columns or rows to be used in a
+categorical legend. With many categories a single column or row can make
+the key fit poorly in the plot. The user can thus choose to use several
+columns by setting <code>key.columns</code> to be less than the number of categories.</p></dd>
+
     <dt><code>plot</code></dt>
 <dd><p>When <code>openair</code> plots are created they are automatically printed
 to the active graphics device. <code>plot = FALSE</code> deactivates this behaviour.

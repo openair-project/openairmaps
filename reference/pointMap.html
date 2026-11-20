@@ -136,7 +136,7 @@ prohibited by this function.</p></dd>
 controls how this is achieved. Possible statistics include:</p><ul><li><p><code>"mean"</code>: the arithmetic mean (using <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">base::mean()</a></code>)</p></li>
 <li><p><code>"median"</code>: the median (middle) value (using <code><a href="https://rdrr.io/r/stats/median.html" class="external-link">stats::median()</a></code>)</p></li>
 <li><p><code>"max"</code>: the maximum value (using <code><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max()</a></code>)</p></li>
-<li><p><code>"min"</code>: the maximum value (using <code><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min()</a></code>)</p></li>
+<li><p><code>"min"</code>: the minimum value (using <code><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min()</a></code>)</p></li>
 <li><p><code>"sd"</code>: the standard deviation (using <code><a href="https://rdrr.io/r/stats/sd.html" class="external-link">stats::sd()</a></code>)</p></li>
 <li><p><code>"percentile"</code>: a percentile value, defined using the <code>percentile</code> argument (using <code><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">stats::quantile()</a></code>)</p></li>
 </ul><p>To show this value in marker popups or labels, include <code>pollutant</code> in
@@ -348,7 +348,7 @@ given. The length of <code>names</code> should therefore be equal to the length 
 <code>type</code>.</p></dd>
 
     <dt><code>suffix</code></dt>
-<dd><p>If <code>name</code> is not specified, <code>suffix</code> will be appended to any
+<dd><p>If <code>names</code> is not specified, <code>suffix</code> will be appended to any
 added columns that would otherwise overwrite existing columns. For example,
 <code>cutData(mydata, "nox", suffix = "_cuts")</code> would append a <code>nox_cuts</code> column
 rather than overwriting <code>nox</code>.</p></dd>
@@ -362,7 +362,8 @@ into seasons.</p></dd>
 
     <dt><code>wd.res</code></dt>
 <dd><p>The number of wind direction bins; one of <code>4</code> (N/E/S/W), <code>8</code>
-(N/NE/E/SE/etc., the default) or <code>16</code> (N/NNE/NE/ENE/etc.).</p></dd>
+(N/NE/E/SE/etc., the default), <code>16</code> (N/NNE/NE/ENE/etc.) or <code>32</code>
+(N/NbE/NNE/NEbN/etc.).</p></dd>
 
     <dt><code>start.day</code></dt>
 <dd><p>What day of the week should the <code>type = "weekday"</code> start on?

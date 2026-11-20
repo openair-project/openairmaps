@@ -108,7 +108,7 @@ openair. Available networks include:</p><ul><li><p><code>"aurn"</code>, The UK A
 <li><p><code>"imperial"</code>, Imperial College London (formerly King's College London) networks.</p></li>
 <li><p><code>"europe"</code>, European AirBase/e-reporting data.</p></li>
 </ul><p>There are two additional options provided for convenience:</p><ul><li><p><code>"ukaq"</code> will return metadata for all networks for which data is imported by importUKAQ() (i.e., AURN, AQE, SAQN, WAQN, NI, and the local networks).</p></li>
-<li><p><code>"all"</code> will import all available metadata (i.e., "ukaq" plus "kcl" and "europe").</p></li>
+<li><p><code>"all"</code> will import all available metadata (i.e., "ukaq" plus "imperial" and "europe").</p></li>
 </ul></dd>
 
 
@@ -139,9 +139,9 @@ their name).</p></dd>
 
     <dt><code>lat,lng</code></dt>
 <dd><p>Decimal latitude (<code>lat</code>) and longitude (<code>lng</code>) (or other Y/X
-coordinate if using a different <code>crs</code>). If provided, the data will be
-returned with a <code>distance_km</code> column displaying the distance of each
-station from the target coordinate. The data will also be automatically
+coordinate if using a different <code>crs</code>). Both must be single numbers. If
+provided, the data will be returned with a <code>distance_km</code> column displaying
+the distance of each station from the target coordinate. The data will also be automatically
 sorted by this column.</p></dd>
 
     <dt><code>crs</code></dt>
@@ -156,7 +156,8 @@ metadata.</p></dd>
 <dd><p>If <code>lat</code> and <code>lng</code> are provided, <code>max_dist</code> and <code>max_n</code>
 further filter the metadata. <code>max_dist</code> defines a maximum distance from the
 target coordinate in kilometers, and <code>max_n</code> a maximum number of sites to
-be returned. <code>max_n</code> is applied after <code>max_dist</code>.</p></dd>
+be returned. <code>max_n</code> is applied after <code>max_dist</code>. Both are ignored, with a
+warning, if <code>lat</code> and <code>lng</code> are not provided.</p></dd>
 
 
 </dl></dd>
@@ -205,7 +206,7 @@ the side of the map?</p></dd>
 <p><em>default:</em> <code>"topright"</code></p>
 <p>Where should the shared legend be placed? One of "topleft", "topright",
 "bottomleft" or "bottomright". Passed to the <code>position</code> argument of
-<code><a href="https://rstudio.github.io/leaflet/reference/addLayersControl.html" class="external-link">leaflet::addLayersControl()</a></code>.</p></dd>
+<code><a href="https://rstudio.github.io/leaflet/reference/addLegend.html" class="external-link">leaflet::addLegend()</a></code>.</p></dd>
 
 
 <dt id="arg-control-collapsed">control.collapsed<a class="anchor" aria-label="anchor" href="#arg-control-collapsed"></a></dt>
@@ -235,7 +236,7 @@ argument of <code><a href="https://rstudio.github.io/leaflet/reference/addLayers
 <span class="r-in"><span><span class="fu">networkMap</span><span class="op">(</span>source <span class="op">=</span> <span class="st">"aurn"</span>, control <span class="op">=</span> <span class="st">"site_type"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># view multiple networks, grouped by network</span></span></span>
-<span class="r-in"><span><span class="fu">networkMap</span><span class="op">(</span>source <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"aurn"</span>, <span class="st">"waqn"</span>, <span class="st">"saqn"</span><span class="op">)</span>, control <span class="op">=</span> <span class="st">"network"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">networkMap</span><span class="op">(</span>source <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"aurn"</span>, <span class="st">"waqn"</span>, <span class="st">"saqn"</span><span class="op">)</span>, control <span class="op">=</span> <span class="st">"source"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

@@ -60,8 +60,8 @@ networkMap(
     imported by importUKAQ() (i.e., AURN, AQE, SAQN, WAQN, NI, and the
     local networks).
 
-  - `"all"` will import all available metadata (i.e., "ukaq" plus "kcl"
-    and "europe").
+  - `"all"` will import all available metadata (i.e., "ukaq" plus
+    "imperial" and "europe").
 
 - ...:
 
@@ -102,10 +102,11 @@ networkMap(
   `lat,lng`
 
   :   Decimal latitude (`lat`) and longitude (`lng`) (or other Y/X
-      coordinate if using a different `crs`). If provided, the data will
-      be returned with a `distance_km` column displaying the distance of
-      each station from the target coordinate. The data will also be
-      automatically sorted by this column.
+      coordinate if using a different `crs`). Both must be single
+      numbers. If provided, the data will be returned with a
+      `distance_km` column displaying the distance of each station from
+      the target coordinate. The data will also be automatically sorted
+      by this column.
 
   `crs`
 
@@ -123,7 +124,8 @@ networkMap(
   :   If `lat` and `lng` are provided, `max_dist` and `max_n` further
       filter the metadata. `max_dist` defines a maximum distance from
       the target coordinate in kilometers, and `max_n` a maximum number
-      of sites to be returned. `max_n` is applied after `max_dist`.
+      of sites to be returned. `max_n` is applied after `max_dist`. Both
+      are ignored, with a warning, if `lat` and `lng` are not provided.
 
 - control:
 
@@ -188,7 +190,7 @@ networkMap(
   Where should the shared legend be placed? One of "topleft",
   "topright", "bottomleft" or "bottomright". Passed to the `position`
   argument of
-  [`leaflet::addLayersControl()`](https://rstudio.github.io/leaflet/reference/addLayersControl.html).
+  [`leaflet::addLegend()`](https://rstudio.github.io/leaflet/reference/addLegend.html).
 
 - control.collapsed:
 
@@ -222,6 +224,6 @@ if (FALSE) { # \dontrun{
 networkMap(source = "aurn", control = "site_type")
 
 # view multiple networks, grouped by network
-networkMap(source = c("aurn", "waqn", "saqn"), control = "network")
+networkMap(source = c("aurn", "waqn", "saqn"), control = "source")
 } # }
 ```

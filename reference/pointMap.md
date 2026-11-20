@@ -86,7 +86,7 @@ pointMap(
   - `"max"`: the maximum value (using
     [`max()`](https://rdrr.io/r/base/Extremes.html))
 
-  - `"min"`: the maximum value (using
+  - `"min"`: the minimum value (using
     [`min()`](https://rdrr.io/r/base/Extremes.html))
 
   - `"sd"`: the standard deviation (using
@@ -394,8 +394,8 @@ pointMap(
 
   `suffix`
 
-  :   If `name` is not specified, `suffix` will be appended to any added
-      columns that would otherwise overwrite existing columns. For
+  :   If `names` is not specified, `suffix` will be appended to any
+      added columns that would otherwise overwrite existing columns. For
       example, `cutData(mydata, "nox", suffix = "_cuts")` would append a
       `nox_cuts` column rather than overwriting `nox`.
 
@@ -411,7 +411,8 @@ pointMap(
   `wd.res`
 
   :   The number of wind direction bins; one of `4` (N/E/S/W), `8`
-      (N/NE/E/SE/etc., the default) or `16` (N/NNE/NE/ENE/etc.).
+      (N/NE/E/SE/etc., the default), `16` (N/NNE/NE/ENE/etc.) or `32`
+      (N/NbE/NNE/NEbN/etc.).
 
   `start.day`
 
