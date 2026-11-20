@@ -37,19 +37,12 @@ The `PostcodesioR` package at
 ## Examples
 
 ``` r
-# convert a UK postcode
-convertPostcode("SW1A1AA")
-#> $lat
-#> [1] 51.50101
-#> 
-#> $lng
-#> [1] -0.141563
-#> 
-#> $postcode
-#> [1] "SW1A 1AA"
-#> 
-
+rlang::is_installed(c("curl", "jsonlite"))
+#> [1] TRUE
 if (FALSE) { # \dontrun{
+# convert a UK postcode (needs an internet connection)
+convertPostcode("SW1A1AA")
+
 # use with `networkMap()`
 palace <- convertPostcode("SW1A1AA")
 networkMap("aurn", lat = palace$lat, lng = palace$lng, max_dist = 10)

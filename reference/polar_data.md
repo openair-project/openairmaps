@@ -51,7 +51,7 @@ function from the `openair` package with meteorological data from the
 
 - air_temp:
 
-  Air temperature in degrees Celcius.
+  Air temperature in degrees Celsius.
 
 - latitude, longitude:
 

@@ -350,6 +350,13 @@
   suffix for `percentile` (e.g., `"11th"` rather than `"11st"`, `"1st"`
   rather than `"1th"`, and `"92.5th"` rather than `"92.5nd"`).
 
+- [`trajLevelMap()`](https://openair-project.github.io/openairmaps/reference/trajLevelMap.md)
+  now explains that
+  [rnaturalearth](https://docs.ropensci.org/rnaturalearth/) is needed
+  (by
+  [`openair::trajLevel()`](https://openair-project.github.io/openair/reference/trajLevel.html))
+  if it isn’t installed.
+
 - [`addTrajPaths()`](https://openair-project.github.io/openairmaps/reference/addTrajPaths.md)
   popups now respect `lng` and `lat`. Previously, the latitude and
   longitude were blank unless the columns were called “lon” and “lat”.
