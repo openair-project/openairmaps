@@ -93,11 +93,15 @@ freqMap <- function(
 ) {
   map <- polar_map_init(data, ...)
 
-  # allow no pollutant when statistic = "frequency"
+  # allow no pollutant when statistic = "frequency" - the rest of the package
+  # needs a column to reshape and split the markers by, but this placeholder
+  # must not be passed to openair (see `polar_freq_count()`)
+  fun <- openair::polarFreq
   if (statistic == "frequency") {
-    data$dummy <- seq_len(nrow(data))
+    data$.frequency <- 1L
     lab <- "Frequency"
-    pollutant <- "dummy"
+    pollutant <- ".frequency"
+    fun <- polar_freq_count
   } else {
     lab <- pollutant
   }
@@ -116,7 +120,7 @@ freqMap <- function(
     fixed = pretty(
       rlang::exec(
         fixed_scale_data,
-        openair::polarFreq,
+        fun,
         data,
         pollutant = pollutant,
         latitude = map$latitude,
@@ -133,7 +137,7 @@ freqMap <- function(
 
   polar_map_draw(
     map,
-    fun = openair::polarFreq,
+    fun = fun,
     fun_args = list(
       pollutant = "conc",
       breaks = theBreaks,
@@ -150,4 +154,17 @@ freqMap <- function(
     },
     legend_str = lab
   )
+}
+
+#' `openair::polarFreq()`, without a pollutant
+#'
+#' openair counts the measurements in each bin itself when `statistic =
+#' "frequency"`, and errors (or, with a warning, switches to `statistic =
+#' "mean"`) if a `pollutant` is given. `freqMap()` still needs a placeholder
+#' pollutant column for its own data preparation, so this drops it before
+#' calling openair. Defined at the top level (rather than inside `freqMap()`)
+#' so it can be sent to parallel workers without the calling environment.
+#' @noRd
+polar_freq_count <- function(mydata, pollutant = NULL, ...) {
+  openair::polarFreq(mydata, ...)
 }

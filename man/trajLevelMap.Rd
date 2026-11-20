@@ -186,7 +186,7 @@ their \code{type} option. Specifying \code{names} defines other names for the
 columns, which map onto the \code{type} options in the same order they are
 given. The length of \code{names} should therefore be equal to the length of
 \code{type}.}
-    \item{\code{suffix}}{If \code{name} is not specified, \code{suffix} will be appended to any
+    \item{\code{suffix}}{If \code{names} is not specified, \code{suffix} will be appended to any
 added columns that would otherwise overwrite existing columns. For example,
 \code{cutData(mydata, "nox", suffix = "_cuts")} would append a \code{nox_cuts} column
 rather than overwriting \code{nox}.}
@@ -194,7 +194,8 @@ rather than overwriting \code{nox}.}
 into seasons.}
     \item{\code{n.levels}}{Number of quantiles to split numeric data into.}
     \item{\code{wd.res}}{The number of wind direction bins; one of \code{4} (N/E/S/W), \code{8}
-(N/NE/E/SE/etc., the default) or \code{16} (N/NNE/NE/ENE/etc.).}
+(N/NE/E/SE/etc., the default), \code{16} (N/NNE/NE/ENE/etc.) or \code{32}
+(N/NbE/NNE/NEbN/etc.).}
     \item{\code{start.day}}{What day of the week should the \code{type = "weekday"} start on?
 The user can change the start day by supplying an integer between 0 and 6.
 Sunday = 0, Monday = 1, ... For example to start the weekday plots on a

@@ -195,9 +195,9 @@ add_polar_markers <- function(
   )
 
   # one marker per location, so use a dummy split_col
-  data$dummyvar <- "dummyvar"
+  data$.dummyvar <- "dummyvar"
   if (!is.null(after)) {
-    after$dummyvar <- "dummyvar"
+    after$.dummyvar <- "dummyvar"
   }
 
   # plot and save static markers
@@ -216,7 +216,7 @@ add_polar_markers <- function(
       after = after,
       latitude = latlon$latitude,
       longitude = latlon$longitude,
-      split_col = "dummyvar",
+      split_col = ".dummyvar",
       d.fig = args$d.fig,
       popup = args$popup,
       label = args$label,

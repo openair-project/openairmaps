@@ -98,7 +98,9 @@ a \link[dplyr:tibble]{tibble}
 Group a dataframe together by latitude/longitude columns and create a HTML
 popup with user-defined columns. By default, the unique values of character
 columns are collapsed into comma-separated lists, numeric columns are
-averaged, and date columns are presented as a range. This function returns
+averaged, and date columns are presented as a range. The latitude and
+longitude columns can also be included, and are shown as-is. Each column's
+label (but not its value) is formatted using \code{\link[=quickTextHTML]{quickTextHTML()}}. This function returns
 the input dataframe appended with a "popup" column, which can then be used in
 the \code{popup} argument of a function like \code{\link[=polarMap]{polarMap()}}.
 }

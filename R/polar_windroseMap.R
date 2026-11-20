@@ -87,9 +87,13 @@ windroseMap <- function(
   map <- polar_map_init(data, ...)
 
   # need to put ws in a separate column to work with the rest of openairmaps
-  # utilities...
-  data$ws_dup <- data$ws
-  map <- polar_map_prep(map, data, "ws_dup", c("ws", "wd"))
+  # utilities... (checking first, so a missing `ws` doesn't give an error about
+  # this internal column)
+  if (!"ws" %in% names(data)) {
+    cli::cli_abort("Can't find the variable {.field ws} in {.arg data}.")
+  }
+  data$.ws <- data$ws
+  map <- polar_map_prep(map, data, ".ws", c("ws", "wd"))
 
   # work out breaks - needs to happen before plotting to ensure same scales
   breaks <- getBreaks(breaks, ws.int, map$data$conc, polrose = FALSE)

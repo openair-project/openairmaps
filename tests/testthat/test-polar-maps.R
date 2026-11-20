@@ -207,6 +207,46 @@ test_that("freqMap() makes maps", {
   expect_error(quietly(freqMap(polar, "nox", breaks = "foo")), "breaks")
 })
 
+test_that("freqMap(statistic = 'frequency') counts measurements", {
+  # openair warns (and plots the mean of the placeholder column instead) if a
+  # pollutant is given with statistic = "frequency"
+  expect_no_warning(
+    out <- polar_freq_count(
+      one_site,
+      pollutant = ".frequency",
+      statistic = "frequency",
+      plot = FALSE
+    )
+  )
+  expected <- openair::polarFreq(one_site, statistic = "frequency", plot = FALSE)
+  expect_equal(out$data$weights, expected$data$weights)
+
+  # shared breaks are worked out from the counts, too
+  expect_no_warning(
+    map <- suppressMessages(freqMap(
+      polar,
+      statistic = "frequency",
+      breaks = "fixed",
+      d.fig = fig,
+      progress = FALSE
+    ))
+  )
+  labels <- leaflet_legends(map)[[1]]$labels
+  upper <- as.numeric(sub(".* to ", "", labels[[length(labels)]]))
+  expect_lte(upper, max(expected$data$weights) * 2)
+
+  # the placeholder doesn't overwrite a column of `data`
+  data <- dplyr::mutate(polar, dummy = "keep me")
+  map <- quietly(freqMap(
+    data,
+    statistic = "frequency",
+    popup = "dummy",
+    d.fig = fig,
+    progress = FALSE
+  ))
+  expect_equal(unique(leaflet_calls(map, "addMarkers")[[1]]$args[[7]]), "keep me")
+})
+
 test_that("freqMap() allows trans with fixed breaks", {
   map <- quietly(freqMap(
     polar,
@@ -310,6 +350,12 @@ test_that("windroseMap() makes maps", {
   ))
   expect_s3_class(map, "leaflet")
   expect_equal(leaflet_legends(map)[[1]]$title, "Wind Speed")
+
+  # a missing `ws` column is reported as such
+  expect_error(
+    quietly(windroseMap(dplyr::select(polar, -"ws"), progress = FALSE)),
+    "Can't find the variable ws"
+  )
 
   skip_if_not_installed("ggspatial")
   map <- quietly(windroseMap(

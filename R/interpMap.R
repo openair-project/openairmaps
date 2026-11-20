@@ -66,7 +66,7 @@
 #'   - `"mean"`: the arithmetic mean (using [base::mean()])
 #'   - `"median"`: the median (middle) value (using [stats::median()])
 #'   - `"max"`: the maximum value (using [max()])
-#'   - `"min"`: the maximum value (using [min()])
+#'   - `"min"`: the minimum value (using [min()])
 #'   - `"sd"`: the standard deviation (using [stats::sd()])
 #'   - `"percentile"`: a percentile value, defined using the `percentile` argument (using [stats::quantile()])
 #'

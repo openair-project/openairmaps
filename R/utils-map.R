@@ -563,14 +563,16 @@ create_polar_markers <-
 
     dims <- marker_dims(d.fig)
 
-    # create and save plots
-    plots_df$plot <-
+    # create and save plots - markers openair can't draw (e.g., with too little
+    # data) are skipped, but their errors are kept to explain an empty map
+    results <-
       purrr::pmap(
         .l = dplyr::select(plots_df, dplyr::any_of(c("data", "after", "url"))),
         .f = purrr::in_parallel(
           function(data, url, after = NULL) {
+            # errors are returned (rather than thrown) so they can be reported
             openair_obj <- tryCatch(
-              error = function(cnd) {},
+              error = function(cnd) cnd,
               # (not `rlang::exec(!!!)`, as in_parallel() would inject it
               # too early)
               if (is.null(after)) {
@@ -580,7 +582,11 @@ create_polar_markers <-
               }
             )
 
-            if (!is.null(openair_obj)) {
+            if (inherits(openair_obj, "error")) {
+              return(list(data = NULL, error = conditionMessage(openair_obj)))
+            } else if (is.null(openair_obj)) {
+              return(list(data = NULL, error = NA_character_))
+            } else {
               # save plot
               ggplot2::ggsave(
                 plot = openair_obj$plot +
@@ -596,7 +602,7 @@ create_polar_markers <-
                 dpi = 72,
                 bg = "transparent"
               )
-              return(openair_obj$data)
+              return(list(data = openair_obj$data, error = NA_character_))
             }
           },
           fun = fun,
@@ -606,8 +612,35 @@ create_polar_markers <-
         .progress = progress
       )
 
+    plots_df$plot <- lapply(results, `[[`, "data")
+    plots_df$.error <- vapply(results, `[[`, character(1), "error")
+
     return(plots_df)
   }
+
+#' Explain why no polar markers could be drawn
+#'
+#' Errors (or warns, if `abort = FALSE`), including the first error given by
+#' openair (if any).
+#' @param errors The `.error` column of `create_polar_markers()`'s output.
+#' @noRd
+signal_no_markers <- function(
+  errors,
+  abort = TRUE,
+  call = rlang::caller_env()
+) {
+  errors <- unique(errors[!is.na(errors)])
+  msg <- c("!" = "No valid polar markers were created.")
+  if (length(errors) > 0) {
+    error <- errors[[1]]
+    msg <- c(msg, "i" = "{.pkg openair} gave the error: {error}")
+  }
+  if (abort) {
+    cli::cli_abort(msg, call = call)
+  } else {
+    cli::cli_warn(msg, call = call)
+  }
+}
 
 #' Attach rendered marker icons to a leaflet map
 #'
@@ -654,10 +687,11 @@ attach_marker_icons <-
     options$opacity <- alpha
 
     # drop data where no plot was created
+    errors <- data$.error
     data <- data[has_plot(data), ]
 
     if (nrow(data) == 0L) {
-      cli::cli_warn("No valid polar markers were created.")
+      signal_no_markers(errors, abort = FALSE)
       return(map)
     }
 
@@ -1024,10 +1058,11 @@ create_static_map <-
     dims <- marker_dims(d.icon)
 
     # drop data where no plot was created
+    errors <- plots_df$.error
     plots_df <- plots_df[has_plot(plots_df), ]
 
     if (nrow(plots_df) == 0L) {
-      cli::cli_abort("No valid polar markers were created.")
+      signal_no_markers(errors)
     }
 
     # don't turn facet levels into chr, keep as fct

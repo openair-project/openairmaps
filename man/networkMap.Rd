@@ -37,7 +37,7 @@ openair. Available networks include:
 There are two additional options provided for convenience:
 \itemize{
 \item \code{"ukaq"} will return metadata for all networks for which data is imported by importUKAQ() (i.e., AURN, AQE, SAQN, WAQN, NI, and the local networks).
-\item \code{"all"} will import all available metadata (i.e., "ukaq" plus "kcl" and "europe").
+\item \code{"all"} will import all available metadata (i.e., "ukaq" plus "imperial" and "europe").
 }}
 
 \item{...}{
@@ -62,9 +62,9 @@ case-insensitive. \code{code} and \code{site_type} are matched exactly, but \cod
 return data for \code{"Sunderland"}, \code{"Sunderland Silksworth"} and \code{"Sunderland Wessington Way"} (plus any future sites with the string \code{"Sunderland"} in
 their name).}
     \item{\code{lat,lng}}{Decimal latitude (\code{lat}) and longitude (\code{lng}) (or other Y/X
-coordinate if using a different \code{crs}). If provided, the data will be
-returned with a \code{distance_km} column displaying the distance of each
-station from the target coordinate. The data will also be automatically
+coordinate if using a different \code{crs}). Both must be single numbers. If
+provided, the data will be returned with a \code{distance_km} column displaying
+the distance of each station from the target coordinate. The data will also be automatically
 sorted by this column.}
     \item{\code{crs}}{The coordinate reference system (CRS) of the data, passed to
 \code{\link[sf:st_crs]{sf::st_crs()}}. By default this is \href{https://epsg.io/4326}{EPSG:4326}, the
@@ -75,7 +75,8 @@ metadata.}
     \item{\code{max_dist,max_n}}{If \code{lat} and \code{lng} are provided, \code{max_dist} and \code{max_n}
 further filter the metadata. \code{max_dist} defines a maximum distance from the
 target coordinate in kilometers, and \code{max_n} a maximum number of sites to
-be returned. \code{max_n} is applied after \code{max_dist}.}
+be returned. \code{max_n} is applied after \code{max_dist}. Both are ignored, with a
+warning, if \code{lat} and \code{lng} are not provided.}
   }}
 
 \item{control}{\emph{Option to create a 'layer control' menu.}
@@ -124,7 +125,7 @@ the side of the map?}
 
 Where should the shared legend be placed? One of "topleft", "topright",
 "bottomleft" or "bottomright". Passed to the \code{position} argument of
-\code{\link[leaflet:addLayersControl]{leaflet::addLayersControl()}}.}
+\code{\link[leaflet:addLegend]{leaflet::addLegend()}}.}
 
 \item{control.collapsed}{\emph{Show the layer control as a collapsed?}
 
@@ -159,7 +160,7 @@ of \code{all} and \code{duplicate}.
 networkMap(source = "aurn", control = "site_type")
 
 # view multiple networks, grouped by network
-networkMap(source = c("aurn", "waqn", "saqn"), control = "network")
+networkMap(source = c("aurn", "waqn", "saqn"), control = "source")
 }
 
 }

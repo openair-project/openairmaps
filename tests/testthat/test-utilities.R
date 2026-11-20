@@ -68,6 +68,28 @@ test_that("buildPopup() supports all column types and custom summaries", {
   )
 })
 
+test_that("buildPopup() can show the coordinates", {
+  data <- dplyr::mutate(popup_data, lat = .data$lat + 0.123456)
+  out <- quietly(buildPopup(data, c("site", "Lat" = "lat", "lon")))
+  expect_equal(names(out), c(names(data), "popup"))
+  expect_equal(out$lat, data$lat)
+  # shown as-is, rather than via fun.numeric
+  expect_equal(popup_text(out$popup[[3]]), "site: B; Lat: 2.123456; lon: 2")
+
+  # also with type
+  out <- quietly(buildPopup(data, c("Lat" = "lat"), type = "type"))
+  expect_setequal(popup_text(out$popup), c("Lat: 1.123456", "Lat: 2.123456"))
+})
+
+test_that("buildPopup() only formats labels, not values", {
+  data <- dplyr::mutate(popup_data, answer = "No", no2 = "no2")
+  out <- quietly(buildPopup(data, c("answer", "no2")))
+  expect_equal(
+    popup_text(out$popup[[1]]),
+    "answer: No; NO<sub>2</sub>: no2"
+  )
+})
+
 test_that("buildPopup() summarises separately by type", {
   out <- quietly(buildPopup(popup_data, "nox", type = "type"))
   expect_equal(nrow(out), 3)

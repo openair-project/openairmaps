@@ -348,6 +348,10 @@ axis labels will automatically try and format pollutant names and units
 properly, e.g., by subscripting the "2" in "NO2". Passed to \code{\link[openair:quickText]{quickText()}}.}
     \item{\code{key.title}}{Used to set the title of the legend. The legend title is
 passed to \code{\link[openair:quickText]{quickText()}} if \code{auto.text = TRUE}.}
+    \item{\code{key.columns,key.rows}}{Number of columns or rows to be used in a
+categorical legend. With many categories a single column or row can make
+the key fit poorly in the plot. The user can thus choose to use several
+columns by setting \code{key.columns} to be less than the number of categories.}
     \item{\code{plot}}{When \code{openair} plots are created they are automatically printed
 to the active graphics device. \code{plot = FALSE} deactivates this behaviour.
 This may be useful when the plot \emph{data} is of more interest, or the plot is

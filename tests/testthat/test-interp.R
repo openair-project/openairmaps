@@ -331,6 +331,14 @@ test_that("site average maps can have popups and labels", {
     "^Name: Site [0-9]; Site Type: (Urban|Rural)$"
   )
 
+  # ...including the coordinates
+  map <- quietly(pointMap(data, "nox", popup = c("name", "lat")))
+  popups <- leaflet_calls(map, "addCircleMarkers")[[1]]$args[[9]]
+  expect_setequal(
+    popup_text(popups),
+    paste0("Name: Site ", 1:6, "; Lat: ", 51 + (1:6 %% 3) / 2)
+  )
+
   # popups must be unique per site
   data$rep_chr <- paste("Rep", data$rep)
   expect_error(pointMap(data, "nox", popup = "rep_chr"), "Multiple popups")

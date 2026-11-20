@@ -25,7 +25,7 @@
 #'
 #'   There are two additional options provided for convenience:
 #'    - `"ukaq"` will return metadata for all networks for which data is imported by importUKAQ() (i.e., AURN, AQE, SAQN, WAQN, NI, and the local networks).
-#'    - `"all"` will import all available metadata (i.e., "ukaq" plus "kcl" and "europe").
+#'    - `"all"` will import all available metadata (i.e., "ukaq" plus "imperial" and "europe").
 #'
 #' @inheritDotParams openair::importMeta -all -duplicate -source
 #'
@@ -74,7 +74,7 @@
 #'
 #'   Where should the shared legend be placed? One of "topleft", "topright",
 #'   "bottomleft" or "bottomright". Passed to the `position` argument of
-#'   [leaflet::addLayersControl()].
+#'   [leaflet::addLegend()].
 #'
 #' @param control.collapsed *Show the layer control as a collapsed?*
 #'
@@ -102,7 +102,7 @@
 #' networkMap(source = "aurn", control = "site_type")
 #'
 #' # view multiple networks, grouped by network
-#' networkMap(source = c("aurn", "waqn", "saqn"), control = "network")
+#' networkMap(source = c("aurn", "waqn", "saqn"), control = "source")
 #' }
 #'
 networkMap <-

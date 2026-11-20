@@ -92,7 +92,9 @@ quickTextHTML <- function(text) {
 #' Group a dataframe together by latitude/longitude columns and create a HTML
 #' popup with user-defined columns. By default, the unique values of character
 #' columns are collapsed into comma-separated lists, numeric columns are
-#' averaged, and date columns are presented as a range. This function returns
+#' averaged, and date columns are presented as a range. The latitude and
+#' longitude columns can also be included, and are shown as-is. Each column's
+#' label (but not its value) is formatted using [quickTextHTML()]. This function returns
 #' the input dataframe appended with a "popup" column, which can then be used in
 #' the `popup` argument of a function like [polarMap()].
 #'
@@ -205,43 +207,55 @@ buildPopup <-
     latitude <- latlon$latitude
     longitude <- latlon$longitude
 
+    # group by copies of the coordinates, so `columns` can include (and rename)
+    # the coordinates themselves
+    keys <- c(".popup_lat", ".popup_lng")
+    coords <- c(latitude, longitude)
+
     make_popup <- function(data) {
-      # multiple columns
+      data[keys] <- data[coords]
+
+      # multiple columns - coordinates are shown as-is, as they're the same for
+      # every row in a group
       summary <-
         data |>
-        dplyr::select(dplyr::all_of(c(
-          latitude,
-          longitude,
-          as.vector(columns)
-        ))) |>
-        dplyr::group_by(.data[[latitude]], .data[[longitude]]) |>
+        dplyr::select(dplyr::all_of(c(keys, as.vector(columns)))) |>
+        dplyr::group_by(dplyr::across(dplyr::all_of(keys))) |>
         dplyr::summarise(
+          dplyr::across(dplyr::any_of(coords), dplyr::first),
           dplyr::across(
-            dplyr::where(is.character) |
+            (dplyr::where(is.character) |
               dplyr::where(is.factor) |
-              dplyr::where(is.logical),
+              dplyr::where(is.logical)) &
+              !dplyr::any_of(coords),
             fun.character
           ),
-          dplyr::across(dplyr::where(is.numeric), fun.numeric),
           dplyr::across(
-            dplyr::where(lubridate::is.POSIXct) |
-              dplyr::where(lubridate::is.Date),
+            dplyr::where(is.numeric) & !dplyr::any_of(coords),
+            fun.numeric
+          ),
+          dplyr::across(
+            (dplyr::where(lubridate::is.POSIXct) |
+              dplyr::where(lubridate::is.Date)) &
+              !dplyr::any_of(coords),
             fun.dttm
           ),
           .groups = "drop"
         ) |>
         # keep the order of `columns`, not the order of the column types
-        dplyr::select(dplyr::all_of(c(latitude, longitude, as.vector(columns))))
+        dplyr::select(dplyr::all_of(c(keys, as.vector(columns))))
 
       if (!is.null(names(columns))) {
         names(columns)[names(columns) == ""] <- columns[names(columns) == ""]
         summary <- dplyr::rename(summary, dplyr::all_of(columns))
       }
 
-      # one label/value row per column, styled like the other package popups
-      values <- dplyr::select(summary, -dplyr::all_of(c(latitude, longitude)))
+      # one label/value row per column, styled like the other package popups -
+      # only the labels are formatted, as the values are the user's data (e.g.,
+      # "No" shouldn't become "NO")
+      values <- dplyr::select(summary, -dplyr::all_of(keys))
       rows <- Map(
-        \(value, name) popup_row(quickTextHTML(name), quickTextHTML(value)),
+        \(value, name) popup_row(quickTextHTML(name), value),
         values,
         names(values)
       )
@@ -249,9 +263,10 @@ buildPopup <-
 
       dplyr::left_join(
         data,
-        summary[c(latitude, longitude, name)],
-        by = c(latitude, longitude)
-      )
+        summary[c(keys, name)],
+        by = keys
+      ) |>
+        dplyr::select(-dplyr::all_of(keys))
     }
 
     if (!is.null(type)) {

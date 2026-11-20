@@ -439,6 +439,10 @@ for several pollutants on different scales e.g. NOx and CO. Often useful if
 more than one \code{pollutant} is chosen.}
     \item{\code{key.title}}{Used to set the title of the legend. The legend title is
 passed to \code{\link[openair:quickText]{quickText()}} if \code{auto.text = TRUE}.}
+    \item{\code{key.columns,key.rows}}{Number of columns or rows to be used in a
+categorical legend. With many categories a single column or row can make
+the key fit poorly in the plot. The user can thus choose to use several
+columns by setting \code{key.columns} to be less than the number of categories.}
     \item{\code{auto.text}}{Either \code{TRUE} (default) or \code{FALSE}. If \code{TRUE} titles and
 axis labels will automatically try and format pollutant names and units
 properly, e.g., by subscripting the "2" in "NO2". Passed to \code{\link[openair:quickText]{quickText()}}.}

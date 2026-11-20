@@ -165,6 +165,19 @@ test_that("attach_marker_icons() warns if no markers could be plotted", {
     "No valid polar markers"
   )
   expect_length(leaflet_calls(map, "addMarkers"), 0)
+
+  # openair's reason is passed on
+  expect_equal(unique(plots_df$.error), "Not enough data")
+  expect_warning(
+    attach_marker_icons(
+      leaflet::leaflet(),
+      data = plots_df,
+      latitude = "lat",
+      longitude = "lon",
+      d.icon = 50
+    ),
+    "Not enough data"
+  )
 })
 
 test_that("make_leaflet_map() keeps groups aligned when plots fail", {
@@ -300,7 +313,7 @@ test_that("create_static_map() errors if no markers could be plotted", {
       api_key = NULL,
       alpha = 1
     ),
-    "No valid polar markers"
+    "No valid polar markers(.|\n)*Not enough data"
   )
 })
 
