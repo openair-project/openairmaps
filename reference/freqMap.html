@@ -501,7 +501,9 @@ to a file).</p></dd>
 marker needs to be plot individually, and many of these require some
 expensive computations. <code>openairmaps</code> supports parallel processing with
 <code>{mirai}</code> to speed these computations up. Users may create workers by
-running <code><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">mirai::daemons()</a></code> in their R session.</p>
+running <code><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">mirai::daemons()</a></code> in their R session. This requires the
+<code>{mirai}</code> and <code>{carrier}</code> packages, which are otherwise not needed;
+without daemons, markers are plotted one at a time.</p>
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>mirai<span class="sc">::</span><span class="fu">daemons</span>(<span class="dv">4</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">polarMap</span>(polar_data, <span class="st">"no2"</span>)</span></code></pre><p></p></div>
 <p>Typically, spawning one fewer daemons than your number of available cores

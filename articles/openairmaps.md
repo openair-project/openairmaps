@@ -59,7 +59,7 @@ monitoring networks using
 
 ``` r
 
-networkMap(source = c("aurn", "saqd"), year = 2020)
+networkMap(source = c("aurn", "saqn"), year = 2020)
 ```
 
 ## Polar Plot Maps

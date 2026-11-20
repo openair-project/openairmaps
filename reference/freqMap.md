@@ -575,7 +575,9 @@ expensive computations. `openairmaps` supports parallel processing with
 `{mirai}` to speed these computations up. Users may create workers by
 running
 [`mirai::daemons()`](https://mirai.r-lib.org/reference/daemons.html) in
-their R session.
+their R session. This requires the `{mirai}` and `{carrier}` packages,
+which are otherwise not needed; without daemons, markers are plotted one
+at a time.
 
     mirai::daemons(4)
     polarMap(polar_data, "no2")

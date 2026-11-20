@@ -288,6 +288,17 @@
 - [`windroseMap()`](https://openair-project.github.io/openairmaps/reference/windroseMap.md)
   now gives an informative error if `data` has no `ws` column.
 
+- The
+  [`polarMap()`](https://openair-project.github.io/openairmaps/reference/polarMap.md)
+  family,
+  [`addPolarMarkers()`](https://openair-project.github.io/openairmaps/reference/addPolarMarkers.md)
+  and
+  [`addPolarDiffMarkers()`](https://openair-project.github.io/openairmaps/reference/addPolarMarkers.md)
+  no longer require [carrier](https://github.com/r-lib/carrier) and
+  [mirai](https://mirai.r-lib.org) to be installed. These are now only
+  needed to plot markers in parallel, after setting up workers with
+  [`mirai::daemons()`](https://mirai.r-lib.org/reference/daemons.html).
+
 #### Site maps
 
 - [`krigingMap()`](https://openair-project.github.io/openairmaps/reference/interpolate-map.md)
