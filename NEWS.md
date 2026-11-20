@@ -1,4 +1,4 @@
-# openairmaps (development version)
+# openairmaps 0.11.0
 
 ## Breaking changes
 
