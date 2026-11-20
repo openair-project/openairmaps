@@ -58,5 +58,3 @@ Encoding: UTF-8
 Language: en-GB
 LazyData: true
 Roxygen: list(markdown = TRUE)
-Remotes: 
-    openair-project/openair
