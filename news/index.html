@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">openairmaps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,9 +54,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="openairmaps-development-version">openairmaps (development version)<a class="anchor" aria-label="anchor" href="#openairmaps-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.11.0" id="openairmaps-0110">openairmaps 0.11.0<a class="anchor" aria-label="anchor" href="#openairmaps-0110"></a></h2>
 <div class="section level3">
-<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<h3 id="breaking-changes-0-11-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-11-0"></a></h3>
 <ul><li>
 <p>Several deprecated functions and arguments have been removed:</p>
 <ul><li><p><code>trajMapStatic()</code> and <code>trajLevelMapStatic()</code>. Use <code><a href="https://openair-project.github.io/openair/reference/trajPlot.html" class="external-link">openair::trajPlot()</a></code> and <code><a href="https://openair-project.github.io/openair/reference/trajLevel.html" class="external-link">openair::trajLevel()</a></code> instead.</p></li>
@@ -71,15 +71,15 @@
 <li><p><code>polar_data</code> now includes the site code, and its columns have been reordered to better match <code><a href="https://openair-project.github.io/openair/reference/importUKAQ.html" class="external-link">openair::importUKAQ()</a></code>.</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<h3 id="new-features-0-11-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-11-0"></a></h3>
 <div class="section level4">
-<h4 id="new-functions-development-version">New functions<a class="anchor" aria-label="anchor" href="#new-functions-development-version"></a></h4>
+<h4 id="new-functions-0-11-0">New functions<a class="anchor" aria-label="anchor" href="#new-functions-0-11-0"></a></h4>
 <ul><li><p><code><a href="../reference/pointMap.html">pointMap()</a></code> summarises pollutant data at each site (e.g., the mean concentration) and shows it as coloured circles on a dynamic or static map. It shares its arguments with <code><a href="../reference/interpolate-map.html">krigingMap()</a></code> and <code><a href="../reference/interpolate-map.html">voronoiMap()</a></code>, but draws no interpolated surface.</p></li>
 <li><p><code><a href="../reference/addTrajLevel.html">addTrajLevel()</a></code> adds gridded trajectory statistics (from <code><a href="https://openair-project.github.io/openair/reference/trajLevel.html" class="external-link">openair::trajLevel()</a></code>) to any <code>leaflet</code> map, much like <code><a href="../reference/addTrajPaths.html">addTrajPaths()</a></code> does for individual trajectories. It offers more control over groups and layer IDs than <code><a href="../reference/trajLevelMap.html">trajLevelMap()</a></code>, which now uses it internally.</p></li>
 <li><p><code><a href="https://openair-project.github.io/openair/reference/breakOpts.html" class="external-link">breakOpts()</a></code> and <code><a href="https://openair-project.github.io/openair/reference/colourOpts.html" class="external-link">colourOpts()</a></code> are now re-exported from <a href="https://openair-project.github.io/openair/" class="external-link">openair</a>.</p></li>
 </ul></div>
 <div class="section level4">
-<h4 id="directional-analysis-maps-development-version">Directional analysis maps<a class="anchor" aria-label="anchor" href="#directional-analysis-maps-development-version"></a></h4>
+<h4 id="directional-analysis-maps-0-11-0">Directional analysis maps<a class="anchor" aria-label="anchor" href="#directional-analysis-maps-0-11-0"></a></h4>
 <ul><li><p><code><a href="../reference/polarMap.html">polarMap()</a></code> and <code><a href="../reference/annulusMap.html">annulusMap()</a></code> gain <code>breaks</code>, in line with <code><a href="https://openair-project.github.io/openair/reference/polarPlot.html" class="external-link">openair::polarPlot()</a></code> and <code><a href="https://openair-project.github.io/openair/reference/polarAnnulus.html" class="external-link">openair::polarAnnulus()</a></code>, to bin the colour scale into discrete intervals. This takes a numeric vector of breakpoints, a number of intervals, or <code><a href="https://openair-project.github.io/openair/reference/breakOpts.html" class="external-link">openair::breakOpts()</a></code>. A single set of breakpoints is calculated across <em>all</em> of the markers so they can share a legend. <code>breaks</code> overrides <code>limits</code>.</p></li>
 <li>
 <p>Shared legends have been standardised, and now reflect the colour scale <a href="https://openair-project.github.io/openair/" class="external-link">openair</a> actually used to draw the markers:</p>
@@ -91,18 +91,18 @@
 <li><p><code><a href="../reference/addPolarMarkers.html">addPolarMarkers()</a></code> and <code><a href="../reference/addPolarMarkers.html">addPolarDiffMarkers()</a></code> gain <code>progress</code>, in line with the <code><a href="../reference/polarMap.html">polarMap()</a></code> family, so the progress bar can be turned off.</p></li>
 </ul></div>
 <div class="section level4">
-<h4 id="site-maps-development-version">Site maps<a class="anchor" aria-label="anchor" href="#site-maps-development-version"></a></h4>
+<h4 id="site-maps-0-11-0">Site maps<a class="anchor" aria-label="anchor" href="#site-maps-0-11-0"></a></h4>
 <ul><li><p><code><a href="../reference/pointMap.html">pointMap()</a></code>, <code><a href="../reference/interpolate-map.html">krigingMap()</a></code> and <code><a href="../reference/interpolate-map.html">voronoiMap()</a></code> gain <code>type</code>, in line with the <code><a href="../reference/polarMap.html">polarMap()</a></code> family. Each <code>type</code> level is summarised (and interpolated) separately on a shared colour scale. Levels become layers of a dynamic map (switched between using a “layer control” menu, customised using the <code>control.*</code> arguments) or panels of a static map (arranged using <code>static.nrow</code>). Other arguments can be passed to <code><a href="https://openair-project.github.io/openair/reference/cutData.html" class="external-link">openair::cutData()</a></code> using <code>...</code>.</p></li>
 <li><p><code><a href="../reference/pointMap.html">pointMap()</a></code>, <code><a href="../reference/interpolate-map.html">krigingMap()</a></code> and <code><a href="../reference/interpolate-map.html">voronoiMap()</a></code> gain <code>popup</code> and <code>label</code>, which work like those in <code><a href="../reference/polarMap.html">polarMap()</a></code>. If either includes the <code>pollutant</code>, the site <code>statistic</code> is shown and labelled as such (e.g., “NO<sub>2</sub> (max)”). Other numeric columns are averaged at each site.</p></li>
 </ul></div>
 <div class="section level4">
-<h4 id="trajectory-maps-development-version">Trajectory maps<a class="anchor" aria-label="anchor" href="#trajectory-maps-development-version"></a></h4>
+<h4 id="trajectory-maps-0-11-0">Trajectory maps<a class="anchor" aria-label="anchor" href="#trajectory-maps-0-11-0"></a></h4>
 <ul><li><p><code><a href="../reference/addTrajPaths.html">addTrajPaths()</a></code> gains <code>markerColor</code>, so the points along a trajectory can be coloured independently of its line (e.g., by a pollutant). It is also much faster when <code>layerId</code> is used, with unchanged layer IDs.</p></li>
 <li><p><code><a href="../reference/trajLevelMap.html">trajLevelMap()</a></code> now passes <code>...</code> to <code><a href="https://openair-project.github.io/openair/reference/cutData.html" class="external-link">openair::cutData()</a></code> (e.g., <code>type = "season", hemisphere = "southern"</code>), in line with <code><a href="../reference/trajMap.html">trajMap()</a></code>. Its <code>pollutant</code> argument also now defaults to <code>NULL</code>.</p></li>
 <li><p>Trajectory popups have been restyled to match those in <code><a href="../reference/networkMap.html">networkMap()</a></code>. Path popups always show the time of the arrival and trajectory dates, and <code><a href="../reference/trajMap.html">trajMap()</a></code> shows the <code>colour</code> variable (e.g., a pollutant) in its own row. Gridded popups lead with the value and statistic, followed by the grid cell location, count and (if used) <code>type</code> level.</p></li>
 </ul></div>
 <div class="section level4">
-<h4 id="other-development-version">Other<a class="anchor" aria-label="anchor" href="#other-development-version"></a></h4>
+<h4 id="other-0-11-0">Other<a class="anchor" aria-label="anchor" href="#other-0-11-0"></a></h4>
 <ul><li><p><code><a href="../reference/buildPopup.html">buildPopup()</a></code> popups have been restyled to match those in <code><a href="../reference/networkMap.html">networkMap()</a></code>, with each column shown as a grey label alongside its value. This also applies to the popups built automatically when several <code>popup</code> columns are given to a mapping function. <code><a href="../reference/buildPopup.html">buildPopup()</a></code> also gains <code>name</code>, which sets the name of the new column (<code>"popup"</code> by default), and now errors if this column already exists rather than returning <code>popup.x</code> and <code>popup.y</code>.</p></li>
 <li><p><code><a href="../reference/networkMap.html">networkMap()</a></code> can now take any argument of <code><a href="https://openair-project.github.io/openair/reference/importMeta.html" class="external-link">openair::importMeta()</a></code> via <code>...</code>, superseding <code>searchNetwork()</code>. It also no longer overrides the default <code>year</code>.</p></li>
 <li><p><code><a href="../reference/trajMap.html">trajMap()</a></code>, <code><a href="../reference/trajLevelMap.html">trajLevelMap()</a></code>, <code><a href="../reference/interpolate-map.html">krigingMap()</a></code> and <code><a href="../reference/interpolate-map.html">voronoiMap()</a></code> now accept any number of basemaps through <code>provider</code>, which can be named to label them in the layer control menu (e.g., <code>c("Default" = "OpenStreetMap", "Satellite" = "Esri.WorldImagery")</code>), in line with <code><a href="../reference/polarMap.html">polarMap()</a></code> and <code><a href="../reference/networkMap.html">networkMap()</a></code>.</p></li>
@@ -111,9 +111,9 @@
 </ul></div>
 </div>
 <div class="section level3">
-<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<h3 id="bug-fixes-0-11-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-11-0"></a></h3>
 <div class="section level4">
-<h4 id="directional-analysis-maps-development-version-1">Directional analysis maps<a class="anchor" aria-label="anchor" href="#directional-analysis-maps-development-version-1"></a></h4>
+<h4 id="directional-analysis-maps-0-11-0-1">Directional analysis maps<a class="anchor" aria-label="anchor" href="#directional-analysis-maps-0-11-0-1"></a></h4>
 <ul><li><p><code>freqMap(statistic = "frequency")</code> now shows the number of measurements in each bin. With recent versions of <a href="https://openair-project.github.io/openair/" class="external-link">openair</a>, it instead warned and showed the mean of an internal placeholder column, which also affected <code>breaks = "fixed"</code>.</p></li>
 <li><p>Markers that <a href="https://openair-project.github.io/openair/" class="external-link">openair</a> can’t draw (e.g., due to too little data at a site) are now consistently skipped. Previously, dynamic maps showed a broken image in their place (and listed it in the layer control menu), and static maps errored. If no markers can be drawn at all, the error given by <a href="https://openair-project.github.io/openair/" class="external-link">openair</a> is now passed on.</p></li>
 <li>
@@ -130,7 +130,7 @@
 <li><p>The <code><a href="../reference/polarMap.html">polarMap()</a></code> family, <code><a href="../reference/addPolarMarkers.html">addPolarMarkers()</a></code> and <code><a href="../reference/addPolarMarkers.html">addPolarDiffMarkers()</a></code> no longer require <a href="https://github.com/r-lib/carrier" class="external-link">carrier</a> and <a href="https://mirai.r-lib.org" class="external-link">mirai</a> to be installed. These are now only needed to plot markers in parallel, after setting up workers with <code><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">mirai::daemons()</a></code>.</p></li>
 </ul></div>
 <div class="section level4">
-<h4 id="site-maps-development-version-1">Site maps<a class="anchor" aria-label="anchor" href="#site-maps-development-version-1"></a></h4>
+<h4 id="site-maps-0-11-0-1">Site maps<a class="anchor" aria-label="anchor" href="#site-maps-0-11-0-1"></a></h4>
 <ul><li><p><code><a href="../reference/interpolate-map.html">krigingMap()</a></code> and <code><a href="../reference/interpolate-map.html">voronoiMap()</a></code> now give informative errors if <code>pollutant</code> is missing, can’t be found in <code>data</code> or has more than one value, or if <code>statistic</code> isn’t recognised.</p></li>
 <li>
 <p><code><a href="../reference/interpolate-map.html">krigingMap()</a></code> and <code><a href="../reference/interpolate-map.html">voronoiMap()</a></code> no longer leave sites or parts of the surface uncoloured:</p>
@@ -141,7 +141,7 @@
 <li><p>Static <code><a href="../reference/interpolate-map.html">krigingMap()</a></code> and <code><a href="../reference/interpolate-map.html">voronoiMap()</a></code> maps now respect <code>provider</code>, rather than always using OpenStreetMap.</p></li>
 </ul></div>
 <div class="section level4">
-<h4 id="trajectory-maps-development-version-1">Trajectory maps<a class="anchor" aria-label="anchor" href="#trajectory-maps-development-version-1"></a></h4>
+<h4 id="trajectory-maps-0-11-0-1">Trajectory maps<a class="anchor" aria-label="anchor" href="#trajectory-maps-0-11-0-1"></a></h4>
 <ul><li><p><code><a href="../reference/trajMap.html">trajMap()</a></code> and <code><a href="../reference/addTrajPaths.html">addTrajPaths()</a></code> now support data with multiple receptors, as returned by <code><a href="https://openair-project.github.io/openair/reference/importTraj.html" class="external-link">openair::importTraj()</a></code>. Previously, trajectories arriving at different receptors at the same time were joined into a single path.</p></li>
 <li><p><code><a href="../reference/trajLevelMap.html">trajLevelMap()</a></code> now respects <code>control.collapsed</code> and <code>control.position</code>. Note that this means its layer control is now expanded by default, in line with <code><a href="../reference/trajMap.html">trajMap()</a></code>.</p></li>
 <li><p><code>trajLevelMap(statistic = "difference")</code> now uses the correct ordinal suffix for <code>percentile</code> (e.g., <code>"11th"</code> rather than <code>"11st"</code>, <code>"1st"</code> rather than <code>"1th"</code>, and <code>"92.5th"</code> rather than <code>"92.5nd"</code>).</p></li>
@@ -149,7 +149,7 @@
 <li><p><code><a href="../reference/addTrajPaths.html">addTrajPaths()</a></code> popups now respect <code>lng</code> and <code>lat</code>. Previously, the latitude and longitude were blank unless the columns were called “lon” and “lat”.</p></li>
 </ul></div>
 <div class="section level4">
-<h4 id="other-development-version-1">Other<a class="anchor" aria-label="anchor" href="#other-development-version-1"></a></h4>
+<h4 id="other-0-11-0-1">Other<a class="anchor" aria-label="anchor" href="#other-0-11-0-1"></a></h4>
 <ul><li><p><code><a href="../reference/trajMap.html">trajMap()</a></code>, <code><a href="../reference/trajLevelMap.html">trajLevelMap()</a></code>, <code><a href="../reference/networkMap.html">networkMap()</a></code>, <code><a href="../reference/interpolate-map.html">krigingMap()</a></code> and <code><a href="../reference/interpolate-map.html">voronoiMap()</a></code> now validate <code>provider</code> in the same way as the <code><a href="../reference/polarMap.html">polarMap()</a></code> family, giving an informative error for unrecognised basemaps and accepting the same shorthand names (e.g., <code>"cartolight"</code>).</p></li>
 <li><p>Dynamic maps now error if more than one <code>legend.position</code> or <code>control.position</code> is given. <code><a href="../reference/networkMap.html">networkMap()</a></code> now checks <code>control.position</code> even when <code>control</code> isn’t used.</p></li>
 <li><p>Dynamic <code><a href="../reference/interpolate-map.html">krigingMap()</a></code>, <code><a href="../reference/interpolate-map.html">voronoiMap()</a></code>, <code><a href="../reference/trajMap.html">trajMap()</a></code> and <code><a href="../reference/trajLevelMap.html">trajLevelMap()</a></code> legends now use <code>alpha</code> for their opacity.</p></li>
