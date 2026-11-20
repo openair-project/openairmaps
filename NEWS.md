@@ -100,6 +100,8 @@
 
 * `windroseMap()` now gives an informative error if `data` has no `ws` column.
 
+* The `polarMap()` family, `addPolarMarkers()` and `addPolarDiffMarkers()` no longer require `{carrier}` and `{mirai}` to be installed. These are now only needed to plot markers in parallel, after setting up workers with `mirai::daemons()`.
+
 ### Site maps
 
 * `krigingMap()` and `voronoiMap()` now give informative errors if `pollutant` is missing, can't be found in `data` or has more than one value, or if `statistic` isn't recognised.

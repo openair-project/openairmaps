@@ -53,6 +53,38 @@ test_that("create_polar_markers() saves each marker to its own file", {
   expect_true(all(file.exists(out$url[has_plot(out)])))
 })
 
+test_that("markers don't need {carrier} or {mirai} without daemons", {
+  # purrr::in_parallel() always requires both, so isn't used
+  local_mocked_bindings(
+    is_installed = function(...) FALSE,
+    .package = "rlang"
+  )
+  expect_false(use_parallel())
+  f <- function(x) x
+  expect_identical(maybe_in_parallel(f, y = 1), f)
+
+  out <- fake_markers()
+  expect_equal(sum(has_plot(out)), 2)
+  expect_equal(out$.error[!has_plot(out)], "Not enough data")
+})
+
+test_that("markers are drawn in parallel when daemons are set", {
+  skip_on_cran()
+  skip_if_not_installed("carrier", "0.3.0")
+  skip_if_not_installed("mirai", "2.5.1")
+  expect_false(use_parallel())
+
+  mirai::daemons(1)
+  withr::defer(mirai::daemons(0))
+  expect_true(use_parallel())
+  expect_s3_class(maybe_in_parallel(function(x) x), "crate")
+
+  out <- fake_markers()
+  expect_equal(sum(has_plot(out)), 2)
+  expect_true(all(file.exists(out$url[has_plot(out)])))
+  expect_equal(out$.error[!has_plot(out)], "Not enough data")
+})
+
 test_that("marker_theme() makes the panel transparent, unless overridden", {
   panel_fill <- \(x) x$panel.background$fill
   expect_true(is.na(panel_fill(marker_theme("default"))))

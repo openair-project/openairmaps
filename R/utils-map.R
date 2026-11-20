@@ -563,48 +563,52 @@ create_polar_markers <-
 
     dims <- marker_dims(d.fig)
 
-    # create and save plots - markers openair can't draw (e.g., with too little
-    # data) are skipped, but their errors are kept to explain an empty map
+    # draw and save one marker - markers openair can't draw (e.g., with too
+    # little data) are skipped, but their errors are kept to explain an empty
+    # map. This must only use `fun`, `fun_args` and `dims` from this function,
+    # as these are all that are sent to any parallel workers.
+    draw_marker <- function(data, url, after = NULL) {
+      # errors are returned (rather than thrown) so they can be reported
+      openair_obj <- tryCatch(
+        error = function(cnd) cnd,
+        # (not `rlang::exec(!!!)`, as in_parallel() would inject it too early)
+        if (is.null(after)) {
+          do.call(fun, c(list(mydata = data), fun_args))
+        } else {
+          do.call(fun, c(list(before = data, after = after), fun_args))
+        }
+      )
+
+      if (inherits(openair_obj, "error")) {
+        return(list(data = NULL, error = conditionMessage(openair_obj)))
+      } else if (is.null(openair_obj)) {
+        return(list(data = NULL, error = NA_character_))
+      } else {
+        # save plot
+        ggplot2::ggsave(
+          plot = openair_obj$plot +
+            ggplot2::theme(
+              plot.background = ggplot2::element_blank(),
+              plot.margin = ggplot2::unit(rep(0, 4), "cm"),
+              legend.background = ggplot2::element_blank(),
+              legend.title = ggplot2::element_blank()
+            ),
+          filename = url,
+          width = dims$width * 0.75,
+          height = dims$height * 0.75,
+          dpi = 72,
+          bg = "transparent"
+        )
+        return(list(data = openair_obj$data, error = NA_character_))
+      }
+    }
+
+    # create and save plots
     results <-
       purrr::pmap(
         .l = dplyr::select(plots_df, dplyr::any_of(c("data", "after", "url"))),
-        .f = purrr::in_parallel(
-          function(data, url, after = NULL) {
-            # errors are returned (rather than thrown) so they can be reported
-            openair_obj <- tryCatch(
-              error = function(cnd) cnd,
-              # (not `rlang::exec(!!!)`, as in_parallel() would inject it
-              # too early)
-              if (is.null(after)) {
-                do.call(fun, c(list(mydata = data), fun_args))
-              } else {
-                do.call(fun, c(list(before = data, after = after), fun_args))
-              }
-            )
-
-            if (inherits(openair_obj, "error")) {
-              return(list(data = NULL, error = conditionMessage(openair_obj)))
-            } else if (is.null(openair_obj)) {
-              return(list(data = NULL, error = NA_character_))
-            } else {
-              # save plot
-              ggplot2::ggsave(
-                plot = openair_obj$plot +
-                  ggplot2::theme(
-                    plot.background = ggplot2::element_blank(),
-                    plot.margin = ggplot2::unit(rep(0, 4), "cm"),
-                    legend.background = ggplot2::element_blank(),
-                    legend.title = ggplot2::element_blank()
-                  ),
-                filename = url,
-                width = dims$width * 0.75,
-                height = dims$height * 0.75,
-                dpi = 72,
-                bg = "transparent"
-              )
-              return(list(data = openair_obj$data, error = NA_character_))
-            }
-          },
+        .f = maybe_in_parallel(
+          draw_marker,
           fun = fun,
           fun_args = fun_args,
           dims = dims
@@ -617,6 +621,31 @@ create_polar_markers <-
 
     return(plots_df)
   }
+
+#' Run a function in parallel, but only if mirai daemons have been set
+#'
+#' [purrr::in_parallel()] always requires `{carrier}` and `{mirai}`, even when
+#' no daemons are running (in which case it runs sequentially anyway). As these
+#' are only suggested packages, `.f` is used as-is unless the user has set up
+#' daemons with [mirai::daemons()].
+#' @param .f A function, which may only use variables passed through `...`.
+#' @param ... Variables used by `.f`, passed to [purrr::in_parallel()].
+#' @noRd
+maybe_in_parallel <- function(.f, ...) {
+  if (use_parallel()) {
+    purrr::in_parallel(.f, ...)
+  } else {
+    .f
+  }
+}
+
+#' Have mirai daemons been set (and can purrr use them)?
+#' @noRd
+use_parallel <- function() {
+  # (versions required by purrr::in_parallel())
+  rlang::is_installed(c("carrier", "mirai"), version = c("0.3.0", "2.5.1")) &&
+    mirai::daemons_set()
+}
 
 #' Explain why no polar markers could be drawn
 #'

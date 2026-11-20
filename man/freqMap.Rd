@@ -417,7 +417,9 @@ Creating a directional analysis map can take a lot of time; each polar
 marker needs to be plot individually, and many of these require some
 expensive computations. \code{openairmaps} supports parallel processing with
 \code{{mirai}} to speed these computations up. Users may create workers by
-running \code{\link[mirai:daemons]{mirai::daemons()}} in their R session.
+running \code{\link[mirai:daemons]{mirai::daemons()}} in their R session. This requires the
+\code{{mirai}} and \code{{carrier}} packages, which are otherwise not needed;
+without daemons, markers are plotted one at a time.
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{mirai::daemons(4)
 polarMap(polar_data, "no2")

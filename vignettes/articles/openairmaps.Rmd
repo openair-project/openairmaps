@@ -38,7 +38,7 @@ names(london_data)
 To find sites to import data from, you can visualise and search UK monitoring networks using `networkMap()`.
 
 ```{r network}
-networkMap(source = c("aurn", "saqd"), year = 2020)
+networkMap(source = c("aurn", "saqn"), year = 2020)
 ```
 
 # Polar Plot Maps
