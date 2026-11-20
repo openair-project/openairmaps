@@ -124,6 +124,8 @@
 
 * `trajLevelMap(statistic = "difference")` now uses the correct ordinal suffix for `percentile` (e.g., `"11th"` rather than `"11st"`, `"1st"` rather than `"1th"`, and `"92.5th"` rather than `"92.5nd"`).
 
+* `trajLevelMap()` now explains that `{rnaturalearth}` is needed (by `openair::trajLevel()`) if it isn't installed.
+
 * `addTrajPaths()` popups now respect `lng` and `lat`. Previously, the latitude and longitude were blank unless the columns were called "lon" and "lat".
 
 ### Other

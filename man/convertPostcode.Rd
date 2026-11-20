@@ -25,10 +25,11 @@ This is a much simpler implementation of the tools found in the
 function.
 }
 \examples{
-# convert a UK postcode
+rlang::is_installed(c("curl", "jsonlite"))
+\dontrun{
+# convert a UK postcode (needs an internet connection)
 convertPostcode("SW1A1AA")
 
-\dontrun{
 # use with `networkMap()`
 palace <- convertPostcode("SW1A1AA")
 networkMap("aurn", lat = palace$lat, lng = palace$lng, max_dist = 10)
